@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mi Cuenta - Bolsa AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/bolsa/static/utf8-fix.js"></script>
+  <script src="/bolsa/static/auth.js"></script>
+  <script src="/bolsa/static/js/config.js"></script>
+  <script src="/bolsa/static/js/account.js"></script>
+  <script src="/bolsa/static/js/feedback.js"></script>
+  <script src="/bolsa/static/js/header.js"></script>
+  <script src="/bolsa/static/js/hero.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/bolsa/static/css/styles.css">
+</head>
+<body class="bg-gray-50 dark-mode:bg-gray-900 min-h-screen">
+  <div id="app-header"></div>
+  <div id="app-hero" data-icon="👤" data-title="Mi Cuenta" data-subtitle="Gestiona tu perfil, actividad y accesos."></div>
+  
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- Left Column -->
+      <div class="lg:col-span-8 space-y-6">
+        
+        <!-- Metrics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="metric-card bg-white dark-mode:bg-gray-800 rounded-lg shadow-sm p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-blue-100 dark-mode:bg-blue-900 rounded-lg flex items-center justify-center">
+                  <span class="text-blue-600 dark-mode:text-blue-400 text-lg">👤</span>
+                </div>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-500 dark-mode:text-gray-400">Miembro desde</p>
+                <p class="text-lg font-semibold text-gray-900 dark-mode:text-gray-100">-</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="metric-card bg-white dark-mode:bg-gray-800 rounded-lg shadow-sm p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-green-100 dark-mode:bg-green-900 rounded-lg flex items-center justify-center">
+                  <span class="text-green-600 dark-mode:text-green-400 text-lg">📊</span>
+                </div>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-500 dark-mode:text-gray-400">Análisis Totales</p>
+                <p id="total-analyses" class="text-lg font-semibold text-gray-900 dark-mode:text-gray-100">0</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="metric-card bg-white dark-mode:bg-gray-800 rounded-lg shadow-sm p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-purple-100 dark-mode:bg-purple-900 rounded-lg flex items-center justify-center">
+                  <span class="text-purple-600 dark-mode:text-purple-400 text-lg">⚡</span>
+                </div>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-500 dark-mode:text-gray-400">Uso IA Hoy</p>
+                <p id="ai-usage" class="text-lg font-semibold text-gray-900 dark-mode:text-gray-100">0</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="metric-card bg-white dark-mode:bg-gray-800 rounded-lg shadow-sm p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-orange-100 dark-mode:bg-orange-900 rounded-lg flex items-center justify-center">
+                  <span class="text-orange-600 dark-mode:text-orange-400 text-lg">🕒</span>
+                </div>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-500 dark-mode:text-gray-400">Última Actividad</p>
+                <p class="text-lg font-semibold text-gray-900 dark-mode:text-gray-100">-</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Information -->
+        <div class="bg-white dark-mode:bg-gray-800 rounded-lg shadow-sm">
+          <div class="px-6 py-4 border-b dark-mode:border-gray-700">
+            <h2 class="text-lg font-semibold text-gray-900 dark-mode:text-gray-100">Información del Perfil</h2>
+          </div>
+          <div class="p-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark-mode:text-gray-300">Email</label>
+                <p id="uEmail" class="text-sm text-gray-600 dark-mode:text-gray-400">Cargando...</p>
+              </div>
+              <button onclick="showEditEmail()" class="text-blue-600 hover:text-blue-800 dark-mode:text-blue-400 dark-mode:hover:text-blue-300 text-sm font-medium">Editar</button>
+            </div>
+            
+            <div class="flex items-center justify-between">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark-mode:text-gray-300">Nombre</label>
+                <p id="uName" class="text-sm text-gray-600 dark-mode:text-gray-400">Cargando...</p>
+              </div>
+              <button onclick="showEditName()" class="text-blue-600 hover:text-blue-800 dark-mode:text-blue-400 dark-mode:hover:text-blue-300 text-sm font-medium">Editar</button>
+            </div>
+            
+            <div class="flex items-center justify-between">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark-mode:text-gray-300">Rol</label>
+                <p class="text-sm text-gray-600 dark-mode:text-gray-400">admin</p>
+              </div>
+              <a href="admin.html" class="text-blue-600 hover:text-blue-800 dark-mode:text-blue-400 dark-mode:hover:text-blue-300 text-sm font-medium">Acceder al panel de administración</a>
+            </div>
+            
+            <div class="pt-4">
+              <button onclick="showChangePassword()" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                Cambiar Contraseña
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Usage Statistics -->
+        <div class="bg-white dark-mode:bg-gray-800 rounded-lg shadow-sm">
+          <div class="px-6 py-4 border-b dark-mode:border-gray-700">
+            <h2 class="text-lg font-semibold text-gray-900 dark-mode:text-gray-100">Estadísticas de Uso</h2>
+          </div>
+          <div class="p-6">
+            <div class="space-y-4">
+              <div>
+                <h3 class="text-sm font-medium text-gray-700 dark-mode:text-gray-300">Análisis esta semana</h3>
+                <p id="weekly-analyses" class="text-2xl font-bold text-gray-900 dark-mode:text-gray-100">0</p>
+              </div>
+              <div>
+                <h3 class="text-sm font-medium text-gray-700 dark-mode:text-gray-300">Análisis hoy</h3>
+                <p id="today-analyses" class="text-2xl font-bold text-gray-900 dark-mode:text-gray-100">0</p>
+              </div>
+            </div>
+            <div class="mt-6">
+              <button onclick="showUsageDetails()" class="text-blue-600 hover:text-blue-800 dark-mode:text-blue-400 dark-mode:hover:text-blue-300 text-sm font-medium">
+                Ver Detalles de Uso
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Sidebar -->
+      <div class="lg:col-span-4 space-y-6">
+        
+        <!-- Recent Activity -->
+        <div class="bg-white dark-mode:bg-gray-800 rounded-lg shadow-sm">
+          <div class="px-6 py-4 border-b dark-mode:border-gray-700">
+            <h2 class="text-lg font-semibold text-gray-900 dark-mode:text-gray-100">Actividad Reciente</h2>
+          </div>
+          <div class="p-6">
+            <div id="activity" class="space-y-3">
+              <div class="text-sm text-gray-500">Cargando...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="bg-white dark-mode:bg-gray-800 rounded-lg shadow-sm">
+          <div class="px-6 py-4 border-b dark-mode:border-gray-700">
+            <h2 class="text-lg font-semibold text-gray-900 dark-mode:text-gray-100">Acciones Rápidas</h2>
+          </div>
+          <div class="p-6 space-y-3">
+            <a href="journal.html?from=account" class="flex items-center p-3 border border-gray-200 dark-mode:border-gray-600 rounded-lg hover:bg-gray-50 dark-mode:hover:bg-gray-700 transition-colors">
+              <span class="text-lg mr-3">📄</span>
+              <span class="text-sm font-medium text-gray-900 dark-mode:text-gray-100">Historial de análisis</span>
+            </a>
+            
+            <button onclick="window.Feedback.showUserFeedback()" class="flex items-center p-3 border border-gray-200 dark-mode:border-gray-600 rounded-lg hover:bg-gray-50 dark-mode:hover:bg-gray-700 transition-colors w-full">
+              <span class="text-lg mr-3">💬</span>
+              <span class="text-sm font-medium text-gray-900 dark-mode:text-gray-100">Mis Feedback</span>
+            </button>
+            
+            <a href="tester.html" class="flex items-center p-3 border border-gray-200 dark-mode:border-gray-600 rounded-lg hover:bg-gray-50 dark-mode:hover:bg-gray-700 transition-colors">
+              <span class="text-lg mr-3">⚡</span>
+              <span class="text-sm font-medium text-gray-900 dark-mode:text-gray-100">Tester API</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white dark-mode:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
+        <div class="px-6 py-4 border-b dark-mode:border-gray-700">
+          <h3 id="modal-title" class="text-lg font-semibold text-gray-900 dark-mode:text-gray-100"></h3>
+        </div>
+        <div id="modal-body" class="p-6">
+          <!-- Dynamic content -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal feedback -->
+  <div id="modal-fb" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+    <div class="bg-white dark-mode:bg-gray-800 w-full max-w-3xl rounded-lg shadow-lg p-4 space-y-3">
+      <div class="flex items-center justify-between">
+        <div class="text-lg font-semibold text-gray-900 dark-mode:text-gray-100">Enviar feedback</div>
+        <button id="fb-close" class="text-gray-500 hover:text-gray-700 dark-mode:text-gray-400 dark-mode:hover:text-gray-200">✕</button>
+      </div>
+      <div id="fb-body" class="space-y-3 text-sm"></div>
+      <div class="flex items-center justify-end gap-2">
+        <span id="fb-msg" class="text-sm text-gray-500 dark-mode:text-gray-400"></span>
+        <button id="fb-cancel" class="py-1.5 px-3 rounded-md border text-gray-700 hover:bg-gray-50 dark-mode:text-gray-300 dark-mode:hover:bg-gray-700 dark-mode:border-gray-600">Cancelar</button>
+        <button id="fb-send" class="py-1.5 px-3 rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark-mode:bg-indigo-500 dark-mode:hover:bg-indigo-600">Enviar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Función para volver
+    function goBack() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const from = urlParams.get('from');
+      if (from === 'account') {
+        window.location.href = 'account.html';
+      } else if (from === 'index') {
+        window.location.href = 'index.html';
+      } else {
+        // Verificar si hay token antes de redirigir
+        const token = localStorage.getItem('auth_token');
+        if (token) {
+          window.location.href = 'index.html';
+        } else {
+          window.location.href = 'login.html';
+        }
+      }
+    }
+
+    // El header unificado ya controla logout/tema
+  </script>
+</body>
+</html>

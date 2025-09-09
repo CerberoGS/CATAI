@@ -1,0 +1,2 @@
+# CATAI
+Cerbero Trading AI

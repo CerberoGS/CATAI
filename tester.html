@@ -1,0 +1,727 @@
+﻿<!DOCTYPE html>
+<html lang="es-US">
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="Content-Language" content="es-US" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tester API Bolsa (con autosave de claves)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/bolsa/static/utf8-fix.js"></script>
+  <script src="/bolsa/static/auth.js"></script>
+  <link rel="stylesheet" href="/bolsa/static/css/styles.css">
+  <style>
+    pre,code{white-space:pre-wrap;word-break:break-word}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    .btn{padding:.5rem 1rem;border-radius:.5rem;border:1px solid #e5e7eb;background:#fff}
+    .btn:hover{background:#f8fafc}
+    .btn.p{background:#111827;color:#fff;border-color:#111827}
+    .btn.g{background:#065f46;color:#fff;border-color:#065f46}
+    .btn.i{background:#4338ca;color:#fff;border-color:#4338ca}
+    .btn.f{background:#701a75;color:#fff;border-color:#701a75}
+    .badge{padding:.25rem .5rem;border-radius:.5rem;background:#111827;color:#fff}
+    .muted{color:#64748b}
+  </style>
+</head>
+<body class="bg-slate-50 dark-mode:bg-gray-900">
+<script>try{ Auth.requireAuth(); }catch(e){ }</script>
+<div class="max-w-6xl mx-auto p-6 space-y-6">
+  <div class="flex items-center justify-between gap-4">
+    <h1 class="text-3xl font-bold dark-mode:text-gray-100">Tester API Bolsa</h1>
+    <div class="flex items-center gap-3 text-sm">
+      <button id="theme-toggle" class="text-sm text-gray-600 hover:text-gray-800 dark-mode:text-gray-300 dark-mode:hover:text-gray-100 transition-colors">
+        🌙 Modo Oscuro
+      </button>
+      <button id="btn-feedback" class="py-1.5 px-3 rounded-md border text-gray-700 hover:bg-gray-50 dark-mode:text-gray-300 dark-mode:hover:bg-gray-700 dark-mode:border-gray-600">Feedback</button>
+      <span class="dark-mode:text-gray-300">Token presente: <span id="tok-ok" class="font-semibold">no</span></span>
+      <span id="tok-badge" class="badge hidden mono text-xs"></span>
+      <button id="clearTok" class="text-sm text-rose-600 hover:underline dark-mode:text-rose-400">borrar token</button>
+    </div>
+  </div>
+  <p class="text-slate-600 dark-mode:text-gray-400">Abre esto en la MISMA pestaña de <code class="mono dark-mode:text-gray-300">/bolsa/</code> para compartir el token.</p>
+
+  <!-- Barra superior -->
+  <div class="grid md:grid-cols-3 gap-4 items-end">
+    <div>
+      <label class="block text-sm font-medium text-slate-700 dark-mode:text-gray-300">Símbolo</label>
+      <input id="sym" class="mt-1 w-full rounded-md border-slate-300 dark-mode:border-gray-600 dark-mode:bg-gray-700 dark-mode:text-gray-100 shadow-sm" value="TSLA"/>
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-slate-700 dark-mode:text-gray-300">Proveedor</label>
+      <select id="prov" class="mt-1 w-full rounded-md border-slate-300 dark-mode:border-gray-600 dark-mode:bg-gray-700 dark-mode:text-gray-100 shadow-sm">
+        <option value="auto" selected>auto</option>
+        <option value="tiingo">tiingo</option>
+        <option value="av">av</option>
+        <option value="finnhub">finnhub</option>
+        <option value="polygon">polygon</option>
+        <option value="local">local</option>
+      </select>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      <button id="btnHealth"  class="btn p">Probar HEALTH</button>
+      <button id="btnOptions" class="btn i">Probar OPCIONES</button>
+      <button id="btnSeries"  class="btn g">Probar TIME SERIES</button>
+      <button id="btnDiag"    class="btn">Diagnóstico</button>
+      <button id="btnAIauto"  class="btn f">Probar IA (auto)</button>
+      <button id="btnDiag"    class="btn">Diagnóstico</button>
+      <button id="btnAIgem"   class="btn">IA gemini</button>
+      <button id="btnAIopenai" class="btn">IA openai</button>
+      <button id="btnAIxai"    class="btn">IA xai/grok</button>
+    </div>
+  </div>
+
+  <!-- Auth -->
+  <div class="rounded-lg border dark-mode:border-gray-600 p-4 space-y-3 bg-white dark-mode:bg-gray-800">
+    <div class="font-semibold dark-mode:text-gray-100">AUTH (SAFE primero, con <code class="mono dark-mode:text-gray-300">debug=1</code>)</div>
+    <div class="grid md:grid-cols-3 gap-3 items-end">
+      <div>
+        <label class="block text-sm font-medium text-slate-700 dark-mode:text-gray-300">Email</label>
+        <input id="email" class="mt-1 w-full rounded-md border-slate-300 dark-mode:border-gray-600 dark-mode:bg-gray-700 dark-mode:text-gray-100 shadow-sm" value="tester@cerberogrowthsolutions.com"/>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-700 dark-mode:text-gray-300">Password</label>
+        <input id="pass" type="password" class="mt-1 w-full rounded-md border-slate-300 dark-mode:border-gray-600 dark-mode:bg-gray-700 dark-mode:text-gray-100 shadow-sm" value="12345678"/>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <button id="btnRegisterSafe" class="btn">Register SAFE</button>
+        <button id="btnRegister"     class="btn">Register PLAIN</button>
+        <button id="btnLoginSafe"    class="btn">Login SAFE</button>
+        <button id="btnLogin"        class="btn">Login PLAIN</button>
+        <button id="btnMeSafe"       class="btn">Me SAFE</button>
+        <button id="btnMe"           class="btn">Me PLAIN</button>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap gap-2">
+      <button id="btnGetSetSafe"  class="btn">Get Settings SAFE</button>
+      <button id="btnGetSet"      class="btn">Get Settings PLAIN</button>
+      <button id="btnSaveSetSafe" class="btn">Save Settings SAFE</button>
+      <button id="btnSaveSet"     class="btn">Save Settings PLAIN</button>
+    </div>
+  </div>
+
+  <!-- Preferencias (mismo payload que config.html) -->
+  <div class="rounded-lg border p-4 bg-white space-y-4">
+    <div class="font-semibold">Preferencias (config.html → settings_set_safe.php)</div>
+    <div class="grid md:grid-cols-3 gap-4">
+      <div>
+        <label class="block text-sm font-medium">Proveedor de series</label>
+        <select id="t-series-provider" class="mt-1 w-full rounded-md border-slate-300 shadow-sm">
+          <option value="auto">Auto</option>
+          <option value="tiingo">Tiingo</option>
+          <option value="av">Alpha Vantage</option>
+          <option value="local">Solo local</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Proveedor de opciones</label>
+        <select id="t-opt-provider" class="mt-1 w-full rounded-md border-slate-300 shadow-sm">
+          <option value="auto">Auto</option>
+          <option value="polygon">Polygon</option>
+          <option value="finnhub">Finnhub</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Strikes por lado</label>
+        <input id="t-opt-strikes" type="number" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" value="20" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Regla de vencimiento</label>
+        <input id="t-opt-exp-rule" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" placeholder="nearest_friday" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Fuente precio ATM</label>
+        <input id="t-opt-atm" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" placeholder="series_last | provider | mid" value="series_last" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">TZ offset</label>
+        <input id="t-tz-offset" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" placeholder="+00:00" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Timeout Polygon (ms)</label>
+        <input id="t-to-polygon" type="number" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" value="8000" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Timeout Finnhub (ms)</label>
+        <input id="t-to-finnhub" type="number" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" value="8000" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Timeout Tiingo (ms)</label>
+        <input id="t-to-tiingo" type="number" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" value="8000" />
+      </div>
+    </div>
+    <div class="flex gap-2">
+      <button id="btnPrefsSaveSafe" class="btn p">Guardar prefs SAFE</button>
+      <button id="btnPrefsGetSafe" class="btn">Leer prefs SAFE</button>
+    </div>
+  </div>
+
+  <!-- Claves -->
+  <div class="rounded-lg border p-4 bg-white space-y-3">
+    <div class="font-semibold">Claves (providers) → tabla <code class="mono">user_api_keys</code></div>
+    <div class="grid md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium">OpenAI</label>
+        <input id="k-openai" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" placeholder="sk-..." />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Gemini</label>
+        <input id="k-gemini" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" placeholder="AIza..." />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">xAI (Grok)</label>
+        <input id="k-xai" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" placeholder="xai_..." />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Alpha Vantage</label>
+        <input id="k-alphavantage" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" placeholder="AV_..." />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Tiingo</label>
+        <input id="k-tiingo" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" placeholder="ti_..." />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Finnhub</label>
+        <input id="k-finnhub" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" placeholder="fh_..." />
+      </div>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <button id="btnKeysGet" class="btn">Keys GET SAFE</button>
+      <button id="btnKeysSetDemo" class="btn">Guardar Keys DEMO</button>
+      <button id="btnDBcheck" class="btn">DB CHECK (user_api_keys)</button>
+    </div>
+    <p class="text-xs muted">Los campos se guardan localmente (autosave) mientras escribes. Usa “Guardar Keys DEMO” para persistir en la DB (si el endpoint lo permite).</p>
+  </div>
+
+  <!-- Info respuesta -->
+  <div class="grid md:grid-cols-2 gap-4">
+    <div class="text-sm space-y-1">
+      <div>URL: <span id="url" class="mono text-slate-800"></span></div>
+      <div>Status: <span id="status" class="mono"></span></div>
+      <div>Duración: <span id="dur" class="mono"></span></div>
+      <div>Content-Type: <span id="ctype" class="mono"></span></div>
+      <details class="mt-2"><summary class="cursor-pointer text-slate-700">Headers de respuesta</summary>
+        <pre id="headers" class="bg-slate-900 text-slate-100 p-3 rounded-md text-xs"></pre>
+      </details>
+    </div>
+    <div class="text-sm space-y-1">
+      <div class="font-medium">Headers de la PETICIÓN que envía el tester</div>
+      <pre id="reqHeaders" class="bg-slate-900 text-slate-100 p-3 rounded-md text-xs"></pre>
+    </div>
+  </div>
+
+  <!-- Benchmark Endpoints -->
+  <div class="rounded-lg border p-4 bg-white space-y-3">
+    <div class="font-semibold">Benchmark (latencia promedio)</div>
+    <div class="grid md:grid-cols-4 gap-3 items-end">
+      <div>
+        <label class="block text-sm font-medium text-slate-700">Intentos</label>
+        <input id="benchN" type="number" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" value="3" min="1" max="10" />
+      </div>
+      <div class="md:col-span-3 flex flex-wrap gap-2">
+        <button id="btnBenchTSav" class="btn">TS Alpha Vantage</button>
+        <button id="btnBenchTSti" class="btn">TS Tiingo</button>
+        <button id="btnBenchOPTfh" class="btn">OPTIONS Finnhub</button>
+      </div>
+    </div>
+    <p class="text-xs muted">Usa el símbolo y las claves configuradas. Calcula min/promedio/p95.</p>
+  </div>
+
+  <!-- Salida -->
+  <div>
+    <div class="flex items-center justify-between mb-1">
+      <div class="font-medium">Salida</div>
+      <div class="flex gap-3">
+        <button id="copy" class="text-sm text-indigo-700 hover:underline">copiar</button>
+      </div>
+    </div>
+    <pre id="out" class="bg-slate-900 text-green-400 p-3 rounded-md text-sm"></pre>
+  </div>
+</div>
+
+<script>
+/* ==================== Helpers de token ==================== */
+const S = id => document.getElementById(id);
+const API = '/bolsa/api';
+const urlSpan=S('url'), statusSpan=S('status'), durSpan=S('dur'), ctypeSpan=S('ctype'), headersPre=S('headers'), outPre=S('out'), reqHeadersPre=S('reqHeaders');
+const symIn=S('sym'), provSel=S('prov'), emailIn=S('email'), passIn=S('pass'), tokSpan=S('tok-ok'), tokBadge=S('tok-badge');
+
+function getToken(){
+  const legacy = localStorage.getItem('token');
+  const current = localStorage.getItem('auth_token');
+  if (!current && legacy) {
+    localStorage.setItem('auth_token', legacy);
+    localStorage.removeItem('token');
+    return legacy;
+  }
+  return current || '';
+}
+function setToken(t){
+  if(t) localStorage.setItem('auth_token', t);
+  const tok = getToken();
+  const ok = !!tok;
+  tokSpan.textContent = ok ? 'sí' : 'no';
+  if (ok) {
+    tokBadge.classList.remove('hidden');
+    tokBadge.textContent = 'Authorization: Bearer ' + tok.slice(0,20) + '…';
+  } else {
+    tokBadge.classList.add('hidden');
+    tokBadge.textContent = '';
+  }
+}
+function clearToken(){
+  localStorage.removeItem('auth_token');
+  localStorage.removeItem('token');
+  setToken('');
+}
+setToken(getToken());
+S('clearTok').onclick = () => clearToken();
+
+/* ==================== Llamada genérica ==================== */
+function renderReqHeaders(headersObj) {
+  const lines = [];
+  for (const [k,v] of Object.entries(headersObj||{})) lines.push(`${k}: ${v}`);
+  return lines.join('\n');
+}
+async function call(url,opt={}){
+  urlSpan.textContent=location.origin+url;
+  outPre.textContent='...';
+  statusSpan.textContent=''; ctypeSpan.textContent=''; headersPre.textContent=''; reqHeadersPre.textContent='';
+  const headers = opt.headers ? {...opt.headers} : {};
+  const tok = getToken();
+  if (tok) headers['Authorization'] = 'Bearer '+tok;
+  reqHeadersPre.textContent = renderReqHeaders(headers);
+  const r = await fetch(url, { ...opt, headers, cache:'no-store' });
+  const txt = await r.text();
+  statusSpan.textContent = `${r.status} — ok: ${r.ok}`;
+  const ct = r.headers.get('content-type') || '';
+  ctypeSpan.textContent = ct;
+  headersPre.textContent = Array.from(r.headers.entries()).map(([k,v])=>k+': '+v).join('\n');
+
+  try {
+    const j = JSON.parse(txt);
+    outPre.textContent = JSON.stringify(j, null, 2);
+    return j;
+  } catch {
+    const prefixCodes = Array.from(txt.slice(0,8)).map(ch => ch.charCodeAt(0));
+    outPre.textContent = `⚠️ Respuesta no-JSON (${txt.length} bytes)\ncharCodes[0..7]=${JSON.stringify(prefixCodes)}\n\n` + txt.slice(0,200000);
+    return null;
+  }
+}
+// Patch: override call() to add timing
+// Override call() to add duration and cleaner non-JSON note
+const __orig_call = call;
+call = async function(url,opt={}){
+  urlSpan.textContent=location.origin+url;
+  outPre.textContent='...';
+  statusSpan.textContent=''; durSpan.textContent=''; ctypeSpan.textContent=''; headersPre.textContent=''; reqHeadersPre.textContent='';
+  const headers = opt.headers ? {...opt.headers} : {};
+  const tok = getToken(); if (tok) headers['Authorization'] = 'Bearer '+tok;
+  reqHeadersPre.textContent = renderReqHeaders(headers);
+  const t0 = (performance && performance.now) ? performance.now() : Date.now();
+  const r = await fetch(url, { ...opt, headers, cache:'no-store' });
+  const txt = await r.text();
+  const t1 = (performance && performance.now) ? performance.now() : Date.now();
+  durSpan.textContent = Math.max(0, Math.round(t1 - t0)) + ' ms';
+  statusSpan.textContent = `${r.status} — ok: ${r.ok}`;
+  const ct = r.headers.get('content-type') || '';
+  ctypeSpan.textContent = ct;
+  headersPre.textContent = Array.from(r.headers.entries()).map(([k,v])=>k+': '+v).join('\n');
+  try {
+    const j = JSON.parse(txt);
+    outPre.textContent = JSON.stringify(j, null, 2);
+    return j;
+  } catch {
+    const prefixCodes = Array.from(txt.slice(0,8)).map(ch => ch.charCodeAt(0));
+    outPre.textContent = `Respuesta no-JSON (${txt.length} bytes)\ncharCodes[0..7]=${JSON.stringify(prefixCodes)}\n\n` + txt.slice(0,200000);
+    return null;
+  }
+}
+
+
+/* SAFE primero -> fallback plain */
+async function tryEndpoints({safe,plain,method='GET',headers=null,body=null}) {
+  let j = await call(`${API}/${safe}?debug=1`, { method, headers, body });
+  if (!j) { j = await call(`${API}/${plain}`, { method, headers, body }); }
+  return j;
+}
+
+/* ==================== Botones principales ==================== */
+S('btnHealth').onclick = () => call(`${API}/health.php?debug=1`, { method:'GET' });
+
+S('btnOptions').onclick = () => {
+  const qs = new URLSearchParams({
+    symbol: (symIn.value||'TSLA').toUpperCase(),
+    provider: provSel.value,
+    realtime: 'false',
+    greeks: 'true',
+    debug: '1'
+  });
+  call(`${API}/options_safe.php?`+qs.toString(), { method:'GET' });
+};
+
+S('btnSeries').onclick = () => {
+  const body = {
+    symbol: (symIn.value||'TSLA').toUpperCase(),
+    provider: provSel.value,
+    resolutions: ["60min","15min","5min"],
+    indicators: {
+      "60min": { rsi14:true, sma20:true, ema20:true },
+      "15min": { rsi14:true, sma20:true, ema20:true },
+      "5min":  { rsi14:true }
+    }
+  };
+  call(`${API}/time_series_safe.php?debug=1`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+};
+
+// Diagnóstico rápido: claves, capacidades y build del server
+async function __fetchJSON(url, opt={}){
+  const headers = opt.headers ? {...opt.headers} : {};
+  const tok = getToken(); if (tok) headers['Authorization'] = 'Bearer '+tok;
+  const r = await fetch(url, { ...opt, headers, cache:'no-store' });
+  const txt = await r.text();
+  try { return JSON.parse(txt); } catch { return { error:'non_json', status:r.status, body: txt.slice(0,200) }; }
+}
+async function runDiag(){
+  const sym = (symIn.value||'TSLA').toUpperCase();
+  const lines = [];
+  lines.push(`Diagnóstico para ${sym}`);
+  const health = await __fetchJSON(`${API}/health.php`);
+  if (health && health.build) {
+    const f = health.build.functions||{};
+    lines.push(`Build => helpers_mtime=${health.build.helpers_mtime} options_mtime=${health.build.options_mtime} timeseries_mtime=${health.build.timeseries_mtime}`);
+    lines.push(`Funcs => app_timezone_for_user=${f.app_timezone_for_user?'sí':'no'} market_hours_nyse=${f.market_hours_nyse?'sí':'no'} tz_default=${health.tz_default||'-'}`);
+  }
+  const keyRes = {};
+  for (const p of ['polygon','finnhub','tiingo','alphavantage']){
+    const j = await __fetchJSON(`${API}/key_test_safe.php?debug=1`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({provider:p}) });
+    keyRes[p] = j?.ok===true;
+  }
+  lines.push(`Claves => polygon:${keyRes.polygon?'OK':'NO'} finnhub:${keyRes.finnhub?'OK':'NO'} tiingo:${keyRes.tiingo?'OK':'NO'} av:${keyRes.alphavantage?'OK':'NO'}`);
+  async function probeOpt(p){
+    const j = await __fetchJSON(`${API}/options_safe.php?symbol=${encodeURIComponent(sym)}&provider=${encodeURIComponent(p)}&realtime=false&greeks=true&debug=1`);
+    if (!j || j.error) return {ok:false, err:j?.error||'err', detail: (j && j.detail) ? j.detail : '' };
+    const arr = Array.isArray(j.chain)? j.chain : [];
+    const strikes = arr.some(c=>c&&c.strike!=null);
+    const prices = arr.some(c=>c&&(c.bid!=null||c.ask!=null||c.last!=null));
+    const greeks = arr.some(c=>c&&(c.iv!=null||c.delta!=null));
+    return {ok:true, n:arr.length, strikes, prices, greeks, note:j.note||''};
+  }
+  const capPoly = await probeOpt('polygon');
+  const capFinn = await probeOpt('finnhub');
+  const fmtCap = (c)=> c.ok? `ok n=${c.n} strikes=${c.strikes?'sí':'no'} prices=${c.prices?'sí':'no'} greeks=${c.greeks?'sí':'no'}${c.note? ' ['+c.note+']':''}` : `fail(${c.err}${c.detail? ': '+c.detail:''})`;
+  lines.push(`Opciones => polygon: ${fmtCap(capPoly)} | finnhub: ${fmtCap(capFinn)}`);
+  async function probeTS(p){
+    const body = { symbol:sym, provider:p, resolutions:["60min"], indicators:{"60min":{rsi14:true}} };
+    const j = await __fetchJSON(`${API}/time_series_safe.php?debug=1`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    const o = j?.seriesByRes?.['60min'] || {};
+    const fb = j?.seriesByRes?.['60min']?.fallback ? ' (fallback daily)' : '';
+    const ok = !!(o.indicators && o.indicators.last && o.indicators.last.price!=null);
+    return { ok, fb };
+  }
+  const tsAV = await probeTS('av');
+  const tsTI = await probeTS('tiingo');
+  lines.push(`Series  => av:${tsAV.ok?'ok':''}${tsAV.fb||''} | tiingo:${tsTI.ok?'ok':''}${tsTI.fb||''}`);
+  outPre.textContent = lines.join('\n');
+}
+S('btnDiag').onclick = () => { runDiag().catch(()=>{}); };
+
+// Diagnóstico rápido: claves y capacidades por proveedor
+async function __fetchJSON(url, opt={}){
+  const headers = opt.headers ? {...opt.headers} : {};
+  const tok = getToken(); if (tok) headers['Authorization'] = 'Bearer '+tok;
+  const r = await fetch(url, { ...opt, headers, cache:'no-store' });
+  const txt = await r.text();
+  try { return JSON.parse(txt); } catch { return { error:'non_json', status:r.status, body: txt.slice(0,200) }; }
+}
+async function runDiag(){
+  const sym = (symIn.value||'TSLA').toUpperCase();
+  const lines = [];
+  lines.push(`Diagnóstico para ${sym}`);
+  const keyRes = {};
+  for (const p of ['polygon','finnhub','tiingo','alphavantage']){
+    const j = await __fetchJSON(`${API}/key_test_safe.php?debug=1`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({provider:p}) });
+    keyRes[p] = j?.ok===true;
+  }
+  lines.push(`Claves => polygon:${keyRes.polygon?'OK':'NO'} finnhub:${keyRes.finnhub?'OK':'NO'} tiingo:${keyRes.tiingo?'OK':'NO'} av:${keyRes.alphavantage?'OK':'NO'}`);
+  async function probeOpt(p){
+    const j = await __fetchJSON(`${API}/options_safe.php?symbol=${encodeURIComponent(sym)}&provider=${encodeURIComponent(p)}&realtime=false&greeks=true&debug=1`);
+    if (!j || j.error) return {ok:false, err:j?.error||'err', detail: (j && j.detail) ? j.detail : '' };
+    const arr = Array.isArray(j.chain)? j.chain : [];
+    const strikes = arr.some(c=>c&&c.strike!=null);
+    const prices = arr.some(c=>c&&(c.bid!=null||c.ask!=null||c.last!=null));
+    const greeks = arr.some(c=>c&&(c.iv!=null||c.delta!=null));
+    return {ok:true, n:arr.length, strikes, prices, greeks, note:j.note||''};
+  }
+  const capPoly = await probeOpt('polygon');
+  const capFinn = await probeOpt('finnhub');
+  const fmtCap = (c)=> c.ok? `ok n=${c.n} strikes=${c.strikes?'sí':'no'} prices=${c.prices?'sí':'no'} greeks=${c.greeks?'sí':'no'}${c.note? ' ['+c.note+']':''}` : `fail(${c.err}${c.detail? ': '+c.detail:''})`;
+  lines.push(`Opciones => polygon: ${fmtCap(capPoly)} | finnhub: ${fmtCap(capFinn)}`);
+  async function probeTS(p){
+    const body = { symbol:sym, provider:p, resolutions:["60min"], indicators:{"60min":{rsi14:true}} };
+    const j = await __fetchJSON(`${API}/time_series_safe.php?debug=1`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    const o = j?.seriesByRes?.['60min'] || {};
+    return { ok: !!(o.series && o.series.length), n:(o.series||[]).length, provider:o.provider||p };
+  }
+  const tsAV = await probeTS('av');
+  const tsTI = await probeTS('tiingo');
+  lines.push(`Series  => av:${tsAV.ok?'ok':''} n=${tsAV.n||0} | tiingo:${tsTI.ok?'ok':''} n=${tsTI.n||0}`);
+  outPre.textContent = lines.join('\n');
+}
+S('btnDiag').onclick = () => { runDiag().catch(()=>{}); };
+
+/* === IA === */
+function testIA(provider, modelHint){
+  const body = {
+    provider, model: modelHint || '',
+    prompt: `Ping ${new Date().toISOString()}`,
+    systemPrompt: 'Responde breve.'
+  };
+  call(`${API}/ai_analyze.php?debug=1`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+}
+S('btnAIauto').onclick   = ()=> testIA('auto','gemini-2.0-flash');
+S('btnAIgem').onclick    = ()=> testIA('gemini','gemini-2.0-flash');
+S('btnAIopenai').onclick = ()=> testIA('openai','gpt-4o-mini');
+S('btnAIxai').onclick    = ()=> testIA('xai','grok-2-mini');
+
+/* ==================== Auth SAFE/PLAIN ==================== */
+S('btnRegisterSafe').onclick = () =>
+  tryEndpoints({
+    safe:  'auth_register_safe.php',
+    plain: 'auth_register.php',
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ email: emailIn.value.trim(), password: passIn.value, name: '' })
+  }).then(j => { if (j && j.token) setToken(j.token); });
+
+S('btnRegister').onclick = () =>
+  call(`${API}/auth_register.php`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ email: emailIn.value.trim(), password: passIn.value, name: '' })
+  }).then(j => { if (j && j.token) setToken(j.token); });
+
+S('btnLoginSafe').onclick = () =>
+  tryEndpoints({
+    safe:  'auth_login_safe.php',
+    plain: 'auth_login.php',
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ email: emailIn.value.trim(), password: passIn.value })
+  }).then(j => { if (j && j.token) setToken(j.token); });
+
+S('btnLogin').onclick = () =>
+  call(`${API}/auth_login.php`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ email: emailIn.value.trim(), password: passIn.value })
+  }).then(j => { if (j && j.token) setToken(j.token); });
+
+S('btnMeSafe').onclick = () =>
+  tryEndpoints({ safe:'auth_me_safe.php', plain:'auth_me.php', method:'GET' });
+
+S('btnMe').onclick = () =>
+  call(`${API}/auth_me.php`, { method:'GET' });
+
+/* ==================== Settings SAFE/PLAIN ==================== */
+S('btnGetSetSafe').onclick = () =>
+  tryEndpoints({ safe:'settings_get_safe.php', plain:'settings_get.php', method:'GET' });
+
+S('btnGetSet').onclick = () =>
+  call(`${API}/settings_get.php`, { method:'GET' });
+
+S('btnSaveSetSafe').onclick = () => {
+  const payload = {
+    series_provider: 'auto',
+    options_provider: 'auto',
+    resolutions_json: ['daily','60min','15min'],
+    indicators_json: {
+      daily:  { rsi14:true, sma20:true, ema20:true, ema40:true, ema100:true, ema200:true },
+      '60min':{ rsi14:true, sma20:true, ema20:true },
+      '15min':{ rsi14:true, sma20:true, ema20:true }
+    },
+    ai_provider: 'gemini',
+    ai_model: 'gemini-2.0-flash'
+  };
+  tryEndpoints({
+    safe:'settings_set_safe.php', plain:'settings_set.php',
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  });
+};
+
+/* ==================== Benchmark helpers ==================== */
+async function benchFetch(url, opt={}){
+  const headers = opt.headers ? {...opt.headers} : {};
+  const tok = getToken(); if (tok) headers['Authorization'] = 'Bearer '+tok;
+  const t0 = (performance && performance.now) ? performance.now() : Date.now();
+  const r = await fetch(url, { ...opt, headers, cache:'no-store' });
+  const txt = await r.text();
+  const t1 = (performance && performance.now) ? performance.now() : Date.now();
+  let ok = r.ok; try { JSON.parse(txt); } catch { ok = false; }
+  return { ms: Math.max(0, Math.round(t1 - t0)), ok, status: r.status };
+}
+function stats(arr){
+  const xs = arr.slice().sort((a,b)=>a-b);
+  const n = xs.length; const sum = xs.reduce((a,b)=>a+b,0);
+  const p95 = xs[Math.min(n-1, Math.floor(n*0.95))];
+  return { n, min: xs[0], avg: Math.round(sum/n), p95, max: xs[n-1] };
+}
+async function runBenchTS(provider){
+  const N = Math.min(10, Math.max(1, parseInt(S('benchN').value||'3',10)));
+  const body = {
+    symbol: (symIn.value||'TSLA').toUpperCase(),
+    provider,
+    resolutions: ["60min"],
+    indicators: { "60min": { rsi14:true, sma20:true } }
+  };
+  const url = `${API}/time_series_safe.php?debug=1`;
+  const ms=[]; let oks=0;
+  for (let i=0;i<N;i++){
+    const r = await benchFetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    ms.push(r.ms); if (r.ok) oks++;
+  }
+  const st = stats(ms);
+  outPre.textContent = `Benchmark TS (${provider}) N=${N} OK=${oks}/${N}\nmin=${st.min} ms  avg=${st.avg} ms  p95=${st.p95} ms  max=${st.max} ms\n`;
+}
+async function runBenchOPT(){
+  const N = Math.min(10, Math.max(1, parseInt(S('benchN').value||'3',10)));
+  const qs = new URLSearchParams({ symbol:(symIn.value||'TSLA').toUpperCase(), provider:'finnhub', realtime:'false', greeks:'true', debug:'1' });
+  const url = `${API}/options_safe.php?`+qs.toString();
+  const ms=[]; let oks=0;
+  for (let i=0;i<N;i++){
+    const r = await benchFetch(url, { method:'GET' });
+    ms.push(r.ms); if (r.ok) oks++;
+  }
+  const st = stats(ms);
+  outPre.textContent = `Benchmark OPTIONS (finnhub) N=${N} OK=${oks}/${N}\nmin=${st.min} ms  avg=${st.avg} ms  p95=${st.p95} ms  max=${st.max} ms\n`;
+}
+S('btnBenchTSav').onclick = ()=> runBenchTS('av');
+S('btnBenchTSti').onclick = ()=> runBenchTS('tiingo');
+S('btnBenchOPTfh').onclick = ()=> runBenchOPT();
+
+S('btnSaveSet').onclick = () => {
+  const payload = {
+    series_provider: 'auto',
+    options_provider: 'auto',
+    resolutions_json: ['daily','60min','15min'],
+    indicators_json: {
+      daily:  { rsi14:true, sma20:true, ema20:true, ema40:true, ema100:true, ema200:true },
+      '60min':{ rsi14:true, sma20:true, ema20:true },
+      '15min':{ rsi14:true, sma20:true, ema20:true }
+    },
+    ai_provider: 'gemini',
+    ai_model: 'gemini-2.0-flash'
+  };
+  call(`${API}/settings_set.php`, {
+    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)
+  });
+};
+
+/* ==================== Preferencias (config-like) ==================== */
+S('btnPrefsSaveSafe').onclick = () => {
+  const mapSeries = (v)=>{ if (v==='av') return 'alphavantage'; if (v==='local') return 'auto'; return v; };
+  const payload = {
+    series_provider: mapSeries(S('t-series-provider').value),
+    options_provider: S('t-opt-provider').value,
+    options_expiry_rule: S('t-opt-exp-rule').value,
+    options_strike_count: parseInt(S('t-opt-strikes').value||'20',10),
+    atm_price_source: S('t-opt-atm').value,
+    tz_offset: S('t-tz-offset').value.trim(),
+    net: {
+      polygon: { timeout_ms: parseInt(S('t-to-polygon').value||'8000',10), retries: 2 },
+      finnhub: { timeout_ms: parseInt(S('t-to-finnhub').value||'8000',10), retries: 2 },
+      tiingo:  { timeout_ms: parseInt(S('t-to-tiingo').value||'8000',10),  retries: 2 },
+    }
+  };
+  tryEndpoints({
+    safe:'settings_set_safe.php', plain:'settings_set.php',
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  });
+};
+
+S('btnPrefsGetSafe').onclick = () =>
+  tryEndpoints({ safe:'settings_get_safe.php', plain:'settings_get.php', method:'GET' });
+
+/* ==================== Claves (autosave + GET/SET) ==================== */
+const KEY_FIELDS = ['openai','gemini','xai','tiingo','alphavantage','finnhub'];
+const keyInputs = Object.fromEntries(KEY_FIELDS.map(k => [k, S('k-'+k)]));
+
+function keyLocalName(k){ return 'tester.k.'+k; }
+function restoreLocalKeys(){
+  KEY_FIELDS.forEach(k => {
+    const v = localStorage.getItem(keyLocalName(k)) || '';
+    keyInputs[k].value = v;
+  });
+}
+function wireAutosaveKeys(){
+  KEY_FIELDS.forEach(k => {
+    keyInputs[k].addEventListener('input', () => {
+      localStorage.setItem(keyLocalName(k), keyInputs[k].value);
+    });
+  });
+}
+restoreLocalKeys();
+wireAutosaveKeys();
+
+S('btnKeysGet').onclick = async () => {
+  // muestra lo que hay (has:true/false) y NO sobreescribe tus inputs locales
+  await call(`${API}/user_keys_get_safe.php?debug=1`, { method:'GET' });
+};
+
+S('btnKeysSetDemo').onclick = async () => {
+  // sólo envía las que tengan valor escrito (para no borrar en el server sin querer)
+  const payload = { keys: {} };
+  for (const k of KEY_FIELDS) {
+    const v = (keyInputs[k].value || '').trim();
+    if (v) payload.keys[k] = v;
+  }
+  await call(`${API}/user_keys_set_safe.php?debug=1`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  });
+};
+
+S('btnDBcheck').onclick = () => {
+  call(`${API}/db_check.php?table=user_api_keys&debug=1`, { method:'GET' });
+};
+
+/* copy salida */
+S('copy').onclick = async () => { try { await navigator.clipboard.writeText(outPre.textContent); } catch {} };
+
+// Modo Oscuro - Funcionalidad
+const themeToggle = document.getElementById('theme-toggle');
+let isDarkMode = localStorage.getItem('darkMode') === 'true';
+
+// Aplicar modo oscuro al cargar
+if (isDarkMode) {
+  document.body.classList.add('dark-mode');
+  updateThemeButton();
+}
+
+// Toggle del modo oscuro
+themeToggle.addEventListener('click', () => {
+  isDarkMode = !isDarkMode;
+  document.body.classList.toggle('dark-mode', isDarkMode);
+  localStorage.setItem('darkMode', isDarkMode);
+  updateThemeButton();
+});
+
+// Feedback button
+document.getElementById('btn-feedback')?.addEventListener('click', () => {
+  window.location.href = '/bolsa/feedback.html';
+});
+
+function updateThemeButton() {
+  if (isDarkMode) {
+    themeToggle.textContent = '☀️ Modo Claro';
+  } else {
+    themeToggle.textContent = '🌙 Modo Oscuro';
+  }
+}
+</script>
+</body>
+</html>
+
+

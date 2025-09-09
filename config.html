@@ -1,0 +1,742 @@
+﻿<!DOCTYPE html>
+<html lang="es-US">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Configuración - Claves y Preferencias</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/bolsa/static/auth.js"></script>
+  <script src="/bolsa/static/js/header.js"></script>
+  <script src="/bolsa/static/js/hero.js"></script>
+  <script src="/bolsa/static/js/feedback.js"></script>
+  <link rel="stylesheet" href="/bolsa/static/css/styles.css">
+  <style>
+    :root { --ring:#4338ca; --ok:#059669; --bad:#dc2626; --muted:#6b7280; }
+    body { background:#f8fafc; }
+    .card { background:#fff; border:1px solid #e5e7eb; border-radius:16px; box-shadow:0 1px 2px rgba(0,0,0,.04); }
+    .card h2 { font-weight:700; color:#111827 }
+    .label { font-size:.825rem; color:#374151; }
+    .input { width:100%; border:1px solid #d1d5db; border-radius:10px; padding:.6rem .75rem; }
+    .input:focus { outline:none; border-color:var(--ring); box-shadow:0 0 0 3px rgba(67,56,202,.15); }
+    .btn { border:1px solid #e5e7eb; padding:.55rem .8rem; border-radius:10px; background:#fff; }
+    .btn:hover { background:#f9fafb }
+    .btn.p { background:#111827; color:#fff; border-color:#111827 }
+    .btn.g { background:#10b981; color:#fff; border-color:#10b981 }
+    .btn.r { background:#ef4444; color:#fff; border-color:#ef4444 }
+    .kstatus { font-size:.8rem; }
+    .muted { color:var(--muted); }
+    .ok { color:var(--ok) }
+    .bad { color:var(--bad) }
+    .chip { font-size:.72rem; background:#f3f4f6; border:1px solid #e5e7eb; padding:.15rem .45rem; border-radius:999px; }
+    .footer { display:flex; gap:.5rem; align-items:center; justify-content:flex-end }
+    .spacer { flex:1 }
+    
+    /* Modo Oscuro */
+    .dark-mode body { background:#111827; }
+    .dark-mode .card { background:#374151; border-color:#4b5563; }
+    .dark-mode .card h2 { color:#f9fafb; }
+    .dark-mode .label { color:#d1d5db; }
+    .dark-mode .input { background:#4b5563; border-color:#6b7280; color:#f9fafb; }
+    .dark-mode .input:focus { border-color:#818cf8; box-shadow:0 0 0 3px rgba(129,140,248,.15); }
+    .dark-mode .btn { background:#4b5563; border-color:#6b7280; color:#f9fafb; }
+    .dark-mode .btn:hover { background:#6b7280; }
+    .dark-mode .btn.p { background:#111827; color:#fff; border-color:#111827 }
+    .dark-mode .btn.g { background:#10b981; color:#fff; border-color:#10b981 }
+    .dark-mode .btn.r { background:#ef4444; color:#fff; border-color:#ef4444 }
+    .dark-mode .chip { background:#4b5563; border-color:#6b7280; color:#f9fafb; }
+  </style>
+</head>
+<body>
+  <div id="app-header"></div>
+  <div id="app-hero" data-icon="🔧" data-title="Configuración" data-subtitle="Gestiona tus claves y preferencias de la app."></div>
+  <script>try{ Auth.requireAuth(); }catch(e){ }</script>
+  <div class="max-w-5xl mx-auto p-6 space-y-8">
+
+    <!-- CLAVES -->
+    <section class="card p-6 space-y-5">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl">Claves de proveedores</h2>
+        <div class="text-sm text-gray-500">Token: <span id="tok-ok" class="font-semibold">no</span></div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-5">
+        <!-- Alpha Vantage -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between">
+            <label class="label">Alpha Vantage API Key</label>
+            <span id="st-alphavantage" class="kstatus muted">sin clave</span>
+          </div>
+          <div class="flex gap-2">
+            <input id="in-alphavantage" type="password" class="input" placeholder="AV..."/>
+            <button class="btn" data-test="alphavantage" title="Prueba la clave; vacío usa la guardada">Probar</button>
+            <button class="btn r" data-del="alphavantage" title="Borra la clave guardada">Borrar</button>
+          </div>
+        </div>
+
+        <!-- Tiingo -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between">
+            <label class="label">Tiingo API Key</label>
+            <span id="st-tiingo" class="kstatus muted">sin clave</span>
+          </div>
+          <div class="flex gap-2">
+            <input id="in-tiingo" type="password" class="input" placeholder="tiingo_..."/>
+            <button class="btn" data-test="tiingo" title="Prueba la clave; vacío usa la guardada">Probar</button>
+            <button class="btn r" data-del="tiingo" title="Borra la clave guardada">Borrar</button>
+          </div>
+        </div>
+
+        <!-- Finnhub -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between">
+            <label class="label">Finnhub API Key</label>
+            <span id="st-finnhub" class="kstatus muted">sin clave</span>
+          </div>
+          <div class="flex gap-2">
+            <input id="in-finnhub" type="password" class="input" placeholder="c0xxx..."/>
+            <button class="btn" data-test="finnhub" title="Prueba la clave; vacío usa la guardada">Probar</button>
+            <button class="btn r" data-del="finnhub" title="Borra la clave guardada">Borrar</button>
+          </div>
+        </div>
+
+        <!-- Polygon -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between">
+            <label class="label">Polygon API Key</label>
+            <span id="st-polygon" class="kstatus muted">sin clave</span>
+          </div>
+          <div class="flex gap-2">
+            <input id="in-polygon" type="password" class="input" placeholder="PK..."/>
+            <button class="btn" data-test="polygon" title="Prueba la clave; vacío usa la guardada">Probar</button>
+            <button class="btn r" data-del="polygon" title="Borra la clave guardada">Borrar</button>
+          </div>
+        </div>
+
+        <!-- Gemini -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between">
+            <label class="label">Gemini API Key</label>
+            <span id="st-gemini" class="kstatus muted">sin clave</span>
+          </div>
+          <div class="flex gap-2">
+            <input id="in-gemini" type="password" class="input" placeholder="AIza..."/>
+            <button class="btn" data-test="gemini" title="Prueba la clave; vacío usa la guardada">Probar</button>
+            <button class="btn r" data-del="gemini" title="Borra la clave guardada">Borrar</button>
+          </div>
+        </div>
+
+        <!-- Claude -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between">
+            <label class="label">Claude (Anthropic) API Key</label>
+            <span id="st-claude" class="kstatus muted">sin clave</span>
+          </div>
+          <div class="flex gap-2">
+            <input id="in-claude" type="password" class="input" placeholder="sk-ant-..."/>
+            <button class="btn" data-test="claude" title="Prueba la clave; vacío usa la guardada">Probar</button>
+            <button class="btn r" data-del="claude" title="Borra la clave guardada">Borrar</button>
+          </div>
+        </div>
+
+        <!-- OpenAI -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between">
+            <label class="label">OpenAI API Key</label>
+            <span id="st-openai" class="kstatus muted">sin clave</span>
+          </div>
+          <div class="flex gap-2">
+            <input id="in-openai" type="password" class="input" placeholder="sk-..."/>
+            <button class="btn" data-test="openai" title="Prueba la clave; vacío usa la guardada">Probar</button>
+            <button class="btn r" data-del="openai" title="Borra la clave guardada">Borrar</button>
+          </div>
+        </div>
+
+        <!-- xAI (Grok) -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between">
+            <label class="label">xAI (Grok) API Key</label>
+            <span id="st-xai" class="kstatus muted">sin clave</span>
+          </div>
+          <div class="flex gap-2">
+            <input id="in-xai" type="password" class="input" placeholder="xai-..."/>
+            <button class="btn" data-test="xai" title="Prueba la clave; vacío usa la guardada">Probar</button>
+            <button class="btn r" data-del="xai" title="Borra la clave guardada">Borrar</button>
+          </div>
+        </div>
+
+        <!-- DeepSeek -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between">
+            <label class="label">DeepSeek API Key</label>
+            <span id="st-deepseek" class="kstatus muted">sin clave</span>
+          </div>
+          <div class="flex gap-2">
+            <input id="in-deepseek" type="password" class="input" placeholder="ds-..."/>
+            <button class="btn" data-test="deepseek" title="Prueba la clave; vacío usa la guardada">Probar</button>
+            <button class="btn r" data-del="deepseek" title="Borra la clave guardada">Borrar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <button id="btn-save-keys" class="btn p">Guardar claves</button>
+        <span id="save-msg" class="text-sm muted"></span>
+      </div>
+    </section>
+
+    <!-- PREFERENCIAS -->
+    <section class="card p-6 space-y-5">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl">Preferencias (opciones)</h2>
+        <span class="chip">opcional</span>
+      </div>
+      <div class="grid md:grid-cols-3 gap-4">
+        <div>
+          <label class="label">Proveedor de series</label>
+          <select id="series-provider" class="input" title="Proveedor por defecto para series">
+            <option value="auto">Auto</option>
+            <option value="tiingo">Tiingo</option>
+            <option value="av">Alpha Vantage</option>
+            <option value="local">Solo lista local</option>
+          </select>
+        </div>
+        <div>
+          <label class="label">Proveedor de opciones</label>
+          <select id="opt-provider" class="input" title="Proveedor por defecto para opciones">
+            <option value="auto">Auto</option>
+            <option value="polygon">Polygon</option>
+            <option value="finnhub">Finnhub</option>
+          </select>
+        </div>
+        <div>
+          <label class="label">Strikes por lado</label>
+          <input id="opt-strikes" type="number" class="input" value="20" min="0" max="100" title="0 a 100"/>
+        </div>
+        <div>
+          <label class="label">Regla de expiración</label>
+          <select id="opt-exp-rule" class="input" title="Cómo elegir el vencimiento por defecto">
+            <option value="nearest_friday">Próximo viernes</option>
+            <option value="next_monthly">Próxima mensual</option>
+          </select>
+        </div>
+        <div>
+          <label class="label">ATM: fuente de precio</label>
+          <select id="opt-atm" class="input" title="Fuente para calcular el ATM">
+            <option value="series_last">Series (último)</option>
+            <option value="provider">Proveedor</option>
+            <option value="mid">Mid (bid/ask)</option>
+          </select>
+        </div>
+        <div>
+          <label class="label">Zona horaria (offset)</label>
+          <input id="tz-offset" class="input" placeholder="+00:00 (ej. -03:00)" title="Formato ±HH:MM, opcional"/>
+        </div>
+        <div>
+          <label class="label">Zona horaria</label>
+          <select id="time-zone" class="input" title="Selecciona tu zona horaria (IANA)"></select>
+          <div id="tz-offset-view" class="text-xs text-gray-600 mt-1"></div>
+        </div>
+        <div>
+          <label class="label">Timeout Polygon (ms)</label>
+          <input id="to-polygon" type="number" class="input" value="8000" min="500" max="60000" title="500â€“60000"/>
+        </div>
+        <div>
+          <label class="label">Reintentos Polygon (0-5)</label>
+          <input id="rt-polygon" type="number" class="input" value="2" min="0" max="5" title="Número de reintentos (0-5)"/>
+        </div>
+        <div>
+          <label class="label">Timeout Finnhub (ms)</label>
+          <input id="to-finnhub" type="number" class="input" value="8000" min="500" max="60000" title="500â€“60000"/>
+        </div>
+        <div>
+          <label class="label">Reintentos Finnhub (0-5)</label>
+          <input id="rt-finnhub" type="number" class="input" value="2" min="0" max="5" title="Número de reintentos (0-5)"/>
+        </div>
+        <div>
+          <label class="label">Timeout Tiingo (ms)</label>
+          <input id="to-tiingo" type="number" class="input" value="8000" min="500" max="60000" title="500â€“60000"/>
+        </div>
+        <div>
+          <label class="label">Reintentos Tiingo (0-5)</label>
+          <input id="rt-tiingo" type="number" class="input" value="2" min="0" max="5" title="Número de reintentos (0-5)"/>
+        </div>
+        <div>
+          <label class="label">Timeout Alpha Vantage (ms)</label>
+          <input id="to-av" type="number" class="input" value="8000" min="500" max="60000" title="500â€“60000"/>
+        </div>
+        <div>
+          <label class="label">Reintentos Alpha Vantage (0-5)</label>
+          <input id="rt-av" type="number" class="input" value="2" min="0" max="5" title="Número de reintentos (0-5)"/>
+        </div>
+      </div>
+      <div class="footer">
+        <button id="btn-reset-prefs" class="btn r" title="Restablecer valores por defecto (no guarda)">Reset</button>
+        <div class="spacer"></div>
+        <button id="btn-export-prefs" class="btn" title="Exportar preferencias como JSON">Exportar</button>
+        <button id="btn-import-prefs" class="btn" title="Importar JSON de preferencias">Importar</button>
+        <button id="btn-save-prefs" class="btn p">Guardar preferencias</button>
+        <span id="prefs-msg" class="text-sm muted"></span>
+      </div>
+</section>
+  </div>
+
+<script>
+// =================== Config base ===================
+const API_ABS = (new URL('/bolsa/api/', window.location.origin)).href.replace(/\/$/, '');
+const $ = id => document.getElementById(id);
+function getToken(){
+  const legacy = localStorage.getItem('token');
+  const current = localStorage.getItem('auth_token');
+  if (!current && legacy) { localStorage.setItem('auth_token', legacy); localStorage.removeItem('token'); return legacy; }
+  return current || '';
+}
+(function(){ $('tok-ok').textContent = getToken() ? 'sí' : 'no'; })();
+
+async function api(path, opts={}){
+  const headers = opts.headers ? {...opts.headers} : {};
+  const t = getToken(); if (t) headers['Authorization'] = 'Bearer '+t;
+  const r = await fetch(`${API_ABS}/${path}`, { ...opts, headers, cache:'no-store' });
+  const txt = await r.text();
+  try { return JSON.parse(txt); } catch { throw new Error('Respuesta no JSON'); }
+}
+
+// =================== Cargar claves ===================
+async function loadKeys(){
+  const j = await api('user_keys_get_safe.php');
+  const has = (prov)=> j?.keys?.[prov]?.has === true;
+  const map = ['alphavantage','tiingo','finnhub','polygon','gemini','openai','xai','claude','deepseek'];
+  for (const p of map){
+    const last4 = j?.keys?.[p]?.last4 || '';
+    const msg = has(p) ? `guardada (${last4? '****'+last4 : '********'})` : 'sin clave';
+    const el = $('st-'+p); if (el){ el.classList.remove('muted','ok','bad'); el.classList.add(has(p)?'ok':'muted'); el.textContent = msg; }
+    const inp = $('in-'+p); if (inp) inp.value = '';
+  }
+}
+
+// Guardar claves ingresadas (no borra si el campo está vacío)
+$('btn-save-keys').addEventListener('click', async ()=>{
+  const saveMsg = $('save-msg');
+  saveMsg.textContent = 'Guardando...'; saveMsg.style.color = '#6b7280';
+  const entries = [
+    ['alphavantage', $('in-alphavantage').value.trim()],
+    ['tiingo', $('in-tiingo').value.trim()],
+    ['finnhub', $('in-finnhub').value.trim()],
+    ['polygon', $('in-polygon').value.trim()],
+    ['gemini', $('in-gemini').value.trim()],
+    ['openai', $('in-openai').value.trim()],
+    ['xai', $('in-xai').value.trim()],
+    ['claude', $('in-claude').value.trim()],
+    ['deepseek', $('in-deepseek').value.trim()],
+  ].filter(([k,v]) => v !== '');
+  const body = Object.fromEntries(entries);
+  try {
+    const res = await api('user_keys_set_safe.php', {
+      method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(body)
+    });
+    if (!res || res.ok !== true) throw new Error('falló guardado');
+    saveMsg.textContent = 'Claves guardadas.'; saveMsg.style.color = '#059669';
+    await loadKeys();
+  } catch (e) {
+    saveMsg.textContent = 'Error al guardar claves.'; saveMsg.style.color = '#dc2626';
+  }
+});
+
+document.querySelectorAll('[data-del]').forEach(btn=>{
+  btn.addEventListener('click', async ()=>{
+    const prov = btn.getAttribute('data-del');
+    try{
+      const res = await api('user_keys_set_safe.php', {
+        method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ delete:[prov] })
+      });
+      if (!res || res.ok !== true) throw new Error();
+      const st = $('st-'+prov); if (st){ st.classList.remove('ok'); st.classList.add('muted'); st.textContent='sin clave'; }
+      const inp = $('in-'+prov); if (inp) inp.value='';
+    }catch{
+      alert('No se pudo borrar la clave de '+prov);
+    }
+  });
+});
+
+document.querySelectorAll('[data-test]').forEach(btn=>{
+  btn.title = 'Prueba la clave; si el campo está vacío usa la guardada';
+  btn.addEventListener('click', async ()=>{
+    const prov = btn.getAttribute('data-test');
+    const inp = $('in-'+prov);
+    const val = (inp?.value || '').trim();
+    btn.disabled = true; const old = btn.textContent; btn.textContent='Probando...';
+    try {
+      const payload = { provider: prov };
+      if (val) payload.api_key = val;
+      const res = await api('key_test_safe.php', {
+        method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)
+      });
+      const st = $('st-'+prov);
+      if (res && res.ok === true) { st?.classList.remove('muted','bad'); st?.classList.add('ok'); st.textContent = 'ok'; }
+      else { st?.classList.remove('muted','ok'); st?.classList.add('bad'); st.textContent = 'falló'; }
+    } catch {
+      const st = $('st-'+prov); st?.classList.remove('muted','ok'); st?.classList.add('bad'); st.textContent='falló';
+    } finally {
+      btn.disabled = false; btn.textContent = old;
+    }
+  });
+});
+
+// =================== Preferencias ===================
+// Timezone helpers
+function computeTzOffset(tz, date = new Date()){
+  try{
+    const dtf = new Intl.DateTimeFormat('en-US', {
+      timeZone: tz,
+      hour12: false,
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit'
+    });
+    const parts = Object.fromEntries(dtf.formatToParts(date).filter(p=>p.type!=='literal').map(p=>[p.type,p.value]));
+    const asUTC = Date.UTC(parts.year, Number(parts.month)-1, parts.day, parts.hour, parts.minute, parts.second);
+    const offsetMin = Math.round((asUTC - date.getTime())/60000);
+    const sign = offsetMin>=0 ? '+' : '-';
+    const abs = Math.abs(offsetMin);
+    const hh = String(Math.floor(abs/60)).padStart(2,'0');
+    const mm = String(abs%60).padStart(2,'0');
+    return `${sign}${hh}:${mm}`;
+  }catch{ return ''; }
+}
+
+function getAllTimeZones(){
+  if (Intl.supportedValuesOf) {
+    try { return Intl.supportedValuesOf('timeZone') || ['UTC']; } catch {}
+  }
+  return [
+    'UTC','Etc/UTC','Europe/Madrid','Europe/London','Europe/Paris','Europe/Berlin','Europe/Rome',
+    'America/New_York','America/Chicago','America/Denver','America/Los_Angeles','America/Bogota','America/Lima','America/Mexico_City','America/Argentina/Buenos_Aires','America/Santiago','America/Sao_Paulo',
+    'Africa/Johannesburg','Asia/Tokyo','Asia/Shanghai','Asia/Singapore','Asia/Dubai','Australia/Sydney','Pacific/Auckland'
+  ];
+}
+
+function formatZoneLabel(tz){
+  const off = computeTzOffset(tz);
+  const pretty = tz.replace(/_/g,' ');
+  return `(GMT${off||'+00:00'}) ${pretty}`;
+}
+
+function populateTimeZones(){
+  const sel = document.getElementById('time-zone'); if (!sel) return;
+  const zones = getAllTimeZones().slice();
+  zones.sort((a,b)=>{
+    const oa = computeTzOffset(a); const ob = computeTzOffset(b);
+    if (oa!==ob) return oa.localeCompare(ob);
+    return a.localeCompare(b);
+  });
+  sel.innerHTML = '';
+  const browserTz = (Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC');
+  const opt0 = document.createElement('option');
+  opt0.value = browserTz; opt0.textContent = `Usar zona del navegador: ${formatZoneLabel(browserTz)}`;
+  sel.appendChild(opt0);
+  const optSep = document.createElement('option'); optSep.disabled = true; optSep.textContent = '──────────'; sel.appendChild(optSep);
+  for (const tz of zones){
+    const opt = document.createElement('option'); opt.value = tz; opt.textContent = formatZoneLabel(tz);
+    sel.appendChild(opt);
+  }
+  sel.value = browserTz;
+}
+
+function updateTzOffsetView(){
+  const tz = document.getElementById('time-zone')?.value || '';
+  const off = tz ? computeTzOffset(tz) : '';
+  const v = document.getElementById('tz-offset-view');
+  if (v){ v.textContent = tz ? `Offset actual: GMT${off}` : ''; }
+}
+
+function initTimeZoneUI(){
+  populateTimeZones();
+  updateTzOffsetView();
+  const sel = document.getElementById('time-zone');
+  if (sel){ sel.addEventListener('change', updateTzOffsetView); }
+  const old = document.getElementById('tz-offset');
+  try { old?.closest('div')?.setAttribute('style','display:none'); } catch {}
+}
+
+function validatePrefsInputs(){
+  const strikes = parseInt(($('opt-strikes').value||'').trim()||'0',10);
+  const toPoly = parseInt(($('to-polygon').value||'').trim()||'8000',10);
+  const toFinn = parseInt(($('to-finnhub').value||'').trim()||'8000',10);
+  const toTi   = parseInt(($('to-tiingo').value||'').trim()||'8000',10);
+  const toAv   = parseInt(($('to-av').value||'').trim()||'8000',10);
+  const rPoly  = parseInt(($('rt-polygon').value||'').trim()||'2',10);
+  const rFinn  = parseInt(($('rt-finnhub').value||'').trim()||'2',10);
+  const rTi    = parseInt(($('rt-tiingo').value||'').trim()||'2',10);
+  const rAv    = parseInt(($('rt-av').value||'').trim()||'2',10);
+  const tz = '';
+  const msg = $('prefs-msg');
+  const inRange = (v)=> Number.isFinite(v) && v>=500 && v<=60000;
+  const inRetries = (v)=> Number.isFinite(v) && v>=0 && v<=5;
+  const tzOk = tz==='' || /^[+-]\d{2}:\d{2}$/.test(tz);
+  if (!Number.isFinite(strikes) || strikes<0 || strikes>100){ msg.textContent='Strikes debe estar entre 0 y 100.'; msg.style.color='#dc2626'; return false; }
+  if (!inRange(toPoly) || !inRange(toFinn) || !inRange(toTi) || !inRange(toAv)){ msg.textContent='Timeouts deben estar entre 500 y 60000 ms.'; msg.style.color='#dc2626'; return false; }
+  if (!inRetries(rPoly) || !inRetries(rFinn) || !inRetries(rTi) || !inRetries(rAv)){ msg.textContent='Reintentos deben estar entre 0 y 5.'; msg.style.color='#dc2626'; return false; }
+  if (!tzOk){ msg.textContent='Offset horario inválido. Use ±HH:MM (ej. -03:00).'; msg.style.color='#dc2626'; return false; }
+  return true;
+}
+
+$('btn-save-prefs').addEventListener('click', async ()=>{
+  const msg = $('prefs-msg');
+  msg.textContent = 'Guardando...'; msg.style.color = '#6b7280';
+  if (!validatePrefsInputs()) return;
+  const mapSeries = (v)=>{ if (v==='av') return 'alphavantage'; if (v==='local') return 'auto'; return v; };
+  const payload = {
+    series_provider: mapSeries($('series-provider').value),
+    options_provider: $('opt-provider').value,
+    options_expiry_rule: $('opt-exp-rule').value,
+    options_strike_count: parseInt($('opt-strikes').value || '20', 10),
+    atm_price_source: $('opt-atm').value,
+    time_zone: (function(){ const el=$('time-zone'); return el? el.value : ''; })(),
+    tz_offset: (function(){ const tz=$('time-zone')?.value||''; return tz? computeTzOffset(tz):''; })(),
+    net: {
+      polygon: { timeout_ms: parseInt($('to-polygon').value||'8000',10), retries: parseInt($('rt-polygon').value||'2',10) },
+      finnhub: { timeout_ms: parseInt($('to-finnhub').value||'8000',10), retries: parseInt($('rt-finnhub').value||'2',10) },
+      tiingo:  { timeout_ms: parseInt($('to-tiingo').value||'8000',10),  retries: parseInt($('rt-tiingo').value||'2',10) },
+      alphavantage: { timeout_ms: parseInt($('to-av').value||'8000',10), retries: parseInt($('rt-av').value||'2',10) },
+    }
+  };
+  try{
+    const r = await api('settings_set_safe.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    if (r && (r.ok === true || r.saved === true || r.prefs_saved === true)) {
+      msg.textContent = 'Preferencias guardadas.'; msg.style.color = '#059669';
+      await loadPrefs();
+    } else {
+      msg.textContent = 'Guardado parcial (endpoint puede ignorar campos).'; msg.style.color = '#f59e0b';
+    }
+  }catch{
+    msg.textContent = 'No se pudieron guardar (endpoint no compatible).'; msg.style.color = '#dc2626';
+  }
+});
+
+// Reset a defaults (no guarda automáticamente)
+$('btn-reset-prefs').addEventListener('click', ()=>{
+  $('series-provider').value = 'auto';
+  $('opt-provider').value = 'auto';
+  $('opt-exp-rule').value = 'nearest_friday';
+  $('opt-strikes').value = '20';
+  $('opt-atm').value = 'series_last';
+  const tzNow = (Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC');
+  const tzSel = $('time-zone'); if (tzSel){ tzSel.value = tzNow; }
+  updateTzOffsetView();
+  $('to-polygon').value = '8000';
+  $('to-finnhub').value = '8000';
+  $('to-tiingo').value = '8000';
+  $('rt-polygon').value = '2';
+  $('rt-finnhub').value = '2';
+  $('rt-tiingo').value = '2';
+  $('to-av').value = '8000';
+  $('rt-av').value = '2';
+  const msg = $('prefs-msg'); msg.textContent = 'Valores por defecto restablecidos (recuerda Guardar).'; msg.style.color = '#6b7280';
+});
+
+// Exportar preferencias visibles como JSON
+$('btn-export-prefs').addEventListener('click', ()=>{
+  const mapSeries = (v)=>{ if (v==='av') return 'alphavantage'; if (v==='local') return 'auto'; return v; };
+  const obj = {
+    series_provider: mapSeries($('series-provider').value),
+    options_provider: $('opt-provider').value,
+    options_expiry_rule: $('opt-exp-rule').value,
+    options_strike_count: parseInt($('opt-strikes').value||'20',10),
+    atm_price_source: $('opt-atm').value,
+    time_zone: (function(){ const el=$('time-zone'); return el? el.value : ''; })(),
+    tz_offset: (function(){ const tz=$('time-zone')?.value||''; return tz? computeTzOffset(tz):''; })(),
+    net: {
+      polygon: { timeout_ms: parseInt($('to-polygon').value||'8000',10), retries: parseInt($('rt-polygon').value||'2',10) },
+      finnhub: { timeout_ms: parseInt($('to-finnhub').value||'8000',10), retries: parseInt($('rt-finnhub').value||'2',10) },
+      tiingo:  { timeout_ms: parseInt($('to-tiingo').value||'8000',10),  retries: parseInt($('rt-tiingo').value||'2',10) },
+      alphavantage: { timeout_ms: parseInt($('to-av').value||'8000',10), retries: parseInt($('rt-av').value||'2',10) },
+    }
+  };
+  const dataStr = 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(obj, null, 2));
+  const a = document.createElement('a'); a.setAttribute('href', dataStr); a.setAttribute('download', 'bolsa_prefs.json'); document.body.appendChild(a); a.click(); a.remove();
+});
+
+// Importar JSON de preferencias (aplica en el formulario, sin guardar)
+$('btn-import-prefs').addEventListener('click', ()=>{
+  const txt = window.prompt('Pega JSON de preferencias');
+  if (!txt) return;
+  try{
+    const o = JSON.parse(txt);
+    const mapSeriesIn = (v)=>{ if (v==='alphavantage') return 'av'; if (v==='auto') return 'auto'; if (v==='tiingo') return 'tiingo'; return $('series-provider').value; };
+    if (o.series_provider) $('series-provider').value = mapSeriesIn(o.series_provider);
+    if (o.options_provider) $('opt-provider').value = o.options_provider;
+    if (o.options_expiry_rule) $('opt-exp-rule').value = o.options_expiry_rule;
+    if (typeof o.options_strike_count==='number') $('opt-strikes').value = String(o.options_strike_count);
+    if (o.atm_price_source) $('opt-atm').value = o.atm_price_source;
+    if (typeof o.time_zone==='string') { const el=$('time-zone'); if (el) { el.value = o.time_zone; updateTzOffsetView(); } }
+    if (o.net){
+      if (o.net.polygon?.timeout_ms) $('to-polygon').value = String(o.net.polygon.timeout_ms);
+      if (o.net.polygon?.retries != null) $('rt-polygon').value = String(o.net.polygon.retries);
+      if (o.net.finnhub?.timeout_ms) $('to-finnhub').value = String(o.net.finnhub.timeout_ms);
+      if (o.net.finnhub?.retries != null) $('rt-finnhub').value = String(o.net.finnhub.retries);
+      if (o.net.tiingo?.timeout_ms)  $('to-tiingo').value  = String(o.net.tiingo.timeout_ms);
+      if (o.net.tiingo?.retries != null)  $('rt-tiingo').value  = String(o.net.tiingo.retries);
+      if (o.net.alphavantage?.timeout_ms) $('to-av').value = String(o.net.alphavantage.timeout_ms);
+      if (o.net.alphavantage?.retries != null) $('rt-av').value = String(o.net.alphavantage.retries);
+    }
+    const msg = $('prefs-msg'); msg.textContent = 'Preferencias importadas al formulario (revisa y Guarda).'; msg.style.color = '#059669';
+  } catch(e){
+    const msg = $('prefs-msg'); msg.textContent = 'JSON inválido. No se aplicó.'; msg.style.color = '#dc2626';
+  }
+});
+
+// =================== Cargar preferencias ===================
+async function loadPrefs(){
+  try{
+    const s = await api('settings_get_safe.php');
+    const set = s?.settings || {};
+    if (set.series_provider) {
+      const map = { 'alphavantage':'av', 'auto':'auto', 'tiingo':'tiingo', 'finnhub':'finnhub', 'polygon':'polygon' };
+      const v = map[set.series_provider] ?? 'auto';
+      const el = $('series-provider'); if (el) el.value = v;
+    }
+    if (set.options_provider) { const el=$('opt-provider'); if (el) el.value = set.options_provider; }
+    if (set.options_expiry_rule) { const el=$('opt-exp-rule'); if (el) el.value = set.options_expiry_rule; }
+    if (typeof set.options_strike_count === 'number') { const el=$('opt-strikes'); if (el) el.value = String(set.options_strike_count); }
+    if (set.atm_price_source) { const el=$('opt-atm'); if (el) el.value = set.atm_price_source; }
+    if (set.time_zone) { const el=$('time-zone'); if (el) el.value = set.time_zone; }
+    updateTzOffsetView();
+    if (set.net && typeof set.net==='object') {
+      if (set.net.polygon?.timeout_ms) { const el=$('to-polygon'); if (el) el.value = String(set.net.polygon.timeout_ms); }
+      if (set.net.polygon?.retries != null) { const el=$('rt-polygon'); if (el) el.value = String(set.net.polygon.retries); }
+      if (set.net.finnhub?.timeout_ms) { const el=$('to-finnhub'); if (el) el.value = String(set.net.finnhub.timeout_ms); }
+      if (set.net.finnhub?.retries != null) { const el=$('rt-finnhub'); if (el) el.value = String(set.net.finnhub.retries); }
+      if (set.net.tiingo?.timeout_ms)  { const el=$('to-tiingo');  if (el) el.value = String(set.net.tiingo.timeout_ms); }
+      if (set.net.tiingo?.retries != null) { const el=$('rt-tiingo'); if (el) el.value = String(set.net.tiingo.retries); }
+      if (set.net.alphavantage?.timeout_ms) { const el=$('to-av'); if (el) el.value = String(set.net.alphavantage.timeout_ms); }
+      if (set.net.alphavantage?.retries != null) { const el=$('rt-av'); if (el) el.value = String(set.net.alphavantage.retries); }
+    }
+  }catch{}
+}
+
+$('btn-back').addEventListener('click', ()=>{ window.location.href = '/bolsa/index.html'; });
+
+try{ initTimeZoneUI(); }catch{}
+loadKeys().catch(()=>{});
+loadPrefs().catch(()=>{});
+
+// ====== Feedback modal (simplified) ======
+const FB = {
+  modal: null, type: null, sev: null, mod: null, title: null, desc: null, files: null, prev: null, diag: null, msg: null,
+};
+
+function fb_buildModal(){
+  const wrap = document.createElement('div'); wrap.id='modal-fb'; wrap.className='fixed inset-0 bg-black/50 hidden items-center justify-center z-50';
+  wrap.innerHTML = `
+  <div class="bg-white w-full max-w-xl rounded-lg shadow-lg p-4 space-y-3">
+    <div class="flex items-center justify-between">
+      <div class="text-lg font-semibold">Enviar feedback</div>
+      <button id="fb-close" class="text-gray-500 hover:text-gray-700">✕</button>
+    </div>
+    <div class="grid md:grid-cols-2 gap-3">
+      <div>
+        <label class="block text-sm text-gray-700">Tipo</label>
+        <select id="fb-type" class="mt-1 w-full rounded-md border-gray-300 shadow-sm">
+          <option value="bug">Bug</option>
+          <option value="mejora">Mejora</option>
+          <option value="ux">UX</option>
+          <option value="idea" selected>Idea</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm text-gray-700">Severidad</label>
+        <select id="fb-sev" class="mt-1 w-full rounded-md border-gray-300 shadow-sm">
+          <option value="sugerencia" selected>Sugerencia</option>
+          <option value="menor">Menor</option>
+          <option value="mayor">Mayor</option>
+          <option value="blocker">Blocker</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm text-gray-700">Módulo</label>
+        <select id="fb-module" class="mt-1 w-full rounded-md border-gray-300 shadow-sm">
+          <option value="config" selected>Config</option>
+          <option value="index">Index</option>
+          <option value="journal">Journal</option>
+          <option value="tester">Tester</option>
+          <option value="api">API</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm text-gray-700">Título</label>
+        <input id="fb-title" class="mt-1 w-full rounded-md border-gray-300 shadow-sm" placeholder="Resumen" />
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm text-gray-700">Descripción</label>
+      <textarea id="fb-desc" rows="4" class="mt-1 w-full rounded-md border-gray-300 shadow-sm" placeholder="Pasos y resultado"></textarea>
+    </div>
+    <div>
+      <label class="block text-sm text-gray-700">Adjuntar capturas</label>
+      <input id="fb-files" type="file" accept="image/*" multiple class="mt-1"/>
+      <div id="fb-previews" class="mt-2 grid grid-cols-4 gap-2"></div>
+    </div>
+    <label class="inline-flex items-center gap-2 text-sm text-gray-700">
+      <input id="fb-diag" type="checkbox" checked /> Incluir datos técnicos
+    </label>
+    <div class="flex items-center justify-end gap-2">
+      <span id="fb-msg" class="text-sm text-gray-500"></span>
+      <button id="fb-cancel" class="btn">Cancelar</button>
+      <button id="fb-send" class="btn p">Enviar</button>
+    </div>
+  </div>`;
+  document.body.appendChild(wrap);
+  FB.modal=wrap; FB.type=$('fb-type'); FB.sev=$('fb-sev'); FB.mod=$('fb-module'); FB.title=$('fb-title'); FB.desc=$('fb-desc'); FB.files=$('fb-files'); FB.prev=$('fb-previews'); FB.diag=$('fb-diag'); FB.msg=$('fb-msg');
+  $('fb-close').addEventListener('click', ()=>fb_show(false)); $('fb-cancel').addEventListener('click', ()=>fb_show(false));
+  FB.files.addEventListener('change', ()=>{ FB.prev.innerHTML=''; Array.from(FB.files.files||[]).slice(0,6).forEach(f=>{ const u=URL.createObjectURL(f); const img=document.createElement('img'); img.src=u; img.className='rounded border max-h-24 object-cover w-full'; FB.prev.appendChild(img); }); });
+  $('fb-send').addEventListener('click', fb_send);
+}
+function fb_show(b){ if(!FB.modal) fb_buildModal(); FB.modal.classList.toggle('hidden', !b); FB.modal.classList.toggle('flex', !!b); }
+function fb_diag(){ try{ const z=Intl.DateTimeFormat().resolvedOptions(); const off=-new Date().getTimezoneOffset(); const sign=off>=0?'+':'-'; const abs=Math.abs(off); const hh=String(Math.floor(abs/60)).padStart(2,'0'); const mm=String(abs%60).padStart(2,'0'); return { url:location.href, ua:navigator.userAgent, platform:navigator.platform, lang:navigator.language, screen:{w:screen.width,h:screen.height}, tz:z.timeZone||'', tzOffset:`${sign}${hh}:${mm}`, path:location.pathname+location.hash, app:'config', auth: !!getToken() }; }catch{return {}} }
+async function fb_upload(){ const files=Array.from(FB.files?.files||[]); const out=[]; for(const f of files.slice(0,6)){ const fd=new FormData(); fd.append('file', f); const r=await fetch(`${API_ABS}/feedback_upload.php`,{ method:'POST', headers: (function(){ const h={}; const t=getToken(); if (t) h['Authorization']='Bearer '+t; return h; })(), body:fd }); const txt=await r.text(); let j; try{ j=JSON.parse(txt);}catch{continue} if(r.ok&&j?.ok) out.push({url:j.url,mime:j.mime,size:j.size}); } return out; }
+async function fb_send(){ try{ FB.msg.textContent='Enviando...'; const atts=await fb_upload(); const payload={ type:FB.type.value, severity:FB.sev.value, module:FB.mod.value, title:FB.title.value||null, description:FB.desc.value||null, diagnostics_json: (FB.diag.checked? fb_diag(): null), attachments: atts }; const res = await api('feedback_save_safe.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }); if(res&&res.ok){ FB.msg.textContent='Gracias por tu feedback'; setTimeout(()=>fb_show(false),600); FB.prev.innerHTML=''; FB.files.value=''; FB.title.value=''; FB.desc.value=''; } else { FB.msg.textContent='Envío parcial'; } } catch(e){ FB.msg.textContent='Error: '+(e?.message||e); } }
+
+// Feedback unificado (usa módulo global)
+try{ document.getElementById('btn-feedback')?.addEventListener('click', ()=>{ try{ window.Feedback?.show({ module: 'config' }); }catch{} }); }catch{}
+
+// Función para volver a la página anterior
+function goBack() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const from = urlParams.get('from');
+  
+  if (from === 'account') {
+    window.location.href = 'account.html';
+  } else if (from === 'index') {
+    window.location.href = 'index.html';
+  } else {
+    window.location.href = 'index.html'; // fallback
+  }
+}
+
+// Modo Oscuro - Funcionalidad
+const themeToggle = document.getElementById('theme-toggle');
+let isDarkMode = localStorage.getItem('darkMode') === 'true';
+
+// Aplicar modo oscuro al cargar
+if (isDarkMode) {
+  document.body.classList.add('dark-mode');
+  updateThemeButton();
+}
+
+// Toggle del modo oscuro
+themeToggle.addEventListener('click', () => {
+  isDarkMode = !isDarkMode;
+  document.body.classList.toggle('dark-mode', isDarkMode);
+  localStorage.setItem('darkMode', isDarkMode);
+  updateThemeButton();
+});
+
+function updateThemeButton() {
+  if (isDarkMode) {
+    themeToggle.textContent = '☀️ Modo Claro';
+  } else {
+    themeToggle.textContent = '🌙 Modo Oscuro';
+  }
+}
+</script>
+</body>
+</html>

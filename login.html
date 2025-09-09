@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Iniciar sesión - Bolsa AI</title>
+  <script src="/bolsa/static/auth.js"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 2rem; }
+    .card { max-width: 420px; padding: 1.5rem; border: 1px solid #ddd; border-radius: 8px; margin: 0 auto; }
+    label { display:block; margin-top: 0.75rem; font-weight: 600; }
+    input { width:100%; padding: 0.6rem; margin-top: 0.25rem; border:1px solid #ccc; border-radius:6px; }
+    button { margin-top:1rem; padding: 0.6rem 1rem; background:#0b5; color:white; border:none; border-radius:6px; cursor:pointer; }
+    button[disabled] { opacity: 0.6; }
+    .error { color:#b00; margin-top: 0.5rem; }
+    .muted { color:#666; font-size: 0.9em; }
+    .row { display:flex; gap: 0.5rem; align-items:center; }
+    .link { color:#06c; cursor:pointer; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Iniciar sesión</h2>
+    <form id="loginForm">
+      <label>Email</label>
+      <input type="email" id="email" required autocomplete="username" />
+      <label>Contraseña</label>
+      <input type="password" id="password" required autocomplete="current-password" />
+      <button id="btnLogin" type="submit">Entrar</button>
+      <div id="err" class="error" aria-live="polite"></div>
+    </form>
+    <p class="muted">¿No tienes cuenta? <span class="link" id="toggleRegister">Crear cuenta</span></p>
+    <form id="registerForm" style="display:none; margin-top:1rem; border-top:1px solid #eee; padding-top:1rem;">
+      <h3>Crear cuenta</h3>
+      <label>Email</label>
+      <input type="email" id="reg_email" required autocomplete="username" />
+      <label>Contraseña (mínimo 8)</label>
+      <input type="password" id="reg_password" required minlength="8" autocomplete="new-password" />
+      <label>Nombre (opcional)</label>
+      <input type="text" id="reg_name" autocomplete="name" />
+      <button id="btnRegister" type="submit">Registrar</button>
+      <div id="reg_err" class="error" aria-live="polite"></div>
+    </form>
+  </div>
+  <script>
+    (function(){
+      // Si ya hay token válido, ir a home
+      try {
+        const t = Auth.getToken();
+        const p = Auth.decodeJwt(t);
+        if (t && p && !Auth.isExpired(p)) {
+          const next = new URLSearchParams(location.search).get('next');
+          location.href = next || 'index.html';
+          return;
+        }
+      } catch (e) {}
+
+      const loginForm = document.getElementById('loginForm');
+      const btnLogin = document.getElementById('btnLogin');
+      const err = document.getElementById('err');
+      const regForm = document.getElementById('registerForm');
+      const regErr = document.getElementById('reg_err');
+      const toggle = document.getElementById('toggleRegister');
+      toggle.addEventListener('click', ()=>{
+        regForm.style.display = (regForm.style.display==='none' || regForm.style.display==='') ? 'block' : 'none';
+      });
+
+      loginForm.addEventListener('submit', async (ev)=>{
+        ev.preventDefault(); err.textContent=''; btnLogin.disabled = true;
+        try {
+          const email = String(document.getElementById('email').value||'').trim();
+          const password = String(document.getElementById('password').value||'');
+          const res = await Auth.fetchJson('auth_login.php', { method:'POST', body: JSON.stringify({ email, password }) });
+          if (!res.ok || (res.data && res.data.error)) {
+            err.textContent = (res.data && (res.data.detail||res.data.error)) || ('HTTP '+res.status);
+          } else if (res.data && res.data.token) {
+            Auth.setToken(res.data.token);
+            const next = new URLSearchParams(location.search).get('next');
+            location.href = next || 'index.html';
+          } else {
+            err.textContent = 'Respuesta inesperada';
+          }
+        } catch (e) { err.textContent = String(e); }
+        finally { btnLogin.disabled = false; }
+      });
+
+      regForm.addEventListener('submit', async (ev)=>{
+        ev.preventDefault(); regErr.textContent='';
+        const btn = document.getElementById('btnRegister'); btn.disabled = true;
+        try {
+          const email = String(document.getElementById('reg_email').value||'').trim();
+          const password = String(document.getElementById('reg_password').value||'');
+          const name = String(document.getElementById('reg_name').value||'').trim();
+          const res = await Auth.fetchJson('auth_register.php', { method:'POST', body: JSON.stringify({ email, password, name }) });
+          if (!res.ok || (res.data && res.data.error)) {
+            regErr.textContent = (res.data && (res.data.detail||res.data.error)) || ('HTTP '+res.status);
+          } else if (res.data && res.data.token) {
+            Auth.setToken(res.data.token);
+            location.href = 'index.html';
+          } else {
+            regErr.textContent = 'Respuesta inesperada';
+          }
+        } catch (e) { regErr.textContent = String(e); }
+        finally { btn.disabled = false; }
+      });
+    })();
+  </script>
+</body>
+</html>

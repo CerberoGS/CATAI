@@ -1,0 +1,28 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # No reescribir nada de /bolsa/api/
+  RewriteRule ^api/ - [L]
+
+  # Archivos o directorios reales: servir tal cual
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Todo lo demás -> SPA
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+## Forzar UTF-8 para contenido estático y declarar idioma
+AddDefaultCharset utf-8
+AddType 'text/html; charset=UTF-8' .html .htm
+AddType 'text/css; charset=UTF-8' .css
+AddType 'application/javascript; charset=UTF-8' .js
+
+<IfModule mod_headers.c>
+  # Idioma por defecto de la app
+  Header set Content-Language "es-US"
+  # Evitar caches agresivos durante pruebas
+  <FilesMatch "\.(html|htm|js|css)$">
+    Header set Cache-Control "no-store, must-revalidate"
+  </FilesMatch>
+</IfModule>

@@ -1,0 +1,765 @@
+/* ================== Estilos Personalizados ================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+/* Variables CSS */
+:root {
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --success-color: #059669;
+  --error-color: #dc2626;
+  --warning-color: #d97706;
+  --info-color: #2563eb;
+  --gray-color: #6b7280;
+  
+  --bg-light: #f9fafb;
+  --bg-white: #ffffff;
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --border-color: #e5e7eb;
+  
+  --bg-dark: #1f2937;
+  --bg-dark-secondary: #374151;
+  --text-dark-primary: #f9fafb;
+  --text-dark-secondary: #9ca3af;
+  --border-dark: #4b5563;
+}
+
+/* Base Styles */
+body { 
+  font-family: 'Inter', sans-serif; 
+  background-color: var(--bg-light);
+  color: var(--text-primary);
+}
+
+.container { 
+  max-width: 980px; 
+}
+
+/* Autocomplete Styles */
+.autocomplete-list { 
+  position: absolute; 
+  z-index: 40; 
+  background: var(--bg-white); 
+  border: 1px solid var(--border-color); 
+  max-height: 240px; 
+  overflow: auto; 
+  width: 100%; 
+  top: 100%; 
+  left: 0; 
+  border-radius: 0.375rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.autocomplete-item { 
+  padding: 8px 10px; 
+  cursor: pointer; 
+  transition: background-color 0.2s ease;
+}
+
+.autocomplete-item:hover { 
+  background: #f9fafb; 
+}
+
+code { 
+  white-space: pre-wrap; 
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+/* Dark Mode Styles */
+.dark-mode { 
+  background-color: var(--bg-dark); 
+  color: var(--text-dark-primary); 
+}
+
+.dark-mode .bg-white { 
+  background-color: var(--bg-dark-secondary); 
+}
+
+.dark-mode .bg-gray-100 { 
+  background-color: var(--bg-dark); 
+}
+
+.dark-mode .text-gray-900 { 
+  color: var(--text-dark-primary); 
+}
+
+.dark-mode .text-gray-800 { 
+  color: #f3f4f6; 
+}
+
+.dark-mode .text-gray-700 { 
+  color: #d1d5db; 
+}
+
+.dark-mode .text-gray-600 { 
+  color: var(--text-dark-secondary); 
+}
+
+.dark-mode .border-gray-300 { 
+  border-color: var(--border-dark); 
+}
+
+.dark-mode .border-gray-200 { 
+  border-color: var(--border-dark); 
+}
+
+.dark-mode .shadow-xl { 
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2); 
+}
+
+/* Form Elements in Dark Mode */
+.dark-mode input[type="text"], 
+.dark-mode input[type="email"], 
+.dark-mode input[type="password"], 
+.dark-mode input[type="number"],
+.dark-mode select,
+.dark-mode textarea {
+  background-color: var(--bg-dark-secondary) !important;
+  border-color: var(--border-dark) !important;
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode input[type="text"]:focus,
+.dark-mode input[type="email"]:focus,
+.dark-mode input[type="password"]:focus,
+.dark-mode input[type="number"]:focus,
+.dark-mode select:focus,
+.dark-mode textarea:focus {
+  background-color: var(--bg-dark-secondary) !important;
+  border-color: var(--primary-color) !important;
+  color: var(--text-dark-primary) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.dark-mode input[type="text"]::placeholder,
+.dark-mode input[type="email"]::placeholder,
+.dark-mode input[type="password"]::placeholder,
+.dark-mode input[type="number"]::placeholder,
+.dark-mode textarea::placeholder {
+  color: var(--text-dark-secondary) !important;
+}
+
+/* Specific Fix for Symbol Input */
+.dark-mode #symbol {
+  background-color: var(--bg-dark-secondary) !important;
+  border-color: var(--border-dark) !important;
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode #symbol:focus {
+  background-color: var(--bg-dark-secondary) !important;
+  border-color: var(--primary-color) !important;
+  color: var(--text-dark-primary) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.dark-mode #symbol::placeholder {
+  color: var(--text-dark-secondary) !important;
+}
+
+/* Checkboxes and Radio Buttons in Dark Mode */
+.dark-mode input[type="checkbox"],
+.dark-mode input[type="radio"] {
+  background-color: var(--bg-dark-secondary) !important;
+  border-color: var(--border-dark) !important;
+}
+
+/* Buttons in Dark Mode */
+.dark-mode button {
+  background-color: var(--bg-dark-secondary) !important;
+  border-color: var(--border-dark) !important;
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode button:hover {
+  background-color: var(--border-dark) !important;
+}
+
+/* Dropdowns and Lists in Dark Mode */
+.dark-mode .autocomplete-list {
+  background-color: var(--bg-dark-secondary) !important;
+  border-color: var(--border-dark) !important;
+}
+
+.dark-mode .autocomplete-item {
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode .autocomplete-item:hover {
+  background-color: var(--border-dark) !important;
+}
+
+/* Select Options in Dark Mode */
+.dark-mode optgroup {
+  background-color: var(--bg-dark-secondary) !important;
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode option {
+  background-color: var(--bg-dark-secondary) !important;
+  color: var(--text-dark-primary) !important;
+}
+
+/* Notification Colors in Dark Mode */
+.dark-mode .bg-green-500 { 
+  background-color: var(--success-color) !important; 
+}
+
+.dark-mode .bg-red-500 { 
+  background-color: var(--error-color) !important; 
+}
+
+.dark-mode .bg-yellow-500 { 
+  background-color: var(--warning-color) !important; 
+}
+
+.dark-mode .bg-blue-500 { 
+  background-color: var(--info-color) !important; 
+}
+
+.dark-mode .bg-gray-500 { 
+  background-color: var(--gray-color) !important; 
+}
+
+/* Status Indicators */
+.status-indicator {
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+/* Smooth Animations */
+.transition-all {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Focus Styles */
+.focus\:ring-2:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Loading Animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Notification Animations */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.notification-enter {
+  animation: slideInRight 0.3s ease-out;
+}
+
+.notification-exit {
+  animation: slideOutRight 0.3s ease-in;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .space-x-4 > * + * {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+  
+  .lg\:col-span-1,
+  .lg\:col-span-2 {
+    grid-column: span 1;
+  }
+  
+  .md\:grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+  
+  .md\:grid-cols-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .flex-wrap {
+    flex-direction: column;
+  }
+  
+  .flex-wrap > * {
+    margin-bottom: 0.5rem;
+  }
+  
+  .space-y-3 > * + * {
+    margin-top: 0.75rem;
+  }
+}
+
+/* Accessibility Improvements */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Focus visible for better accessibility */
+.focus-visible:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .dark-mode {
+    background-color: #000000;
+    color: #ffffff;
+  }
+  
+  .dark-mode .bg-white {
+    background-color: #000000;
+    border: 2px solid #ffffff;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ========== Hero unified component ========== */
+.hero { 
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border-color);
+  padding: 1rem 0.75rem;
+}
+.dark-mode .hero {
+  background: var(--bg-dark);
+  border-color: var(--border-dark);
+}
+.hero-inner {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+}
+.hero-info { display: flex; align-items: center; gap: .75rem; }
+.hero-icon { font-size: 1.75rem; line-height: 1; }
+.hero-title { font-weight: 700; color: var(--text-primary); font-size: 1.5rem; }
+.dark-mode .hero-title { color: var(--text-dark-primary); }
+.hero-subtitle { color: var(--text-secondary); margin-top: .125rem; }
+.dark-mode .hero-subtitle { color: var(--text-dark-secondary); }
+.hero-actions { display: flex; align-items: center; gap: .5rem; }
+.hero-actions-slot { display: flex; align-items: center; gap: .5rem; }
+
+@media (max-width: 640px){
+  .hero-inner { flex-direction: column; align-items: flex-start; gap: .5rem; }
+  .hero-actions { width: 100%; }
+}
+
+/* Modal específico para guardar análisis */
+.dark-mode #modal-save .bg-white {
+  background-color: var(--bg-dark-secondary) !important;
+}
+
+.dark-mode #modal-save .text-gray-900 {
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode #modal-save .text-gray-700 {
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode #modal-save .text-gray-500 {
+  color: var(--text-dark-secondary) !important;
+}
+
+/* Modal específico para feedback */
+.dark-mode #modal-fb .bg-white {
+  background-color: var(--bg-dark-secondary) !important;
+}
+
+.dark-mode #modal-fb .text-gray-900 {
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode #modal-fb .text-gray-700 {
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode #modal-fb .text-gray-500 {
+  color: var(--text-dark-secondary) !important;
+}
+
+/* Solo aplicar estilos oscuros cuando el modal tenga fondo oscuro */
+.dark-mode #modal-save .bg-white input[type="text"],
+.dark-mode #modal-save .bg-white input[type="file"],
+.dark-mode #modal-save .bg-white select,
+.dark-mode #modal-save .bg-white textarea {
+  background-color: var(--bg-dark) !important;
+  border-color: var(--border-dark) !important;
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode #modal-fb .bg-white input[type="text"],
+.dark-mode #modal-fb .bg-white input[type="file"],
+.dark-mode #modal-fb .bg-white select,
+.dark-mode #modal-fb .bg-white textarea {
+  background-color: var(--bg-dark) !important;
+  border-color: var(--border-dark) !important;
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode #modal-save .bg-white input[type="checkbox"] {
+  background-color: var(--bg-dark) !important;
+  border-color: var(--border-dark) !important;
+}
+
+.dark-mode #modal-fb .bg-white input[type="checkbox"] {
+  background-color: var(--bg-dark) !important;
+  border-color: var(--border-dark) !important;
+}
+
+.dark-mode #modal-save .bg-white .bg-gray-50 {
+  background-color: var(--bg-dark) !important;
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode #modal-fb .bg-white .bg-gray-50 {
+  background-color: var(--bg-dark) !important;
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode #modal-save .bg-white .text-gray-800 {
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode #modal-fb .bg-white .text-gray-800 {
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode #modal-save .bg-white button {
+  background-color: var(--bg-dark-secondary) !important;
+  border-color: var(--border-dark) !important;
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode #modal-fb .bg-white button {
+  background-color: var(--bg-dark-secondary) !important;
+  border-color: var(--border-dark) !important;
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode #modal-save .bg-white button:hover {
+  background-color: var(--border-dark) !important;
+}
+
+.dark-mode #modal-fb .bg-white button:hover {
+  background-color: var(--border-dark) !important;
+}
+
+/* Cuando el modal tiene fondo blanco (modo claro), asegurar texto negro */
+#modal-save input[type="text"],
+#modal-save input[type="file"],
+#modal-save select,
+#modal-save textarea {
+  color: #111827 !important;
+}
+
+#modal-fb input[type="text"],
+#modal-fb input[type="file"],
+#modal-fb select,
+#modal-fb textarea {
+  color: #111827 !important;
+}
+
+#modal-save .text-gray-800 {
+  color: #111827 !important;
+}
+
+#modal-fb .text-gray-800 {
+  color: #111827 !important;
+}
+
+#modal-save .text-gray-700 {
+  color: #374151 !important;
+}
+
+#modal-fb .text-gray-700 {
+  color: #374151 !important;
+}
+
+/* Forzar texto negro en TODOS los elementos del modal */
+#modal-save input,
+#modal-save select,
+#modal-save textarea,
+#modal-save pre {
+  color: #111827 !important;
+}
+
+#modal-fb input,
+#modal-fb select,
+#modal-fb textarea,
+#modal-fb pre {
+  color: #111827 !important;
+}
+
+/* Mejoras adicionales para contraste en modo oscuro - Feedback */
+.dark-mode #modal-fb input[type="text"]:focus,
+.dark-mode #modal-fb select:focus,
+.dark-mode #modal-fb textarea:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
+}
+
+.dark-mode #modal-fb .file\:bg-indigo-50 {
+  background-color: var(--bg-dark-secondary) !important;
+}
+
+.dark-mode #modal-fb .file\:text-indigo-700 {
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode #modal-fb .hover\:file\:bg-indigo-100:hover {
+  background-color: var(--border-dark) !important;
+}
+
+/* Estilos para elementos de archivo en modo oscuro */
+.dark-mode #modal-fb input[type="file"] {
+  background-color: var(--bg-dark-secondary) !important;
+  border-color: var(--border-dark) !important;
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode #modal-fb input[type="file"]::-webkit-file-upload-button {
+  background-color: var(--bg-dark-secondary) !important;
+  color: var(--text-dark-primary) !important;
+  border-color: var(--border-dark) !important;
+}
+
+.dark-mode #modal-fb input[type="file"]::-webkit-file-upload-button:hover {
+  background-color: var(--border-dark) !important;
+}
+
+/* Estilos específicos para modales dinámicos de feedback */
+.dark-mode .fixed .bg-white {
+  background-color: var(--bg-dark-secondary) !important;
+  border-color: var(--border-dark) !important;
+}
+
+.dark-mode .fixed .text-gray-900 {
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode .fixed .text-gray-700 {
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode .fixed .text-gray-300 {
+  color: var(--text-dark-secondary) !important;
+}
+
+.dark-mode .fixed .bg-gray-50 {
+  background-color: var(--bg-dark) !important;
+  border-color: var(--border-dark) !important;
+}
+
+.dark-mode .fixed .bg-gray-700 {
+  background-color: var(--bg-dark) !important;
+  border-color: var(--border-dark) !important;
+}
+
+.dark-mode .fixed .border-gray-200 {
+  border-color: var(--border-dark) !important;
+}
+
+.dark-mode .fixed .border-gray-600 {
+  border-color: var(--border-dark) !important;
+}
+
+/* Asegurar contraste en todos los elementos de texto */
+.dark-mode .fixed div,
+.dark-mode .fixed span,
+.dark-mode .fixed p,
+.dark-mode .fixed label,
+.dark-mode .fixed pre {
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode .fixed .text-gray-500 {
+  color: var(--text-dark-secondary) !important;
+}
+
+.dark-mode .fixed .text-gray-400 {
+  color: var(--text-dark-secondary) !important;
+}
+
+/* Botones en modales dinámicos */
+.dark-mode .fixed button {
+  background-color: var(--bg-dark-secondary) !important;
+  border-color: var(--border-dark) !important;
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode .fixed button:hover {
+  background-color: var(--border-dark) !important;
+}
+
+.dark-mode .fixed button.bg-gray-500 {
+  background-color: var(--bg-dark-secondary) !important;
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode .fixed button.bg-gray-500:hover {
+  background-color: var(--border-dark) !important;
+}
+
+/* ====== Contraste Seguro Global (Claro/Oscuro) ======
+   Objetivo: impedir texto invisible cuando se agreguen vistas nuevas. */
+
+/* Variables de tema (fallbacks por si faltan) */
+:root {
+  --bg-light: #ffffff;
+  --bg-light-secondary: #f9fafb;
+  --text-light-primary: #111827; /* gray-900 */
+  --text-light-secondary: #374151; /* gray-700 */
+  --border-light: #e5e7eb; /* gray-200 */
+
+  --bg-dark: #111827; /* gray-900 */
+  --bg-dark-secondary: #1f2937; /* gray-800 */
+  --text-dark-primary: #f9fafb;
+  --text-dark-secondary: #d1d5db;
+  --border-dark: #374151; /* gray-700 */
+}
+
+/* Color base del documento */
+body {
+  color: var(--text-light-primary);
+  background-color: var(--bg-light);
+  color-scheme: light dark;
+}
+.metric-card { transition: all 0.2s ease; }
+.metric-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+.status-indicator { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+.status-ok { background-color: #10b981; }
+.status-warning { background-color: #f59e0b; }
+.status-error { background-color: #ef4444; }
+.dark-mode body,
+body.dark-mode {
+  color: var(--text-dark-primary);
+  background-color: var(--bg-dark);
+}
+
+/* Regla de contraste seguro: asegura color de texto legible por defecto */
+body:not(.dark-mode) :where(h1,h2,h3,h4,h5,h6,p,span,li,dt,dd,th,td,label,button,a,small,strong,div,pre,code,input,select,textarea) {
+  color: var(--text-light-primary);
+}
+.dark-mode :where(h1,h2,h3,h4,h5,h6,p,span,li,dt,dd,th,td,label,button,a,small,strong,div,pre,code,input,select,textarea) {
+  color: var(--text-dark-primary) !important;
+}
+
+/* Fondos comunes convertidos a superficies en oscuro (no solo en modales) */
+.dark-mode :where(.bg-white) {
+  background-color: var(--bg-dark-secondary) !important;
+}
+.dark-mode :where(.bg-gray-50) {
+  background-color: var(--bg-dark) !important;
+}
+.dark-mode :where(.border,.border-gray-200,.border-gray-300) {
+  border-color: var(--border-dark) !important;
+}
+
+/* Texto oscuro forzado sobre fondos claros (chips/badges) en modo claro */
+body:not(.dark-mode) :where(.bg-rose-50,.bg-rose-100,
+  .bg-pink-50,.bg-pink-100,
+  .bg-red-50,.bg-red-100,
+  .bg-yellow-50,.bg-yellow-100,
+  .bg-amber-50,.bg-amber-100,
+  .bg-orange-50,.bg-orange-100,
+  .bg-lime-50,.bg-lime-100,
+  .bg-green-50,.bg-green-100,
+  .bg-emerald-50,.bg-emerald-100,
+  .bg-teal-50,.bg-teal-100,
+  .bg-cyan-50,.bg-cyan-100,
+  .bg-sky-50,.bg-sky-100,
+  .bg-blue-50,.bg-blue-100,
+  .bg-indigo-50,.bg-indigo-100,
+  .bg-violet-50,.bg-violet-100,
+  .bg-purple-50,.bg-purple-100,
+  .bg-fuchsia-50,.bg-fuchsia-100,
+  .bg-gray-50,.bg-gray-100) {
+  color: var(--text-light-primary) !important;
+}
+
+/* Inputs/Selects/Textareas - ya había reglas específicas, reforzamos el color */
+body:not(.dark-mode) :where(input,select,textarea) { color: var(--text-light-primary) !important; }
+.dark-mode :where(input,select,textarea) { color: var(--text-dark-primary) !important; }
+
+/* Botones genéricos: que al menos el texto contraste */
+body:not(.dark-mode) :where(button) { color: var(--text-light-primary); }
+.dark-mode :where(button) { color: var(--text-dark-primary); }
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .bg-white,
+  .bg-gray-50 {
+    background: white !important;
+    border: 1px solid #000 !important;
+  }
+}

@@ -1,0 +1,24 @@
+{
+    "options_provider": "polygon",
+    "series_provider": "polygon",
+    "ai_provider": "auto",
+    "ai_model": "",
+    "options_expiry_rule": "xxxx",
+    "options_strike_count": 20,
+    "atm_price_source": "series_last",
+    "tz_offset": "-5",
+    "net": {
+        "polygon": {
+            "timeout_ms": 8000,
+            "retries": 2
+        },
+        "finnhub": {
+            "timeout_ms": 8000,
+            "retries": 2
+        },
+        "tiingo": {
+            "timeout_ms": 8000,
+            "retries": 2
+        }
+    }
+}

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Feedback - Triage</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/bolsa/static/auth.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+  <script>try{ Auth.requireAuth(); }catch(e){ }</script>
+  <div class="max-w-6xl mx-auto space-y-6">
+    <header class="flex items-center justify-between">
+      <h1 class="text-2xl font-bold text-gray-900">Feedback</h1>
+      <div class="flex gap-2">
+        <button id="btn-back" class="py-1.5 px-3 rounded-md border text-gray-700 hover:bg-gray-50">Volver</button>
+      </div>
+    </header>
+
+    <section class="bg-white rounded-lg border p-4">
+      <div class="grid md:grid-cols-6 gap-3 items-end">
+        <div>
+          <label class="block text-sm text-gray-700">Estado</label>
+          <select id="f-status" class="mt-1 w-full rounded-md border-gray-300 shadow-sm">
+            <option value="">Todos</option>
+            <option value="nuevo">Nuevo</option>
+            <option value="en_progreso">En progreso</option>
+            <option value="resuelto">Resuelto</option>
+            <option value="rechazado">Rechazado</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm text-gray-700">Tipo</label>
+          <select id="f-type" class="mt-1 w-full rounded-md border-gray-300 shadow-sm">
+            <option value="">Todos</option>
+            <option value="bug">Bug</option>
+            <option value="mejora">Mejora</option>
+            <option value="ux">UX</option>
+            <option value="idea">Idea</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm text-gray-700">Severidad</label>
+          <select id="f-sev" class="mt-1 w-full rounded-md border-gray-300 shadow-sm">
+            <option value="">Todas</option>
+            <option value="blocker">Blocker</option>
+            <option value="mayor">Mayor</option>
+            <option value="menor">Menor</option>
+            <option value="sugerencia">Sugerencia</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm text-gray-700">Módulo</label>
+          <select id="f-module" class="mt-1 w-full rounded-md border-gray-300 shadow-sm">
+            <option value="">Todos</option>
+            <option value="index">Index</option>
+            <option value="config">Config</option>
+            <option value="tester">Tester</option>
+            <option value="journal">Journal</option>
+            <option value="api">API</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm text-gray-700">Desde</label>
+          <input id="f-from" type="date" class="mt-1 w-full rounded-md border-gray-300 shadow-sm" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-700">Hasta</label>
+          <input id="f-to" type="date" class="mt-1 w-full rounded-md border-gray-300 shadow-sm" />
+        </div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-3 items-end mt-3">
+        <div class="md:col-span-2">
+          <label class="block text-sm text-gray-700">Buscar</label>
+          <input id="f-q" class="mt-1 w-full rounded-md border-gray-300 shadow-sm" placeholder="título o descripción"/>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-2 mt-3">
+        <button id="btn-search" class="py-1.5 px-3 rounded-md border text-gray-700 hover:bg-gray-50">Buscar</button>
+      </div>
+    </section>
+
+    <section id="list" class="grid gap-3"></section>
+
+    <div id="pager" class="flex items-center justify-between">
+      <button id="prev" class="py-1 px-2 rounded border text-gray-700 hover:bg-gray-50">« Anterior</button>
+      <div id="page-info" class="text-sm text-gray-600"></div>
+      <button id="next" class="py-1 px-2 rounded border text-gray-700 hover:bg-gray-50">Siguiente »</button>
+    </div>
+  </div>
+
+  <!-- Modal detalle -->
+  <div id="modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+    <div class="bg-white w-full max-w-3xl rounded-lg shadow-lg p-4 space-y-3">
+      <div class="flex items-center justify-between">
+        <div class="text-lg font-semibold">Detalle del feedback</div>
+        <button id="m-close" class="text-gray-500 hover:text-gray-700">✕</button>
+      </div>
+      <div id="m-body" class="space-y-3 text-sm"></div>
+      <div class="flex items-center justify-end gap-2">
+        <span id="m-msg" class="text-sm text-gray-500"></span>
+        <button id="m-save" class="py-1.5 px-3 rounded-md text-white bg-indigo-600 hover:bg-indigo-700">Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+const API_BASE = '/bolsa/api';
+function getToken(){ return localStorage.getItem('auth_token') || ''; }
+function withAuthHeaders(headers={}){ const h={...headers}; const t=getToken(); if(t) h['Authorization']='Bearer '+t; return h; }
+async function httpRaw(path, options){ const r=await fetch(`${API_BASE}/${path}`, options); const txt=await r.text(); let j; try{ j=JSON.parse(txt);}catch{ throw new Error('no JSON'); } if(!r.ok){ throw new Error(j?.error||('HTTP '+r.status)); } return j; }
+const apiGet = (p)=> httpRaw(p, { method:'GET', headers: withAuthHeaders(), cache:'no-store' });
+const apiPost= (p,d)=> httpRaw(p, { method:'POST', headers: withAuthHeaders({'Content-Type':'application/json'}), body: JSON.stringify(d), cache:'no-store' });
+
+const listEl = document.getElementById('list');
+const pageInfo = document.getElementById('page-info');
+let offset=0, limit=10, total=0;
+
+function chip(v, klass){ return `<span class="px-2 py-0.5 rounded-full text-xs ${klass}">${v}</span>`; }
+
+async function loadPage(){
+  const qs = new URLSearchParams();
+  qs.set('limit', String(limit)); qs.set('offset', String(offset));
+  const status = document.getElementById('f-status').value; if(status) qs.set('status', status);
+  const type = document.getElementById('f-type').value; if(type) qs.set('type', type);
+  const sev = document.getElementById('f-sev').value; if(sev) qs.set('severity', sev);
+  const mod = document.getElementById('f-module').value; if(mod) qs.set('module', mod);
+  const from = document.getElementById('f-from').value; if(from) qs.set('from', from);
+  const to = document.getElementById('f-to').value; if(to) qs.set('to', to);
+  const q = document.getElementById('f-q').value.trim(); if(q) qs.set('q', q);
+  const j = await apiGet('feedback_list_safe.php?'+qs.toString());
+  total = j.total||0; renderList(j.items||[]);
+  pageInfo.textContent = `${Math.floor(offset/limit)+1} / ${Math.max(1, Math.ceil(total/limit))} (total ${total})`;
+}
+
+function renderList(items){
+  if(!items.length){ listEl.innerHTML = '<div class="text-gray-500">Sin resultados.</div>'; return; }
+  listEl.innerHTML = items.map(it => {
+    const t = chip(it.type, 'bg-gray-100 text-gray-800');
+    const s = it.severity==='blocker'? chip('blocker','bg-rose-100 text-rose-800') : it.severity==='mayor'? chip('mayor','bg-orange-100 text-orange-800') : it.severity==='menor'? chip('menor','bg-amber-100 text-amber-800') : chip('sugerencia','bg-green-100 text-green-800');
+    const st = it.status==='nuevo'? chip('nuevo','bg-blue-100 text-blue-800') : it.status==='en_progreso'? chip('en progreso','bg-purple-100 text-purple-800') : it.status==='resuelto'? chip('resuelto','bg-green-100 text-green-800') : chip('rechazado','bg-gray-200 text-gray-700');
+    const title = it.title || '(sin título)';
+    return `
+      <div class="bg-white rounded-lg border p-3 flex items-center justify-between">
+        <div>
+          <div class="font-medium text-gray-900">${title}</div>
+          <div class="text-xs text-gray-500">${new Date(it.created_at.replace(' ','T')).toLocaleString()} · ${it.module} · ${t} · ${s}</div>
+          <div class="mt-1 flex gap-2">${st}</div>
+        </div>
+        <div class="flex gap-2">
+          <button class="px-2 py-1 rounded border text-gray-700 hover:bg-gray-50" data-view="${it.id}">Ver</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+document.getElementById('btn-search').addEventListener('click', ()=>{ offset=0; loadPage().catch(()=>{}); });
+document.getElementById('prev').addEventListener('click', ()=>{ offset = Math.max(0, offset - limit); loadPage().catch(()=>{}); });
+document.getElementById('next').addEventListener('click', ()=>{ const max = Math.max(0, Math.ceil(total/limit)-1)*limit; offset = Math.min(max, offset+limit); loadPage().catch(()=>{}); });
+document.getElementById('btn-back').addEventListener('click', ()=>{ window.location.href = '/bolsa/index.html'; });
+
+// Modal
+const modal = document.getElementById('modal');
+const mBody = document.getElementById('m-body');
+const mClose = document.getElementById('m-close');
+const mMsg = document.getElementById('m-msg');
+const mSave = document.getElementById('m-save');
+let current = null;
+function mShow(b){ modal.classList.toggle('hidden', !b); modal.classList.toggle('flex', !!b); }
+mClose.addEventListener('click', ()=> mShow(false));
+
+listEl.addEventListener('click', async (e)=>{
+  const btn = e.target.closest('button[data-view]'); if(!btn) return;
+  const id = parseInt(btn.getAttribute('data-view'), 10);
+  const j = await apiGet('feedback_get_safe.php?id='+id);
+  current = j;
+  const f = j.feedback || {};
+  const atts = j.attachments || [];
+  const esc = (s)=> String(s||'').replace(/</g,'&lt;');
+  const diag = f.diagnostics_json ? esc(JSON.stringify(f.diagnostics_json, null, 2)) : '(sin datos)';
+  mBody.innerHTML = `
+    <div class="grid md:grid-cols-2 gap-3">
+      <div>
+        <label class="block text-sm text-gray-700">Título</label>
+        <input id="m-title" class="mt-1 w-full rounded-md border-gray-300 shadow-sm" value="${esc(f.title)}">
+      </div>
+      <div>
+        <label class="block text-sm text-gray-700">Estado</label>
+        <select id="m-status" class="mt-1 w-full rounded-md border-gray-300 shadow-sm">
+          <option value="nuevo" ${f.status==='nuevo'?'selected':''}>Nuevo</option>
+          <option value="en_progreso" ${f.status==='en_progreso'?'selected':''}>En progreso</option>
+          <option value="resuelto" ${f.status==='resuelto'?'selected':''}>Resuelto</option>
+          <option value="rechazado" ${f.status==='rechazado'?'selected':''}>Rechazado</option>
+        </select>
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm text-gray-700">Descripción</label>
+      <textarea id="m-desc" rows="4" class="mt-1 w-full rounded-md border-gray-300 shadow-sm">${esc(f.description)}</textarea>
+    </div>
+    <div>
+      <label class="block text-sm text-gray-700">Adjuntos</label>
+      <div class="grid grid-cols-3 gap-2" id="m-atts">${atts.map(x=>`<div class=\"relative\"><img src=\"${x.url}\" class=\"rounded border\" alt=\"cap\"/><button data-del-att=\"${x.id}\" class=\"absolute top-1 right-1 bg-white/80 rounded px-1 text-rose-700 border\">✕</button></div>`).join('')}</div>
+      <div class="mt-2"><input id="m-add-files" type="file" accept="image/*" multiple></div>
+    </div>
+    <div>
+      <label class="block text-sm text-gray-700">Datos técnicos</label>
+      <pre class="bg-gray-50 p-2 rounded text-xs overflow-auto max-h-64">${diag}</pre>
+    </div>
+  `;
+  mShow(true);
+});
+
+// Save status/fields
+mSave.addEventListener('click', async ()=>{
+  try{
+    if (!current?.feedback?.id) return;
+    const payload = {
+      id: current.feedback.id,
+      status: document.getElementById('m-status').value,
+      title: document.getElementById('m-title').value,
+      description: document.getElementById('m-desc').value,
+    };
+    const r = await apiPost('feedback_update_safe.php', payload);
+    if (r && r.ok) { mMsg.textContent='Guardado'; loadPage().catch(()=>{}); }
+    else mMsg.textContent='Guardado parcial';
+  }catch(e){ mMsg.textContent='Error: '+(e?.message||e); }
+});
+
+// Delete attachment
+mBody.addEventListener('click', async (e)=>{
+  const btn = e.target.closest('button[data-del-att]'); if(!btn) return;
+  const id = parseInt(btn.getAttribute('data-del-att'),10); if(!Number.isFinite(id)) return;
+  if (!confirm('¿Eliminar adjunto?')) return;
+  await apiPost('feedback_attachment_delete_safe.php', { id });
+  // refresh
+  if (current?.feedback?.id){
+    const j = await apiGet('feedback_get_safe.php?id='+current.feedback.id);
+    current = j; const atts = j.attachments || [];
+    const wrap = document.getElementById('m-atts');
+    if (wrap) wrap.innerHTML = atts.map(x=>`<div class=\"relative\"><img src=\"${x.url}\" class=\"rounded border\" alt=\"cap\"/><button data-del-att=\"${x.id}\" class=\"absolute top-1 right-1 bg-white/80 rounded px-1 text-rose-700 border\">✕</button></div>`).join('');
+  }
+});
+
+// Add attachments
+mBody.addEventListener('change', async (e)=>{
+  const inp = e.target.closest('#m-add-files'); if(!inp) return;
+  const files = Array.from(inp.files||[]); if(!files.length || !current?.feedback?.id) return;
+  for (const f of files.slice(0,6)){
+    const fd=new FormData(); fd.append('file', f);
+    const r = await fetch(`${API_BASE}/feedback_upload.php`, { method:'POST', headers: withAuthHeaders({}), body: fd });
+    const txt=await r.text(); let j; try{ j=JSON.parse(txt);}catch{continue}
+    if (r.ok && j?.ok){ await apiPost('feedback_update_safe.php', { id: current.feedback.id, attachments:[{ url:j.url, mime:j.mime, size:j.size }] }); }
+  }
+  const j2 = await apiGet('feedback_get_safe.php?id='+current.feedback.id);
+  current = j2; const atts = j2.attachments || [];
+  const wrap = document.getElementById('m-atts');
+  if (wrap) wrap.innerHTML = atts.map(x=>`<div class=\"relative\"><img src=\"${x.url}\" class=\"rounded border\" alt=\"cap\"/><button data-del-att=\"${x.id}\" class=\"absolute top-1 right-1 bg-white/80 rounded px-1 text-rose-700 border\">✕</button></div>`).join('');
+  e.target.value='';
+});
+
+// Init
+loadPage().catch(()=>{});
+</script>
+</body>
+</html>

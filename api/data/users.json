@@ -1,0 +1,16 @@
+{
+    "tester@cerberogrowthsolutions.com": {
+        "id": "tester@cerberogrowthsolutions.com",
+        "email": "tester@cerberogrowthsolutions.com",
+        "name": "",
+        "pass": "$2y$10$defVWglNbppyySxibJvkcOgCAOn0wo7fMCh3Q5a4vt0/nTaYRHKxe",
+        "created_at": "2025-09-03T00:00:02+00:00"
+    },
+    "cerbero@cerberogrowthsolutions.com": {
+        "id": "cerbero@cerberogrowthsolutions.com",
+        "email": "cerbero@cerberogrowthsolutions.com",
+        "name": "",
+        "pass": "$2y$10$mTVNAI1p2c4lpfd6INv1IOV2TwmKh9fot7h6TgYit/7aW5ZHPIsNC",
+        "created_at": "2025-09-03T00:00:27+00:00"
+    }
+}
