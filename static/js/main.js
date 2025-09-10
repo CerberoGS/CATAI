@@ -94,10 +94,10 @@ function initializeAnalysisBlocks() {
   
   function blockTemplate(i, reso) {
     return `
-      <div class="border rounded-lg p-4">
+      <div class="border border-gray-200 dark-mode:border-gray-700 rounded-lg p-4 bg-white dark-mode:bg-gray-800">
         <div class="flex items-center justify-between mb-3">
-          <h3 class="text-sm font-medium text-gray-700">Resolución ${i+1}</h3>
-          <select class="reso text-xs border rounded px-2 py-1" data-i="${i}">
+          <h3 class="text-sm font-medium text-gray-700 dark-mode:text-gray-300">Resolución ${i+1}</h3>
+          <select class="reso text-xs border border-gray-300 dark-mode:border-gray-600 rounded px-2 py-1 bg-white dark-mode:bg-gray-700 text-gray-900 dark-mode:text-gray-100" data-i="${i}">
             <option value="1min">1 minuto</option>
             <option value="5min">5 minutos</option>
             <option value="15min">15 minutos</option>
@@ -108,27 +108,27 @@ function initializeAnalysisBlocks() {
           </select>
         </div>
         <div class="grid grid-cols-2 gap-2 text-xs">
-          <label class="flex items-center">
+          <label class="flex items-center text-gray-700 dark-mode:text-gray-300">
             <input type="checkbox" class="ind mr-2" data-k="rsi14" checked>
             RSI(14)
           </label>
-          <label class="flex items-center">
+          <label class="flex items-center text-gray-700 dark-mode:text-gray-300">
             <input type="checkbox" class="ind mr-2" data-k="sma20" checked>
             SMA(20)
           </label>
-          <label class="flex items-center">
+          <label class="flex items-center text-gray-700 dark-mode:text-gray-300">
             <input type="checkbox" class="ind mr-2" data-k="ema20" checked>
             EMA(20)
           </label>
-          <label class="flex items-center">
+          <label class="flex items-center text-gray-700 dark-mode:text-gray-300">
             <input type="checkbox" class="ind mr-2" data-k="ema40">
             EMA(40)
           </label>
-          <label class="flex items-center">
+          <label class="flex items-center text-gray-700 dark-mode:text-gray-300">
             <input type="checkbox" class="ind mr-2" data-k="ema100">
             EMA(100)
           </label>
-          <label class="flex items-center">
+          <label class="flex items-center text-gray-700 dark-mode:text-gray-300">
             <input type="checkbox" class="ind mr-2" data-k="ema200">
             EMA(200)
           </label>

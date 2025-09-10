@@ -1,18 +1,8 @@
-<IfModule mod_rewrite.c>
-  RewriteEngine On
-  # No reescribir nada de /bolsa/api/
-  RewriteRule ^api/ - [L]
+# ====== CATAI APP .HTACCESS (SPA + API isolation) ======
+Options -Indexes
+DirectoryIndex index.html
 
-  # Archivos o directorios reales: servir tal cual
-  RewriteCond %{REQUEST_FILENAME} -f [OR]
-  RewriteCond %{REQUEST_FILENAME} -d
-  RewriteRule ^ - [L]
-
-  # Todo lo demás -> SPA
-  RewriteRule ^ index.html [L]
-</IfModule>
-
-## Forzar UTF-8 para contenido estático y declarar idioma
+# Forzar UTF-8 para contenido estático y declarar idioma
 AddDefaultCharset utf-8
 AddType 'text/html; charset=UTF-8' .html .htm
 AddType 'text/css; charset=UTF-8' .css
@@ -24,5 +14,24 @@ AddType 'application/javascript; charset=UTF-8' .js
   # Evitar caches agresivos durante pruebas
   <FilesMatch "\.(html|htm|js|css)$">
     Header set Cache-Control "no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
   </FilesMatch>
 </IfModule>
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /catai/
+
+# 1) No tocar el backend: dejar pasar todo bajo /catai/api/
+RewriteRule ^api/ - [L]
+
+# 2) Si el archivo o directorio existe, servirlo
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# 3) SPA fallback: todo lo demás a index.html
+RewriteRule ^ index.html [L]
+</IfModule>
+# ====== FIN CATAI .HTACCESS ======

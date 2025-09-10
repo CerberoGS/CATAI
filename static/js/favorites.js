@@ -4,7 +4,7 @@ class FavoritesManager {
   constructor() {
     this.favorites = new Set();
     this.maxFavorites = 20;
-    this.storageKey = 'bolsa_favorites';
+    this.storageKey = 'catai_favorites';
     this.recentSymbols = [];
     this.maxRecent = 10;
     this.loadFromStorage();

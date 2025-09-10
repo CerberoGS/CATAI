@@ -697,11 +697,11 @@ body.dark-mode {
   background-color: var(--bg-dark);
 }
 
-/* Regla de contraste seguro: asegura color de texto legible por defecto */
-body:not(.dark-mode) :where(h1,h2,h3,h4,h5,h6,p,span,li,dt,dd,th,td,label,button,a,small,strong,div,pre,code,input,select,textarea) {
+/* Regla de contraste seguro: solo para elementos sin clases específicas de color */
+body:not(.dark-mode) :where(h1,h2,h3,h4,h5,h6,p,span,li,dt,dd,th,td,label,button,a,small,strong,div,pre,code):not([class*="text-"]):not(#blocks *) {
   color: var(--text-light-primary);
 }
-.dark-mode :where(h1,h2,h3,h4,h5,h6,p,span,li,dt,dd,th,td,label,button,a,small,strong,div,pre,code,input,select,textarea) {
+.dark-mode :where(h1,h2,h3,h4,h5,h6,p,span,li,dt,dd,th,td,label,button,a,small,strong,div,pre,code):not([class*="text-"]):not(#blocks *) {
   color: var(--text-dark-primary) !important;
 }
 
@@ -738,13 +738,291 @@ body:not(.dark-mode) :where(.bg-rose-50,.bg-rose-100,
   color: var(--text-light-primary) !important;
 }
 
-/* Inputs/Selects/Textareas - ya había reglas específicas, reforzamos el color */
-body:not(.dark-mode) :where(input,select,textarea) { color: var(--text-light-primary) !important; }
-.dark-mode :where(input,select,textarea) { color: var(--text-dark-primary) !important; }
+/* Inputs/Selects/Textareas - solo para elementos sin clases específicas de color */
+body:not(.dark-mode) :where(input,select,textarea):not([class*="text-"]):not(#blocks *) { color: var(--text-light-primary) !important; }
+.dark-mode :where(input,select,textarea):not([class*="text-"]):not(#blocks *) { color: var(--text-dark-primary) !important; }
 
-/* Botones genéricos: que al menos el texto contraste */
-body:not(.dark-mode) :where(button) { color: var(--text-light-primary); }
-.dark-mode :where(button) { color: var(--text-dark-primary); }
+/* Botones genéricos: solo para elementos sin clases específicas de color */
+body:not(.dark-mode) :where(button):not([class*="text-"]):not(#blocks *) { color: var(--text-light-primary); }
+.dark-mode :where(button):not([class*="text-"]):not(#blocks *) { color: var(--text-dark-primary); }
+
+/* Estilos específicos para resultados de análisis IA */
+.analysis-results {
+  background-color: var(--bg-white) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 0.5rem !important;
+  padding: 1rem !important;
+}
+
+.dark-mode .analysis-results {
+  background-color: var(--bg-dark-secondary) !important;
+  color: var(--text-dark-primary) !important;
+  border-color: var(--border-dark) !important;
+}
+
+.analysis-results h3 {
+  color: var(--text-primary) !important;
+  font-weight: 600 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.dark-mode .analysis-results h3 {
+  color: var(--text-dark-primary) !important;
+}
+
+.analysis-results p {
+  color: var(--text-primary) !important;
+  line-height: 1.6 !important;
+}
+
+.dark-mode .analysis-results p {
+  color: var(--text-dark-primary) !important;
+}
+
+.analysis-results .bg-indigo-50 {
+  background-color: #eef2ff !important;
+  color: #1e40af !important;
+}
+
+.dark-mode .analysis-results .bg-indigo-50 {
+  background-color: #1e3a8a !important;
+  color: #dbeafe !important;
+}
+
+.analysis-results .bg-green-50 {
+  background-color: #f0fdf4 !important;
+  color: #166534 !important;
+}
+
+.dark-mode .analysis-results .bg-green-50 {
+  background-color: #14532d !important;
+  color: #dcfce7 !important;
+}
+
+.analysis-results .bg-blue-50 {
+  background-color: #eff6ff !important;
+  color: #1e40af !important;
+}
+
+.dark-mode .analysis-results .bg-blue-50 {
+  background-color: #1e3a8a !important;
+  color: #dbeafe !important;
+}
+
+/* Asegurar contraste en todos los elementos de análisis */
+.analysis-results * {
+  color: inherit !important;
+}
+
+.dark-mode .analysis-results * {
+  color: inherit !important;
+}
+
+/* ====== CORRECCIÓN ESPECÍFICA PARA CONFIGURACIÓN RÁPIDA ====== */
+
+/* Asegurar contraste en elementos de estado de configuración */
+.bg-blue-50 .text-blue-700,
+.bg-green-50 .text-green-700 {
+  color: #1e40af !important; /* Azul oscuro sobre fondo azul claro */
+}
+
+.dark-mode .bg-blue-50 .text-blue-700,
+.dark-mode .bg-green-50 .text-green-700 {
+  color: #dbeafe !important; /* Azul claro sobre fondo azul oscuro */
+}
+
+.dark-mode .bg-blue-900 .text-blue-200 {
+  color: #dbeafe !important; /* Azul claro sobre fondo azul oscuro */
+}
+
+.dark-mode .bg-green-900 .text-green-200 {
+  color: #dcfce7 !important; /* Verde claro sobre fondo verde oscuro */
+}
+
+/* Asegurar contraste en elementos de estado */
+.status-indicator.status-online {
+  background-color: #10b981 !important;
+}
+
+.status-indicator.status-offline {
+  background-color: #ef4444 !important;
+}
+
+.status-indicator.status-loading {
+  background-color: #f59e0b !important;
+}
+
+/* ====== CORRECCIÓN ESPECÍFICA PARA BLOQUES DE ANÁLISIS ====== */
+
+/* Asegurar contraste en todos los elementos de los bloques de análisis */
+#blocks .rounded-lg {
+  background-color: var(--bg-white) !important;
+  border-color: var(--border-color) !important;
+}
+
+.dark-mode #blocks .rounded-lg {
+  background-color: var(--bg-dark-secondary) !important;
+  border-color: var(--border-dark) !important;
+}
+
+/* Títulos de bloques de análisis - MÁXIMA ESPECIFICIDAD */
+#blocks .font-semibold {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode #blocks .font-semibold {
+  color: var(--text-dark-primary) !important;
+}
+
+/* Labels de bloques de análisis - MÁXIMA ESPECIFICIDAD */
+#blocks label {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode #blocks label {
+  color: var(--text-dark-secondary) !important;
+}
+
+/* Selects en bloques de análisis - MÁXIMA ESPECIFICIDAD */
+#blocks select {
+  background-color: var(--bg-white) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-mode #blocks select {
+  background-color: var(--bg-dark-secondary) !important;
+  border-color: var(--border-dark) !important;
+  color: var(--text-dark-primary) !important;
+}
+
+/* Checkboxes en bloques de análisis - MÁXIMA ESPECIFICIDAD */
+#blocks input[type="checkbox"] {
+  background-color: var(--bg-white) !important;
+  border-color: var(--border-color) !important;
+}
+
+.dark-mode #blocks input[type="checkbox"] {
+  background-color: var(--bg-dark-secondary) !important;
+  border-color: var(--border-dark) !important;
+}
+
+/* Texto de checkboxes en bloques de análisis - MÁXIMA ESPECIFICIDAD */
+#blocks .text-sm {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode #blocks .text-sm {
+  color: var(--text-dark-secondary) !important;
+}
+
+/* Asegurar que TODOS los elementos dentro de #blocks tengan contraste - MÁXIMA ESPECIFICIDAD */
+#blocks * {
+  color: inherit !important;
+}
+
+#blocks .text-gray-700 {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode #blocks .text-gray-700 {
+  color: var(--text-dark-secondary) !important;
+}
+
+#blocks .text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode #blocks .text-gray-900 {
+  color: var(--text-dark-primary) !important;
+}
+
+/* ====== REGLAS DE MÁXIMA ESPECIFICIDAD PARA FORZAR CONTRASTE ====== */
+
+/* Forzar contraste en TODOS los elementos de #blocks - MÁXIMA ESPECIFICIDAD */
+#blocks div,
+#blocks span,
+#blocks label,
+#blocks select,
+#blocks input,
+#blocks option {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode #blocks div,
+.dark-mode #blocks span,
+.dark-mode #blocks label,
+.dark-mode #blocks select,
+.dark-mode #blocks input,
+.dark-mode #blocks option {
+  color: var(--text-dark-primary) !important;
+}
+
+/* Forzar contraste específico para elementos con clases de color - MÁXIMA ESPECIFICIDAD */
+#blocks .text-gray-700,
+#blocks .text-gray-600,
+#blocks .text-gray-500 {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode #blocks .text-gray-700,
+.dark-mode #blocks .text-gray-600,
+.dark-mode #blocks .text-gray-500 {
+  color: var(--text-dark-secondary) !important;
+}
+
+#blocks .text-gray-900,
+#blocks .text-gray-800 {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode #blocks .text-gray-900,
+.dark-mode #blocks .text-gray-800 {
+  color: var(--text-dark-primary) !important;
+}
+
+/* ====== REGLAS ULTRA ESPECÍFICAS PARA SOBRESCRIBIR TAILWIND ====== */
+
+/* Sobrescribir TODAS las clases de color de Tailwind dentro de #blocks */
+#blocks [class*="text-gray-"] {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode #blocks [class*="text-gray-"] {
+  color: var(--text-dark-secondary) !important;
+}
+
+#blocks [class*="text-gray-900"],
+#blocks [class*="text-gray-800"] {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode #blocks [class*="text-gray-900"],
+.dark-mode #blocks [class*="text-gray-800"] {
+  color: var(--text-dark-primary) !important;
+}
+
+/* Forzar contraste en elementos específicos con máxima especificidad */
+#blocks .rounded-lg * {
+  color: var(--text-primary) !important;
+}
+
+.dark-mode #blocks .rounded-lg * {
+  color: var(--text-dark-primary) !important;
+}
+
+#blocks .rounded-lg .text-gray-700,
+#blocks .rounded-lg .text-gray-600,
+#blocks .rounded-lg .text-gray-500 {
+  color: var(--text-secondary) !important;
+}
+
+.dark-mode #blocks .rounded-lg .text-gray-700,
+.dark-mode #blocks .rounded-lg .text-gray-600,
+.dark-mode #blocks .rounded-lg .text-gray-500 {
+  color: var(--text-dark-secondary) !important;
+}
 
 /* Print styles */
 @media print {

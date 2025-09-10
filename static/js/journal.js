@@ -4,7 +4,7 @@
 
   // Configuración de entorno
   const isProduction = window.location.hostname === 'cerberogrowthsolutions.com';
-  const API_BASE = isProduction ? 'https://cerberogrowthsolutions.com/bolsa/api' : '/api';
+  const API_BASE = 'api';
   
   // Logging en archivo
   async function logToFile(level, message, data = null) {
@@ -334,7 +334,7 @@
       if (snap) {
         const enriched = { ...snap, symbol: (current.analysis?.symbol || '') };
         localStorage.setItem('snapshot_to_load', JSON.stringify(enriched));
-        window.location.href = '/bolsa/index.html#reopen';
+        window.location.href = 'index.html#reopen';
         logToFile('INFO', 'Reabriendo análisis en analizador', { 
           symbol: current.analysis?.symbol 
         });

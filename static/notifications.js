@@ -1,4 +1,4 @@
-// Sistema de notificaciones mejorado para Bolsa AI
+// Sistema de notificaciones mejorado para CATAI
 (function() {
   'use strict';
 

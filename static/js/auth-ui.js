@@ -214,12 +214,12 @@ importInput.addEventListener('change', async () => {
 });
 
 btnConfig?.addEventListener('click', () => {
-  window.location.href = '/bolsa/config.html';
+  window.location.href = 'config.html';
 });
 
 const btnJournal = document.getElementById('btn-journal');
 btnJournal?.addEventListener('click', ()=>{ 
-  window.location.href = '/bolsa/journal.html'; 
+  window.location.href = 'journal.html'; 
 });
 
 const btnFeedback = document.getElementById('btn-feedback');

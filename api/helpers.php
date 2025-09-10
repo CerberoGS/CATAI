@@ -53,6 +53,14 @@ if (!isset($GLOBALS['__APP_CONFIG'])) {
 }
 $config = $GLOBALS['__APP_CONFIG'] ?? [];
 
+// Config helper compatible con crypto.php y secrets_* endpoints
+if (!function_exists('cfg')) {
+  function cfg(string $key, $default = null) {
+    $cfg = $GLOBALS['__APP_CONFIG'] ?? [];
+    return array_key_exists($key, $cfg) ? $cfg[$key] : $default;
+  }
+}
+
 /* --------------------------------- CORS ---------------------------------- */
 if (!function_exists('apply_cors')) {
   function apply_cors(?array $cfg = null): void {
@@ -110,10 +118,10 @@ if (!function_exists('apply_cors')) {
         }
       }
       if ($allowCreds) header('Access-Control-Allow-Credentials: true');
-      header('Access-Control-Allow-Headers: ' . ($
+      header('Access-Control-Allow-Headers: ' . (
         $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'] ?? $allowHeaders
       ));
-      header('Access-Control-Allow-Methods: ' . ($
+      header('Access-Control-Allow-Methods: ' . (
         $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'] ?? $allowMethods
       ));
     }
@@ -255,7 +263,7 @@ if (!function_exists('require_user')) {
 /* ------------------------------- HTTP fetch ------------------------------ */
 if (!function_exists('http_user_agent')) {
   function http_user_agent(): string {
-    return 'BolsaAPI/1.0 (+https://cerberogrowthsolutions.com)';
+    return 'CATAI/1.0 (+https://cerberogrowthsolutions.com)';
   }
 }
 
@@ -382,22 +390,47 @@ if (!function_exists('delete_api_key_for')) {
 if (!function_exists('get_api_key_for')) {
   function get_api_key_for(int $userId, string $provider, ?string $fallbackConfKey = null): string {
     $provider = strtolower(trim($provider));
-    $key = '';
+    $keyPlain = '';
+
+    // 1) Intentar leer desde DB
     try {
       if (!function_exists('db')) require_once __DIR__ . '/db.php';
       $pdo = db();
       $st = $pdo->prepare("SELECT api_key_enc FROM user_api_keys WHERE user_id = ? AND provider = ? ORDER BY id DESC LIMIT 1");
       $st->execute([$userId, $provider]);
       $row = $st->fetch();
-      if ($row && is_string($row['api_key_enc']) && trim((string)$row['api_key_enc']) !== '') {
-        $key = trim((string)$row['api_key_enc']);
+      if ($row && is_string($row['api_key_enc'])) {
+        $stored = trim((string)$row['api_key_enc']);
+        if ($stored !== '') {
+          // a) Intentar descifrar si es Base64 de encrypt_text(); si falla, usar tal cual (compat legado)
+          $maybeBin = base64_decode($stored, true);
+          if ($maybeBin !== false && strlen($maybeBin) >= 28) {
+            if (!function_exists('decrypt_text')) require_once __DIR__ . '/crypto.php';
+            try {
+              $dec = decrypt_text($stored);
+              if (is_string($dec) && $dec !== '') {
+                $keyPlain = $dec;
+              } else {
+                // No parece cifrado válido, asumir claro
+                $keyPlain = $stored;
+              }
+            } catch (\Throwable $e) {
+              // En caso de error de cifrado, usar valor tal cual por compatibilidad
+              $keyPlain = $stored;
+            }
+          } else {
+            // No es Base64 con formato esperado: tratar como texto plano legado
+            $keyPlain = $stored;
+          }
+        }
       }
     } catch (\Throwable $e) {
       // Si falla la DB, seguimos con fallback
     }
 
-    if ($key !== '') return $key;
+    if ($keyPlain !== '') return $keyPlain;
 
+    // 2) Fallbacks: variable de entorno, config.php o providers[*].api_key
     $cfg     = $GLOBALS['__APP_CONFIG'] ?? [];
     $confKey = $fallbackConfKey ?: strtoupper($provider) . '_API_KEY';
 

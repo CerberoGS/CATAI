@@ -6,7 +6,7 @@ let userData = {};
 async function loadUserData() {
   try {
     // Usar el endpoint que ya funciona
-    const response = await fetch('/bolsa/api/auth_me_safe.php', {
+    const response = await fetch('api/auth_me_safe.php', {
       headers: {
         'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
       }

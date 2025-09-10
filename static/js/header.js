@@ -65,6 +65,22 @@
     return 0;
   }
 
+  function isAnalyzerPage(){
+    const path = location.pathname.split('/').pop() || 'index.html';
+    return ['index.html', 'market-config.html', 'ai.html', 'journal.html'].includes(path);
+  }
+
+  function getAnalyzerActivePage(){
+    const path = location.pathname.split('/').pop() || 'index.html';
+    const analyzerPages = {
+      'index.html': 'Trading Desk',
+      'market-config.html': 'Market Config', 
+      'ai.html': 'AI Config',
+      'journal.html': 'Journal'
+    };
+    return analyzerPages[path] || 'Trading Desk';
+  }
+
   function render(root, active){
     if (!root) return;
     const dm = localStorage.getItem('darkMode') === 'true';
@@ -72,26 +88,60 @@
     const path = location.pathname.split('/').pop() || 'index.html';
     const isActive = (p)=> active ? active===p : path===p;
     const adminVisible = isAdmin();
+    const isAnalyzer = isAnalyzerPage();
+    const analyzerActive = getAnalyzerActivePage();
 
     const favCount = getFavoritesCount();
     root.innerHTML = `
+      <style>
+        .analyzer-submenu {
+          opacity: 0;
+          visibility: hidden;
+          transform: translateY(-10px);
+          transition: all 0.2s ease-in-out;
+        }
+        .analyzer-group:hover .analyzer-submenu {
+          opacity: 1;
+          visibility: visible;
+          transform: translateY(0);
+        }
+      </style>
       <div class="w-full border-b dark-mode:border-gray-700 bg-white dark-mode:bg-gray-900">
         <div class="container mx-auto px-4 py-3 flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="text-2xl">📈</span>
-            <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark-mode:text-gray-100">Analizador de Inversiones</h1>
+            <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark-mode:text-gray-100">CATAI</h1>
           </div>
           <nav class="flex items-center gap-3 text-sm">
-            <button id="hdr-theme" class="px-2 py-1 rounded bg-gray-100 dark-mode:bg-gray-800 text-gray-800 dark-mode:text-gray-100">
+            <button id="hdr-theme" class="px-2 py-1 rounded bg-gray-100 dark-mode:bg-gray-800 text-gray-800 dark-mode:text-gray-100 hover:bg-gray-200 dark-mode:hover:bg-gray-700">
               ${dm ? '☀️ Modo Claro' : '🌙 Modo Oscuro'}
             </button>
-            <a href="index.html" class="px-2 py-1 rounded ${isActive('index.html')?'bg-gray-200 dark-mode:bg-gray-700':''}">📊 Analizador</a>
-            <a href="account.html" class="px-2 py-1 rounded ${isActive('account.html')?'bg-gray-200 dark-mode:bg-gray-700':''}">👤 Mi Cuenta</a>
-            ${adminVisible? `<a href="admin.html" class="px-2 py-1 rounded ${isActive('admin.html')?'bg-gray-200 dark-mode:bg-gray-700':''}">⚙️ Admin</a>` : ''}
-            <a href="journal.html" class="px-2 py-1 rounded ${isActive('journal.html')?'bg-gray-200 dark-mode:bg-gray-700':''}">📝 Bitácora</a>
-            <a href="config.html" class="px-2 py-1 rounded ${isActive('config.html')?'bg-gray-200 dark-mode:bg-gray-700':''}">🔧 Configuración</a>
-            <button id="hdr-feedback" class="px-2 py-1 rounded bg-gray-100 dark-mode:bg-gray-800">💬 Feedback</button>
-            <a id="hdr-favs" href="#" class="px-2 py-1 rounded bg-gray-100 dark-mode:bg-gray-800 flex items-center gap-1">
+            <div class="relative analyzer-group">
+              <a href="index.html" class="px-2 py-1 rounded ${isAnalyzer?'bg-indigo-100 dark-mode:bg-indigo-900 text-indigo-700 dark-mode:text-indigo-200 font-medium':'text-gray-700 dark-mode:text-gray-300 hover:bg-gray-100 dark-mode:hover:bg-gray-800'} flex items-center gap-1">
+                📊 Analizador ${isAnalyzer?'▼':''}
+              </a>
+              ${isAnalyzer ? `
+                <div class="analyzer-submenu absolute top-full left-0 mt-1 w-48 bg-white dark-mode:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark-mode:border-gray-700 py-2 z-50">
+                  <a href="market-config.html" class="block px-4 py-2 text-sm ${analyzerActive==='Market Config'?'bg-indigo-50 dark-mode:bg-indigo-900 text-indigo-700 dark-mode:text-indigo-200 font-medium':'text-gray-700 dark-mode:text-gray-300 hover:bg-gray-50 dark-mode:hover:bg-gray-700'}">
+                    📊 Market Config
+                  </a>
+                  <a href="ai.html" class="block px-4 py-2 text-sm ${analyzerActive==='AI Config'?'bg-indigo-50 dark-mode:bg-indigo-900 text-indigo-700 dark-mode:text-indigo-200 font-medium':'text-gray-700 dark-mode:text-gray-300 hover:bg-gray-50 dark-mode:hover:bg-gray-700'}">
+                    🧠 AI Config
+                  </a>
+                  <a href="index.html" class="block px-4 py-2 text-sm ${analyzerActive==='Trading Desk'?'bg-indigo-50 dark-mode:bg-indigo-900 text-indigo-700 dark-mode:text-indigo-200 font-medium':'text-gray-700 dark-mode:text-gray-300 hover:bg-gray-50 dark-mode:hover:bg-gray-700'}">
+                    🎯 Trading Desk
+                  </a>
+                  <a href="journal.html" class="block px-4 py-2 text-sm ${analyzerActive==='Journal'?'bg-indigo-50 dark-mode:bg-indigo-900 text-indigo-700 dark-mode:text-indigo-200 font-medium':'text-gray-700 dark-mode:text-gray-300 hover:bg-gray-50 dark-mode:hover:bg-gray-700'}">
+                    📝 Journal
+                  </a>
+                </div>
+              ` : ''}
+            </div>
+            <a href="account.html" class="px-2 py-1 rounded ${isActive('account.html')?'bg-indigo-100 dark-mode:bg-indigo-900 text-indigo-700 dark-mode:text-indigo-200 font-medium':'text-gray-700 dark-mode:text-gray-300 hover:bg-gray-100 dark-mode:hover:bg-gray-800'}">👤 Mi Cuenta</a>
+            ${adminVisible? `<a href="admin.html" class="px-2 py-1 rounded ${isActive('admin.html')?'bg-indigo-100 dark-mode:bg-indigo-900 text-indigo-700 dark-mode:text-indigo-200 font-medium':'text-gray-700 dark-mode:text-gray-300 hover:bg-gray-100 dark-mode:hover:bg-gray-800'}">⚙️ Admin</a>` : ''}
+            <a href="config.html" class="px-2 py-1 rounded ${isActive('config.html')?'bg-indigo-100 dark-mode:bg-indigo-900 text-indigo-700 dark-mode:text-indigo-200 font-medium':'text-gray-700 dark-mode:text-gray-300 hover:bg-gray-100 dark-mode:hover:bg-gray-800'}">🔧 Configuración</a>
+            <button id="hdr-feedback" class="px-2 py-1 rounded bg-gray-100 dark-mode:bg-gray-800 text-gray-700 dark-mode:text-gray-300 hover:bg-gray-200 dark-mode:hover:bg-gray-700">💬 Feedback</button>
+            <a id="hdr-favs" href="#" class="px-2 py-1 rounded bg-gray-100 dark-mode:bg-gray-800 text-gray-700 dark-mode:text-gray-300 hover:bg-gray-200 dark-mode:hover:bg-gray-700 flex items-center gap-1">
               ⭐ Favoritos <span id="hdr-favs-badge" class="ml-1 inline-flex items-center justify-center text-xs px-1.5 rounded-full bg-yellow-200 text-yellow-900 ${favCount? '':'hidden'}">${favCount}</span>
             </a>
             <button id="hdr-logout" class="px-2 py-1 rounded bg-red-600 text-white hover:bg-red-700">Cerrar Sesión</button>

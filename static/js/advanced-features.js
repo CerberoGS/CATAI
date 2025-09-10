@@ -6,8 +6,8 @@ class FavoritesManager {
     this.favorites = new Set();
     this.recent = [];
     this.maxRecent = 20;
-    this.storageKey = 'bolsa_favorites';
-    this.recentKey = 'bolsa_recent';
+    this.storageKey = 'catai_favorites';
+    this.recentKey = 'catai_recent';
     this.init();
   }
 
@@ -312,11 +312,11 @@ class KeyboardShortcuts {
     }, 'Abrir feedback');
 
     this.add('ctrl+shift+j', () => {
-      window.location.href = '/bolsa/journal.html';
+      window.location.href = 'journal.html';
     }, 'Ir a Journal');
 
     this.add('ctrl+shift+c', () => {
-      window.location.href = '/bolsa/config.html';
+      window.location.href = 'config.html';
     }, 'Ir a Configuración');
   }
 

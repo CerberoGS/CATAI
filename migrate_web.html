@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migración IA Comportamental - CATAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .log-success { color: #059669; }
+        .log-error { color: #dc2626; }
+        .log-warning { color: #d97706; }
+        .log-info { color: #2563eb; }
+        .log-section { font-weight: bold; margin-top: 1rem; }
+        .log-detail { margin-left: 1rem; font-family: monospace; font-size: 0.875rem; }
+    </style>
+</head>
+<body class="bg-gray-50 dark-mode:bg-gray-900">
+    <div class="container mx-auto px-4 py-8">
+        <div class="bg-white dark-mode:bg-gray-800 rounded-xl shadow-lg p-6">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="text-4xl">🚀</div>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900 dark-mode:text-gray-100">Migración IA Comportamental</h1>
+                    <p class="text-gray-600 dark-mode:text-gray-300">Sistema de migración seguro para producción</p>
+                </div>
+            </div>
+
+            <div class="bg-yellow-50 dark-mode:bg-yellow-900/20 border border-yellow-200 dark-mode:border-yellow-800 rounded-lg p-4 mb-6">
+                <div class="flex items-start gap-3">
+                    <div class="text-2xl">⚠️</div>
+                    <div>
+                        <h3 class="font-semibold text-yellow-800 dark-mode:text-yellow-200">Importante</h3>
+                        <p class="text-sm text-yellow-700 dark-mode:text-yellow-300 mt-1">
+                            Este archivo es temporal y debe eliminarse después de la migración por seguridad.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <button id="start-migration" class="w-full py-3 px-6 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors">
+                    🚀 Iniciar Migración
+                </button>
+                
+                <button id="diagnostic" class="w-full py-3 px-6 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
+                    🔬 Diagnóstico Completo
+                </button>
+                
+                <button id="verify-tables" class="w-full py-3 px-6 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors">
+                    🔍 Verificar Tablas
+                </button>
+                
+                <button id="test-endpoints" class="w-full py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                    🧪 Probar Endpoints
+                </button>
+                
+                <button id="fix-foreign-keys" class="w-full py-3 px-6 bg-orange-600 text-white rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors">
+                    🔧 Corregir Claves Foráneas
+                </button>
+                
+                <button id="direct-migration" class="w-full py-3 px-6 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors">
+                    ⚡ Migración Directa
+                </button>
+            </div>
+
+            <div id="migration-log" class="mt-6 bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm max-h-96 overflow-y-auto hidden">
+                <div class="log-section">📋 Log de Migración</div>
+                <div id="log-content"></div>
+            </div>
+
+            <div id="migration-status" class="mt-6 hidden">
+                <div class="bg-green-50 dark-mode:bg-green-900/20 border border-green-200 dark-mode:border-green-800 rounded-lg p-4">
+                    <div class="flex items-center gap-3">
+                        <div class="text-2xl">✅</div>
+                        <div>
+                            <h3 class="font-semibold text-green-800 dark-mode:text-green-200">Migración Completada</h3>
+                            <p class="text-sm text-green-700 dark-mode:text-green-300 mt-1">
+                                El sistema de IA comportamental está listo para usar.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'api';
+        
+        function log(message, type = 'info') {
+            const logContent = document.getElementById('log-content');
+            const logContainer = document.getElementById('migration-log');
+            const timestamp = new Date().toLocaleTimeString();
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-${type}`;
+            logEntry.innerHTML = `[${timestamp}] ${message}`;
+            
+            logContent.appendChild(logEntry);
+            logContainer.classList.remove('hidden');
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function logSection(title) {
+            const logContent = document.getElementById('log-content');
+            const section = document.createElement('div');
+            section.className = 'log-section';
+            section.textContent = title;
+            logContent.appendChild(section);
+        }
+
+        function logDetail(message) {
+            const logContent = document.getElementById('log-content');
+            const detail = document.createElement('div');
+            detail.className = 'log-detail';
+            detail.textContent = message;
+            logContent.appendChild(detail);
+        }
+
+        async function startMigration() {
+            const button = document.getElementById('start-migration');
+            button.disabled = true;
+            button.textContent = '🔄 Migrando...';
+            
+            logSection('🚀 Iniciando Migración del Sistema de IA Comportamental');
+            log('Conectando a la base de datos...', 'info');
+            
+            try {
+                // Paso 1: Verificar conexión a la base de datos
+                log('Verificando conexión a la base de datos...', 'info');
+                const healthResponse = await fetch(`${API_BASE}/db_check.php`);
+                const healthData = await healthResponse.json();
+                
+                if (healthData.ok) {
+                    log('✅ Conexión a la base de datos verificada', 'success');
+                } else {
+                    log('❌ Error de conexión a la base de datos', 'error');
+                    throw new Error('No se pudo conectar a la base de datos');
+                }
+
+                // Paso 2: Verificar estado actual de las tablas
+                logSection('🔍 Verificando Estado Actual de las Tablas');
+                const verifyResponse = await fetch(`${API_BASE}/migrate_verify_safe.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
+                    }
+                });
+                
+                const verifyData = await verifyResponse.json();
+                
+                if (verifyData.tables) {
+                    verifyData.tables.forEach(table => {
+                        if (table.exists) {
+                            log(`✅ ${table.name}: Existe (${table.rows} filas)`, 'success');
+                        } else {
+                            log(`❌ ${table.name}: No existe`, 'error');
+                        }
+                    });
+                }
+
+                // Paso 3: Crear tablas faltantes
+                logSection('📊 Creando Tablas Faltantes');
+                
+                const tables = [
+                    'ai_learning_metrics',
+                    'ai_behavioral_patterns', 
+                    'ai_analysis_history',
+                    'ai_learning_events',
+                    'ai_behavior_profiles'
+                ];
+
+                for (const table of tables) {
+                    try {
+                        log(`Procesando tabla: ${table}`, 'info');
+                        
+                        // Crear tabla usando endpoint de migración
+                        const createResponse = await fetch(`${API_BASE}/migrate_table_safe.php`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
+                            },
+                            body: JSON.stringify({ table_name: table })
+                        });
+                        
+                        const createData = await createResponse.json();
+                        
+                        if (createData.ok) {
+                            log(`✅ Tabla ${table}: ${createData.message} (${createData.rows} filas)`, 'success');
+                        } else {
+                            log(`⚠️ Tabla ${table}: ${createData.error || createData.message || 'Error desconocido'}`, 'warning');
+                        }
+                        
+                    } catch (error) {
+                        log(`❌ Error procesando tabla ${table}: ${error.message}`, 'error');
+                    }
+                }
+
+                // Paso 4: Insertar datos iniciales
+                logSection('🔧 Insertando Datos Iniciales');
+                
+                try {
+                    const initResponse = await fetch(`${API_BASE}/migrate_init_data_safe.php`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
+                        }
+                    });
+                    
+                    const initData = await initResponse.json();
+                    
+                    if (initData.ok) {
+                        log('✅ Datos iniciales procesados correctamente', 'success');
+                        logDetail(`Usuarios procesados: ${initData.users_processed || 0}`);
+                        logDetail(`Total de usuarios: ${initData.total_users || 0}`);
+                        
+                        if (initData.errors && initData.errors.length > 0) {
+                            log('⚠️ Errores encontrados:', 'warning');
+                            initData.errors.forEach(error => {
+                                logDetail(`- ${error}`, 'warning');
+                            });
+                        }
+                    } else {
+                        log('❌ Error insertando datos iniciales: ' + (initData.error || initData.message || 'Error desconocido'), 'error');
+                    }
+                    
+                } catch (error) {
+                    log('❌ Error en datos iniciales: ' + error.message, 'error');
+                }
+
+                // Paso 5: Verificación final
+                logSection('🔍 Verificación Final');
+                await verifyTables();
+
+                logSection('🎉 Migración Completada');
+                log('El sistema de IA comportamental está listo para usar', 'success');
+                
+                // Mostrar estado de éxito
+                document.getElementById('migration-status').classList.remove('hidden');
+                
+            } catch (error) {
+                log(`💥 Error fatal: ${error.message}`, 'error');
+                log('Revisa los logs anteriores para más detalles', 'error');
+            } finally {
+                button.disabled = false;
+                button.textContent = '🚀 Iniciar Migración';
+            }
+        }
+
+        async function verifyTables() {
+            log('Verificando tablas creadas...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/migrate_verify_safe.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.ok) {
+                    log('✅ Verificación completada exitosamente', 'success');
+                    
+                    if (data.tables) {
+                        data.tables.forEach(table => {
+                            if (table.exists) {
+                                log(`✅ ${table.name}: Existe (${table.rows} filas)`, 'success');
+                            } else {
+                                log(`❌ ${table.name}: No existe`, 'error');
+                            }
+                        });
+                    }
+                    
+                    if (data.structure_ok) {
+                        log('✅ Estructura de tablas correcta', 'success');
+                    } else {
+                        log('⚠️ Estructura de tablas puede tener problemas', 'warning');
+                    }
+                    
+                    if (data.users_with_metrics > 0) {
+                        log(`✅ ${data.users_with_metrics} usuarios con métricas`, 'success');
+                    }
+                    
+                    if (data.users_with_profiles > 0) {
+                        log(`✅ ${data.users_with_profiles} usuarios con perfiles`, 'success');
+                    }
+                    
+                    if (data.migration_complete) {
+                        log('🎉 Migración completamente exitosa', 'success');
+                    } else {
+                        log('⚠️ Migración parcialmente exitosa', 'warning');
+                    }
+                    
+                } else {
+                    log('❌ Error en verificación: ' + (data.error || data.message || 'Error desconocido'), 'error');
+                    
+                    if (data.tables) {
+                        data.tables.forEach(table => {
+                            if (table.exists) {
+                                log(`✅ ${table.name}: Existe (${table.rows} filas)`, 'success');
+                            } else {
+                                log(`❌ ${table.name}: No existe`, 'error');
+                            }
+                        });
+                    }
+                }
+                
+            } catch (error) {
+                log('❌ Error verificando tablas: ' + error.message, 'error');
+            }
+        }
+
+        async function testEndpoints() {
+            logSection('🧪 Probando Endpoints de IA Comportamental');
+            
+            const endpoints = [
+                'ai_learning_metrics_safe.php',
+                'ai_behavioral_patterns_safe.php',
+                'ai_analysis_history_safe.php',
+                'ai_analysis_save_safe.php'
+            ];
+
+            for (const endpoint of endpoints) {
+                try {
+                    log(`Probando endpoint: ${endpoint}`, 'info');
+                    
+                    const response = await fetch(`${API_BASE}/${endpoint}`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        log(`✅ ${endpoint}: Funcionando correctamente`, 'success');
+                    } else {
+                        log(`❌ ${endpoint}: ${data.error || 'Error desconocido'}`, 'error');
+                    }
+                    
+                } catch (error) {
+                    log(`❌ ${endpoint}: ${error.message}`, 'error');
+                }
+            }
+        }
+
+        async function runDiagnostic() {
+            const button = document.getElementById('diagnostic');
+            button.disabled = true;
+            button.textContent = '🔬 Diagnosticando...';
+            
+            logSection('🔬 Diagnóstico Completo del Sistema');
+            log('Ejecutando diagnóstico detallado...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/migrate_diagnostic_safe.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.database_connection) {
+                    log('✅ Conexión a la base de datos: OK', 'success');
+                } else {
+                    log('❌ Conexión a la base de datos: FALLO', 'error');
+                }
+                
+                log(`📊 Total de usuarios: ${data.total_users || 0}`, 'info');
+                log(`👥 Usuarios con métricas: ${data.users_with_metrics || 0}`, 'info');
+                log(`👤 Usuarios con perfiles: ${data.users_with_profiles || 0}`, 'info');
+                
+                logSection('📋 Estado de las Tablas');
+                
+                if (data.tables_status) {
+                    data.tables_status.forEach(table => {
+                        if (table.exists) {
+                            if (table.structure_ok) {
+                                log(`✅ ${table.name}: OK (${table.rows} filas)`, 'success');
+                            } else {
+                                log(`⚠️ ${table.name}: Existe pero con problemas (${table.rows} filas)`, 'warning');
+                                table.errors.forEach(error => {
+                                    logDetail(`- ${error}`, 'warning');
+                                });
+                            }
+                        } else {
+                            log(`❌ ${table.name}: No existe`, 'error');
+                            table.errors.forEach(error => {
+                                logDetail(`- ${error}`, 'error');
+                            });
+                        }
+                    });
+                }
+                
+                if (data.errors && data.errors.length > 0) {
+                    logSection('❌ Errores Encontrados');
+                    data.errors.forEach(error => {
+                        log(`- ${error}`, 'error');
+                    });
+                }
+                
+                if (data.recommendations && data.recommendations.length > 0) {
+                    logSection('💡 Recomendaciones');
+                    data.recommendations.forEach(rec => {
+                        log(`- ${rec}`, 'info');
+                    });
+                }
+                
+                if (data.migration_status) {
+                    logSection('📈 Estado de la Migración');
+                    log(`Tablas existentes: ${data.migration_status.all_tables_exist ? '✅' : '❌'}`, 
+                        data.migration_status.all_tables_exist ? 'success' : 'error');
+                    log(`Estructura correcta: ${data.migration_status.all_structures_ok ? '✅' : '❌'}`, 
+                        data.migration_status.all_structures_ok ? 'success' : 'error');
+                    log(`Datos inicializados: ${data.migration_status.data_initialized ? '✅' : '❌'}`, 
+                        data.migration_status.data_initialized ? 'success' : 'error');
+                    log(`Listo para usar: ${data.migration_status.ready_for_use ? '✅' : '❌'}`, 
+                        data.migration_status.ready_for_use ? 'success' : 'error');
+                }
+                
+            } catch (error) {
+                log(`❌ Error en diagnóstico: ${error.message}`, 'error');
+            } finally {
+                button.disabled = false;
+                button.textContent = '🔬 Diagnóstico Completo';
+            }
+        }
+
+        async function fixForeignKeys() {
+            const button = document.getElementById('fix-foreign-keys');
+            button.disabled = true;
+            button.textContent = '🔧 Corrigiendo...';
+            
+            logSection('🔧 Corrección de Claves Foráneas');
+            log('Analizando estructura de la tabla users...', 'info');
+            
+            try {
+                // Paso 1: Obtener diagnóstico de claves foráneas
+                const diagnosticResponse = await fetch(`${API_BASE}/migrate_fix_foreign_keys_safe.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
+                    }
+                });
+                
+                const diagnosticData = await diagnosticResponse.json();
+                
+                if (diagnosticData.users_table_structure && diagnosticData.users_table_structure.length > 0) {
+                    log('✅ Estructura de tabla users obtenida', 'success');
+                    
+                    if (diagnosticData.id_column_info) {
+                        const idCol = diagnosticData.id_column_info;
+                        log(`📋 Columna id: ${idCol.Type} ${idCol.Null === 'YES' ? 'NULL' : 'NOT NULL'}`, 'info');
+                        log(`🔧 Tipo detectado: ${idCol.Type}`, 'info');
+                    }
+                    
+                    if (diagnosticData.recommended_fixes && diagnosticData.recommended_fixes.length > 0) {
+                        log('💡 Recomendaciones:', 'info');
+                        diagnosticData.recommended_fixes.forEach(fix => {
+                            log(`- ${fix}`, 'info');
+                        });
+                    }
+                } else {
+                    log('❌ No se pudo obtener estructura de tabla users', 'error');
+                    return;
+                }
+                
+                // Paso 2: Crear tablas con estructura corregida
+                logSection('📊 Creando Tablas con Estructura Corregida');
+                
+                const tables = [
+                    'ai_learning_metrics',
+                    'ai_behavioral_patterns', 
+                    'ai_analysis_history',
+                    'ai_learning_events',
+                    'ai_behavior_profiles'
+                ];
+
+                for (const table of tables) {
+                    try {
+                        log(`Creando tabla: ${table}`, 'info');
+                        
+                        const createResponse = await fetch(`${API_BASE}/migrate_execute_fixed_safe.php`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
+                            },
+                            body: JSON.stringify({ table_name: table })
+                        });
+                        
+                        const createData = await createResponse.json();
+                        
+                        if (createData.ok) {
+                            log(`✅ ${table}: ${createData.message} (${createData.rows} filas)`, 'success');
+                            log(`🔧 Tipo user_id usado: ${createData.user_id_type}`, 'info');
+                        } else {
+                            log(`❌ ${table}: ${createData.error || createData.message || 'Error desconocido'}`, 'error');
+                        }
+                        
+                    } catch (error) {
+                        log(`❌ Error creando tabla ${table}: ${error.message}`, 'error');
+                    }
+                }
+                
+                // Paso 3: Verificación final
+                logSection('🔍 Verificación Final');
+                await verifyTables();
+                
+                logSection('🎉 Corrección Completada');
+                log('Las tablas han sido creadas con la estructura corregida', 'success');
+                
+            } catch (error) {
+                log(`❌ Error en corrección: ${error.message}`, 'error');
+            } finally {
+                button.disabled = false;
+                button.textContent = '🔧 Corregir Claves Foráneas';
+            }
+        }
+
+        async function directMigration() {
+            const button = document.getElementById('direct-migration');
+            button.disabled = true;
+            button.textContent = '⚡ Migrando...';
+            
+            logSection('⚡ Migración Directa con Estructura Corregida');
+            log('Usando estructura conocida: BIGINT(20) UNSIGNED NOT NULL', 'info');
+            
+            try {
+                // Paso 1: Crear tablas
+                log('Creando tablas con estructura corregida...', 'info');
+                
+                const createResponse = await fetch(`${API_BASE}/migrate_direct_safe.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
+                    },
+                    body: JSON.stringify({ action: 'create_tables' })
+                });
+                
+                const createData = await createResponse.json();
+                
+                if (createData.results) {
+                    createData.results.forEach(result => {
+                        if (result.status === 'success') {
+                            log(`✅ ${result.table}: ${result.message} (${result.rows} filas)`, 'success');
+                        } else {
+                            log(`❌ ${result.table}: ${result.message}`, 'error');
+                        }
+                    });
+                }
+                
+                // Paso 2: Insertar datos iniciales
+                logSection('🔧 Insertando Datos Iniciales');
+                
+                const initResponse = await fetch(`${API_BASE}/migrate_direct_safe.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
+                    },
+                    body: JSON.stringify({ action: 'insert_initial_data' })
+                });
+                
+                const initData = await initResponse.json();
+                
+                if (initData.results && initData.results.length > 0) {
+                    const result = initData.results[0];
+                    if (result.status === 'success') {
+                        log(`✅ Datos iniciales: ${result.message}`, 'success');
+                        log(`👥 Usuarios procesados: ${result.users_processed}/${result.total_users}`, 'info');
+                        
+                        if (result.errors && result.errors.length > 0) {
+                            log('⚠️ Errores encontrados:', 'warning');
+                            result.errors.forEach(error => {
+                                log(`- ${error}`, 'warning');
+                            });
+                        }
+                    } else {
+                        log(`❌ Error en datos iniciales: ${result.message}`, 'error');
+                    }
+                }
+                
+                // Paso 3: Verificación final
+                logSection('🔍 Verificación Final');
+                await verifyTables();
+                
+                logSection('🎉 Migración Directa Completada');
+                log('Sistema de IA comportamental listo para usar', 'success');
+                
+                // Mostrar estado de éxito
+                document.getElementById('migration-status').classList.remove('hidden');
+                
+            } catch (error) {
+                log(`❌ Error en migración directa: ${error.message}`, 'error');
+            } finally {
+                button.disabled = false;
+                button.textContent = '⚡ Migración Directa';
+            }
+        }
+
+        // Event listeners
+        document.getElementById('start-migration').addEventListener('click', startMigration);
+        document.getElementById('diagnostic').addEventListener('click', runDiagnostic);
+        document.getElementById('verify-tables').addEventListener('click', verifyTables);
+        document.getElementById('test-endpoints').addEventListener('click', testEndpoints);
+        document.getElementById('fix-foreign-keys').addEventListener('click', fixForeignKeys);
+        document.getElementById('direct-migration').addEventListener('click', directMigration);
+
+        // Verificar autenticación al cargar
+        window.addEventListener('load', () => {
+            const token = localStorage.getItem('auth_token');
+            if (!token) {
+                log('⚠️ No hay token de autenticación. Algunas funciones pueden fallar.', 'warning');
+                log('Inicia sesión en la aplicación principal primero.', 'info');
+            } else {
+                log('✅ Token de autenticación encontrado', 'success');
+            }
+        });
+    </script>
+</body>
+</html>

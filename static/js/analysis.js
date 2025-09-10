@@ -6,10 +6,10 @@ const defaultRes = ['60min','15min','5min'];
 
 function blockTemplate(i, reso) {
   return `
-    <div class="rounded-lg border p-3">
-      <div class="font-semibold text-gray-800 mb-2">Análisis ${i+1}</div>
-      <label class="block text-sm font-medium text-gray-700">Temporalidad</label>
-      <select class="w-full mt-1 rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 reso">
+    <div class="rounded-lg border border-gray-200 dark-mode:border-gray-700 p-3 bg-white dark-mode:bg-gray-800">
+      <div class="font-semibold text-gray-900 dark-mode:text-gray-100 mb-2">Análisis ${i+1}</div>
+      <label class="block text-sm font-medium text-gray-700 dark-mode:text-gray-300">Temporalidad</label>
+      <select class="w-full mt-1 rounded-md border-gray-300 dark-mode:border-gray-600 bg-white dark-mode:bg-gray-700 text-gray-900 dark-mode:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 reso">
         <option value="1min" ${reso==='1min'?'selected':''}>1 min</option>
         <option value="5min" ${reso==='5min'?'selected':''}>5 min</option>
         <option value="15min" ${reso==='15min'?'selected':''}>15 min</option>
@@ -19,12 +19,12 @@ function blockTemplate(i, reso) {
         <option value="weekly" ${reso==='weekly'?'selected':''}>1 semana</option>
       </select>
       <div class="mt-2 grid grid-cols-2 gap-2">
-        <label class="inline-flex items-center"><input type="checkbox" class="ind mr-2" data-k="rsi14" checked/> <span class="text-sm">RSI(14)</span></label>
-        <label class="inline-flex items-center"><input type="checkbox" class="ind mr-2" data-k="sma20" checked/> <span class="text-sm">SMA(20)</span></label>
-        <label class="inline-flex items-center"><input type="checkbox" class="ind mr-2" data-k="ema20" checked/> <span class="text-sm">EMA(20)</span></label>
-        <label class="inline-flex items-center"><input type="checkbox" class="ind mr-2" data-k="ema40"/> <span class="text-sm">EMA(40)</span></label>
-        <label class="inline-flex items-center"><input type="checkbox" class="ind mr-2" data-k="ema100"/> <span class="text-sm">EMA(100)</span></label>
-        <label class="inline-flex items-center"><input type="checkbox" class="ind mr-2" data-k="ema200"/> <span class="text-sm">EMA(200)</span></label>
+        <label class="inline-flex items-center text-gray-700 dark-mode:text-gray-300"><input type="checkbox" class="ind mr-2" data-k="rsi14" checked/> <span class="text-sm">RSI(14)</span></label>
+        <label class="inline-flex items-center text-gray-700 dark-mode:text-gray-300"><input type="checkbox" class="ind mr-2" data-k="sma20" checked/> <span class="text-sm">SMA(20)</span></label>
+        <label class="inline-flex items-center text-gray-700 dark-mode:text-gray-300"><input type="checkbox" class="ind mr-2" data-k="ema20" checked/> <span class="text-sm">EMA(20)</span></label>
+        <label class="inline-flex items-center text-gray-700 dark-mode:text-gray-300"><input type="checkbox" class="ind mr-2" data-k="ema40"/> <span class="text-sm">EMA(40)</span></label>
+        <label class="inline-flex items-center text-gray-700 dark-mode:text-gray-300"><input type="checkbox" class="ind mr-2" data-k="ema100"/> <span class="text-sm">EMA(100)</span></label>
+        <label class="inline-flex items-center text-gray-700 dark-mode:text-gray-300"><input type="checkbox" class="ind mr-2" data-k="ema200"/> <span class="text-sm">EMA(200)</span></label>
       </div>
     </div>
   `;
@@ -183,12 +183,58 @@ async function analyze() {
       `DETALLE POR RESOLUCIÓN:\n${detalleRes}\n` +
       `OPCIONES:\n${opcionesPrompt}`;
 
-    const aiRes = await Config.apiPost('ai_analyze.php', {
-      provider: aiProvider, 
-      model: aiModel, 
-      prompt,
-      systemPrompt: "Eres analista de opciones intradía. No inventes datos. Da recomendaciones claras y riesgos."
-    }, true).catch(()=>({ text: '' }));
+    // Obtener configuración completa de ai.html
+    const aiConfig = getAIConfigFromStorage();
+    const behavioralContext = await getBehavioralContext();
+    
+    // Construir prompt enriquecido con toda la información de ai.html
+    const enrichedPrompt = buildEnrichedPrompt(symbol, prompt, aiConfig, behavioralContext);
+    
+    // Sistema Híbrido de Análisis
+    let aiRes;
+    const analysisMode = document.querySelector('input[name="analysis-mode"]:checked')?.value || 'enriched';
+    
+    if (analysisMode === 'enriched') {
+      // Análisis Completo: Knowledge Base + Patrones + Historial + Prompt del Usuario
+      const effectiveProvider = aiConfig?.ai_provider || aiProvider;
+      const effectiveModel = aiConfig?.ai_model || aiModel;
+      
+      aiRes = await Config.apiPost('ai_analyze_hybrid.php', {
+        provider: effectiveProvider,
+        model: effectiveModel,
+        prompt: enrichedPrompt,
+        systemPrompt: buildSystemPrompt(aiConfig, behavioralContext),
+        useKnowledgeBase: true,
+        includeBehavioralPatterns: true,
+        includeAnalysisHistory: true,
+        includeFiles: [] // Se pueden incluir archivos específicos si se desea
+      }, true).catch(()=>({ text: '' }));
+      
+      // Mostrar fuentes de contexto utilizadas
+      if (aiRes && aiRes.context_sources) {
+        showContextSources(aiRes.context_sources, aiRes.context_length);
+      }
+    } else {
+      // Análisis con Conocimiento: Knowledge Base + Configuración + Prompt del Usuario
+      const effectiveProvider = aiConfig?.ai_provider || aiProvider;
+      const effectiveModel = aiConfig?.ai_model || aiModel;
+      
+      aiRes = await Config.apiPost('ai_analyze_hybrid.php', {
+        provider: effectiveProvider,
+        model: effectiveModel,
+        prompt: enrichedPrompt,
+        systemPrompt: buildSystemPrompt(aiConfig, behavioralContext),
+        useKnowledgeBase: true,
+        includeBehavioralPatterns: false,
+        includeAnalysisHistory: false,
+        includeFiles: [] // Se pueden incluir archivos específicos si se desea
+      }, true).catch(()=>({ text: '' }));
+      
+      // Mostrar fuentes de contexto utilizadas
+      if (aiRes && aiRes.context_sources) {
+        showContextSources(aiRes.context_sources, aiRes.context_length);
+      }
+    }
 
     // Log para debug
     fetch(Config.API_BASE + '/log_debug.php', {
@@ -507,6 +553,10 @@ async function analyze() {
       : `<div class="text-sm text-gray-600 dark-mode:text-gray-300">Completa TP/SL para ver el plan sugerido.</div>`;
 
     const aiText = aiRes?.text || (aiRes?.error ? `(IA error: ${aiRes.error}${aiRes.detail? ' — '+aiRes.detail: ''})` : '(IA sin respuesta)');
+    
+    // Verificar si se usó configuración comportamental
+    const usedBehavioralAI = aiConfig?.use_behavioral_data || false;
+    const aiProviderUsed = aiConfig?.ai_provider || aiProvider;
 
     const html = `
       <div class="space-y-4">
@@ -516,6 +566,8 @@ async function analyze() {
           <span class="text-sm px-3 py-1 rounded-full ${recColor} ${recColorDark}">Recomendación: ${finalRec}</span>
           <span class="text-sm px-3 py-1 rounded-full bg-blue-100 text-blue-800 dark-mode:bg-blue-900 dark-mode:text-blue-200">BUY ${buySignals}</span>
           <span class="text-sm px-3 py-1 rounded-full bg-rose-100 text-rose-800 dark-mode:bg-rose-900 dark-mode:text-rose-200">SELL ${sellSignals}</span>
+          ${usedBehavioralAI ? `<span class="text-sm px-3 py-1 rounded-full bg-purple-100 text-purple-800 dark-mode:bg-purple-900 dark-mode:text-purple-200">🧠 IA Comportamental</span>` : ''}
+          <span class="text-sm px-3 py-1 rounded-full bg-indigo-100 text-indigo-800 dark-mode:bg-indigo-900 dark-mode:text-indigo-200">${aiProviderUsed}</span>
         </div>
 
         <div class="rounded-lg border border-gray-200 dark-mode:border-gray-700 overflow-hidden">
@@ -551,8 +603,22 @@ async function analyze() {
 
         ${aiText && aiText.trim() ? `
           <div class="rounded-lg border border-gray-200 dark-mode:border-gray-700 p-4">
-            <div class="text-sm font-medium mb-2">IA (${aiProvider}${aiModel?": "+aiModel:""})</div>
+            <div class="text-sm font-medium mb-2">🧠 Análisis IA (${aiProviderUsed}${aiConfig?.ai_model?": "+aiConfig.ai_model:""})</div>
+            ${usedBehavioralAI ? `<div class="text-xs text-purple-600 dark-mode:text-purple-400 mb-2">✨ Análisis personalizado con IA comportamental</div>` : ''}
             <div class="text-sm whitespace-pre-wrap">${aiText}</div>
+          </div>` : ''}
+          
+        ${aiConfig ? `
+          <div class="rounded-lg border border-gray-200 dark-mode:border-gray-700 p-4">
+            <div class="text-sm font-medium mb-2">⚙️ Configuración de IA Utilizada</div>
+            <div class="grid grid-cols-2 gap-2 text-xs text-gray-600 dark-mode:text-gray-300">
+              <div><strong>Proveedor:</strong> ${aiConfig.ai_provider || 'auto'}</div>
+              <div><strong>Modelo:</strong> ${aiConfig.ai_model || 'default'}</div>
+              <div><strong>Nivel:</strong> ${aiConfig.analysis_level || 'advanced'}</div>
+              <div><strong>Comportamental:</strong> ${aiConfig.use_behavioral_data ? 'Sí' : 'No'}</div>
+              <div><strong>Adaptativo:</strong> ${aiConfig.adaptive_prompts ? 'Sí' : 'No'}</div>
+              <div><strong>Feedback:</strong> ${aiConfig.learn_from_feedback ? 'Sí' : 'No'}</div>
+            </div>
           </div>` : ''}
       </div>
     `;
@@ -834,6 +900,21 @@ msSave?.addEventListener('click', async ()=>{
       if (msMsg) msMsg.textContent = 'Guardado'; 
       msShow(false); 
       Config.toast('Análisis guardado.'); 
+      
+      // Guardar también en el sistema de IA comportamental
+      if (window.AIBehavioral && window.AIBehavioral.isInitialized) {
+        try {
+          await window.AIBehavioral.saveAnalysisWithBehavioralContext({
+            symbol: payload.symbol,
+            analysis_text: payload.analysis_text,
+            timeframe: payload.timeframe,
+            outcome: payload.outcome,
+            traded: payload.traded
+          });
+        } catch (error) {
+          console.warn('Error guardando en IA comportamental:', error);
+        }
+      }
     }
     else { 
       if (msMsg) msMsg.textContent = 'Guardado parcial'; 
@@ -911,6 +992,111 @@ function fmt(x) {
   return (x==null || Number.isNaN(x)) ? '—' : (typeof x==='number' ? x.toFixed(2) : x); 
 }
 
+// Función helper para obtener configuración de ai.html
+function getAIConfigFromStorage() {
+  try {
+    const config = localStorage.getItem('ai_behavioral_config');
+    return config ? JSON.parse(config) : null;
+  } catch (error) {
+    console.warn('Error obteniendo configuración de IA:', error);
+    return null;
+  }
+}
+
+// Función para obtener contexto comportamental
+async function getBehavioralContext() {
+  try {
+    if (window.AIBehavioral && window.AIBehavioral.isInitialized) {
+      return await window.AIBehavioral.getBehavioralContext();
+    }
+    return null;
+  } catch (error) {
+    console.warn('Error obteniendo contexto comportamental:', error);
+    return null;
+  }
+}
+
+// Función para construir prompt enriquecido con configuración de ai.html
+function buildEnrichedPrompt(symbol, basePrompt, aiConfig, behavioralContext) {
+  let enrichedPrompt = basePrompt;
+  
+  // Agregar configuración de IA si está disponible
+  if (aiConfig) {
+    enrichedPrompt += `\n\nCONFIGURACIÓN DE IA COMPORTAMENTAL:\n`;
+    enrichedPrompt += `- Proveedor: ${aiConfig.ai_provider || 'auto'}\n`;
+    enrichedPrompt += `- Modelo: ${aiConfig.ai_model || 'default'}\n`;
+    enrichedPrompt += `- Nivel de análisis: ${aiConfig.analysis_level || 'advanced'}\n`;
+    enrichedPrompt += `- Usar datos comportamentales: ${aiConfig.use_behavioral_data ? 'Sí' : 'No'}\n`;
+    enrichedPrompt += `- Aprender de feedback: ${aiConfig.learn_from_feedback ? 'Sí' : 'No'}\n`;
+    enrichedPrompt += `- Prompts adaptativos: ${aiConfig.adaptive_prompts ? 'Sí' : 'No'}\n`;
+  }
+  
+  // Agregar contexto comportamental si está disponible
+  if (behavioralContext) {
+    enrichedPrompt += `\nCONTEXTO COMPORTAMENTAL DEL USUARIO:\n`;
+    
+    if (behavioralContext.learning_metrics) {
+      const metrics = behavioralContext.learning_metrics;
+      enrichedPrompt += `- Análisis previos: ${metrics.total_analyses || 0}\n`;
+      enrichedPrompt += `- Tasa de éxito: ${metrics.success_rate || 0}%\n`;
+      enrichedPrompt += `- Patrones aprendidos: ${metrics.patterns_learned || 0}\n`;
+      enrichedPrompt += `- Precisión IA: ${metrics.accuracy_score || 0}%\n`;
+    }
+    
+    if (behavioralContext.behavioral_patterns) {
+      const patterns = behavioralContext.behavioral_patterns;
+      enrichedPrompt += `- Estilo de trading: ${patterns.trading_style || 'No definido'}\n`;
+      enrichedPrompt += `- Tolerancia al riesgo: ${patterns.risk_tolerance || 'Media'}\n`;
+      enrichedPrompt += `- Preferencia temporal: ${patterns.time_preference || 'Intradía'}\n`;
+    }
+    
+    if (behavioralContext.recent_history && behavioralContext.recent_history.length > 0) {
+      enrichedPrompt += `\nHISTORIAL RECIENTE:\n`;
+      behavioralContext.recent_history.slice(0, 3).forEach((analysis, index) => {
+        enrichedPrompt += `${index + 1}. ${analysis.symbol} - ${analysis.outcome || 'Pendiente'} (${analysis.created_at})\n`;
+      });
+    }
+  }
+  
+  // Instrucciones específicas basadas en configuración
+  enrichedPrompt += `\nINSTRUCCIONES ESPECÍFICAS:\n`;
+  if (aiConfig?.use_behavioral_data) {
+    enrichedPrompt += `- Adapta el análisis al perfil comportamental del usuario\n`;
+    enrichedPrompt += `- Considera el historial de éxito/fallo previo\n`;
+    enrichedPrompt += `- Proporciona recomendaciones personalizadas\n`;
+  }
+  if (aiConfig?.adaptive_prompts) {
+    enrichedPrompt += `- Usa un enfoque adaptativo basado en patrones aprendidos\n`;
+    enrichedPrompt += `- Ajusta el nivel de detalle según la experiencia del usuario\n`;
+  }
+  enrichedPrompt += `- Incluye gestión de riesgo específica para este perfil\n`;
+  enrichedPrompt += `- Proporciona un análisis profesional y detallado\n`;
+  
+  return enrichedPrompt;
+}
+
+// Función para construir system prompt basado en configuración
+function buildSystemPrompt(aiConfig, behavioralContext) {
+  let systemPrompt = "Eres un analista de opciones intradía profesional con IA comportamental avanzada. ";
+  
+  if (aiConfig?.use_behavioral_data && behavioralContext) {
+    systemPrompt += "Adapta tu análisis al perfil específico del usuario, considerando su historial de trading y patrones de comportamiento. ";
+  }
+  
+  if (aiConfig?.analysis_level === 'expert') {
+    systemPrompt += "Proporciona análisis de nivel experto con terminología avanzada y estrategias sofisticadas. ";
+  } else if (aiConfig?.analysis_level === 'beginner') {
+    systemPrompt += "Proporciona análisis claro y educativo, explicando conceptos técnicos de manera accesible. ";
+  } else {
+    systemPrompt += "Proporciona análisis equilibrado entre técnico y accesible. ";
+  }
+  
+  systemPrompt += "No inventes datos. Da recomendaciones claras, riesgos específicos y gestión de posición detallada. ";
+  systemPrompt += "Incluye niveles de entrada, stop loss, take profit y consideraciones de gestión de riesgo. ";
+  
+  return systemPrompt;
+}
+
 // Exportar funciones para uso global
 window.Analysis = {
   analyze,
@@ -919,6 +1105,10 @@ window.Analysis = {
   collectSettingsFromUI,
   msShow,
   uploadImagesIfAny,
+  getAIConfigFromStorage,
+  getBehavioralContext,
+  buildEnrichedPrompt,
+  buildSystemPrompt,
   fmt: Config.fmt
 };
 
@@ -926,3 +1116,82 @@ window.Analysis = {
 window.analyze = analyze;
 window.saveAnalysis = saveAnalysis;
 window.collectSettingsFromUI = collectSettingsFromUI;
+
+// Funciones para manejar fuentes de contexto
+function showContextSources(sources, length) {
+  const contextDiv = document.getElementById('context-sources-used');
+  const contextTags = document.getElementById('context-tags');
+  const contextLength = document.getElementById('context-length');
+  
+  if (contextDiv && contextTags && contextLength) {
+    // Limpiar tags anteriores
+    contextTags.innerHTML = '';
+    
+    // Agregar tags para cada fuente
+    if (sources && Array.isArray(sources)) {
+      sources.forEach(source => {
+        const tag = document.createElement('span');
+        tag.className = 'px-2 py-1 text-xs bg-blue-100 dark-mode:bg-blue-800 text-blue-800 dark-mode:text-blue-200 rounded-full';
+        tag.textContent = source;
+        contextTags.appendChild(tag);
+      });
+    }
+    
+    // Mostrar longitud del contexto
+    contextLength.textContent = length || 0;
+    
+    // Mostrar la sección
+    contextDiv.classList.remove('hidden');
+  }
+}
+
+function hideContextSources() {
+  const contextDiv = document.getElementById('context-sources-used');
+  if (contextDiv) {
+    contextDiv.classList.add('hidden');
+  }
+}
+
+// Listener para sincronización de configuración desde ai.html
+window.addEventListener('aiConfigChanged', (event) => {
+  try {
+    const { config, source } = event.detail;
+    if (source === 'ai.html') {
+      console.log('Configuración sincronizada desde ai.html:', config);
+      
+      // Actualizar elementos en index.html si existen
+      const aiProvider = document.getElementById('ai-provider');
+      const aiModel = document.getElementById('ai-model');
+      
+      if (aiProvider && config.ai_provider) {
+        aiProvider.value = config.ai_provider;
+        console.log('ai-provider actualizado desde ai.html');
+      }
+      
+      if (aiModel && config.ai_model) {
+        aiModel.value = config.ai_model;
+        console.log('ai-model actualizado desde ai.html');
+      }
+    }
+  } catch (error) {
+    console.warn('Error procesando sincronización de configuración:', error);
+  }
+});
+
+// Listener para cambios en el modo de análisis
+document.addEventListener('DOMContentLoaded', () => {
+  const modeRadios = document.querySelectorAll('input[name="analysis-mode"]');
+  const contextSourcesSpan = document.getElementById('context-sources');
+  
+  modeRadios.forEach(radio => {
+    radio.addEventListener('change', () => {
+      if (contextSourcesSpan) {
+        if (radio.value === 'enriched') {
+          contextSourcesSpan.textContent = 'Knowledge Base, Patrones, Historial';
+        } else {
+          contextSourcesSpan.textContent = 'Knowledge Base, Configuración';
+        }
+      }
+    });
+  });
+});

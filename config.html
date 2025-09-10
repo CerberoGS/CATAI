@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Configuración - Claves y Preferencias</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="/bolsa/static/auth.js"></script>
-  <script src="/bolsa/static/js/header.js"></script>
-  <script src="/bolsa/static/js/hero.js"></script>
-  <script src="/bolsa/static/js/feedback.js"></script>
-  <link rel="stylesheet" href="/bolsa/static/css/styles.css">
+  <script src="static/auth.js"></script>
+  <script src="static/js/header.js"></script>
+  <script src="static/js/hero.js"></script>
+  <script src="static/js/feedback.js"></script>
+  <link rel="stylesheet" href="static/css/styles.css">
   <style>
     :root { --ring:#4338ca; --ok:#059669; --bad:#dc2626; --muted:#6b7280; }
     body { background:#f8fafc; }
@@ -282,7 +282,8 @@
 
 <script>
 // =================== Config base ===================
-const API_ABS = (new URL('/bolsa/api/', window.location.origin)).href.replace(/\/$/, '');
+// Usar ruta RELATIVA para que funcione bajo /catai/ (evita /api en la raíz WP)
+const API_ABS = 'api';
 const $ = id => document.getElementById(id);
 function getToken(){
   const legacy = localStorage.getItem('token');
@@ -300,15 +301,40 @@ async function api(path, opts={}){
   try { return JSON.parse(txt); } catch { throw new Error('Respuesta no JSON'); }
 }
 
+// Mapeo de proveedores → claves en secrets_*_safe.php
+const PROVIDER_SECRET_KEY = {
+  alphavantage: 'alphavantage_api_key',
+  finnhub:      'finnhub_api_key',
+  tiingo:       'tiingo_api_key',
+  polygon:      'polygon_api_key',
+  gemini:       'gemini_api_key',
+  openai:       'openai_api_key',
+  xai:          'xai_api_key',
+  claude:       'anthropic_api_key',
+  deepseek:     'deepseek_api_key',
+};
+
+function providerKeys(){
+  return Object.keys(PROVIDER_SECRET_KEY);
+}
+
+function toSecretKey(provider){
+  return PROVIDER_SECRET_KEY[provider] || provider;
+}
+
 // =================== Cargar claves ===================
 async function loadKeys(){
-  const j = await api('user_keys_get_safe.php');
-  const has = (prov)=> j?.keys?.[prov]?.has === true;
-  const map = ['alphavantage','tiingo','finnhub','polygon','gemini','openai','xai','claude','deepseek'];
-  for (const p of map){
-    const last4 = j?.keys?.[p]?.last4 || '';
-    const msg = has(p) ? `guardada (${last4? '****'+last4 : '********'})` : 'sin clave';
-    const el = $('st-'+p); if (el){ el.classList.remove('muted','ok','bad'); el.classList.add(has(p)?'ok':'muted'); el.textContent = msg; }
+  const j = await api('secrets_get_masked_safe.php');
+  const masked = j?.secrets_masked || {};
+  const hasProvider = (prov) => {
+    const key = toSecretKey(prov);
+    return masked[key]?.has === true;
+  };
+  for (const p of providerKeys()){
+    const key = toSecretKey(p);
+    const last4 = masked[key]?.last4 || '';
+    const msg = hasProvider(p) ? `guardada (${last4? '****'+last4 : '********'})` : 'sin clave';
+    const el = $('st-'+p); if (el){ el.classList.remove('muted','ok','bad'); el.classList.add(hasProvider(p)?'ok':'muted'); el.textContent = msg; }
     const inp = $('in-'+p); if (inp) inp.value = '';
   }
 }
@@ -317,21 +343,13 @@ async function loadKeys(){
 $('btn-save-keys').addEventListener('click', async ()=>{
   const saveMsg = $('save-msg');
   saveMsg.textContent = 'Guardando...'; saveMsg.style.color = '#6b7280';
-  const entries = [
-    ['alphavantage', $('in-alphavantage').value.trim()],
-    ['tiingo', $('in-tiingo').value.trim()],
-    ['finnhub', $('in-finnhub').value.trim()],
-    ['polygon', $('in-polygon').value.trim()],
-    ['gemini', $('in-gemini').value.trim()],
-    ['openai', $('in-openai').value.trim()],
-    ['xai', $('in-xai').value.trim()],
-    ['claude', $('in-claude').value.trim()],
-    ['deepseek', $('in-deepseek').value.trim()],
-  ].filter(([k,v]) => v !== '');
-  const body = Object.fromEntries(entries);
+  const entries = providerKeys()
+    .map(p => [ toSecretKey(p), ($('in-'+p)?.value || '').trim() ])
+    .filter(([k,v]) => v !== '');
+  const secrets = Object.fromEntries(entries);
   try {
-    const res = await api('user_keys_set_safe.php', {
-      method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(body)
+    const res = await api('secrets_set_safe.php', {
+      method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ secrets })
     });
     if (!res || res.ok !== true) throw new Error('falló guardado');
     saveMsg.textContent = 'Claves guardadas.'; saveMsg.style.color = '#059669';
@@ -344,9 +362,10 @@ $('btn-save-keys').addEventListener('click', async ()=>{
 document.querySelectorAll('[data-del]').forEach(btn=>{
   btn.addEventListener('click', async ()=>{
     const prov = btn.getAttribute('data-del');
+    const key = toSecretKey(prov);
     try{
-      const res = await api('user_keys_set_safe.php', {
-        method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ delete:[prov] })
+      const res = await api('secrets_set_safe.php', {
+        method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ secrets: { [key]: '' } })
       });
       if (!res || res.ok !== true) throw new Error();
       const st = $('st-'+prov); if (st){ st.classList.remove('ok'); st.classList.add('muted'); st.textContent='sin clave'; }
@@ -551,7 +570,7 @@ $('btn-export-prefs').addEventListener('click', ()=>{
     }
   };
   const dataStr = 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(obj, null, 2));
-  const a = document.createElement('a'); a.setAttribute('href', dataStr); a.setAttribute('download', 'bolsa_prefs.json'); document.body.appendChild(a); a.click(); a.remove();
+  const a = document.createElement('a'); a.setAttribute('href', dataStr); a.setAttribute('download', 'catai_prefs.json'); document.body.appendChild(a); a.click(); a.remove();
 });
 
 // Importar JSON de preferencias (aplica en el formulario, sin guardar)
@@ -612,7 +631,7 @@ async function loadPrefs(){
   }catch{}
 }
 
-$('btn-back').addEventListener('click', ()=>{ window.location.href = '/bolsa/index.html'; });
+$('btn-back').addEventListener('click', ()=>{ window.location.href = 'index.html'; });
 
 try{ initTimeZoneUI(); }catch{}
 loadKeys().catch(()=>{});

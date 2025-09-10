@@ -1,4 +1,35 @@
 AGENTS.md — Guía para Agentes de IA
+DB: Versión: 10.11.10-MariaDB-log (MariaDB Server), SO: Linu
+Hosting:hostinger.com
+Testeo directo en linea: https://cerberogrowthsolutions.com/catai
+## UI & i18n Guardrails (OBLIGATORIO: ES/EN + Claro/Oscuro + Accesibilidad)
+
+**Alcance**
+- La app **soporta exactamente dos locales**: `es-US` y `en-US` (etiquetas BCP-47). Debe **detectar automáticamente** el idioma del navegador y permitir cambio manual con persistencia. Usa `<html lang="…">` correcto y `<meta charset="UTF-8">`.  
+- Debe respetar **modo claro/oscuro** por preferencia del usuario (no forzar) y exponer `color-scheme`.  
+- Debe cumplir **WCAG AA** de contraste (texto normal ≥ **4.5:1**; texto grande ≥ **3:1**; UI/íconos ≥ **3:1**). **Prohibido** cualquier combinación donde el **color del texto == color del fondo** en cualquier estado (normal/hover/focus/disabled).
+
+### Idiomas (ES/EN) – Detección, fallback y persistencia
+- Detección de navegador (cliente): leer `navigator.languages` y/o `navigator.language`.  
+- Preferible usar detector estándar (p. ej., **i18next-browser-languageDetector**) con orden: `querystring` → `localStorage` → `navigator` → `htmlTag`.  
+- **Locales soportados**: `['es-US','en-US']`. **Fallback**: `en-US`.  
+- **Persistir** preferencia de usuario en `localStorage` (p. ej., clave `i18nextLng`).  
+- En HTML, establecer `<html lang="es-US|en-US">` dinámicamente; en servidor, negociar `Accept-Language` y, si aplica, responder con `Content-Language`.
+
+**Snippet de referencia (vanilla + i18next)**
+```html
+<script src="https://unpkg.com/i18next@23/dist/umd/i18next.min.js"></script>
+<script src="https://unpkg.com/i18next-browser-languagedetector@7/dist/umd/i18nextBrowserLanguageDetector.min.js"></script>
+<script>
+i18next.use(i18nextBrowserLanguageDetector).init({
+  supportedLngs: ['es-US','en-US'],
+  fallbackLng: 'en-US',
+  detection: { order: ['querystring','localStorage','navigator','htmlTag'], caches: ['localStorage'] }
+}).then(() => {
+  document.documentElement.lang = i18next.language;
+  // render: document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = i18next.t(el.dataset.i18n));
+});
+</script>
 
 Objetivo
 - Establecer pautas claras para operar en este repo sin inventar comportamientos.
@@ -15,10 +46,13 @@ Inicio Rápido (local)
 - Requisitos: PHP 8+, MySQL. No hay Composer ni Node en este repo.
 - Copia y configura:
   - `api/config.sample.php` → `api/config.php` (DB, `JWT_SECRET`, `ENCRYPTION_KEY_BASE64`, CORS, API keys fallback opcionales).
-  - `.gitignore` ya excluye `api/config.php` y logs.
+  - `.gitignore` ya excluye `api/config.php` y logs. usuario de bas de dato user:rood password:Arb3811/+
 - Servir:
+  - Usar rutas relativa.
+  - programacion modular.
+  - los logs que cree para debug deben ser hacia un archivo, no pedir que revise la consola del navegador F12.
   - Apache recomendado para respetar `.htaccess` (SPA y cabeceras). Ruta esperada: raíz del repo, endpoints bajo `/api/*.php`.
-  - Alternativa simple: `php -S 127.0.0.1:8000` en la raíz sirve `index.html` y `/api/*.php` sin fallback SPA (navega desde `/` o `index.html`).
+  - Alternativa simple: `php -S 127.0.0.1:80` en la raíz sirve `index.html` y `/api/*.php` sin fallback SPA (navega desde `/` o `index.html`).
 - Base URL front: los HTML llaman a `/bolsa/api` en algunos flujos legados; en este repo, los endpoints viven en `api/`. Ajusta el `origin`/path si tu despliegue no está bajo `/bolsa/`.
 
 Comandos existentes (build/test/lint)
@@ -88,9 +122,9 @@ Validación (cURL ejemplos)
 - IA:
   - `curl -sX POST https://cerberogrowthsolutions.com/bolsa/api/ai_analyze.php -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d '{"prompt":"Hola"}'`
   - Nota: para entorno local de desarrollo, sustituye el origen por `http://localhost:8000`.
+Estilo:
+Modo claro y Oscuro: tener en cuenta el color de texto que no sea igual que el de fondo, en ningua parte de la app.
 
-Nota de Jerarquía
-- Si en alguna subcarpeta aparece otro `AGENTS.md`, ese documento tiene prioridad en su ámbito.
 
 TODOs claros
 - Implementar helper `cfg()` en `helpers.php` (o eliminar su uso) y alinear `crypto.php`/`secrets_*` con `user_keys_*`.

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="es-US">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Configuración de Mercado - CATAI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="static/utf8-fix.js"></script>
+  <script src="static/auth.js"></script>
+  <script>
+    // Si no hay token válido, redirigir a login.html
+    try {
+      const t = window.Auth ? Auth.getToken() : '';
+      const p = window.Auth ? Auth.decodeJwt(t) : null;
+      if (!t || !p || (Auth && Auth.isExpired(p))) {
+        window.location.replace('login.html?next=' + encodeURIComponent(location.pathname + location.search));
+      }
+    } catch (e) { /* si falla, dejamos que el login embebido maneje */ }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/styles.css">
+  <style>
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    .indicator-card {
+      border-left: 4px solid #3b82f6;
+    }
+    .indicator-card.enabled {
+      border-left-color: #10b981;
+    }
+    .preset-card {
+      border: 2px solid #e5e7eb;
+      transition: all 0.3s ease;
+    }
+    .preset-card:hover {
+      border-color: #3b82f6;
+      background-color: #f8fafc;
+    }
+    .preset-card.selected {
+      border-color: #3b82f6;
+      background-color: #eff6ff;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div id="app-header"></div>
+
+    <div id="app-hero" data-icon="📊" data-title="Configuración de Mercado" data-subtitle="Configura proveedores de datos, indicadores técnicos y parámetros de trading"></div>
+
+    <!-- Main Content -->
+    <div class="grid lg:grid-cols-3 gap-6">
+      <!-- Left Column: Data Providers -->
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-xl shadow-sm border p-6 card-hover">
+          <h2 class="text-xl font-semibold mb-4 flex items-center">
+            🌐 Proveedores de Datos
+          </h2>
+          
+          <div class="space-y-4">
+            <!-- Series Provider -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Series de Tiempo</label>
+              <select id="series-provider" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <option value="auto">Auto (Recomendado)</option>
+                <option value="finnhub">Finnhub</option>
+                <option value="alphavantage">Alpha Vantage</option>
+                <option value="tiingo">Tiingo</option>
+              </select>
+              <p class="text-xs text-gray-500 mt-1">Proveedor para datos históricos y en tiempo real</p>
+            </div>
+
+            <!-- Options Provider -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Opciones</label>
+              <select id="options-provider" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <option value="auto">Auto (Recomendado)</option>
+                <option value="polygon">Polygon</option>
+                <option value="finnhub">Finnhub</option>
+              </select>
+              <p class="text-xs text-gray-500 mt-1">Proveedor para datos de opciones</p>
+            </div>
+
+            <!-- Real-time Data -->
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div>
+                <label class="text-sm font-medium text-gray-700">Datos en Tiempo Real</label>
+                <p class="text-xs text-gray-500">Actualizaciones automáticas</p>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="realtime-enabled" class="sr-only peer">
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trading Parameters -->
+        <div class="bg-white rounded-xl shadow-sm border p-6 mt-6 card-hover">
+          <h2 class="text-xl font-semibold mb-4 flex items-center">
+            🎯 Parámetros de Trading
+          </h2>
+          
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Capital por Operación</label>
+              <input type="number" id="default-capital" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" value="1000" min="100" step="100">
+              <p class="text-xs text-gray-500 mt-1">Cantidad base para cálculos de riesgo</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">TP (%)</label>
+                <input type="number" id="default-tp" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" value="5" min="1" max="50" step="0.5">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">SL (%)</label>
+                <input type="number" id="default-sl" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" value="3" min="1" max="20" step="0.5">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Horarios de Trading</label>
+              <select id="trading-hours" class="w-full rounded-lg border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <option value="9:30-16:00">NYSE (9:30 AM - 4:00 PM)</option>
+                <option value="9:30-16:30">Extended (9:30 AM - 4:30 PM)</option>
+                <option value="4:00-20:00">24/7 Crypto</option>
+                <option value="custom">Personalizado</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Indicators and Timeframes -->
+      <div class="lg:col-span-2">
+        <!-- Technical Indicators -->
+        <div class="bg-white rounded-xl shadow-sm border p-6 mb-6 card-hover">
+          <h2 class="text-xl font-semibold mb-4 flex items-center">
+            📈 Indicadores Técnicos
+          </h2>
+          
+          <!-- Presets -->
+          <div class="mb-6">
+            <h3 class="text-sm font-medium text-gray-700 mb-3">Configuraciones Predefinidas</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div class="preset-card p-3 rounded-lg cursor-pointer" data-preset="beginner">
+                <div class="text-sm font-medium text-gray-900">Principiante</div>
+                <div class="text-xs text-gray-500">RSI, SMA básicos</div>
+              </div>
+              <div class="preset-card p-3 rounded-lg cursor-pointer" data-preset="intermediate">
+                <div class="text-sm font-medium text-gray-900">Intermedio</div>
+                <div class="text-xs text-gray-500">RSI, SMA, EMA, MACD</div>
+              </div>
+              <div class="preset-card p-3 rounded-lg cursor-pointer" data-preset="expert">
+                <div class="text-sm font-medium text-gray-900">Experto</div>
+                <div class="text-xs text-gray-500">Todos los indicadores</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Indicators Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="indicators-grid">
+            <!-- RSI -->
+            <div class="indicator-card p-4 rounded-lg border bg-white">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="font-medium text-gray-900">RSI (Relative Strength Index)</h3>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" class="sr-only peer" data-indicator="rsi" checked>
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                </label>
+              </div>
+              <div class="space-y-2">
+                <div>
+                  <label class="text-xs text-gray-600">Períodos:</label>
+                  <div class="flex space-x-2">
+                    <input type="number" class="w-16 text-sm border rounded px-2 py-1" data-rsi-period="1" value="14" min="5" max="50">
+                    <input type="number" class="w-16 text-sm border rounded px-2 py-1" data-rsi-period="2" value="21" min="5" max="50">
+                  </div>
+                </div>
+                <p class="text-xs text-gray-500">Momentum oscillator (0-100)</p>
+              </div>
+            </div>
+
+            <!-- SMA -->
+            <div class="indicator-card p-4 rounded-lg border bg-white">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="font-medium text-gray-900">SMA (Simple Moving Average)</h3>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" class="sr-only peer" data-indicator="sma" checked>
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                </label>
+              </div>
+              <div class="space-y-2">
+                <div>
+                  <label class="text-xs text-gray-600">Períodos:</label>
+                  <div class="flex space-x-2">
+                    <input type="number" class="w-16 text-sm border rounded px-2 py-1" data-sma-period="1" value="20" min="5" max="200">
+                    <input type="number" class="w-16 text-sm border rounded px-2 py-1" data-sma-period="2" value="50" min="5" max="200">
+                    <input type="number" class="w-16 text-sm border rounded px-2 py-1" data-sma-period="3" value="200" min="5" max="200">
+                  </div>
+                </div>
+                <p class="text-xs text-gray-500">Media móvil simple</p>
+              </div>
+            </div>
+
+            <!-- EMA -->
+            <div class="indicator-card p-4 rounded-lg border bg-white">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="font-medium text-gray-900">EMA (Exponential Moving Average)</h3>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" class="sr-only peer" data-indicator="ema" checked>
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                </label>
+              </div>
+              <div class="space-y-2">
+                <div>
+                  <label class="text-xs text-gray-600">Períodos:</label>
+                  <div class="flex space-x-2">
+                    <input type="number" class="w-16 text-sm border rounded px-2 py-1" data-ema-period="1" value="20" min="5" max="200">
+                    <input type="number" class="w-16 text-sm border rounded px-2 py-1" data-ema-period="2" value="40" min="5" max="200">
+                    <input type="number" class="w-16 text-sm border rounded px-2 py-1" data-ema-period="3" value="100" min="5" max="200">
+                    <input type="number" class="w-16 text-sm border rounded px-2 py-1" data-ema-period="4" value="200" min="5" max="200">
+                  </div>
+                </div>
+                <p class="text-xs text-gray-500">Media móvil exponencial</p>
+              </div>
+            </div>
+
+            <!-- MACD -->
+            <div class="indicator-card p-4 rounded-lg border bg-white">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="font-medium text-gray-900">MACD</h3>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" class="sr-only peer" data-indicator="macd">
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                </label>
+              </div>
+              <div class="space-y-2">
+                <div>
+                  <label class="text-xs text-gray-600">Configuración:</label>
+                  <div class="flex space-x-2">
+                    <input type="number" class="w-16 text-sm border rounded px-2 py-1" data-macd-fast="12" value="12" min="5" max="50">
+                    <input type="number" class="w-16 text-sm border rounded px-2 py-1" data-macd-slow="26" value="26" min="5" max="50">
+                    <input type="number" class="w-16 text-sm border rounded px-2 py-1" data-macd-signal="9" value="9" min="5" max="50">
+                  </div>
+                </div>
+                <p class="text-xs text-gray-500">Convergencia/Divergencia</p>
+              </div>
+            </div>
+
+            <!-- Bollinger Bands -->
+            <div class="indicator-card p-4 rounded-lg border bg-white">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="font-medium text-gray-900">Bollinger Bands</h3>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" class="sr-only peer" data-indicator="bollinger">
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                </label>
+              </div>
+              <div class="space-y-2">
+                <div>
+                  <label class="text-xs text-gray-600">Configuración:</label>
+                  <div class="flex space-x-2">
+                    <input type="number" class="w-16 text-sm border rounded px-2 py-1" data-bb-period="20" value="20" min="5" max="50">
+                    <input type="number" class="w-16 text-sm border rounded px-2 py-1" data-bb-std="2" value="2" min="1" max="3" step="0.5">
+                  </div>
+                </div>
+                <p class="text-xs text-gray-500">Bandas de volatilidad</p>
+              </div>
+            </div>
+
+            <!-- Volume -->
+            <div class="indicator-card p-4 rounded-lg border bg-white">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="font-medium text-gray-900">Volumen</h3>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" class="sr-only peer" data-indicator="volume" checked>
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                </label>
+              </div>
+              <div class="space-y-2">
+                <div>
+                  <label class="text-xs text-gray-600">Período:</label>
+                  <input type="number" class="w-16 text-sm border rounded px-2 py-1" data-volume-period="20" value="20" min="5" max="50">
+                </div>
+                <p class="text-xs text-gray-500">Análisis de volumen</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeframes -->
+        <div class="bg-white rounded-xl shadow-sm border p-6 card-hover">
+          <h2 class="text-xl font-semibold mb-4 flex items-center">
+            ⏰ Temporalidades
+          </h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Intraday -->
+            <div>
+              <h3 class="text-sm font-medium text-gray-700 mb-3">Intradía</h3>
+              <div class="space-y-2">
+                <label class="flex items-center">
+                  <input type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" data-timeframe="1min" checked>
+                  <span class="ml-2 text-sm text-gray-700">1 minuto</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" data-timeframe="5min" checked>
+                  <span class="ml-2 text-sm text-gray-700">5 minutos</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" data-timeframe="15min" checked>
+                  <span class="ml-2 text-sm text-gray-700">15 minutos</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" data-timeframe="30min">
+                  <span class="ml-2 text-sm text-gray-700">30 minutos</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" data-timeframe="60min" checked>
+                  <span class="ml-2 text-sm text-gray-700">1 hora</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Daily/Weekly -->
+            <div>
+              <h3 class="text-sm font-medium text-gray-700 mb-3">Diario/Semanal</h3>
+              <div class="space-y-2">
+                <label class="flex items-center">
+                  <input type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" data-timeframe="daily" checked>
+                  <span class="ml-2 text-sm text-gray-700">Diario</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" data-timeframe="weekly">
+                  <span class="ml-2 text-sm text-gray-700">Semanal</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preset Combinations -->
+          <div class="mt-6">
+            <h3 class="text-sm font-medium text-gray-700 mb-3">Combinaciones Predefinidas</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div class="preset-card p-3 rounded-lg cursor-pointer" data-combination="scalping">
+                <div class="text-sm font-medium text-gray-900">Scalping</div>
+                <div class="text-xs text-gray-500">1m, 5m, 15m</div>
+              </div>
+              <div class="preset-card p-3 rounded-lg cursor-pointer" data-combination="intraday">
+                <div class="text-sm font-medium text-gray-900">Intradía</div>
+                <div class="text-xs text-gray-500">5m, 15m, 1h</div>
+              </div>
+              <div class="preset-card p-3 rounded-lg cursor-pointer" data-combination="swing">
+                <div class="text-sm font-medium text-gray-900">Swing</div>
+                <div class="text-xs text-gray-500">1h, 4h, Daily</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-center space-x-4 mt-8">
+      <button id="btn-reset" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium">
+        🔄 Restablecer
+      </button>
+      <button id="btn-save" class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium">
+        💾 Guardar Configuración
+      </button>
+      <button id="btn-test" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium">
+        🧪 Probar Configuración
+      </button>
+    </div>
+  </div>
+
+  <!-- Load JavaScript Modules -->
+  <script src="static/js/hero.js"></script>
+  <script src="static/js/header.js"></script>
+  <script src="static/js/config.js"></script>
+  <script src="static/js/market-config.js"></script>
+</body>
+</html>

@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html lang="es-US">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diagnóstico CATAI</title>
+  <link rel="stylesheet" href="static/css/styles.css" />
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    .container { max-width: 980px; margin: 2rem auto; padding: 0 1rem; }
+    .card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; background: #fff; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    .row { display:flex; align-items:center; justify-content:space-between; gap:.75rem; padding:.5rem 0; border-bottom:1px dashed #eee; }
+    .row:last-child { border-bottom: none; }
+    .ok { color: #0b5; font-weight: 600; }
+    .fail { color: #b00; font-weight: 600; }
+    .muted { color:#6b7280; }
+    button { padding:.5rem .9rem; border:1px solid #e5e7eb; border-radius:6px; background:#f9fafb; cursor:pointer; }
+    button:hover { background:#f3f4f6; }
+    pre { white-space: pre-wrap; word-break: break-word; background:#f8fafc; padding:.75rem; border-radius:6px; border:1px solid #eef2f7; }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="container">
+    <h1 class="text-2xl font-bold mb-2">Diagnóstico CATAI</h1>
+    <p class="muted mb-4">Pruebas visibles sin consola. Usa rutas relativas y configuración centralizada.</p>
+
+    <div class="card">
+      <div class="row"><div><strong>Origen</strong></div><div id="env-origin" class="muted">—</div></div>
+      <div class="row"><div><strong>Ruta</strong></div><div id="env-path" class="muted">—</div></div>
+      <div class="row"><div><strong>Idioma HTML</strong></div><div id="env-lang" class="muted">—</div></div>
+      <div class="row"><div><strong>Preferencia color</strong></div><div id="env-color" class="muted">—</div></div>
+    </div>
+
+    <div class="card">
+      <div class="row"><div><strong>CSS estático</strong></div><div id="res-css" class="muted">Pendiente</div></div>
+      <div class="row"><div><strong>JS Config</strong></div><div id="res-config" class="muted">Pendiente</div></div>
+      <div class="row"><div><strong>API Health</strong></div><div id="res-health" class="muted">Pendiente</div></div>
+      <div class="row"><div><strong>Auth (me)</strong></div><div id="res-auth" class="muted">Pendiente</div></div>
+      <div class="row"><div><strong>Headers/Hi-CORS</strong></div><div id="res-headers" class="muted">Pendiente</div></div>
+      <div class="row"><div><strong>Latencia (ms)</strong></div><div id="res-latency" class="muted">Pendiente</div></div>
+      <div class="row"><div><strong>Cifrado (ENCRYPTION_KEY)</strong></div><div id="res-crypto" class="muted">Opcional</div></div>
+    </div>
+
+    <div class="card">
+      <h3>📁 Prueba de Subida de Archivos</h3>
+      <div class="row"><div><strong>Directorio de subidas</strong></div><div id="res-upload-dir" class="muted">Pendiente</div></div>
+      <div class="row"><div><strong>Permisos de directorio</strong></div><div id="res-upload-perms" class="muted">Pendiente</div></div>
+      <div class="row"><div><strong>Endpoint de subida</strong></div><div id="res-upload-endpoint" class="muted">Pendiente</div></div>
+      <div class="row"><div><strong>Endpoint de lista</strong></div><div id="res-list-endpoint" class="muted">Pendiente</div></div>
+      <div class="row"><div><strong>Prueba de subida</strong></div><div id="res-upload-test" class="muted">Pendiente</div></div>
+      
+      <div style="margin-top: 1rem;">
+        <button id="btn-init-dirs" style="margin-right: 0.5rem; background: #7c3aed; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🔧 Inicializar Directorios</button>
+        <button id="btn-debug-upload" style="margin-right: 0.5rem; background: #dc2626; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🔍 Debug Upload</button>
+        <button id="btn-debug-validation" style="margin-right: 0.5rem; background: #ea580c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🔬 Debug Validation</button>
+        <button id="btn-debug-knowledge-get" style="margin-right: 0.5rem; background: #7c2d12; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">📖 Debug Knowledge Get</button>
+        <button id="btn-debug-app-endpoint" style="margin-right: 0.5rem; background: #1e3a8a; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🔧 Debug App Endpoint</button>
+        <button id="btn-test-app-flow" style="margin-right: 0.5rem; background: #059669; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🧪 Test App Flow</button>
+        <button id="btn-debug-500" style="margin-right: 0.5rem; background: #dc2626; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🚨 Debug 500 Error</button>
+        <button id="btn-debug-simple" style="margin-right: 0.5rem; background: #7c3aed; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🔍 Debug Simple</button>
+        <button id="btn-test-helpers-fix" style="margin-right: 0.5rem; background: #059669; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🔧 Test Helpers Fix</button>
+        <button id="btn-create-ai-tables" style="margin-right: 0.5rem; background: #ea580c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🏗️ Crear Tablas IA</button>
+        <button id="btn-test-hybrid-ai" style="margin-right: 0.5rem; background: #7c2d12; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🧠 Test Sistema Híbrido</button>
+        <button id="btn-debug-hybrid-system" style="margin-right: 0.5rem; background: #be185d; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🔍 Debug Sistema Híbrido</button>
+        <button id="btn-debug-hybrid-simple" style="margin-right: 0.5rem; background: #dc2626; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🔧 Debug Híbrido Simple</button>
+        <button id="btn-debug-table-structure" style="margin-right: 0.5rem; background: #7c2d12; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🏗️ Debug Estructura Tabla</button>
+        <button id="btn-process-existing-files" style="margin-right: 0.5rem; background: #059669; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">📄 Procesar Archivos Existentes</button>
+        <button id="btn-debug-hybrid-fixed" style="margin-right: 0.5rem; background: #7c3aed; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🔧 Debug Híbrido Corregido</button>
+        <button id="btn-process-all-pending" style="margin-right: 0.5rem; background: #dc2626; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🚀 Procesar Mis Archivos Pendientes</button>
+        <button id="btn-debug-knowledge-content" style="margin-right: 0.5rem; background: #059669; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🔍 Debug Contenido Knowledge</button>
+        <button id="btn-debug-keyword-extraction" style="margin-right: 0.5rem; background: #7c3aed; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🔑 Debug Extracción Keywords</button>
+        <button id="btn-quick-login" style="margin-right: 0.5rem; background: #059669; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">👤 Login Rápido</button>
+        <input type="email" id="login-email" placeholder="Email" style="margin-right: 0.5rem; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+        <input type="password" id="login-password" placeholder="Contraseña" style="margin-right: 0.5rem; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+        <button id="btn-real-login" style="margin-right: 0.5rem; background: #dc2626; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🔐 Login Real</button>
+        <button id="btn-debug-hybrid-context" style="margin-right: 0.5rem; background: #059669; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🧠 Debug Contexto Híbrido</button>
+        <button id="btn-test-hybrid-integration" style="margin-right: 0.5rem; background: #7c3aed; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🔗 Test Integración Híbrida</button>
+        <button id="btn-check-database-tables" style="margin-right: 0.5rem; background: #dc2626; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🗄️ Verificar Tablas DB</button>
+        <button id="btn-simple-db-check" style="margin-right: 0.5rem; background: #059669; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🔍 Verificación Simple DB</button>
+        <button id="btn-test-delete-knowledge" style="margin-right: 0.5rem; background: #dc2626; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🗑️ Test Eliminar Conocimiento</button>
+        <button id="btn-debug-delete-simulation" style="margin-right: 0.5rem; background: #7c3aed; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🔍 Debug Eliminación</button>
+        <button id="btn-test-delete-exact" style="margin-right: 0.5rem; background: #059669; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🎯 Test Eliminación Exacta</button>
+        <button id="btn-diagnose-data-structure" style="margin-right: 0.5rem; background: #dc2626; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🔍 Diagnosticar Estructura</button>
+        <button id="btn-test-user-context" style="margin-right: 0.5rem; background: #7c3aed; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">👤 Test Contexto Usuario</button>
+        <button id="btn-test-upload-endpoint" style="margin-right: 0.5rem; background: #059669; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">🧪 Test Upload Endpoint</button>
+        <input type="file" id="test-file" accept=".pdf,.txt,.doc,.docx" style="margin-right: 0.5rem;">
+        <button id="btn-test-upload">📤 Probar Subida</button>
+        <button id="btn-test-list">📋 Probar Lista</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="row" style="justify-content:flex-start; gap:.5rem;">
+        <button id="btn-run">▶ Ejecutar pruebas</button>
+        <button id="btn-auth-clear">🗑️ Limpiar token</button>
+        <button id="btn-crypto-test" title="Probar cifrado guardando una clave temporal y borrándola">🔒 Probar cifrado</button>
+        <button id="btn-crypto-diag" title="Diagnóstico de clave y OpenSSL">🧪 Diagnóstico cifrado</button>
+        <a href="index.html" class="muted" style="margin-left:auto;">Volver al inicio</a>
+      </div>
+      <div>
+        <details>
+          <summary>Detalles de respuestas</summary>
+          <h4>Health</h4>
+          <pre id="dump-health">—</pre>
+          <h4>Auth</h4>
+          <pre id="dump-auth">—</pre>
+          <h4>Headers</h4>
+          <pre id="dump-headers">—</pre>
+          <h4>Cifrado</h4>
+          <pre id="dump-crypto">—</pre>
+          <h4>Diag cifrado</h4>
+          <pre id="dump-crypto-diag">—</pre>
+          <h4>Subida de archivos</h4>
+          <pre id="dump-upload">—</pre>
+          <h4>Lista de archivos</h4>
+          <pre id="dump-list">—</pre>
+          <h4>Crear Tablas IA</h4>
+          <pre id="dump-create-tables">—</pre>
+          <h4>Sistema Híbrido IA</h4>
+          <pre id="dump-hybrid-ai">—</pre>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <script src="static/js/config.js"></script>
+  <script>
+  (function(){
+    'use strict';
+    
+    // Esperar a que se cargue config.js
+    function waitForConfig() {
+      return new Promise((resolve) => {
+        if (window.Config && window.Config.getToken) {
+          resolve();
+        } else {
+          setTimeout(() => waitForConfig().then(resolve), 100);
+        }
+      });
+    }
+
+    const $ = (id) => document.getElementById(id);
+
+    function setText(id, text, ok=null){
+      const el = $(id);
+      if (!el) return;
+      el.textContent = text;
+      if (ok === true) { el.classList.remove('muted','fail'); el.classList.add('ok'); }
+      else if (ok === false) { el.classList.remove('muted','ok'); el.classList.add('fail'); }
+      else { el.classList.remove('ok','fail'); el.classList.add('muted'); }
+    }
+
+    // Entorno
+    function loadEnv(){
+      setText('env-origin', window.location.origin);
+      setText('env-path', window.location.pathname + window.location.search + window.location.hash);
+      setText('env-lang', document.documentElement.lang || '—');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setText('env-color', prefersDark ? 'dark' : 'light');
+    }
+
+    // Test CSS
+    function testCss(){
+      try {
+        const sheetOk = !!Array.from(document.styleSheets).find(ss => (ss.href||'').includes('static/css/styles.css'));
+        setText('res-css', sheetOk ? 'OK' : 'No cargó', sheetOk);
+      } catch(e){ setText('res-css', 'Error', false); }
+    }
+
+    // Test JS Config
+    function testConfig(){
+      const ok = !!(window.Config && window.Config.APP_CONFIG && window.Config.API_BASE);
+      setText('res-config', ok ? 'OK' : 'No disponible', ok);
+      
+      // Debug del token
+      if (ok) {
+        const token = window.Config.getToken();
+        console.log('Token obtenido:', token ? 'SÍ' : 'NO', token ? token.substring(0, 20) + '...' : '');
+        
+        // Verificar localStorage directamente
+        const authToken = localStorage.getItem('auth_token');
+        const legacyToken = localStorage.getItem('token');
+        console.log('auth_token en localStorage:', authToken ? 'SÍ' : 'NO');
+        console.log('token (legacy) en localStorage:', legacyToken ? 'SÍ' : 'NO');
+        
+        // Mostrar información del token si existe
+        if (token) {
+          try {
+            const parts = token.split('.');
+            if (parts.length === 3) {
+              const payload = JSON.parse(atob(parts[1]));
+              console.log('Token payload:', payload);
+              setText('env-origin', `Token: ${payload.email || 'N/A'} (ID: ${payload.user_id || 'N/A'})`, true);
+            }
+          } catch (e) {
+            console.log('Error decodificando token:', e);
+            setText('env-origin', 'Token inválido', false);
+          }
+        } else {
+          setText('env-origin', window.location.origin, true);
+        }
+        
+        setText('env-path', window.location.pathname, true);
+        setText('env-lang', document.documentElement.lang, true);
+        setText('env-color', window.matchMedia('(prefers-color-scheme: dark)').matches ? 'Oscuro' : 'Claro', true);
+      }
+    }
+
+    async function testHealth(){
+      const t0 = performance.now();
+      try {
+        const r = await fetch('api/health.php', { method:'GET', cache:'no-store' });
+        const t1 = performance.now();
+        const txt = await r.text();
+        setText('res-latency', String(Math.round(t1 - t0)));
+        try { $('dump-health').textContent = txt; } catch {}
+        if (!r.ok) { setText('res-health', 'HTTP ' + r.status, false); return; }
+        setText('res-health', 'OK', true);
+        // Headers visibles
+        const hdrs = [];
+        r.headers.forEach((v,k)=>{ hdrs.push(k+': '+v); });
+        $('dump-headers').textContent = hdrs.join('\n') || '—';
+        setText('res-headers', hdrs.length ? 'OK' : '—', hdrs.length>0);
+      } catch(e){
+        setText('res-health', e.message || 'Error', false);
+      }
+    }
+
+    async function testAuth(){
+      try {
+        // Verificar y crear token si es necesario
+        const needsToken = ensureToken();
+        
+        // Si se creó un token, esperar a que esté disponible
+        if (needsToken) {
+          console.log('Esperando a que el token esté disponible...');
+          await waitForToken();
+        }
+        
+        const token = window.Config.getToken();
+        console.log('Token obtenido en testAuth:', token ? 'SÍ' : 'NO', token ? token.substring(0, 20) + '...' : '');
+        
+        if (!token) {
+          setText('res-auth', 'Sin token', false);
+          console.log('No hay token disponible');
+          return;
+        }
+        
+        const r = await fetch('api/auth_me_safe.php', {
+          method:'GET',
+          headers: { 'Authorization': 'Bearer ' + token },
+          cache:'no-store'
+        });
+        const txt = await r.text();
+        try { $('dump-auth').textContent = txt; } catch {}
+        if (!r.ok) { 
+          setText('res-auth', 'No autenticado', false); 
+          console.log('Error de autenticación:', r.status, txt);
+          return; 
+        }
+        setText('res-auth', 'Autenticado', true);
+      } catch(e){ 
+        setText('res-auth', 'Error', false); 
+        console.log('Error en testAuth:', e);
+      }
+    }
+
+    async function testCrypto(){
+      const token = window.Config.getToken();
+      if (!token) { setText('res-crypto', 'Requiere login', false); return; }
+      const temp = 'TEMP_TEST_' + Math.random().toString(36).slice(2,8);
+      let setOk = false, delOk = false;
+      let setStatus = 0, delStatus = 0;
+      let setJson = null, delJson = null;
+      try {
+        // 1) Guardar temporal (usa xai_api_key para evitar afectar tus providers principales)
+        const setRes = await fetch('api/secrets_set_safe.php', {
+          method:'POST',
+          headers:{ 'Authorization': 'Bearer '+token, 'Content-Type':'application/json' },
+          body: JSON.stringify({ secrets: { xai_api_key: temp } })
+        });
+        setStatus = setRes.status;
+        setJson = await setRes.json().catch(()=>({}));
+        setOk = !!(setRes.ok && setJson && setJson.ok === true);
+        
+        // 2) Borrar temporal
+        const delRes = await fetch('api/secrets_set_safe.php', {
+          method:'POST',
+          headers:{ 'Authorization': 'Bearer '+token, 'Content-Type':'application/json' },
+          body: JSON.stringify({ secrets: { xai_api_key: '' } })
+        });
+        delStatus = delRes.status;
+        delJson = await delRes.json().catch(()=>({}));
+        delOk = !!(delRes.ok && delJson && delJson.ok === true);
+      } catch(e) {
+        // noop – abajo mostramos JSONs/estatus
+      }
+      const msg = [
+        'SET: status='+setStatus+' json=' + JSON.stringify(setJson || {}),
+        'DEL: status='+delStatus+' json=' + JSON.stringify(delJson || {})
+      ].join('\n');
+      $('dump-crypto').textContent = msg;
+      setText('res-crypto', (setOk && delOk) ? 'OK' : 'Fallo', (setOk && delOk));
+    }
+
+    $('btn-run').addEventListener('click', async ()=>{
+      // Esperar a que se cargue config.js
+      await waitForConfig();
+      
+      loadEnv();
+      testCss();
+      testConfig();
+      await testHealth();
+      await testAuth();
+    });
+
+    $('btn-auth-clear').addEventListener('click', ()=>{
+      try { window.Config.clearToken(); } catch {}
+      setText('res-auth', 'Token limpiado', null);
+    });
+
+    // Función para crear token de prueba
+    function createTestToken() {
+      // En lugar de crear un token simulado, vamos a hacer login real
+      console.log('Intentando hacer login real para obtener token válido...');
+      
+      // Usar credenciales de prueba o las que estén en el sistema
+      const testCredentials = {
+        email: "test@example.com",
+        password: "test123456"
+      };
+      
+      // Intentar login real
+      fetch('api/auth_login.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(testCredentials)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.token) {
+          window.Config.setToken(data.token);
+          console.log('Token real obtenido:', data.token.substring(0, 20) + '...');
+          setText('res-auth', 'Token real obtenido', true);
+        } else {
+          console.log('Error en login:', data);
+          setText('res-auth', 'Error en login: ' + (data.error || 'Desconocido'), false);
+        }
+      })
+      .catch(error => {
+        console.log('Error de conexión:', error);
+        setText('res-auth', 'Error de conexión', false);
+      });
+    }
+
+    // Función para crear usuario de prueba
+    function createTestUser() {
+      console.log('Creando usuario de prueba...');
+      
+      const testUser = {
+        email: "test@example.com",
+        password: "test123456",
+        name: "Usuario de Prueba"
+      };
+      
+      fetch('api/auth_register.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(testUser)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.token) {
+          window.Config.setToken(data.token);
+          console.log('Usuario de prueba creado y token obtenido:', data.token.substring(0, 20) + '...');
+          setText('res-auth', 'Usuario de prueba creado', true);
+        } else {
+          console.log('Error creando usuario:', data);
+          // Si el usuario ya existe, intentar login
+          createTestToken();
+        }
+      })
+      .catch(error => {
+        console.log('Error de conexión:', error);
+        setText('res-auth', 'Error de conexión', false);
+      });
+    }
+
+    // Función para verificar y crear token automáticamente
+    function ensureToken() {
+      const token = window.Config.getToken();
+      if (!token) {
+        console.log('No hay token disponible, creando usuario de prueba...');
+        createTestUser();
+        return true;
+      }
+      return false;
+    }
+
+    // Función para esperar a que el token esté disponible
+    async function waitForToken() {
+      return new Promise((resolve) => {
+        const checkToken = () => {
+          const token = window.Config.getToken();
+          if (token) {
+            console.log('Token encontrado:', token.substring(0, 20) + '...');
+            resolve(token);
+          } else {
+            setTimeout(checkToken, 100);
+          }
+        };
+        checkToken();
+      });
+    }
+
+    // Botones para crear usuario y token de prueba
+    const testUserBtn = document.createElement('button');
+    testUserBtn.textContent = '👤 Crear Usuario de Prueba';
+    testUserBtn.addEventListener('click', createTestUser);
+    testUserBtn.style.marginLeft = '10px';
+    document.querySelector('.card').appendChild(testUserBtn);
+
+    const testTokenBtn = document.createElement('button');
+    testTokenBtn.textContent = '🔑 Hacer Login de Prueba';
+    testTokenBtn.addEventListener('click', createTestToken);
+    testTokenBtn.style.marginLeft = '10px';
+    document.querySelector('.card').appendChild(testTokenBtn);
+
+    $('btn-crypto-test').addEventListener('click', ()=>{ testCrypto(); });
+
+    async function runCryptoDiag(){
+      const token = window.Config.getToken();
+      try {
+        const r = await fetch('api/crypto_diag_safe.php', {
+          headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+        });
+        const j = await r.json();
+        $('dump-crypto-diag').textContent = JSON.stringify(j, null, 2);
+      } catch(e){
+        $('dump-crypto-diag').textContent = 'Error: ' + (e && e.message ? e.message : 'desconocido');
+      }
+    }
+    $('btn-crypto-diag').addEventListener('click', ()=>{ runCryptoDiag(); });
+
+    // Funciones de prueba de subida de archivos
+    async function testUploadDir() {
+      try {
+        // Verificar y crear token si es necesario
+        const needsToken = ensureToken();
+        
+        // Si se creó un token, esperar a que esté disponible
+        if (needsToken) {
+          console.log('Esperando a que el token esté disponible para testUploadDir...');
+          await waitForToken();
+        }
+        
+        const token = window.Config.getToken();
+        console.log('Token para testUploadDir:', token ? 'SÍ' : 'NO', token ? token.substring(0, 20) + '...' : '');
+        
+        const response = await fetch('api/upload_test.php', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+        const result = await response.json();
+        setText('res-upload-dir', result.exists ? 'Existe' : 'No existe', result.exists);
+        setText('res-upload-perms', result.writable ? 'Escribible' : 'No escribible', result.writable);
+        $('dump-upload').textContent = JSON.stringify(result, null, 2);
+      } catch (e) {
+        setText('res-upload-dir', 'Error', false);
+        setText('res-upload-perms', 'Error', false);
+        $('dump-upload').textContent = 'Error: ' + e.message;
+      }
+    }
+
+    async function testUploadEndpoint() {
+      try {
+        // Verificar y crear token si es necesario
+        const needsToken = ensureToken();
+        
+        // Si se creó un token, esperar a que esté disponible
+        if (needsToken) {
+          console.log('Esperando a que el token esté disponible para testUploadEndpoint...');
+          await waitForToken();
+        }
+        
+        const token = window.Config.getToken();
+        console.log('Token para testUploadEndpoint:', token ? 'SÍ' : 'NO', token ? token.substring(0, 20) + '...' : '');
+        
+        const response = await fetch('api/ai_upload_knowledge_safe.php', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+        const result = await response.json();
+        setText('res-upload-endpoint', result.ok ? 'Funcionando' : 'Error', result.ok);
+        $('dump-upload').textContent = JSON.stringify(result, null, 2);
+      } catch (e) {
+        setText('res-upload-endpoint', 'Error', false);
+        $('dump-upload').textContent = 'Error: ' + e.message;
+      }
+    }
+
+    async function testListEndpoint() {
+      try {
+        // Verificar y crear token si es necesario
+        const needsToken = ensureToken();
+        
+        // Si se creó un token, esperar a que esté disponible
+        if (needsToken) {
+          console.log('Esperando a que el token esté disponible para testListEndpoint...');
+          await waitForToken();
+        }
+        
+        const token = window.Config.getToken();
+        console.log('Token para testListEndpoint:', token ? 'SÍ' : 'NO', token ? token.substring(0, 20) + '...' : '');
+        
+        const response = await fetch('api/ai_knowledge_list_safe.php', {
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+        const result = await response.json();
+        setText('res-list-endpoint', result.ok ? 'Funcionando' : 'Error', result.ok);
+        $('dump-list').textContent = JSON.stringify(result, null, 2);
+      } catch (e) {
+        setText('res-list-endpoint', 'Error', false);
+        $('dump-list').textContent = 'Error: ' + e.message;
+      }
+    }
+
+    async function testFileUpload() {
+      const fileInput = $('test-file');
+      if (!fileInput.files || fileInput.files.length === 0) {
+        setText('res-upload-test', 'Selecciona un archivo', false);
+        return;
+      }
+
+      // Verificar y crear token si es necesario
+      const needsToken = ensureToken();
+      
+      // Si se creó un token, esperar a que esté disponible
+      if (needsToken) {
+        console.log('Esperando a que el token esté disponible para testFileUpload...');
+        await waitForToken();
+      }
+
+      const token = window.Config.getToken();
+      console.log('Token para testFileUpload:', token ? 'SÍ' : 'NO', token ? token.substring(0, 20) + '...' : '');
+
+      const file = fileInput.files[0];
+      console.log('Archivo seleccionado:', file.name, 'Tamaño:', file.size, 'Tipo:', file.type);
+      
+      const formData = new FormData();
+      formData.append('files', file);
+      
+      // Debug del FormData
+      console.log('FormData creado, verificando contenido:');
+      for (let [key, value] of formData.entries()) {
+        console.log('FormData entry:', key, value);
+      }
+
+      try {
+        setText('res-upload-test', 'Subiendo...', null);
+        
+        const response = await fetch('api/ai_upload_knowledge_safe.php', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + token
+            // NO incluir Content-Type, dejar que el navegador lo establezca automáticamente para multipart/form-data
+          },
+          body: formData
+        });
+
+        const result = await response.json();
+        setText('res-upload-test', result.ok ? 'Subida exitosa' : 'Error en subida', result.ok);
+        $('dump-upload').textContent = JSON.stringify(result, null, 2);
+      } catch (e) {
+        setText('res-upload-test', 'Error de conexión', false);
+        $('dump-upload').textContent = 'Error: ' + e.message;
+      }
+    }
+
+    // Función para inicializar directorios
+    async function initUploadDirs() {
+      try {
+        // Verificar y crear token si es necesario
+        const needsToken = ensureToken();
+        
+        // Si se creó un token, esperar a que esté disponible
+        if (needsToken) {
+          console.log('Esperando a que el token esté disponible para initUploadDirs...');
+          await waitForToken();
+        }
+        
+        const token = window.Config.getToken();
+        console.log('Token para initUploadDirs:', token ? 'SÍ' : 'NO', token ? token.substring(0, 20) + '...' : '');
+        
+        setText('res-upload-dir', 'Inicializando...', null);
+        
+        const response = await fetch('api/init_upload_dirs.php', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+        
+        const result = await response.text();
+        console.log('Resultado de inicialización:', result);
+        
+        if (response.ok) {
+          setText('res-upload-dir', 'Inicializado', true);
+          setText('res-upload-perms', 'Verificando...', null);
+          
+          // Verificar permisos después de la inicialización
+          setTimeout(async () => {
+            await testUploadDir();
+          }, 1000);
+        } else {
+          setText('res-upload-dir', 'Error en inicialización', false);
+        }
+        
+        $('dump-upload').textContent = result;
+      } catch (e) {
+        setText('res-upload-dir', 'Error de conexión', false);
+        $('dump-upload').textContent = 'Error: ' + e.message;
+      }
+    }
+
+    // Función para debug ultra detallado
+    async function debugUpload() {
+      try {
+        // Verificar y crear token si es necesario
+        const needsToken = ensureToken();
+        
+        // Si se creó un token, esperar a que esté disponible
+        if (needsToken) {
+          console.log('Esperando a que el token esté disponible para debugUpload...');
+          await waitForToken();
+        }
+        
+        const token = window.Config.getToken();
+        console.log('Token para debugUpload:', token ? 'SÍ' : 'NO', token ? token.substring(0, 20) + '...' : '');
+        
+        setText('res-upload-test', 'Debugging...', null);
+        
+        const response = await fetch('api/debug_upload.php', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+        
+        const result = await response.json();
+        console.log('Resultado de debug:', result);
+        
+        if (response.ok) {
+          setText('res-upload-test', 'Debug completado', true);
+        } else {
+          setText('res-upload-test', 'Error en debug', false);
+        }
+        
+        $('dump-upload').textContent = JSON.stringify(result, null, 2);
+      } catch (e) {
+        setText('res-upload-test', 'Error de conexión', false);
+        $('dump-upload').textContent = 'Error: ' + e.message;
+      }
+    }
+
+    // Función para test del endpoint de subida
+    async function testUploadEndpoint() {
+      const fileInput = $('test-file');
+      if (!fileInput.files || fileInput.files.length === 0) {
+        setText('res-upload-test', 'Selecciona un archivo primero', false);
+        return;
+      }
+
+      // Verificar y crear token si es necesario
+      const needsToken = ensureToken();
+      
+      // Si se creó un token, esperar a que esté disponible
+      if (needsToken) {
+        console.log('Esperando a que el token esté disponible para testUploadEndpoint...');
+        await waitForToken();
+      }
+
+      const token = window.Config.getToken();
+      console.log('Token para testUploadEndpoint:', token ? 'SÍ' : 'NO', token ? token.substring(0, 20) + '...' : '');
+
+      const file = fileInput.files[0];
+      console.log('Archivo seleccionado:', file.name, 'Tamaño:', file.size, 'Tipo:', file.type);
+      
+      const formData = new FormData();
+      formData.append('files', file);
+      
+      // Debug del FormData
+      console.log('FormData creado, verificando contenido:');
+      for (let [key, value] of formData.entries()) {
+        console.log('FormData entry:', key, value);
+      }
+
+      try {
+        setText('res-upload-test', 'Probando endpoint...', null);
+        
+        const response = await fetch('api/test_upload.php', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + token
+            // NO incluir Content-Type, dejar que el navegador lo establezca automáticamente para multipart/form-data
+          },
+          body: formData
+        });
+
+        const result = await response.json();
+        setText('res-upload-test', result.ok ? 'Test exitoso' : 'Test falló', result.ok);
+        $('dump-upload').textContent = JSON.stringify(result, null, 2);
+      } catch (e) {
+        setText('res-upload-test', 'Error de conexión', false);
+        $('dump-upload').textContent = 'Error: ' + e.message;
+      }
+    }
+
+    // Función para debug de validación
+    async function debugValidation() {
+      const fileInput = $('test-file');
+      if (!fileInput.files || fileInput.files.length === 0) {
+        setText('res-upload-test', 'Selecciona un archivo primero', false);
+        return;
+      }
+
+      // Verificar y crear token si es necesario
+      const needsToken = ensureToken();
+      
+      // Si se creó un token, esperar a que esté disponible
+      if (needsToken) {
+        console.log('Esperando a que el token esté disponible para debugValidation...');
+        await waitForToken();
+      }
+
+      const token = window.Config.getToken();
+      console.log('Token para debugValidation:', token ? 'SÍ' : 'NO', token ? token.substring(0, 20) + '...' : '');
+
+      const file = fileInput.files[0];
+      console.log('Archivo seleccionado:', file.name, 'Tamaño:', file.size, 'Tipo:', file.type);
+      
+      const formData = new FormData();
+      formData.append('files', file);
+
+      try {
+        setText('res-upload-test', 'Debugging validación...', null);
+        
+        const response = await fetch('api/debug_validation.php', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + token
+          },
+          body: formData
+        });
+
+        const result = await response.json();
+        setText('res-upload-test', result.ok ? 'Debug completado' : 'Debug falló', result.ok);
+        $('dump-upload').textContent = JSON.stringify(result, null, 2);
+      } catch (e) {
+        setText('res-upload-test', 'Error de conexión', false);
+        $('dump-upload').textContent = 'Error: ' + e.message;
+      }
+    }
+
+    // Función para debug de knowledge get
+    async function debugKnowledgeGet() {
+      // Verificar y crear token si es necesario
+      const needsToken = ensureToken();
+      
+      // Si se creó un token, esperar a que esté disponible
+      if (needsToken) {
+        await waitForToken();
+      }
+
+      const token = window.Config.getToken();
+
+      try {
+        setText('res-upload-test', 'Debugging knowledge get...', null);
+        
+        // Primero obtener la lista para tener un ID válido
+        const listResponse = await fetch('api/ai_knowledge_list_safe.php', {
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+
+        if (!listResponse.ok) {
+          setText('res-upload-test', 'Error obteniendo lista', false);
+          $('dump-upload').textContent = 'Error obteniendo lista: ' + listResponse.status;
+          return;
+        }
+
+        const listData = await listResponse.json();
+        if (!listData.ok || !listData.knowledge || listData.knowledge.length === 0) {
+          setText('res-upload-test', 'No hay archivos para probar', false);
+          $('dump-upload').textContent = 'No hay archivos de conocimiento disponibles';
+          return;
+        }
+
+        // Usar el primer archivo para la prueba
+        const firstFile = listData.knowledge[0];
+        const knowledgeId = firstFile.id;
+
+        // Probar el endpoint de debug
+        const response = await fetch(`api/debug_knowledge_get.php?id=${knowledgeId}`, {
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+
+        const result = await response.json();
+        setText('res-upload-test', result.ok ? 'Debug knowledge get completado' : 'Debug knowledge get falló', result.ok);
+        $('dump-upload').textContent = JSON.stringify(result, null, 2);
+      } catch (e) {
+        setText('res-upload-test', 'Error de conexión', false);
+        $('dump-upload').textContent = 'Error: ' + e.message;
+      }
+    }
+
+    // Función para debug del endpoint exacto de la app
+    async function debugAppEndpoint() {
+      // Verificar y crear token si es necesario
+      const needsToken = ensureToken();
+      
+      // Si se creó un token, esperar a que esté disponible
+      if (needsToken) {
+        await waitForToken();
+      }
+
+      const token = window.Config.getToken();
+
+      try {
+        setText('res-upload-test', 'Debugging app endpoint...', null);
+        
+        // Primero obtener la lista para tener un ID válido
+        const listResponse = await fetch('api/ai_knowledge_list_safe.php', {
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+
+        if (!listResponse.ok) {
+          setText('res-upload-test', 'Error obteniendo lista', false);
+          $('dump-upload').textContent = 'Error obteniendo lista: ' + listResponse.status;
+          return;
+        }
+
+        const listData = await listResponse.json();
+        if (!listData.ok || !listData.knowledge || listData.knowledge.length === 0) {
+          setText('res-upload-test', 'No hay archivos para probar', false);
+          $('dump-upload').textContent = 'No hay archivos de conocimiento disponibles';
+          return;
+        }
+
+        // Usar el primer archivo para la prueba
+        const firstFile = listData.knowledge[0];
+        const knowledgeId = firstFile.id;
+
+        // Probar el endpoint EXACTO que usa la app
+        const response = await fetch(`api/debug_app_endpoint.php?id=${knowledgeId}`, {
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+
+        const result = await response.json();
+        setText('res-upload-test', result.ok ? 'Debug app endpoint completado' : 'Debug app endpoint falló', result.ok);
+        $('dump-upload').textContent = JSON.stringify(result, null, 2);
+      } catch (e) {
+        setText('res-upload-test', 'Error de conexión', false);
+        $('dump-upload').textContent = 'Error: ' + e.message;
+      }
+    }
+
+    // Función para probar el flujo completo de la app
+    async function testAppFlow() {
+      // Verificar y crear token si es necesario
+      const needsToken = ensureToken();
+      
+      // Si se creó un token, esperar a que esté disponible
+      if (needsToken) {
+        await waitForToken();
+      }
+
+      const token = window.Config.getToken();
+
+      try {
+        setText('res-upload-test', 'Testing app flow...', null);
+        
+        // Primero obtener la lista para tener un ID válido
+        const listResponse = await fetch('api/ai_knowledge_list_safe.php', {
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+
+        if (!listResponse.ok) {
+          setText('res-upload-test', 'Error obteniendo lista', false);
+          $('dump-upload').textContent = 'Error obteniendo lista: ' + listResponse.status;
+          return;
+        }
+
+        const listData = await listResponse.json();
+        if (!listData.ok || !listData.knowledge || listData.knowledge.length === 0) {
+          setText('res-upload-test', 'No hay archivos para probar', false);
+          $('dump-upload').textContent = 'No hay archivos de conocimiento disponibles';
+          return;
+        }
+
+        // Usar el primer archivo para la prueba
+        const firstFile = listData.knowledge[0];
+        const knowledgeId = firstFile.id;
+
+        // Probar el endpoint EXACTO que usa la app con logging detallado
+        const response = await fetch(`api/test_app_flow.php?id=${knowledgeId}`, {
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+
+        const result = await response.json();
+        setText('res-upload-test', result.ok ? 'Test app flow completado' : 'Test app flow falló', result.ok);
+        $('dump-upload').textContent = JSON.stringify(result, null, 2);
+      } catch (e) {
+        setText('res-upload-test', 'Error de conexión', false);
+        $('dump-upload').textContent = 'Error: ' + e.message;
+      }
+    }
+
+    // Función para debug del error 500
+    async function debug500Error() {
+      // Verificar y crear token si es necesario
+      const needsToken = ensureToken();
+      
+      // Si se creó un token, esperar a que esté disponible
+      if (needsToken) {
+        await waitForToken();
+      }
+
+      const token = window.Config.getToken();
+
+      try {
+        setText('res-upload-test', 'Debugging 500 error...', null);
+        
+        // Probar el endpoint de debug 500
+        const response = await fetch('api/debug_500_error.php', {
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+
+        const result = await response.json();
+        setText('res-upload-test', result.ok ? 'Debug 500 completado' : 'Debug 500 falló', result.ok);
+        $('dump-upload').textContent = JSON.stringify(result, null, 2);
+      } catch (e) {
+        setText('res-upload-test', 'Error de conexión', false);
+        $('dump-upload').textContent = 'Error: ' + e.message;
+      }
+    }
+
+    // Función para debug simple
+    async function debugSimple() {
+      try {
+        setText('res-upload-test', 'Debugging simple...', null);
+        
+        // Probar el endpoint de debug simple (sin autenticación)
+        const response = await fetch('api/debug_simple.php');
+
+        if (!response.ok) {
+          setText('res-upload-test', 'Error HTTP: ' + response.status, false);
+          $('dump-upload').textContent = 'Error HTTP: ' + response.status + '\n' + await response.text();
+          return;
+        }
+
+        const text = await response.text();
+        console.log('Raw response:', text);
+        
+        try {
+          const result = JSON.parse(text);
+          setText('res-upload-test', result.ok ? 'Debug simple completado' : 'Debug simple falló', result.ok);
+          $('dump-upload').textContent = JSON.stringify(result, null, 2);
+        } catch (parseError) {
+          setText('res-upload-test', 'Error parseando JSON', false);
+          $('dump-upload').textContent = 'Error parseando JSON: ' + parseError.message + '\n\nRespuesta raw:\n' + text;
+        }
+      } catch (e) {
+        setText('res-upload-test', 'Error de conexión', false);
+        $('dump-upload').textContent = 'Error: ' + e.message;
+      }
+    }
+
+    // Función para probar la corrección de helpers.php
+    async function testHelpersFix() {
+      try {
+        setText('res-upload-test', 'Testing helpers fix...', null);
+        
+        // Probar el endpoint de test helpers fix (sin autenticación)
+        const response = await fetch('api/test_helpers_fix.php');
+
+        if (!response.ok) {
+          setText('res-upload-test', 'Error HTTP: ' + response.status, false);
+          $('dump-upload').textContent = 'Error HTTP: ' + response.status + '\n' + await response.text();
+          return;
+        }
+
+        const text = await response.text();
+        console.log('Raw response:', text);
+        
+        try {
+          const result = JSON.parse(text);
+          setText('res-upload-test', result.ok ? 'Helpers fix exitoso' : 'Helpers fix falló', result.ok);
+          $('dump-upload').textContent = JSON.stringify(result, null, 2);
+        } catch (parseError) {
+          setText('res-upload-test', 'Error parseando JSON', false);
+          $('dump-upload').textContent = 'Error parseando JSON: ' + parseError.message + '\n\nRespuesta raw:\n' + text;
+        }
+      } catch (e) {
+        setText('res-upload-test', 'Error de conexión', false);
+        $('dump-upload').textContent = 'Error: ' + e.message;
+      }
+    }
+
+    // Función para crear tablas de IA
+    async function createAITables() {
+      try {
+        setText('res-upload-test', 'Creating AI tables...', null);
+        
+        const response = await fetch('api/create_ai_tables.php', {
+          headers: {
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          }
+        });
+
+        if (!response.ok) {
+          setText('res-upload-test', 'Error HTTP: ' + response.status, false);
+          $('dump-create-tables').textContent = 'Error HTTP: ' + response.status + '\n' + await response.text();
+          return;
+        }
+
+        const data = await response.json();
+        setText('res-upload-test', 'AI tables creation result: ' + JSON.stringify(data), data.ok);
+        $('dump-create-tables').textContent = JSON.stringify(data, null, 2);
+        
+      } catch (error) {
+        setText('res-upload-test', 'Error: ' + error.message, false);
+        $('dump-create-tables').textContent = 'Error: ' + error.message;
+      }
+    }
+
+    // Función para probar el sistema híbrido de IA
+    async function testHybridAI() {
+      try {
+        setText('res-upload-test', 'Testing Hybrid AI System...', null);
+        
+        const testPrompt = "Analiza TSLA para trading de opciones con enfoque en volatilidad y soportes/resistencias";
+        
+        // Probar modo completo (enriched)
+        const responseComplete = await fetch('api/ai_analyze_hybrid.php', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token')),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            provider: 'auto',
+            model: null,
+            prompt: testPrompt,
+            systemPrompt: 'Eres un analista profesional de trading especializado en opciones.',
+            useKnowledgeBase: true,
+            includeBehavioralPatterns: true,
+            includeAnalysisHistory: true,
+            includeFiles: []
+          })
+        });
+
+        if (!responseComplete.ok) {
+          setText('res-upload-test', 'Error HTTP: ' + responseComplete.status, false);
+          $('dump-hybrid-ai').textContent = 'Error HTTP: ' + responseComplete.status + '\n' + await responseComplete.text();
+          return;
+        }
+
+        const dataComplete = await responseComplete.json();
+        
+        // Probar modo conocimiento (direct)
+        const responseKnowledge = await fetch('api/ai_analyze_hybrid.php', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token')),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            provider: 'auto',
+            model: null,
+            prompt: testPrompt,
+            systemPrompt: 'Eres un analista profesional de trading especializado en opciones.',
+            useKnowledgeBase: true,
+            includeBehavioralPatterns: false,
+            includeAnalysisHistory: false,
+            includeFiles: []
+          })
+        });
+
+        const dataKnowledge = await responseKnowledge.json();
+        
+        const result = {
+          test_prompt: testPrompt,
+          mode_complete: dataComplete,
+          mode_knowledge: dataKnowledge,
+          comparison: {
+            complete_context_sources: dataComplete.context_sources || [],
+            knowledge_context_sources: dataKnowledge.context_sources || [],
+            complete_context_length: dataComplete.context_length || 0,
+            knowledge_context_length: dataKnowledge.context_length || 0
+          }
+        };
+        
+        setText('res-upload-test', 'Hybrid AI Test Complete - Both modes tested', true);
+        $('dump-hybrid-ai').textContent = JSON.stringify(result, null, 2);
+        
+      } catch (error) {
+        setText('res-upload-test', 'Error: ' + error.message, false);
+        $('dump-hybrid-ai').textContent = 'Error: ' + error.message;
+      }
+    }
+
+    // Función para debuggear el sistema híbrido
+    async function debugHybridSystem() {
+      try {
+        setText('res-upload-test', 'Debugging Hybrid System...', null);
+        
+        const response = await fetch('api/debug_hybrid_system.php', {
+          headers: {
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          }
+        });
+
+        if (!response.ok) {
+          setText('res-upload-test', 'Error HTTP: ' + response.status, false);
+          $('dump-hybrid-ai').textContent = 'Error HTTP: ' + response.status + '\n' + await response.text();
+          return;
+        }
+
+        const data = await response.json();
+        setText('res-upload-test', 'Hybrid System Debug Complete', data.ok);
+        $('dump-hybrid-ai').textContent = JSON.stringify(data, null, 2);
+        
+      } catch (error) {
+        setText('res-upload-test', 'Error: ' + error.message, false);
+        $('dump-hybrid-ai').textContent = 'Error: ' + error.message;
+      }
+    }
+
+    // Función para debuggear el sistema híbrido (versión simple)
+    async function debugHybridSimple() {
+      try {
+        setText('res-upload-test', 'Debugging Hybrid System (Simple)...', null);
+        
+        const response = await fetch('api/debug_hybrid_simple.php', {
+          headers: {
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          }
+        });
+
+        if (!response.ok) {
+          setText('res-upload-test', 'Error HTTP: ' + response.status, false);
+          $('dump-hybrid-ai').textContent = 'Error HTTP: ' + response.status + '\n' + await response.text();
+          return;
+        }
+
+        const data = await response.json();
+        setText('res-upload-test', 'Hybrid System Debug (Simple) Complete', data.ok);
+        $('dump-hybrid-ai').textContent = JSON.stringify(data, null, 2);
+        
+      } catch (error) {
+        setText('res-upload-test', 'Error: ' + error.message, false);
+        $('dump-hybrid-ai').textContent = 'Error: ' + error.message;
+      }
+    }
+
+    // Función para debuggear la estructura de la tabla
+    async function debugTableStructure() {
+      try {
+        setText('res-upload-test', 'Debugging Table Structure...', null);
+        
+        const response = await fetch('api/debug_table_structure.php', {
+          headers: {
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          }
+        });
+
+        if (!response.ok) {
+          setText('res-upload-test', 'Error HTTP: ' + response.status, false);
+          $('dump-hybrid-ai').textContent = 'Error HTTP: ' + response.status + '\n' + await response.text();
+          return;
+        }
+
+        const data = await response.json();
+        setText('res-upload-test', 'Table Structure Debug Complete', data.ok);
+        $('dump-hybrid-ai').textContent = JSON.stringify(data, null, 2);
+        
+      } catch (error) {
+        setText('res-upload-test', 'Error: ' + error.message, false);
+        $('dump-hybrid-ai').textContent = 'Error: ' + error.message;
+      }
+    }
+
+    // Función para procesar archivos existentes
+    async function processExistingFiles() {
+      try {
+        setText('res-upload-test', 'Procesando archivos existentes...', null);
+        
+        const response = await fetch('api/process_existing_files.php', {
+          headers: {
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          }
+        });
+
+        if (!response.ok) {
+          setText('res-upload-test', 'Error HTTP: ' + response.status, false);
+          $('dump-hybrid-ai').textContent = 'Error HTTP: ' + response.status + '\n' + await response.text();
+          return;
+        }
+
+        const data = await response.json();
+        setText('res-upload-test', 'Procesamiento completado: ' + data.files_processed + ' archivos', data.ok);
+        $('dump-hybrid-ai').textContent = JSON.stringify(data, null, 2);
+        
+      } catch (error) {
+        setText('res-upload-test', 'Error: ' + error.message, false);
+        $('dump-hybrid-ai').textContent = 'Error: ' + error.message;
+      }
+    }
+
+    // Función para debuggear el sistema híbrido (versión corregida)
+    async function debugHybridFixed() {
+      try {
+        setText('res-upload-test', '[DEBUG HÍBRIDO CORREGIDO] Ejecutando diagnóstico...', null);
+        
+        const response = await fetch('api/debug_hybrid_simple_fixed.php', {
+          headers: {
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          }
+        });
+
+        if (!response.ok) {
+          setText('res-upload-test', '[DEBUG HÍBRIDO CORREGIDO] Error HTTP: ' + response.status, false);
+          $('dump-hybrid-ai').textContent = '[DEBUG HÍBRIDO CORREGIDO] Error HTTP: ' + response.status + '\n' + await response.text();
+          return;
+        }
+
+        const data = await response.json();
+        setText('res-upload-test', '[DEBUG HÍBRIDO CORREGIDO] Completado - ' + data.knowledge_search_results + ' resultados encontrados', data.ok);
+        $('dump-hybrid-ai').textContent = '[DEBUG HÍBRIDO CORREGIDO]\n' + JSON.stringify(data, null, 2);
+        
+      } catch (error) {
+        setText('res-upload-test', '[DEBUG HÍBRIDO CORREGIDO] Error: ' + error.message, false);
+        $('dump-hybrid-ai').textContent = '[DEBUG HÍBRIDO CORREGIDO] Error: ' + error.message;
+      }
+    }
+
+    // Función para procesar TODOS los archivos pendientes
+    async function processAllPendingFiles() {
+      try {
+        setText('res-upload-test', '[PROCESAR TODOS] Ejecutando procesamiento masivo...', null);
+        
+        const response = await fetch('api/process_all_pending_files.php', {
+          headers: {
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          }
+        });
+
+        if (!response.ok) {
+          setText('res-upload-test', '[PROCESAR TODOS] Error HTTP: ' + response.status, false);
+          $('dump-hybrid-ai').textContent = '[PROCESAR TODOS] Error HTTP: ' + response.status + '\n' + await response.text();
+          return;
+        }
+
+        const data = await response.json();
+        setText('res-upload-test', '[PROCESAR TODOS] Completado: ' + data.files_processed + ' archivos procesados', data.ok);
+        $('dump-hybrid-ai').textContent = '[PROCESAR TODOS]\n' + JSON.stringify(data, null, 2);
+        
+      } catch (error) {
+        setText('res-upload-test', '[PROCESAR TODOS] Error: ' + error.message, false);
+        $('dump-hybrid-ai').textContent = '[PROCESAR TODOS] Error: ' + error.message;
+      }
+    }
+
+    // Función para debuggear el contenido de knowledge
+    async function debugKnowledgeContent() {
+      try {
+        setText('res-upload-test', '[DEBUG CONTENIDO] Analizando registros de conocimiento...', null);
+        
+        const response = await fetch('api/debug_knowledge_content.php', {
+          headers: {
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          }
+        });
+
+        if (!response.ok) {
+          setText('res-upload-test', '[DEBUG CONTENIDO] Error HTTP: ' + response.status, false);
+          $('dump-hybrid-ai').textContent = '[DEBUG CONTENIDO] Error HTTP: ' + response.status + '\n' + await response.text();
+          return;
+        }
+
+        const data = await response.json();
+        setText('res-upload-test', '[DEBUG CONTENIDO] Completado - ' + data.total_knowledge_records + ' registros encontrados', data.ok);
+        $('dump-hybrid-ai').textContent = '[DEBUG CONTENIDO]\n' + JSON.stringify(data, null, 2);
+        
+      } catch (error) {
+        setText('res-upload-test', '[DEBUG CONTENIDO] Error: ' + error.message, false);
+        $('dump-hybrid-ai').textContent = '[DEBUG CONTENIDO] Error: ' + error.message;
+      }
+    }
+
+    // Función para debuggear la extracción de palabras clave
+    async function debugKeywordExtraction() {
+      try {
+        setText('res-upload-test', '[DEBUG KEYWORDS] Analizando extracción de palabras clave...', null);
+        
+        const response = await fetch('api/debug_keyword_extraction.php', {
+          headers: {
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          }
+        });
+
+        if (!response.ok) {
+          setText('res-upload-test', '[DEBUG KEYWORDS] Error HTTP: ' + response.status, false);
+          $('dump-hybrid-ai').textContent = '[DEBUG KEYWORDS] Error HTTP: ' + response.status + '\n' + await response.text();
+          return;
+        }
+
+        const data = await response.json();
+        setText('res-upload-test', '[DEBUG KEYWORDS] Completado - ' + data.total_unique_matches + ' coincidencias encontradas', data.ok);
+        $('dump-hybrid-ai').textContent = '[DEBUG KEYWORDS]\n' + JSON.stringify(data, null, 2);
+        
+      } catch (error) {
+        setText('res-upload-test', '[DEBUG KEYWORDS] Error: ' + error.message, false);
+        $('dump-hybrid-ai').textContent = '[DEBUG KEYWORDS] Error: ' + error.message;
+      }
+    }
+
+    // Función para login rápido con usuarios que tienen contexto
+    async function quickLogin() {
+      try {
+        setText('res-upload-test', '[LOGIN RÁPIDO] Obteniendo usuarios con contexto...', null);
+        
+        // 1. Obtener usuarios con contexto
+        const response = await fetch('api/debug_users_with_context.php', {
+          headers: {
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          }
+        });
+
+        if (!response.ok) {
+          setText('res-upload-test', '[LOGIN RÁPIDO] Error HTTP: ' + response.status, false);
+          $('dump-hybrid-ai').textContent = '[LOGIN RÁPIDO] Error HTTP: ' + response.status + '\n' + await response.text();
+          return;
+        }
+
+        const data = await response.json();
+        
+        if (data.top_users && data.top_users.length > 0) {
+          // 2. Mostrar opciones de login
+          const userOptions = data.top_users.map(user => 
+            `${user.name || user.email} (ID: ${user.id}) - Conocimiento: ${user.knowledge_count}, Archivos: ${user.files_count}, Patrones: ${user.behavioral_patterns_count}, Análisis: ${user.analysis_history_count}`
+          ).join('\n');
+          
+          setText('res-upload-test', '[LOGIN RÁPIDO] Usuarios con contexto encontrados', data.ok);
+          $('dump-hybrid-ai').textContent = '[LOGIN RÁPIDO]\n' + JSON.stringify(data, null, 2);
+          
+          // 3. Crear modal para seleccionar usuario
+          const modal = document.createElement('div');
+          modal.style.cssText = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.5); display: flex; align-items: center; 
+            justify-content: center; z-index: 1000;
+          `;
+          
+          const modalContent = document.createElement('div');
+          modalContent.style.cssText = `
+            background: white; padding: 2rem; border-radius: 8px; 
+            max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;
+          `;
+          
+          modalContent.innerHTML = `
+            <h3>👤 Seleccionar Usuario para Prueba</h3>
+            <p>Usuarios con contexto real (conocimiento, archivos, patrones, análisis):</p>
+            <div id="user-list" style="margin: 1rem 0;"></div>
+            <button id="close-modal" style="background: #dc2626; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">Cerrar</button>
+          `;
+          
+          const userList = modalContent.querySelector('#user-list');
+          data.top_users.forEach(user => {
+            const userDiv = document.createElement('div');
+            userDiv.style.cssText = `
+              padding: 0.5rem; margin: 0.5rem 0; border: 1px solid #ddd; 
+              border-radius: 6px; cursor: pointer; background: #f9f9f9;
+            `;
+            userDiv.innerHTML = `
+              <strong>${user.name || user.email}</strong> (ID: ${user.id})<br>
+              📚 Conocimiento: ${user.knowledge_count} | 
+              📁 Archivos: ${user.files_count} | 
+              🧠 Patrones: ${user.behavioral_patterns_count} | 
+              📊 Análisis: ${user.analysis_history_count}
+            `;
+            userDiv.onclick = () => {
+              // Simular login con este usuario
+              simulateLoginWithUser(user);
+              modal.remove();
+            };
+            userList.appendChild(userDiv);
+          });
+          
+          modal.appendChild(modalContent);
+          document.body.appendChild(modal);
+          
+          // Cerrar modal
+          modalContent.querySelector('#close-modal').onclick = () => modal.remove();
+          modal.onclick = (e) => {
+            if (e.target === modal) modal.remove();
+          };
+          
+        } else {
+          setText('res-upload-test', '[LOGIN RÁPIDO] No se encontraron usuarios con contexto', false);
+          $('dump-hybrid-ai').textContent = '[LOGIN RÁPIDO] No se encontraron usuarios con contexto';
+        }
+        
+      } catch (error) {
+        setText('res-upload-test', '[LOGIN RÁPIDO] Error: ' + error.message, false);
+        $('dump-hybrid-ai').textContent = '[LOGIN RÁPIDO] Error: ' + error.message;
+      }
+    }
+
+    // Función para simular login con usuario seleccionado
+    async function simulateLoginWithUser(user) {
+      try {
+        setText('res-upload-test', `[LOGIN RÁPIDO] Simulando login con ${user.name || user.email}...`, null);
+        
+        // Nota: En un entorno real, esto requeriría autenticación real
+        // Por ahora, solo mostramos la información del usuario
+        const userInfo = {
+          user_id: user.id,
+          email: user.email,
+          name: user.name,
+          context_summary: {
+            knowledge_count: user.knowledge_count,
+            files_count: user.files_count,
+            behavioral_patterns_count: user.behavioral_patterns_count,
+            analysis_history_count: user.analysis_history_count
+          }
+        };
+        
+        setText('res-upload-test', `[LOGIN RÁPIDO] Usuario ${user.name || user.email} seleccionado`, true);
+        $('dump-hybrid-ai').textContent = '[LOGIN RÁPIDO] Usuario seleccionado:\n' + JSON.stringify(userInfo, null, 2);
+        
+        // Mostrar mensaje de que se puede probar el sistema híbrido
+        setTimeout(() => {
+          setText('res-upload-test', `[LOGIN RÁPIDO] Ahora puedes probar "🔧 Debug Híbrido Corregido" con contexto real`, true);
+        }, 1000);
+        
+      } catch (error) {
+        setText('res-upload-test', '[LOGIN RÁPIDO] Error simulando login: ' + error.message, false);
+        $('dump-hybrid-ai').textContent = '[LOGIN RÁPIDO] Error simulando login: ' + error.message;
+      }
+    }
+
+    // Función para login real con email y contraseña
+    async function realLogin() {
+      try {
+        const email = document.getElementById('login-email').value.trim();
+        const password = document.getElementById('login-password').value.trim();
+        
+        if (!email || !password) {
+          setText('res-upload-test', '[LOGIN REAL] Por favor ingresa email y contraseña', false);
+          return;
+        }
+        
+        setText('res-upload-test', '[LOGIN REAL] Iniciando sesión...', null);
+        
+        const response = await fetch('api/auth_login.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          setText('res-upload-test', '[LOGIN REAL] Error: ' + (errorData.error || 'Error HTTP: ' + response.status), false);
+          $('dump-hybrid-ai').textContent = '[LOGIN REAL] Error: ' + JSON.stringify(errorData, null, 2);
+          return;
+        }
+
+        const data = await response.json();
+        
+        if (data.token && data.user) {
+          // Guardar token y usuario
+          localStorage.setItem('auth_token', data.token);
+          localStorage.setItem('user_data', JSON.stringify(data.user));
+          
+          // Actualizar Config si existe
+          if (window.Config) {
+            window.Config.setToken(data.token);
+          }
+          
+          setText('res-upload-test', `[LOGIN REAL] ✅ Sesión iniciada como ${data.user.name || data.user.email}`, true);
+          $('dump-hybrid-ai').textContent = '[LOGIN REAL] Sesión iniciada:\n' + JSON.stringify(data, null, 2);
+          
+          // Limpiar campos
+          document.getElementById('login-email').value = '';
+          document.getElementById('login-password').value = '';
+          
+          // Mostrar mensaje de que se puede probar el sistema híbrido
+          setTimeout(() => {
+            setText('res-upload-test', `[LOGIN REAL] Ahora puedes probar "🔧 Debug Híbrido Corregido" con contexto real`, true);
+          }, 1000);
+          
+        } else {
+          setText('res-upload-test', '[LOGIN REAL] Error: Respuesta inválida del servidor', false);
+          $('dump-hybrid-ai').textContent = '[LOGIN REAL] Error: Respuesta inválida del servidor';
+        }
+        
+      } catch (error) {
+        setText('res-upload-test', '[LOGIN REAL] Error: ' + error.message, false);
+        $('dump-hybrid-ai').textContent = '[LOGIN REAL] Error: ' + error.message;
+      }
+    }
+
+    // Función para debuggear el contexto híbrido
+    async function debugHybridContext() {
+      try {
+        setText('res-upload-test', '[DEBUG CONTEXTO] Analizando contexto híbrido...', null);
+        
+        const response = await fetch('api/debug_hybrid_context.php', {
+          headers: {
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          }
+        });
+
+        if (!response.ok) {
+          setText('res-upload-test', '[DEBUG CONTEXTO] Error HTTP: ' + response.status, false);
+          $('dump-hybrid-ai').textContent = '[DEBUG CONTEXTO] Error HTTP: ' + response.status + '\n' + await response.text();
+          return;
+        }
+
+        const data = await response.json();
+        setText('res-upload-test', `[DEBUG CONTEXTO] Completado - ${data.context_found} fuentes encontradas, ${data.context_length} caracteres`, data.ok);
+        $('dump-hybrid-ai').textContent = '[DEBUG CONTEXTO]\n' + JSON.stringify(data, null, 2);
+        
+      } catch (error) {
+        setText('res-upload-test', '[DEBUG CONTEXTO] Error: ' + error.message, false);
+        $('dump-hybrid-ai').textContent = '[DEBUG CONTEXTO] Error: ' + error.message;
+      }
+    }
+
+    // Función para probar la integración del sistema híbrido
+    async function testHybridIntegration() {
+      try {
+        setText('res-upload-test', '[TEST INTEGRACIÓN] Verificando sistema híbrido...', null);
+        
+        const response = await fetch('api/test_hybrid_integration.php', {
+          headers: {
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          }
+        });
+
+        if (!response.ok) {
+          setText('res-upload-test', '[TEST INTEGRACIÓN] Error HTTP: ' + response.status, false);
+          $('dump-hybrid-ai').textContent = '[TEST INTEGRACIÓN] Error HTTP: ' + response.status + '\n' + await response.text();
+          return;
+        }
+
+        const data = await response.json();
+        const status = data.hybrid_system_ready ? '✅ SISTEMA LISTO' : '⚠️ SISTEMA PARCIAL';
+        setText('res-upload-test', `[TEST INTEGRACIÓN] ${status} - ${data.system_status.knowledge_base_records} registros KB`, data.ok);
+        $('dump-hybrid-ai').textContent = '[TEST INTEGRACIÓN]\n' + JSON.stringify(data, null, 2);
+        
+      } catch (error) {
+        setText('res-upload-test', '[TEST INTEGRACIÓN] Error: ' + error.message, false);
+        $('dump-hybrid-ai').textContent = '[TEST INTEGRACIÓN] Error: ' + error.message;
+      }
+    }
+
+    // Función para verificar el estado de las tablas de la base de datos
+    async function checkDatabaseTables() {
+      try {
+        setText('res-upload-test', '[VERIFICAR DB] Comprobando estado de tablas...', null);
+        
+        const response = await fetch('api/check_database_tables.php', {
+          headers: {
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          }
+        });
+
+        if (!response.ok) {
+          setText('res-upload-test', '[VERIFICAR DB] Error HTTP: ' + response.status, false);
+          $('dump-hybrid-ai').textContent = '[VERIFICAR DB] Error HTTP: ' + response.status + '\n' + await response.text();
+          return;
+        }
+
+        const data = await response.json();
+        const status = data.hybrid_system_ready ? '✅ SISTEMA COMPLETO' : '⚠️ SISTEMA PARCIAL';
+        const summary = data.summary;
+        setText('res-upload-test', `[VERIFICAR DB] ${status} - ${summary.existing_tables}/${summary.total_tables} tablas, ${summary.user_data_available ? 'con datos' : 'sin datos'}`, data.ok);
+        $('dump-hybrid-ai').textContent = '[VERIFICAR DB]\n' + JSON.stringify(data, null, 2);
+        
+      } catch (error) {
+        setText('res-upload-test', '[VERIFICAR DB] Error: ' + error.message, false);
+        $('dump-hybrid-ai').textContent = '[VERIFICAR DB] Error: ' + error.message;
+      }
+    }
+
+    // Función para verificación simple de base de datos
+    async function simpleDbCheck() {
+      try {
+        setText('res-upload-test', '[VERIFICACIÓN SIMPLE] Comprobando tablas principales...', null);
+        
+        const response = await fetch('api/simple_db_check.php', {
+          headers: {
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          }
+        });
+
+        if (!response.ok) {
+          setText('res-upload-test', '[VERIFICACIÓN SIMPLE] Error HTTP: ' + response.status, false);
+          $('dump-hybrid-ai').textContent = '[VERIFICACIÓN SIMPLE] Error HTTP: ' + response.status + '\n' + await response.text();
+          return;
+        }
+
+        const data = await response.json();
+        const status = data.hybrid_ready ? '✅ SISTEMA HÍBRIDO LISTO' : '⚠️ SISTEMA PARCIAL';
+        const summary = data.summary;
+        setText('res-upload-test', `[VERIFICACIÓN SIMPLE] ${status} - ${summary.total_tables_found} tablas, KB: ${summary.user_has_knowledge ? 'SÍ' : 'NO'}`, data.ok);
+        $('dump-hybrid-ai').textContent = '[VERIFICACIÓN SIMPLE]\n' + JSON.stringify(data, null, 2);
+        
+      } catch (error) {
+        setText('res-upload-test', '[VERIFICACIÓN SIMPLE] Error: ' + error.message, false);
+        $('dump-hybrid-ai').textContent = '[VERIFICACIÓN SIMPLE] Error: ' + error.message;
+      }
+    }
+
+    // Función para probar la eliminación de conocimiento
+    async function testDeleteKnowledge() {
+      try {
+        setText('res-upload-test', '[TEST ELIMINAR] Probando extracción de parámetros...', null);
+        
+        const response = await fetch('api/test_delete_knowledge.php', {
+          headers: {
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          }
+        });
+
+        if (!response.ok) {
+          setText('res-upload-test', '[TEST ELIMINAR] Error HTTP: ' + response.status, false);
+          $('dump-hybrid-ai').textContent = '[TEST ELIMINAR] Error HTTP: ' + response.status + '\n' + await response.text();
+          return;
+        }
+
+        const data = await response.json();
+        const status = data.delete_endpoint_ready ? '✅ ENDPOINT LISTO' : '⚠️ SIN CONOCIMIENTO';
+        const knowledge = data.available_knowledge;
+        setText('res-upload-test', `[TEST ELIMINAR] ${status} - ${knowledge ? 'ID: ' + knowledge.id : 'Sin datos'}`, data.ok);
+        $('dump-hybrid-ai').textContent = '[TEST ELIMINAR]\n' + JSON.stringify(data, null, 2);
+        
+      } catch (error) {
+        setText('res-upload-test', '[TEST ELIMINAR] Error: ' + error.message, false);
+        $('dump-hybrid-ai').textContent = '[TEST ELIMINAR] Error: ' + error.message;
+      }
+    }
+
+    // Función para debug de eliminación
+    async function debugDeleteSimulation() {
+      try {
+        setText('res-upload-test', '[DEBUG ELIMINACIÓN] Simulando eliminación...', null);
+        
+        // Usar el ID del conocimiento disponible (37 según el test anterior)
+        const testData = { knowledge_id: 37 };
+        
+        const response = await fetch('api/debug_delete_simulation.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          },
+          body: JSON.stringify(testData)
+        });
+
+        if (!response.ok) {
+          setText('res-upload-test', '[DEBUG ELIMINACIÓN] Error HTTP: ' + response.status, false);
+          $('dump-hybrid-ai').textContent = '[DEBUG ELIMINACIÓN] Error HTTP: ' + response.status + '\n' + await response.text();
+          return;
+        }
+
+        const data = await response.json();
+        const status = data.ok ? '✅ SIMULACIÓN EXITOSA' : '❌ ERROR';
+        const knowledge = data.knowledge_info;
+        setText('res-upload-test', `[DEBUG ELIMINACIÓN] ${status} - ${knowledge ? knowledge.title : 'Sin datos'}`, data.ok);
+        $('dump-hybrid-ai').textContent = '[DEBUG ELIMINACIÓN]\n' + JSON.stringify(data, null, 2);
+        
+      } catch (error) {
+        setText('res-upload-test', '[DEBUG ELIMINACIÓN] Error: ' + error.message, false);
+        $('dump-hybrid-ai').textContent = '[DEBUG ELIMINACIÓN] Error: ' + error.message;
+      }
+    }
+
+    // Función para test de eliminación exacta
+    async function testDeleteExact() {
+      try {
+        setText('res-upload-test', '[TEST ELIMINACIÓN EXACTA] Probando eliminación exacta...', null);
+        
+        // Usar el ID sugerido si está disponible, sino usar 39 como fallback
+        const testId = window.suggestedTestId || 39;
+        const testData = { knowledge_id: testId };
+        
+        console.log('Usando ID para test:', testId);
+        
+        const response = await fetch('api/test_delete_exact.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          },
+          body: JSON.stringify(testData)
+        });
+
+        if (!response.ok) {
+          setText('res-upload-test', '[TEST ELIMINACIÓN EXACTA] Error HTTP: ' + response.status, false);
+          $('dump-hybrid-ai').textContent = '[TEST ELIMINACIÓN EXACTA] Error HTTP: ' + response.status + '\n' + await response.text();
+          return;
+        }
+
+        const data = await response.json();
+        const status = data.ok ? '✅ SIMULACIÓN EXACTA EXITOSA' : '❌ ERROR';
+        const knowledge = data.knowledge_info;
+        setText('res-upload-test', `[TEST ELIMINACIÓN EXACTA] ${status} - ${knowledge ? knowledge.title : 'Sin datos'}`, data.ok);
+        $('dump-hybrid-ai').textContent = '[TEST ELIMINACIÓN EXACTA]\n' + JSON.stringify(data, null, 2);
+        
+      } catch (error) {
+        setText('res-upload-test', '[TEST ELIMINACIÓN EXACTA] Error: ' + error.message, false);
+        $('dump-hybrid-ai').textContent = '[TEST ELIMINACIÓN EXACTA] Error: ' + error.message;
+      }
+    }
+
+    // Función para diagnosticar estructura de datos
+    async function diagnoseDataStructure() {
+      try {
+        setText('res-upload-test', '[DIAGNÓSTICO ESTRUCTURA] Analizando estructura de datos...', null);
+        
+        const response = await fetch('api/diagnose_data_structure.php', {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          }
+        });
+
+        if (!response.ok) {
+          setText('res-upload-test', '[DIAGNÓSTICO ESTRUCTURA] Error HTTP: ' + response.status, false);
+          $('dump-hybrid-ai').textContent = '[DIAGNÓSTICO ESTRUCTURA] Error HTTP: ' + response.status + '\n' + await response.text();
+          return;
+        }
+
+        const data = await response.json();
+        const status = data.knowledge_base_records.length > 0 ? '✅ DATOS ENCONTRADOS' : '❌ SIN DATOS';
+        const suggestedId = data.suggested_test_id;
+        
+        setText('res-upload-test', `[DIAGNÓSTICO ESTRUCTURA] ${status} - ID sugerido: ${suggestedId || 'N/A'}`, data.knowledge_base_records.length > 0);
+        $('dump-hybrid-ai').textContent = '[DIAGNÓSTICO ESTRUCTURA]\n' + JSON.stringify(data, null, 2);
+        
+        // Actualizar el test de eliminación exacta con el ID correcto
+        if (suggestedId) {
+          window.suggestedTestId = suggestedId;
+          console.log('ID sugerido para testing:', suggestedId);
+        }
+        
+      } catch (error) {
+        setText('res-upload-test', '[DIAGNÓSTICO ESTRUCTURA] Error: ' + error.message, false);
+        $('dump-hybrid-ai').textContent = '[DIAGNÓSTICO ESTRUCTURA] Error: ' + error.message;
+      }
+    }
+
+    // Función para test de contexto de usuario
+    async function testUserContext() {
+      try {
+        setText('res-upload-test', '[TEST CONTEXTO USUARIO] Verificando contexto de usuario...', null);
+        
+        const response = await fetch('api/test_user_context.php', {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          }
+        });
+
+        if (!response.ok) {
+          setText('res-upload-test', '[TEST CONTEXTO USUARIO] Error HTTP: ' + response.status, false);
+          $('dump-hybrid-ai').textContent = '[TEST CONTEXTO USUARIO] Error HTTP: ' + response.status + '\n' + await response.text();
+          return;
+        }
+
+        const data = await response.json();
+        const userId = data.current_user.user_id;
+        const has12Claves = data.analysis.has_12_claves_file;
+        const hasPatrones = data.analysis.has_patrones_file;
+        
+        let status = '✅ CONTEXTO CORRECTO';
+        let message = `Usuario ${userId}`;
+        
+        if (userId == 4 && has12Claves) {
+          message += ' - Tiene archivo 12_claves (CORRECTO)';
+        } else if (userId == 8 && hasPatrones) {
+          message += ' - Tiene archivo Patrones (CORRECTO)';
+        } else {
+          status = '❌ INCONSISTENCIA DETECTADA';
+          message += ' - No tiene los archivos esperados';
+        }
+        
+        setText('res-upload-test', `[TEST CONTEXTO USUARIO] ${status} - ${message}`, userId == 4 || userId == 8);
+        $('dump-hybrid-ai').textContent = '[TEST CONTEXTO USUARIO]\n' + JSON.stringify(data, null, 2);
+        
+        // Mostrar recomendaciones
+        if (data.recommendations.length > 0) {
+          console.log('Recomendaciones:', data.recommendations);
+        }
+        
+      } catch (error) {
+        setText('res-upload-test', '[TEST CONTEXTO USUARIO] Error: ' + error.message, false);
+        $('dump-hybrid-ai').textContent = '[TEST CONTEXTO USUARIO] Error: ' + error.message;
+      }
+    }
+
+    // Event listeners para botones de prueba
+    $('btn-init-dirs').addEventListener('click', initUploadDirs);
+    $('btn-debug-upload').addEventListener('click', debugUpload);
+    $('btn-debug-validation').addEventListener('click', debugValidation);
+    $('btn-debug-knowledge-get').addEventListener('click', debugKnowledgeGet);
+    $('btn-debug-app-endpoint').addEventListener('click', debugAppEndpoint);
+    $('btn-test-app-flow').addEventListener('click', testAppFlow);
+    $('btn-debug-500').addEventListener('click', debug500Error);
+    $('btn-debug-simple').addEventListener('click', debugSimple);
+    $('btn-test-helpers-fix').addEventListener('click', testHelpersFix);
+    $('btn-create-ai-tables').addEventListener('click', createAITables);
+    $('btn-test-hybrid-ai').addEventListener('click', testHybridAI);
+    $('btn-debug-hybrid-system').addEventListener('click', debugHybridSystem);
+    $('btn-debug-hybrid-simple').addEventListener('click', debugHybridSimple);
+    $('btn-debug-table-structure').addEventListener('click', debugTableStructure);
+    $('btn-process-existing-files').addEventListener('click', processExistingFiles);
+    $('btn-debug-hybrid-fixed').addEventListener('click', debugHybridFixed);
+    $('btn-process-all-pending').addEventListener('click', processAllPendingFiles);
+    $('btn-debug-knowledge-content').addEventListener('click', debugKnowledgeContent);
+    $('btn-debug-keyword-extraction').addEventListener('click', debugKeywordExtraction);
+    $('btn-quick-login').addEventListener('click', quickLogin);
+    $('btn-real-login').addEventListener('click', realLogin);
+    $('btn-debug-hybrid-context').addEventListener('click', debugHybridContext);
+    $('btn-test-hybrid-integration').addEventListener('click', testHybridIntegration);
+    $('btn-check-database-tables').addEventListener('click', checkDatabaseTables);
+    $('btn-simple-db-check').addEventListener('click', simpleDbCheck);
+    $('btn-test-delete-knowledge').addEventListener('click', testDeleteKnowledge);
+    $('btn-debug-delete-simulation').addEventListener('click', debugDeleteSimulation);
+    $('btn-test-delete-exact').addEventListener('click', testDeleteExact);
+    $('btn-diagnose-data-structure').addEventListener('click', diagnoseDataStructure);
+    $('btn-test-user-context').addEventListener('click', testUserContext);
+    $('btn-test-upload-endpoint').addEventListener('click', testUploadEndpoint);
+    $('btn-test-upload').addEventListener('click', testFileUpload);
+    $('btn-test-list').addEventListener('click', testListEndpoint);
+
+    // Agregar pruebas de subida al botón principal
+    const originalRun = $('btn-run').onclick;
+    $('btn-run').addEventListener('click', async ()=>{
+      // Esperar a que se cargue config.js
+      await waitForConfig();
+      
+      loadEnv();
+      testCss();
+      testConfig();
+      await testHealth();
+      await testAuth();
+      await testUploadDir();
+      await testUploadEndpoint();
+      await testListEndpoint();
+    });
+
+    // Autocargar entorno al abrir
+    loadEnv();
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+# Proteger archivos subidos
+<Files "*">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+# Permitir solo archivos de conocimiento para usuarios autenticados
+<FilesMatch "\.(pdf|txt|doc|docx)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>

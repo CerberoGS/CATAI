@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Feedback - Triage</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="/bolsa/static/auth.js"></script>
-  <script src="/bolsa/static/js/header.js"></script>
-  <script src="/bolsa/static/js/hero.js"></script>
-  <link rel="stylesheet" href="/bolsa/static/css/styles.css">
+  <script src="static/auth.js"></script>
+  <script src="static/js/header.js"></script>
+  <script src="static/js/hero.js"></script>
+  <link rel="stylesheet" href="static/css/styles.css">
 </head>
 <body class="bg-gray-100 min-h-screen p-6">
   <div id="app-header"></div>
@@ -105,7 +105,7 @@
   </div>
 
 <script>
-const API_BASE = '/bolsa/api';
+const API_BASE = 'api';
 function getToken(){ return localStorage.getItem('auth_token') || ''; }
 function withAuthHeaders(headers={}){ const h={...headers}; const t=getToken(); if(t) h['Authorization']='Bearer '+t; return h; }
 async function httpRaw(path, options){ const r=await fetch(`${API_BASE}/${path}`, options); const txt=await r.text(); let j; try{ j=JSON.parse(txt);}catch{ throw new Error('no JSON'); } if(!r.ok){ throw new Error(j?.error||('HTTP '+r.status)); } return j; }

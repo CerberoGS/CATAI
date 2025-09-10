@@ -11,7 +11,7 @@ header('Content-Type: application/json; charset=utf-8');
  * GET JSON con User-Agent y Accept forzados.
  */
 function http_get_json_with_ua(string $url, array $headers = [], int $timeout = 35, ?int &$http_code = null, ?string &$raw = null): ?array {
-  $ua = 'Mozilla/5.0 (compatible; BolsaApp/1.0; +https://cerberogrowthsolutions.com)';
+  $ua = 'Mozilla/5.0 (compatible; CATAI/1.0; +https://cerberogrowthsolutions.com)';
   $h = array_values(array_filter(array_merge([
     'Accept: application/json',
     'User-Agent: ' . $ua,

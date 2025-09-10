@@ -1,5 +1,37 @@
 /* ================== Config ================== */
-const API_BASE = '/bolsa/api';
+// Configuración centralizada de la aplicación
+const APP_CONFIG = {
+  // Rutas base (relativas para portabilidad)
+  API_BASE: 'api',
+  STATIC_BASE: 'static',
+  
+  // Páginas de la aplicación
+  PAGES: {
+    LOGIN: 'login.html',
+    CONFIG: 'config.html', 
+    JOURNAL: 'journal.html',
+    ACCOUNT: 'account.html',
+    ADMIN: 'admin.html',
+    FEEDBACK: 'feedback.html',
+    TESTER: 'tester.html'
+  },
+  
+  // Recursos externos (CDNs)
+  EXTERNAL: {
+    TAILWIND: 'https://cdn.tailwindcss.com',
+    FONTS: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap'
+  },
+  
+  // Configuración de la app
+  APP: {
+    NAME: 'Cerbero: Analizador de Mercado con IA',
+    DEFAULT_LANG: 'es-US',
+    VERSION: '1.0.0'
+  }
+};
+
+// Mantener compatibilidad con código existente
+const API_BASE = APP_CONFIG.API_BASE;
 
 /* ================== Token helpers ================== */
 // Migración: si existía 'token', lo mueve a 'auth_token'
@@ -97,8 +129,34 @@ function serverToUiProvider(v){
 // Función helper para formatear números
 function fmt(x){ return (x==null || Number.isNaN(x)) ? '—' : (typeof x==='number' ? x.toFixed(2) : x); }
 
+/* ================== Config helpers ================== */
+// Funciones helper para usar la configuración centralizada
+function getPageUrl(pageKey) {
+  return APP_CONFIG.PAGES[pageKey] || pageKey;
+}
+
+function getApiUrl(endpoint) {
+  return `${APP_CONFIG.API_BASE}/${endpoint}`;
+}
+
+function getStaticUrl(path) {
+  return `${APP_CONFIG.STATIC_BASE}/${path}`;
+}
+
+function navigateToPage(pageKey) {
+  window.location.href = getPageUrl(pageKey);
+}
+
 // Exportar funciones para uso en otros módulos
 window.Config = {
+  // Configuración centralizada
+  APP_CONFIG,
+  getPageUrl,
+  getApiUrl,
+  getStaticUrl,
+  navigateToPage,
+  
+  // Compatibilidad con código existente
   API_BASE,
   getToken,
   setToken,

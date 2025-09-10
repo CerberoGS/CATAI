@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Analizador de Inversiones</title>
+  <title>Trading Desk - CATAI</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="/bolsa/static/utf8-fix.js"></script>
-  <script src="/bolsa/static/auth.js"></script>
+  <script src="static/utf8-fix.js"></script>
+  <script src="static/auth.js"></script>
   <script>
     // Si no hay token válido, redirigir a login.html
     try {
@@ -19,22 +19,49 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="static/css/styles.css">
+  <style>
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    .trading-card {
+      border-left: 4px solid #3b82f6;
+    }
+    .trading-card.buy {
+      border-left-color: #10b981;
+    }
+    .trading-card.sell {
+      border-left-color: #ef4444;
+    }
+    .trading-card.neutral {
+      border-left-color: #f59e0b;
+    }
+    .status-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    .status-online { background-color: #10b981; }
+    .status-offline { background-color: #ef4444; }
+    .status-loading { background-color: #f59e0b; animation: pulse 2s infinite; }
+  </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 dark-mode:bg-gray-900">
   <div class="container mx-auto px-4 py-8">
     <div id="app-header"></div>
 
-    <div id="app-hero" data-icon="📈" data-title="Analizador" data-subtitle="Explora símbolos, configura y ejecuta análisis con opciones."></div>
-    <div id="hero-actions">
-      <button id="btn-load-settings" class="py-2 px-4 rounded-md border text-gray-700 hover:bg-gray-50 dark-mode:text-gray-300 dark-mode:hover:bg-gray-700 dark-mode:border-gray-600">
-        📥 Cargar ajustes
-      </button>
-      <button id="btn-save-settings" class="py-2 px-4 rounded-md border text-gray-700 hover:bg-gray-50 dark-mode:text-gray-300 dark-mode:hover:bg-gray-700 dark-mode:border-gray-600">
-        💾 Guardar ajustes
-      </button>
-    </div>
+    <div id="app-hero" data-icon="🎯" data-title="Trading Desk" data-subtitle="Análisis profesional con IA comportamental y configuración personalizada."></div>
+    
 
     <!-- Auth Form (hidden when logged in) -->
     <div id="auth-form" class="bg-white rounded-lg shadow-sm border p-6 mb-6 hidden">
@@ -64,16 +91,17 @@
 
     <!-- Main Content -->
     <div class="grid lg:grid-cols-3 gap-6">
-      <!-- Left Column: Symbol Selection -->
+      <!-- Left Column: Symbol Selection & Quick Config -->
       <div class="lg:col-span-1">
-        <div class="bg-white rounded-lg shadow-sm border p-6">
-          <h2 class="text-lg font-semibold mb-4">Selección de Símbolo</h2>
+        <!-- Symbol Selection -->
+        <div class="bg-white dark-mode:bg-gray-800 rounded-xl shadow-lg border p-6 card-hover">
+          <h2 class="text-xl font-semibold mb-4 text-gray-900 dark-mode:text-gray-100">📈 Selección de Símbolo</h2>
           
           <div class="space-y-4">
             <div class="grid md:grid-cols-2 gap-4 items-end">
               <div class="relative">
-                <label class="block text-sm font-medium text-gray-700">Símbolo (Ticker)</label>
-                <input id="symbol" class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="TSLA, AAPL, NVDA..." autocomplete="off"/>
+                <label class="block text-sm font-medium text-gray-700 dark-mode:text-gray-300 mb-2">Símbolo (Ticker)</label>
+                <input id="symbol" class="w-full rounded-lg border-gray-300 dark-mode:border-gray-600 bg-white dark-mode:bg-gray-700 text-gray-900 dark-mode:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="TSLA, AAPL, NVDA..." autocomplete="off"/>
                 <div id="symbol-list" class="autocomplete-list rounded-md shadow-lg hidden"></div>
               </div>
               <div>
@@ -81,44 +109,68 @@
               </div>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700">Lista de empresas</label>
-              <select id="symbol-select" class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+              <label class="block text-sm font-medium text-gray-700 dark-mode:text-gray-300 mb-2">Lista de empresas</label>
+              <select id="symbol-select" class="w-full rounded-lg border-gray-300 dark-mode:border-gray-600 bg-white dark-mode:bg-gray-700 text-gray-900 dark-mode:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                 <option value="">Cargando lista…</option>
               </select>
-              <p id="universe-info" class="text-xs text-gray-500 mt-1"></p>
+              <p id="universe-info" class="text-xs text-gray-500 dark-mode:text-gray-400 mt-1"></p>
             </div>
           </div>
         </div>
 
-        <!-- Analysis Blocks -->
-        <div class="bg-white rounded-lg shadow-sm border p-6 mt-6">
-          <h2 class="text-lg font-semibold mb-4">Configuración de Análisis</h2>
+        <!-- Quick Configuration -->
+        <div class="bg-white dark-mode:bg-gray-800 rounded-xl shadow-lg border p-6 mt-6 card-hover">
+          <h2 class="text-xl font-semibold mb-4 text-gray-900 dark-mode:text-gray-100">⚙️ Configuración Rápida</h2>
+          
+          <!-- Market Config Status -->
+          <div class="mb-4 p-3 bg-blue-50 dark-mode:bg-blue-900 rounded-lg">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-medium text-blue-700 dark-mode:text-blue-200">Configuración de Mercado</span>
+              <div class="flex items-center">
+                <span class="status-indicator status-online"></span>
+                <span class="text-xs text-blue-600 dark-mode:text-blue-300" id="market-config-status">Cargada</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- AI Config Status -->
+          <div class="mb-4 p-3 bg-green-50 dark-mode:bg-green-900 rounded-lg">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-medium text-green-700 dark-mode:text-green-200">IA Comportamental</span>
+              <div class="flex items-center">
+                <span class="status-indicator status-online"></span>
+                <span class="text-xs text-green-600 dark-mode:text-green-300" id="ai-config-status">Activa</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Analysis Blocks -->
           <div id="blocks" class="space-y-4">
             <!-- Blocks will be generated by JavaScript -->
           </div>
         </div>
       </div>
 
-      <!-- Right Column: Settings and Results -->
+      <!-- Right Column: Trading Desk -->
       <div class="lg:col-span-2">
-        <!-- Settings Panel -->
-        <div class="bg-white rounded-lg shadow-sm border p-6 mb-6">
-          <h2 class="text-lg font-semibold mb-4">Configuración Avanzada</h2>
+        <!-- Trading Configuration -->
+        <div class="bg-white dark-mode:bg-gray-800 rounded-xl shadow-lg border p-6 mb-6 card-hover">
+          <h2 class="text-xl font-semibold mb-4 text-gray-900 dark-mode:text-gray-100">🎯 Configuración de Trading</h2>
           
           <div class="grid md:grid-cols-2 gap-6">
             <!-- AI Settings -->
             <div>
-              <h3 class="text-sm font-medium text-gray-700 mb-3">Configuración de IA</h3>
+              <h3 class="text-sm font-medium text-gray-700 dark-mode:text-gray-300 mb-3">Configuración de IA</h3>
               <div class="space-y-3">
                 <div>
-                  <label class="block text-xs text-gray-600 mb-1">Proveedor de IA</label>
-                  <select id="ai-provider" class="w-full text-sm border rounded px-2 py-1">
+                  <label class="block text-xs text-gray-600 dark-mode:text-gray-400 mb-1">Proveedor de IA</label>
+                  <select id="ai-provider" class="w-full text-sm border rounded px-2 py-1 bg-white dark-mode:bg-gray-700 text-gray-900 dark-mode:text-gray-100 border-gray-300 dark-mode:border-gray-600">
                     <option value="auto">Auto (sugerido)</option>
                   </select>
                 </div>
                 <div>
-                  <label class="block text-xs text-gray-600 mb-1">Modelo</label>
-                  <select id="ai-model" class="w-full text-sm border rounded px-2 py-1" disabled>
+                  <label class="block text-xs text-gray-600 dark-mode:text-gray-400 mb-1">Modelo</label>
+                  <select id="ai-model" class="w-full text-sm border rounded px-2 py-1 bg-white dark-mode:bg-gray-700 text-gray-900 dark-mode:text-gray-100 border-gray-300 dark-mode:border-gray-600" disabled>
                     <option value="">Auto (sugerido)</option>
                   </select>
                 </div>
@@ -127,43 +179,43 @@
 
             <!-- Trading Settings -->
             <div>
-              <h3 class="text-sm font-medium text-gray-700 mb-3">Configuración de Trading</h3>
+              <h3 class="text-sm font-medium text-gray-700 dark-mode:text-gray-300 mb-3">Parámetros de Trading</h3>
               <div class="space-y-3">
                 <div>
-                  <label class="block text-xs text-gray-600 mb-1">Cantidad</label>
-                  <input id="amount" type="number" class="w-full text-sm border rounded px-2 py-1" value="1000"/>
+                  <label class="block text-xs text-gray-600 dark-mode:text-gray-400 mb-1">Cantidad</label>
+                  <input id="amount" type="number" class="w-full text-sm border rounded px-2 py-1 bg-white dark-mode:bg-gray-700 text-gray-900 dark-mode:text-gray-100 border-gray-300 dark-mode:border-gray-600" value="1000"/>
                 </div>
                 <div>
-                  <label class="block text-xs text-gray-600 mb-1">Take Profit (%)</label>
-                  <input id="tp" type="number" class="w-full text-sm border rounded px-2 py-1" value="5"/>
+                  <label class="block text-xs text-gray-600 dark-mode:text-gray-400 mb-1">Take Profit (%)</label>
+                  <input id="tp" type="number" class="w-full text-sm border rounded px-2 py-1 bg-white dark-mode:bg-gray-700 text-gray-900 dark-mode:text-gray-100 border-gray-300 dark-mode:border-gray-600" value="5"/>
                 </div>
                 <div>
-                  <label class="block text-xs text-gray-600 mb-1">Stop Loss (%)</label>
-                  <input id="sl" type="number" class="w-full text-sm border rounded px-2 py-1" value="3"/>
+                  <label class="block text-xs text-gray-600 dark-mode:text-gray-400 mb-1">Stop Loss (%)</label>
+                  <input id="sl" type="number" class="w-full text-sm border rounded px-2 py-1 bg-white dark-mode:bg-gray-700 text-gray-900 dark-mode:text-gray-100 border-gray-300 dark-mode:border-gray-600" value="3"/>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Options Settings -->
-          <div class="mt-6 pt-6 border-t">
-            <h3 class="text-sm font-medium text-gray-700 mb-3">Configuración de Opciones</h3>
+          <div class="mt-6 pt-6 border-t border-gray-200 dark-mode:border-gray-700">
+            <h3 class="text-sm font-medium text-gray-700 dark-mode:text-gray-300 mb-3">Configuración de Opciones</h3>
             <div class="grid md:grid-cols-3 gap-4">
               <div>
-                <label class="block text-xs text-gray-600 mb-1">Regla de Vencimiento</label>
-                <select id="options-expiry-rule" class="w-full text-sm border rounded px-2 py-1">
+                <label class="block text-xs text-gray-600 dark-mode:text-gray-400 mb-1">Regla de Vencimiento</label>
+                <select id="options-expiry-rule" class="w-full text-sm border rounded px-2 py-1 bg-white dark-mode:bg-gray-700 text-gray-900 dark-mode:text-gray-100 border-gray-300 dark-mode:border-gray-600">
                   <option value="weekly">Semanal</option>
                   <option value="monthly">Mensual</option>
                   <option value="quarterly">Trimestral</option>
                 </select>
               </div>
               <div>
-                <label class="block text-xs text-gray-600 mb-1">Número de Strikes</label>
-                <input id="options-strike-count" type="number" class="w-full text-sm border rounded px-2 py-1" value="5"/>
+                <label class="block text-xs text-gray-600 dark-mode:text-gray-400 mb-1">Número de Strikes</label>
+                <input id="options-strike-count" type="number" class="w-full text-sm border rounded px-2 py-1 bg-white dark-mode:bg-gray-700 text-gray-900 dark-mode:text-gray-100 border-gray-300 dark-mode:border-gray-600" value="5"/>
               </div>
               <div>
-                <label class="block text-xs text-gray-600 mb-1">Fuente de Precio ATM</label>
-                <select id="atm-price-source" class="w-full text-sm border rounded px-2 py-1">
+                <label class="block text-xs text-gray-600 dark-mode:text-gray-400 mb-1">Fuente de Precio ATM</label>
+                <select id="atm-price-source" class="w-full text-sm border rounded px-2 py-1 bg-white dark-mode:bg-gray-700 text-gray-900 dark-mode:text-gray-100 border-gray-300 dark-mode:border-gray-600">
                   <option value="last">Último Precio</option>
                   <option value="bid">Bid</option>
                   <option value="ask">Ask</option>
@@ -172,36 +224,116 @@
               </div>
             </div>
             <div class="mt-3">
-              <label class="block text-xs text-gray-600 mb-1">Net</label>
-              <input id="net" type="text" class="w-full text-sm border rounded px-2 py-1" placeholder="Net value"/>
+              <label class="block text-xs text-gray-600 dark-mode:text-gray-400 mb-1">Net</label>
+              <input id="net" type="text" class="w-full text-sm border rounded px-2 py-1 bg-white dark-mode:bg-gray-700 text-gray-900 dark-mode:text-gray-100 border-gray-300 dark-mode:border-gray-600" placeholder="Net value"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analysis Mode Selection -->
+        <div class="bg-white dark-mode:bg-gray-800 rounded-xl shadow-lg border p-6 mb-6 card-hover">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-semibold text-gray-900 dark-mode:text-gray-100">🎯 Modo de Análisis</h2>
+            <div class="flex items-center space-x-2">
+              <span class="status-indicator status-online"></span>
+              <span class="text-sm text-gray-600 dark-mode:text-gray-400">Sistema Híbrido</span>
+            </div>
+          </div>
+          
+          <div class="grid md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 border rounded-lg border-gray-200 dark-mode:border-gray-600">
+              <div class="flex items-center mb-2">
+                <input type="radio" id="mode-enriched" name="analysis-mode" value="enriched" checked class="mr-2">
+                <label for="mode-enriched" class="text-sm font-medium text-gray-900 dark-mode:text-gray-100">🧠 Análisis Completo</label>
+              </div>
+              <p class="text-xs text-gray-600 dark-mode:text-gray-400">
+                Knowledge Base + Patrones Comportamentales + Historial de Análisis + Prompt del Usuario
+              </p>
+              <div class="mt-2 text-xs text-green-600 dark-mode:text-green-400">
+                ✅ Máxima precisión y personalización
+              </div>
+            </div>
+            
+            <div class="p-4 border rounded-lg border-gray-200 dark-mode:border-gray-600">
+              <div class="flex items-center mb-2">
+                <input type="radio" id="mode-direct" name="analysis-mode" value="direct" class="mr-2">
+                <label for="mode-direct" class="text-sm font-medium text-gray-900 dark-mode:text-gray-100">📚 Análisis con Conocimiento</label>
+              </div>
+              <p class="text-xs text-gray-600 dark-mode:text-gray-400">
+                Knowledge Base + Configuración Comportamental + Prompt del Usuario
+              </p>
+              <div class="mt-2 text-xs text-blue-600 dark-mode:text-blue-400">
+                📚 Enfocado en conocimiento y configuración
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-4 p-3 bg-blue-50 dark-mode:bg-blue-900 rounded-lg">
+            <div class="flex items-center">
+              <span class="text-sm font-medium text-blue-700 dark-mode:text-blue-200">Fuentes de Contexto:</span>
+              <span class="text-xs text-blue-600 dark-mode:text-blue-300 ml-2" id="context-sources">Knowledge Base, Patrones, Historial</span>
             </div>
           </div>
         </div>
 
         <!-- Analysis Button -->
-        <div class="bg-white rounded-lg shadow-sm border p-6 mb-6">
-          <button id="run" class="w-full py-3 px-6 rounded-md shadow-sm text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            📊 Analizar
+        <div class="bg-white dark-mode:bg-gray-800 rounded-xl shadow-lg border p-6 mb-6 card-hover">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-semibold text-gray-900 dark-mode:text-gray-100">🚀 Análisis Profesional</h2>
+            <div class="flex items-center space-x-2">
+              <span class="status-indicator status-online"></span>
+              <span class="text-sm text-gray-600 dark-mode:text-gray-400">Sistema Activo</span>
+            </div>
+          </div>
+          <button id="run" class="w-full py-4 px-6 rounded-lg shadow-sm text-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+            📊 Analizar con IA Comportamental
           </button>
+          <p class="text-xs text-gray-500 dark-mode:text-gray-400 mt-2 text-center">
+            Utiliza toda la configuración de Market Config y AI Config para análisis personalizado
+          </p>
         </div>
 
         <!-- Results -->
-        <div class="bg-white rounded-lg shadow-sm border p-6">
-          <h2 class="text-lg font-semibold mb-4">Resultados del Análisis</h2>
-          <div id="results" class="min-h-32">
-            <div id="loading" class="hidden text-center py-8">
-              <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-              <p class="text-gray-500 mt-2">Analizando...</p>
-            </div>
-            <div id="out" class="prose max-w-none">
-              <p class="text-gray-500 text-center py-8">Selecciona un símbolo y haz clic en "Analizar" para comenzar</p>
+        <div class="bg-white dark-mode:bg-gray-800 rounded-xl shadow-lg border p-6 card-hover">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-semibold text-gray-900 dark-mode:text-gray-100">📊 Resultados del Análisis</h2>
+            <div class="flex items-center space-x-2">
+              <span class="text-sm text-gray-600 dark-mode:text-gray-400" id="analysis-timestamp"></span>
             </div>
           </div>
-          <div class="mt-4 flex justify-between">
-            <button id="btn-save-analysis" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+          
+          <div id="results" class="min-h-32">
+            <div id="loading" class="hidden text-center py-12">
+              <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+              <p class="text-gray-600 dark-mode:text-gray-300 mt-4 text-lg">Analizando con IA Comportamental...</p>
+              <p class="text-gray-500 dark-mode:text-gray-400 mt-2 text-sm">Esto puede tomar unos momentos</p>
+            </div>
+            <div id="out" class="prose max-w-none dark-mode:prose-invert">
+              <div class="text-center py-12">
+                <div class="text-6xl mb-4">🎯</div>
+                <h3 class="text-xl font-semibold text-gray-900 dark-mode:text-gray-100 mb-2">Trading Desk Profesional</h3>
+                <p class="text-gray-600 dark-mode:text-gray-300">Selecciona un símbolo y haz clic en "Analizar" para comenzar</p>
+                <p class="text-gray-500 dark-mode:text-gray-400 text-sm mt-2">Utiliza toda la configuración de Market Config y AI Config</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Context Sources Used -->
+          <div id="context-sources-used" class="mt-6 p-4 bg-gray-50 dark-mode:bg-gray-700 rounded-lg hidden">
+            <h4 class="text-sm font-medium text-gray-900 dark-mode:text-gray-100 mb-2">🔍 Fuentes de Contexto Utilizadas</h4>
+            <div class="flex flex-wrap gap-2" id="context-tags">
+              <!-- Context tags will be populated here -->
+            </div>
+            <div class="mt-2 text-xs text-gray-600 dark-mode:text-gray-400">
+              <span id="context-length">0</span> caracteres de contexto adicional
+            </div>
+          </div>
+          
+          <div class="mt-6 flex justify-between">
+            <button id="btn-save-analysis" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors">
               💾 Guardar Análisis
             </button>
-            <button id="btn-copy" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
+            <button id="btn-copy" class="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors">
               📋 Copiar Resultados
             </button>
           </div>
@@ -213,51 +345,52 @@
 
   <!-- Modal para guardar análisis -->
   <div id="modal-save" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
+    <div class="bg-white dark-mode:bg-gray-800 rounded-xl p-6 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto shadow-2xl">
       <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-medium text-gray-900">Guardar Análisis</h3>
-        <button id="ms-close" class="text-gray-400 hover:text-gray-600 text-xl font-bold">✕</button>
+        <h3 class="text-lg font-medium text-gray-900 dark-mode:text-gray-100">Guardar Análisis</h3>
+        <button id="ms-close" class="text-gray-400 hover:text-gray-600 dark-mode:hover:text-gray-300 text-xl font-bold">✕</button>
       </div>
       <div id="ms-body" class="space-y-4">
         <!-- Contenido dinámico -->
       </div>
       <div class="mt-6 flex justify-end space-x-3">
-        <button id="ms-cancel" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50">
+        <button id="ms-cancel" class="px-4 py-2 border border-gray-300 dark-mode:border-gray-600 text-gray-700 dark-mode:text-gray-300 rounded-lg hover:bg-gray-50 dark-mode:hover:bg-gray-700">
           Cancelar
         </button>
-        <button id="ms-save" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+        <button id="ms-save" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
           Guardar
         </button>
       </div>
-      <div id="ms-msg" class="mt-3 text-sm text-gray-600"></div>
+      <div id="ms-msg" class="mt-3 text-sm text-gray-600 dark-mode:text-gray-400"></div>
     </div>
   </div>
 
   <!-- Modal de feedback -->
   <div id="modal-fb" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
+    <div class="bg-white dark-mode:bg-gray-800 rounded-xl p-6 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto shadow-2xl">
       <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-medium text-gray-900">Enviar feedback</h3>
-        <button id="fb-close" class="text-gray-400 hover:text-gray-600 text-xl font-bold">✕</button>
+        <h3 class="text-lg font-medium text-gray-900 dark-mode:text-gray-100">Enviar feedback</h3>
+        <button id="fb-close" class="text-gray-400 hover:text-gray-600 dark-mode:hover:text-gray-300 text-xl font-bold">✕</button>
       </div>
       <div id="fb-body" class="space-y-4">
         <!-- Contenido dinámico -->
       </div>
       <div class="mt-6 flex justify-end space-x-3">
-        <button id="fb-cancel" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50">
+        <button id="fb-cancel" class="px-4 py-2 border border-gray-300 dark-mode:border-gray-600 text-gray-700 dark-mode:text-gray-300 rounded-lg hover:bg-gray-50 dark-mode:hover:bg-gray-700">
           Cancelar
         </button>
-        <button id="fb-send" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+        <button id="fb-send" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
           Enviar
         </button>
       </div>
-      <div id="fb-msg" class="mt-3 text-sm text-gray-600"></div>
+      <div id="fb-msg" class="mt-3 text-sm text-gray-600 dark-mode:text-gray-400"></div>
     </div>
   </div>
 
   <!-- Load JavaScript Modules -->
   <script src="static/js/hero.js"></script>
   <script src="static/js/header.js"></script>
+  <script src="static/js/ai-behavioral-integration.js"></script>
   <script src="static/js/main.js"></script>
 </body>
 </html>

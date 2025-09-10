@@ -11,8 +11,17 @@ require_once __DIR__ . '/helpers.php'; // para cfg('ENCRYPTION_KEY_BASE64', ...)
  * Lanza excepción si no existe o no mide 32 bytes.
  */
 function crypto_master_key(): string {
-  $b64 = cfg('ENCRYPTION_KEY_BASE64', '');
-  $raw = $b64 ? base64_decode($b64, true) : false;
+  // Normalizar: quitar espacios/saltos y completar padding antes de decodificar
+  $b64 = (string) cfg('ENCRYPTION_KEY_BASE64', '');
+  // Eliminar cualquier carácter fuera del alfabeto Base64 (incluye comillas tipográficas)
+  $b64 = preg_replace('/[^A-Za-z0-9+\/=]/', '', $b64 ?? '');
+  // Quitar espacios/saltos residuales
+  $b64 = str_replace(["\r","\n"," "], '', $b64);
+  if ($b64 !== '') {
+    $rem = strlen($b64) % 4;
+    if ($rem) $b64 .= str_repeat('=', 4 - $rem);
+  }
+  $raw = $b64 !== '' ? base64_decode($b64, true) : false;
   if ($raw === false || strlen($raw) !== 32) {
     throw new Exception('ENCRYPTION_KEY_BASE64 debe ser 32 bytes en Base64');
   }

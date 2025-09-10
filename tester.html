@@ -4,11 +4,11 @@
   <meta charset="utf-8"/>
   <meta http-equiv="Content-Language" content="es-US" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tester API Bolsa (con autosave de claves)</title>
+  <title>Tester API CATAI (con autosave de claves)</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="/bolsa/static/utf8-fix.js"></script>
-  <script src="/bolsa/static/auth.js"></script>
-  <link rel="stylesheet" href="/bolsa/static/css/styles.css">
+  <script src="static/utf8-fix.js"></script>
+  <script src="static/auth.js"></script>
+  <link rel="stylesheet" href="static/css/styles.css">
   <style>
     pre,code{white-space:pre-wrap;word-break:break-word}
     .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
@@ -26,7 +26,7 @@
 <script>try{ Auth.requireAuth(); }catch(e){ }</script>
 <div class="max-w-6xl mx-auto p-6 space-y-6">
   <div class="flex items-center justify-between gap-4">
-    <h1 class="text-3xl font-bold dark-mode:text-gray-100">Tester API Bolsa</h1>
+    <h1 class="text-3xl font-bold dark-mode:text-gray-100">Tester API CATAI</h1>
     <div class="flex items-center gap-3 text-sm">
       <button id="theme-toggle" class="text-sm text-gray-600 hover:text-gray-800 dark-mode:text-gray-300 dark-mode:hover:text-gray-100 transition-colors">
         🌙 Modo Oscuro
@@ -37,7 +37,7 @@
       <button id="clearTok" class="text-sm text-rose-600 hover:underline dark-mode:text-rose-400">borrar token</button>
     </div>
   </div>
-  <p class="text-slate-600 dark-mode:text-gray-400">Abre esto en la MISMA pestaña de <code class="mono dark-mode:text-gray-300">/bolsa/</code> para compartir el token.</p>
+  <p class="text-slate-600 dark-mode:text-gray-400">Abre esto en la MISMA pestaña de la app para compartir el token.</p>
 
   <!-- Barra superior -->
   <div class="grid md:grid-cols-3 gap-4 items-end">
@@ -192,6 +192,55 @@
     <p class="text-xs muted">Los campos se guardan localmente (autosave) mientras escribes. Usa “Guardar Keys DEMO” para persistir en la DB (si el endpoint lo permite).</p>
   </div>
 
+  <!-- Secrets (cifrado AES-256-GCM) -->
+  <div class="rounded-lg border p-4 bg-white space-y-3">
+    <div class="font-semibold">Secrets (cifrados) → endpoints <code class="mono">secrets_*_safe.php</code></div>
+    <div class="grid md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium">OpenAI</label>
+        <input id="s-openai" type="password" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" placeholder="sk-..." />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Gemini</label>
+        <input id="s-gemini" type="password" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" placeholder="AIza..." />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">xAI (Grok)</label>
+        <input id="s-xai" type="password" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" placeholder="xai-..." />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Alpha Vantage</label>
+        <input id="s-alphavantage" type="password" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" placeholder="AV_..." />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Tiingo</label>
+        <input id="s-tiingo" type="password" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" placeholder="ti_..." />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Finnhub</label>
+        <input id="s-finnhub" type="password" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" placeholder="fh_..." />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Polygon</label>
+        <input id="s-polygon" type="password" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" placeholder="PK..." />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Claude (Anthropic)</label>
+        <input id="s-claude" type="password" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" placeholder="sk-ant-..." />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">DeepSeek</label>
+        <input id="s-deepseek" type="password" class="mt-1 w-full rounded-md border-slate-300 shadow-sm" placeholder="ds-..." />
+      </div>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <button id="btnSecretsGetMasked" class="btn">Secrets GET masked</button>
+      <button id="btnSecretsSave" class="btn p">Guardar Secrets</button>
+      <button id="btnSecretsTestOpenAI" class="btn">Probar OpenAI</button>
+    </div>
+    <p id="secrets-msg" class="text-xs muted"></p>
+  </div>
+
   <!-- Info respuesta -->
   <div class="grid md:grid-cols-2 gap-4">
     <div class="text-sm space-y-1">
@@ -241,7 +290,7 @@
 <script>
 /* ==================== Helpers de token ==================== */
 const S = id => document.getElementById(id);
-const API = '/bolsa/api';
+const API = 'api';
 const urlSpan=S('url'), statusSpan=S('status'), durSpan=S('dur'), ctypeSpan=S('ctype'), headersPre=S('headers'), outPre=S('out'), reqHeadersPre=S('reqHeaders');
 const symIn=S('sym'), provSel=S('prov'), emailIn=S('email'), passIn=S('pass'), tokSpan=S('tok-ok'), tokBadge=S('tok-badge');
 
@@ -337,6 +386,59 @@ call = async function(url,opt={}){
   }
 }
 
+
+/* ==================== Secrets (cifrados) ==================== */
+const SECRET_FIELDS = {
+  openai:        'openai_api_key',
+  gemini:        'gemini_api_key',
+  xai:           'xai_api_key',
+  tiingo:        'tiingo_api_key',
+  alphavantage:  'alphavantage_api_key',
+  finnhub:       'finnhub_api_key',
+  polygon:       'polygon_api_key',
+  claude:        'anthropic_api_key',
+  deepseek:      'deepseek_api_key',
+};
+const secretInputs = Object.fromEntries(Object.keys(SECRET_FIELDS).map(k => [k, S('s-'+k)]));
+
+S('btnSecretsGetMasked').onclick = async () => {
+  const j = await call(`${API}/secrets_get_masked_safe.php`, { method:'GET' });
+  if (!j) return;
+  const masked = j.secrets_masked || {};
+  for (const [k, field] of Object.entries(SECRET_FIELDS)){
+    const info = masked[field] || {};
+    // No mostramos valor; sólo señal de que existe
+    const el = secretInputs[k]; if (el) el.placeholder = info.has ? `guardada (****${info.last4||''})` : el.placeholder;
+  }
+};
+
+S('btnSecretsSave').onclick = async () => {
+  const msg = S('secrets-msg');
+  msg.textContent = 'Guardando...'; msg.style.color = '#64748b';
+  const entries = Object.entries(SECRET_FIELDS)
+    .map(([k, field]) => [ field, (secretInputs[k]?.value || '').trim() ])
+    .filter(([,v]) => v !== '');
+  const payload = { secrets: Object.fromEntries(entries) };
+  const j = await call(`${API}/secrets_set_safe.php`, {
+    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)
+  });
+  if (j && j.ok === true) {
+    msg.textContent = 'Secrets guardados.'; msg.style.color = '#059669';
+    for (const k of Object.keys(SECRET_FIELDS)) { if (secretInputs[k]) secretInputs[k].value = ''; }
+    S('btnSecretsGetMasked').click();
+  } else {
+    msg.textContent = 'Error al guardar secrets.'; msg.style.color = '#dc2626';
+  }
+};
+
+S('btnSecretsTestOpenAI').onclick = async () => {
+  // Usa key temporal si se ingresó, si no, usa la guardada
+  const tmp = (secretInputs.openai?.value || '').trim();
+  const body = tmp ? { provider:'openai', api_key: tmp } : { provider:'openai' };
+  await call(`${API}/key_test_safe.php`, {
+    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)
+  });
+};
 
 /* SAFE primero -> fallback plain */
 async function tryEndpoints({safe,plain,method='GET',headers=null,body=null}) {
@@ -710,7 +812,7 @@ themeToggle.addEventListener('click', () => {
 
 // Feedback button
 document.getElementById('btn-feedback')?.addEventListener('click', () => {
-  window.location.href = '/bolsa/feedback.html';
+  window.location.href = 'feedback.html';
 });
 
 function updateThemeButton() {

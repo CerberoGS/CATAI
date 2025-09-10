@@ -1,53 +1,62 @@
 <?php
-// log_debug.php — endpoint mínimo para registrar eventos de depuración enviados desde el frontend.
-// Es tolerante a errores y opcionalmente anota el usuario si trae Bearer token válido.
-
 declare(strict_types=1);
 
-require_once __DIR__ . '/_safe_wrapper.php'; // JSON + manejo de fatales
-require_once __DIR__ . '/helpers.php';       // CORS + utilidades
+require_once 'helpers.php';
+require_once 'db.php';
 
-// Solo POST (permite OPTIONS por preflight)
-$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-if ($method !== 'POST') {
-  json_out(['error' => 'method_not_allowed'], 405);
+// Aplicar CORS
+apply_cors();
+
+// Verificar autenticación
+$user = require_user();
+$user_id = $user['user_id'] ?? $user['id'] ?? null;
+
+if (!$user_id) {
+    json_error('Usuario no válido', 400);
 }
 
-$raw = file_get_contents('php://input') ?: '';
-if ($raw === '') {
-  json_out(['error' => 'no-data'], 400);
+// Solo permitir POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    json_error('Método no permitido', 405);
 }
 
-// Intentar parsear JSON; si no es JSON, registrar como texto plano
-$parsed = json_decode($raw, true);
-$payload = is_array($parsed) ? $parsed : ['text' => $raw];
+try {
+    $input = json_decode(file_get_contents('php://input'), true);
+    
+    if (!$input) {
+        json_error('Datos JSON inválidos', 400);
+    }
 
-// Datos básicos del request
-$entry = [
-  'ts'   => date('c'),
-  'ip'   => $_SERVER['REMOTE_ADDR'] ?? '',
-  'ua'   => $_SERVER['HTTP_USER_AGENT'] ?? '',
-  'uri'  => $_SERVER['REQUEST_URI'] ?? '',
-  'data' => $payload,
-];
+    $logs = $input['logs'] ?? [];
+    $source = $input['source'] ?? 'unknown';
 
-// Si hay un Bearer token válido, anotar email/id
-$cfg = $GLOBALS['__APP_CONFIG'] ?? [];
-$secret = (string)($cfg['JWT_SECRET'] ?? '');
-$tok = bearer_token();
-if ($secret !== '' && $tok) {
-  [$ok, $res] = jwt_verify_hs256($tok, $secret);
-  if ($ok && is_array($res)) {
-    if (isset($res['email'])) $entry['user'] = (string)$res['email'];
-    if (isset($res['id']))    $entry['user_id'] = (int)$res['id'];
-  }
+    // Crear directorio de logs si no existe
+    $logDir = __DIR__ . '/logs';
+    if (!is_dir($logDir)) {
+        mkdir($logDir, 0755, true);
+    }
+
+    // Guardar logs en archivo
+    $logFile = $logDir . '/debug_' . $source . '_' . date('Y-m-d_H-i-s') . '.log';
+    $logContent = "=== DEBUG LOGS FROM $source ===\n";
+    $logContent .= "User ID: $user_id\n";
+    $logContent .= "Timestamp: " . date('Y-m-d H:i:s') . "\n";
+    $logContent .= "Logs Count: " . count($logs) . "\n\n";
+
+    foreach ($logs as $log) {
+        $logContent .= "[{$log['timestamp']}] {$log['level']}: " . implode(' ', $log['data']) . "\n";
+    }
+
+    file_put_contents($logFile, $logContent, LOCK_EX);
+
+    json_out([
+        'ok' => true,
+        'message' => 'Logs guardados correctamente',
+        'log_file' => $logFile,
+        'logs_count' => count($logs)
+    ]);
+
+} catch (Exception $e) {
+    error_log("Error en log_debug.php: " . $e->getMessage());
+    json_error('Error interno del servidor: ' . $e->getMessage(), 500);
 }
-
-// Asegurar directorio y escribir
-$dir = __DIR__ . '/logs';
-if (!is_dir($dir)) @mkdir($dir, 0775, true);
-$logFile = $dir . '/debug.log';
-if (function_exists('rotate_log')) { @rotate_log($logFile, 524288, 3); }
-@file_put_contents($logFile, json_encode($entry, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) . "\n", FILE_APPEND);
-
-json_out(['ok' => true]);

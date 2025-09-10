@@ -17,7 +17,7 @@ return [
   // ───── Clave maestra para cifrado de secretos de usuarios ─────
   // 32 bytes Base64. Si ya tienes una, mantenla. Para generar:
   // php -r "echo base64_encode(random_bytes(32));"
-  'ENCRYPTION_KEY_BASE64' => 'sRDEMhrt53A8Nt4u0PbUCn6S9WPFGdAiWAOvdOdmj0=',
+  'ENCRYPTION_KEY_BASE64' => 'sRDEMhrt53A8Nt4u0PbUCn6S9WPFGdAiWAOvdOdmj0A=',
 
   // ──────────── API keys globales (FALLBACK opcional) ────────────
   // Se dejan vacías a propósito: las claves por usuario vivirán en la base de datos.
