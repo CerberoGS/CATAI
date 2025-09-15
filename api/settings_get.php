@@ -35,13 +35,14 @@ try {
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       INDEX idx_user (user_id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
-  // Migración suave de columna data_provider
+  // Migración suave de columnas
   try { $pdo->exec("ALTER TABLE user_settings ADD COLUMN data_provider VARCHAR(32) NULL AFTER options_provider"); } catch (Throwable $e) { }
+  try { $pdo->exec("ALTER TABLE user_settings ADD COLUMN ai_prompt_ext_conten_file TEXT NULL"); } catch (Throwable $e) { }
 
   $row = null;
   $mode = 'db-new-schema';
   try {
-    $st = $pdo->prepare("SELECT series_provider, options_provider, data_provider, resolutions_json, indicators_json, ai_provider, ai_model, data
+    $st = $pdo->prepare("SELECT series_provider, options_provider, data_provider, resolutions_json, indicators_json, ai_provider, ai_model, ai_prompt_ext_conten_file, data
                          FROM user_settings
                          WHERE user_id = ?
                          ORDER BY updated_at DESC, id DESC
@@ -73,6 +74,7 @@ try {
       'indicators_json'  => $indicators,
       'ai_provider'      => (string)($row['ai_provider'] ?? 'auto'),
       'ai_model'         => (string)($row['ai_model']    ?? ''),
+      'ai_prompt_ext_conten_file' => isset($row['ai_prompt_ext_conten_file']) ? (string)$row['ai_prompt_ext_conten_file'] : null,
     ];
     // Merge extras desde columna data si existe
     if (isset($row['data']) && is_string($row['data']) && $row['data'] !== '') {

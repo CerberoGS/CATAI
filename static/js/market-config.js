@@ -2,7 +2,7 @@
 
 class MarketConfig {
     constructor() {
-        this.apiBase = 'api';
+        this.apiBase = ConfigPortable.API_BASE_URL;
         this.config = {
             data_providers: {
                 series: 'auto',

@@ -36,7 +36,7 @@
 
   function apiBase() {
     // Prefer absolute based on current location, keep compatibility with /bolsa/
-    try { return new URL('api/', window.location.href).href.replace(/\/$/, ''); } catch { return '/api'; }
+    try { return ConfigPortable.API_BASE_URL; } catch { return '/api'; }
   }
 
   async function fetchJson(path, opts = {}) {

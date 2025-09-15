@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Test Buttons</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+  <div class="max-w-2xl mx-auto">
+    <h1 class="text-2xl font-bold mb-6">Test de Botones</h1>
+    
+    <div class="space-y-4">
+      <button onclick="testFunction1()" class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg">Test 1</button>
+      <button onclick="testFunction2()" class="bg-green-600 hover:bg-green-700 text-white p-3 rounded-lg">Test 2</button>
+      <button onclick="testFunction3()" class="bg-red-600 hover:bg-red-700 text-white p-3 rounded-lg">Test 3</button>
+    </div>
+    
+    <div id="result" class="mt-6 p-4 bg-gray-200 rounded-lg"></div>
+  </div>
+
+  <script>
+    function testFunction1() {
+      document.getElementById('result').textContent = 'Test 1 ejecutado correctamente';
+    }
+    
+    function testFunction2() {
+      document.getElementById('result').textContent = 'Test 2 ejecutado correctamente';
+    }
+    
+    function testFunction3() {
+      document.getElementById('result').textContent = 'Test 3 ejecutado correctamente';
+    }
+  </script>
+</body>
+</html>

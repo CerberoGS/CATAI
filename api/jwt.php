@@ -16,6 +16,19 @@ function jwt_sign(array $payload, $expDays=7) {
   return "$h.$p.$s";
 }
 
+function jwt_verify($token) {
+  global $config;
+  $parts = explode('.', $token);
+  if (count($parts) !== 3) return false;
+  [$h, $p, $s] = $parts;
+  $sig = base64_decode(strtr($s, '-_', '+/'));
+  $calc = hash_hmac('sha256', "$h.$p", $config['JWT_SECRET'], true);
+  if (!hash_equals($sig, $calc)) return false;
+  $payload = json_decode(base64_decode(strtr($p, '-_', '+/')), true);
+  if (!$payload || ($payload['exp'] ?? 0) < time()) return false;
+  return true;
+}
+
 function jwt_decode_user($token) {
   global $config;
   $parts = explode('.', $token);

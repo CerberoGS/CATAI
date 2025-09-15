@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es-US">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Prueba – Resumen IA por Archivo (Probe)</title>
+  <link rel="stylesheet" href="static/css/styles.css" />
+  <style>
+    :root { color-scheme: dark; }
+    /* Fondo principal (oscuro) */
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; background:#0b1120; color:#e5e7eb; }
+    .container { max-width: 960px; margin: 24px auto; padding: 16px; }
+    /* Tarjeta de contenido (panel) */
+    .card { background: #b36aaf; color: #f3f4f6; border-radius: 12px; padding: 16px; border: 2px solid #16a34a; }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    /* Color de etiquetas */
+    label { font-size: 14px; color: #ffffff; font-weight:700; }
+    /* Campos de entrada (alto contraste) */
+    input, select { padding: 12px 14px; border-radius: 8px; border: 2px solid #16a34a; background: #777e8b; color: #ffffff; min-width: 220px; outline: none; font-weight:700; }
+    /* Borde de foco (verde brillante) */
+    input:focus, select:focus { box-shadow: 0 0 0 3px rgba(22,163,74,0.45); border-color:#22c55e; }
+    /* Placeholder visible */
+    input::placeholder { color:#f8fafc; opacity: 1; }
+    /* Botones */
+    button { padding: 12px 16px; border-radius: 8px; color: white; border: 0; cursor: pointer; font-weight:800; }
+    .btn { background: #2563eb; }
+    .btn:hover { filter:brightness(1.08); }
+    .btn.green { background: #16a34a; }
+    .btn.gray { background: #64748b; }
+    /* Área de resultados */
+    pre { background: #3f63aa; color: #ffffff; padding: 12px; border-radius: 8px; overflow: auto; max-height: 50vh; border: 2px solid #16a34a; font-weight:700; }
+    .muted { color: #e2e8f0; font-size: 12px; }
+    /* Nota: Ajusta #16a34a (verde), #2563eb (azul), #0f172a (panel) a tu gusto */
+  </style>
+  <script src="static/js/config-portable.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1 style="margin-bottom:8px">Prueba – Resumen por IA (Diagnóstico)</h1>
+    <div class="muted">Esta página no modifica nada. Solo prueba lectura del archivo y el ping al proveedor IA seleccionado.</div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="row">
+        <div>
+          <label>Knowledge ID</label><br/>
+          <input id="knowledgeId" type="number" placeholder="p.ej. 45" />
+        </div>
+        <div>
+          <label>File ID (knowledge_files.id)</label><br/>
+          <input id="fileId" type="number" placeholder="p.ej. 22" />
+        </div>
+        <div>
+          <label>Proveedor</label><br/>
+          <select id="provider">
+            <option value="auto">auto</option>
+            <option value="openai">openai</option>
+            <option value="gemini">gemini</option>
+            <option value="claude">claude</option>
+            <option value="xai">xai</option>
+            <option value="deepseek">deepseek</option>
+          </select>
+        </div>
+        <div>
+          <label>Modelo (opcional)</label><br/>
+          <input id="model" type="text" placeholder="p.ej. gpt-4o-mini" />
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:12px">
+        <button class="btn" onclick="runProbe()">🔍 Probar Probe</button>
+        <button class="btn green" onclick="runSummarize()">🧠 Resumir con Router</button>
+        <button class="btn" onclick="previewRequest()">🧪 Vista previa solicitud IA</button>
+        <button class="btn gray" onclick="copyResults()">📋 Copiar Resultado</button>
+        <button class="btn" onclick="probePathOnly()">🗂️ Probar Ruta de Archivo</button>
+        <button class="btn green" onclick="showUserKey()">🔑 Mostrar Key (enmascarada)</button>
+        <button class="btn" onclick="testDirectUrl()">🔍 Probar URL Directa</button>
+      </div>
+
+      <div style="margin-top:16px">
+        <div class="muted">API Base: <span id="apiBase"></span></div>
+      </div>
+
+      <h3 style="margin-top:16px">Resultado</h3>
+      <pre id="output">{}</pre>
+    </div>
+  </div>
+
+  <script>
+    const out = document.getElementById('output');
+    const apiBase = ConfigPortable.API_BASE_URL;
+    document.getElementById('apiBase').textContent = apiBase;
+
+    function getAuth() {
+      return localStorage.getItem('auth_token') || '';
+    }
+
+    function setOutput(obj) {
+      out.textContent = JSON.stringify(obj, null, 2);
+    }
+
+    async function runProbe() {
+      const knowledgeId = Number(document.getElementById('knowledgeId').value || 0);
+      const provider = document.getElementById('provider').value || 'auto';
+      const model = document.getElementById('model').value || '';
+      if (!knowledgeId) { setOutput({ error: 'Ingrese knowledge_id' }); return; }
+      try {
+        const res = await fetch(`${apiBase}/ai_summarize_probe_safe.php`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getAuth()}` },
+          body: JSON.stringify({ knowledge_id: knowledgeId, file_id: Number(document.getElementById('fileId').value||0), provider, model })
+        });
+        const data = await res.json().catch(()=>({ error:'JSON inválido', http: res.status }));
+        setOutput({ http: res.status, ...data });
+      } catch (e) {
+        setOutput({ error: String(e) });
+      }
+    }
+
+    async function runSummarize() {
+      const knowledgeId = Number(document.getElementById('knowledgeId').value || 0);
+      const provider = document.getElementById('provider').value || 'auto';
+      const model = document.getElementById('model').value || '';
+      if (!knowledgeId) { setOutput({ error: 'Ingrese knowledge_id' }); return; }
+      try {
+        const res = await fetch(`${apiBase}/ai_summarize_router_safe.php`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getAuth()}` },
+          body: JSON.stringify({ knowledge_id: knowledgeId, file_id: Number(document.getElementById('fileId').value||0), provider, model })
+        });
+        const data = await res.json().catch(()=>({ error:'JSON inválido', http: res.status }));
+        setOutput({ http: res.status, ...data });
+      } catch (e) {
+        setOutput({ error: String(e) });
+      }
+    }
+
+    async function previewRequest() {
+      const knowledgeId = Number(document.getElementById('knowledgeId').value || 0);
+      const fileId = Number(document.getElementById('fileId').value || 0);
+      const provider = document.getElementById('provider').value || 'auto';
+      const model = document.getElementById('model').value || '';
+      if (!knowledgeId && !fileId) { setOutput({ error: 'Ingrese knowledge_id o file_id' }); return; }
+      try {
+        const res = await fetch(`${apiBase}/ai_summarize_request_preview_safe.php`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getAuth()}` },
+          body: JSON.stringify({ knowledge_id: knowledgeId, file_id: fileId, provider, model })
+        });
+        const data = await res.json().catch(()=>({ error:'JSON inválido', http: res.status }));
+        setOutput({ http: res.status, ...data });
+      } catch(e) {
+        setOutput({ error: String(e) });
+      }
+    }
+
+    async function probePathOnly() {
+      const knowledgeId = Number(document.getElementById('knowledgeId').value || 0);
+      const provider = document.getElementById('provider').value || 'auto';
+      const model = document.getElementById('model').value || '';
+      if (!knowledgeId) { setOutput({ error: 'Ingrese knowledge_id' }); return; }
+      try {
+        const res = await fetch(`${apiBase}/ai_summarize_probe_safe.php`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getAuth()}` },
+          body: JSON.stringify({ knowledge_id: knowledgeId, provider, model })
+        });
+        const data = await res.json().catch(()=>({ error:'JSON inválido', http: res.status }));
+        const file = data?.probe?.file || {};
+        setOutput({ http: res.status, context: data?.context, expected_path: file.expected_path, path_exists: file.path_exists, readable: file.readable, owner_user_id: file.owner_user_id, current_user_id: file.current_user_id, owner_mismatch: file.owner_mismatch, original_filename: file.original_filename, stored_filename: file.stored_filename });
+      } catch(e) {
+        setOutput({ error: String(e) });
+      }
+    }
+
+    async function showUserKey() {
+      try {
+        const res = await fetch(`${apiBase}/user_keys_get_safe.php`, { headers: { 'Authorization': `Bearer ${getAuth()}` } });
+        const data = await res.json();
+        setOutput({ http: res.status, context: 'user_keys_get_safe', providers: data?.keys || data });
+      } catch(e) {
+        setOutput({ error: String(e) });
+      }
+    }
+
+    async function copyResults() {
+      try { await navigator.clipboard.writeText(out.textContent); alert('✅ Copiado'); }
+      catch(e) { alert('❌ No se pudo copiar'); }
+    }
+
+    function testDirectUrl() {
+      const knowledgeId = Number(document.getElementById('knowledgeId').value || 0);
+      const fileId = Number(document.getElementById('fileId').value || 0);
+      const provider = document.getElementById('provider').value || 'auto';
+      const model = document.getElementById('model').value || '';
+      const token = getAuth();
+      
+      if (!token) {
+        alert('❌ No hay token de autenticación en localStorage');
+        return;
+      }
+      
+      if (!knowledgeId) {
+        alert('❌ Ingrese Knowledge ID');
+        return;
+      }
+      
+      // Construir URL con parámetros GET
+      const params = new URLSearchParams({
+        knowledge_id: knowledgeId,
+        file_id: fileId,
+        provider: provider,
+        model: model,
+        token: token
+      });
+      
+      const directUrl = `${apiBase}/ai_summarize_request_preview_safe.php?${params.toString()}`;
+      
+      // Abrir en nueva pestaña
+      window.open(directUrl, '_blank');
+      
+      // También mostrar la URL en el output para referencia
+      setOutput({
+        message: 'URL directa abierta en nueva pestaña',
+        url: directUrl,
+        note: 'Revisa la nueva pestaña para ver la respuesta cruda del servidor'
+      });
+    }
+  </script>
+  <script>
+    // Prellenar provider/model desde config guardada si existe
+    try {
+      const cfg = JSON.parse(localStorage.getItem('ai_behavioral_config') || '{}');
+      if (cfg.ai_provider) document.getElementById('provider').value = cfg.ai_provider;
+      if (cfg.ai_model) document.getElementById('model').value = cfg.ai_model;
+    } catch(_) {}
+  </script>
+</body>
+</html>
+
+

@@ -38,11 +38,12 @@ try {
       INDEX idx_user (user_id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
-  // Migración suave: agregar columna data_provider si no existe
+  // Migración suave: agregar columnas si no existen
   try { $pdo->exec("ALTER TABLE user_settings ADD COLUMN data_provider VARCHAR(32) NULL AFTER options_provider"); } catch (Throwable $e) { /* ya existe */ }
+  try { $pdo->exec("ALTER TABLE user_settings ADD COLUMN ai_prompt_ext_conten_file TEXT NULL"); } catch (Throwable $e) { /* ya existe */ }
 
   // Cargar existentes
-  $st0 = $pdo->prepare("SELECT series_provider, options_provider, data_provider, resolutions_json, indicators_json, ai_provider, ai_model, data FROM user_settings WHERE user_id = ? LIMIT 1");
+  $st0 = $pdo->prepare("SELECT series_provider, options_provider, data_provider, resolutions_json, indicators_json, ai_provider, ai_model, ai_prompt_ext_conten_file, data FROM user_settings WHERE user_id = ? LIMIT 1");
   $st0->execute([$userId]);
   $row0 = $st0->fetch(PDO::FETCH_ASSOC) ?: [];
 
@@ -64,6 +65,7 @@ try {
 
   $aiProv  = strtolower(trim((string)($has('ai_provider') ? $in['ai_provider'] : ($row0['ai_provider'] ?? 'auto'))));
   $aiModel = trim((string)($has('ai_model')    ? $in['ai_model']    : ($row0['ai_model']    ?? '')));
+  $aiPromptExtract = $has('ai_prompt_ext_conten_file') ? $in['ai_prompt_ext_conten_file'] : ($row0['ai_prompt_ext_conten_file'] ?? null);
 
   // Sanitizar
   $allowedSeries  = ['auto','alphavantage','tiingo','finnhub','polygon'];
@@ -76,7 +78,7 @@ try {
 
   // INSERT o UPDATE
   if ($row0) {
-    $up = $pdo->prepare("UPDATE user_settings SET series_provider=?, options_provider=?, data_provider=?, resolutions_json=?, indicators_json=?, ai_provider=?, ai_model=?, updated_at=NOW() WHERE user_id=?");
+    $up = $pdo->prepare("UPDATE user_settings SET series_provider=?, options_provider=?, data_provider=?, resolutions_json=?, indicators_json=?, ai_provider=?, ai_model=?, ai_prompt_ext_conten_file=?, updated_at=NOW() WHERE user_id=?");
     $up->execute([
       $seriesProv,
       $optionsProv,
@@ -85,10 +87,11 @@ try {
       json_encode($indicators,  JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES),
       $aiProv,
       $aiModel,
+      $aiPromptExtract,
       $userId,
     ]);
   } else {
-    $ins = $pdo->prepare("INSERT INTO user_settings (user_id, series_provider, options_provider, data_provider, resolutions_json, indicators_json, ai_provider, ai_model, updated_at) VALUES (?,?,?,?,?,?,?,?,NOW())");
+    $ins = $pdo->prepare("INSERT INTO user_settings (user_id, series_provider, options_provider, data_provider, resolutions_json, indicators_json, ai_provider, ai_model, ai_prompt_ext_conten_file, updated_at) VALUES (?,?,?,?,?,?,?,?,?,NOW())");
     $ins->execute([
       $userId,
       $seriesProv,
@@ -98,6 +101,7 @@ try {
       json_encode($indicators,  JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES),
       $aiProv,
       $aiModel,
+      $aiPromptExtract,
     ]);
   }
   $log('settings_set:upsert', compact('seriesProv','optionsProv','dataProv','aiProv','aiModel'));

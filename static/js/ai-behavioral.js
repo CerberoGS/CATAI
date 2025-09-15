@@ -2,7 +2,7 @@
 
 class AIBehavioralDashboard {
     constructor() {
-        this.apiBase = 'api';
+        this.apiBase = ConfigPortable.API_BASE_URL;
         this.isInitialized = false;
         this.metrics = null;
         this.profile = null;
@@ -678,24 +678,43 @@ class AIBehavioralDashboard {
 
     // Función para mostrar notificaciones
     showNotification(message, type = 'info') {
-        // Crear elemento de notificación
+        // Crear elemento de notificación mejorado
         const notification = document.createElement('div');
-        notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg text-white ${
+        notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg text-white transform transition-all duration-300 ${
             type === 'success' ? 'bg-green-500' :
             type === 'error' ? 'bg-red-500' :
             type === 'warning' ? 'bg-yellow-500' :
             'bg-blue-500'
         }`;
-        notification.textContent = message;
+        
+        // Agregar icono según tipo
+        const icon = type === 'success' ? '✅' : 
+                    type === 'error' ? '❌' : 
+                    type === 'warning' ? '⚠️' : 'ℹ️';
+        
+        notification.innerHTML = `
+            <div class="flex items-center gap-2">
+                <span class="text-lg">${icon}</span>
+                <span>${message}</span>
+            </div>
+        `;
 
         document.body.appendChild(notification);
 
-        // Remover después de 3 segundos
+        // Animación de entrada
         setTimeout(() => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-            }
-        }, 3000);
+            notification.classList.add('translate-x-0', 'opacity-100');
+        }, 10);
+
+        // Remover después de 4 segundos con animación
+        setTimeout(() => {
+            notification.classList.add('translate-x-full', 'opacity-0');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 4000);
     }
 
     async performAnalysis() {
@@ -1407,7 +1426,7 @@ Generado por CATAI - Sistema de IA Comportamental`;
                     </div>
                     
                     <div class="mt-4 pt-4 border-t border-gray-200 dark-mode:border-gray-600">
-                        <button onclick="extractContent(${knowledge.id})" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                        <button id="extract-btn-${knowledge.id}" onclick="extractContent(${knowledge.id}, ${knowledge.file_id || 'null'})" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors">
                             📄 Extraer Contenido Real
                         </button>
                         <p class="text-xs text-gray-500 dark-mode:text-gray-400 mt-2">
@@ -1887,4 +1906,132 @@ document.addEventListener('DOMContentLoaded', () => {
             window.AIBehavioralDashboard.closePatternsChartModal();
         });
     }
+
+    // Handler global y único para extracción real, usado por el botón del modal
+    window.extractContent = async function(knowledgeId, fileId) {
+        try {
+            const btn = document.getElementById(`extract-btn-${knowledgeId}`);
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = '⏳ Extrayendo...';
+                btn.classList.remove('bg-green-600','hover:bg-green-700');
+                btn.classList.add('bg-green-500','opacity-90');
+            }
+            // Abrir modal inmediatamente con estado de carga
+            const modal = document.getElementById('knowledge-modal');
+            const content = document.getElementById('knowledge-modal-content');
+            if (modal && content) {
+                content.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="bg-blue-50 dark-mode:bg-blue-900/20 rounded-lg p-4">
+                            <h5 class="font-semibold text-blue-800 dark-mode:text-blue-200 mb-1">Procesando…</h5>
+                            <div class="text-sm text-blue-700 dark-mode:text-blue-300">Extrayendo contenido real del archivo (puede tardar en archivos grandes)…</div>
+                        </div>
+                        <div class="flex items-center gap-3 text-gray-700 dark-mode:text-gray-200">
+                            <span class="animate-spin inline-block w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full"></span>
+                            <span>Cargando…</span>
+                        </div>
+                    </div>`;
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+
+            // Timeout con AbortController
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 25000); // 25s
+
+            // Nuevo enfoque: resumir con IA el archivo para evitar extracción pesada (router respeta provider/model del usuario)
+            const cfg = JSON.parse(localStorage.getItem('ai_behavioral_config') || '{}');
+            const selectedProvider = cfg.ai_provider || 'auto';
+            const selectedModel = cfg.ai_model || '';
+            let response = await fetch(`${ConfigPortable.API_BASE_URL}/ai_summarize_router_safe.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`
+                },
+                body: JSON.stringify({ knowledge_id: Number(knowledgeId), file_id: (fileId ? Number(fileId) : 0), provider: selectedProvider, model: selectedModel }),
+                signal: controller.signal
+            });
+            
+            // Fallback a endpoint básico si falla/timeout
+            if (!response.ok) {
+                try {
+                    response = await fetch(`${ConfigPortable.API_BASE_URL}/extract_pdf_content.php?id=${Number(knowledgeId)}`, {
+                        headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}` }
+                    });
+                } catch (_) {}
+            }
+
+            clearTimeout(timeoutId);
+
+            const data = await response.json().catch(() => ({ ok: false, error: 'Respuesta inválida del servidor' }));
+            if (data && data.ok) {
+                const extracted = data.summary || data.content || 'Sin texto extraído';
+                const fi = data.file_info || {};
+                const ei = data.extraction_info || { method: data.method || 'llm_summary' };
+                // Guardar último texto para botón Copiar
+                window._lastExtractedText = typeof extracted === 'string' ? extracted : JSON.stringify(extracted, null, 2);
+
+                if (modal && content) {
+                    content.innerHTML = `
+                        <div class="space-y-4">
+                            <div class="bg-green-50 dark-mode:bg-green-900/20 rounded-lg p-4">
+                                <h5 class="font-semibold text-green-800 dark-mode:text-green-200 mb-1">✅ Extracción completada</h5>
+                                <div class="text-sm text-green-700 dark-mode:text-green-300">Archivo: ${fi.original_filename || ''} • Tamaño: ${fi.file_size_mb || ''} MB • Método: ${ei.method || 'híbrido'}</div>
+                            </div>
+                            <div class="bg-gray-50 dark-mode:bg-gray-700 rounded-lg p-4 max-h-72 overflow-y-auto">
+                                <pre class="whitespace-pre-wrap text-sm text-gray-800 dark-mode:text-gray-200">${window._lastExtractedText}</pre>
+                            </div>
+                            <div class="flex gap-2 justify-end">
+                                <button onclick="window.copyExtractedText()" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">📋 Copiar</button>
+                                <button onclick="document.getElementById('knowledge-modal').classList.add('hidden');document.getElementById('knowledge-modal').classList.remove('flex');" class="px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">✕ Cerrar</button>
+                            </div>
+                        </div>`;
+                } else {
+                    alert(`✅ Extracción completada\n\nArchivo: ${fi.original_filename || ''}\nMétodo: ${ei.method || 'híbrido'}\n\n(El modal no se pudo mostrar)`);
+                }
+            } else {
+                // Mostrar error dentro del modal
+                if (modal && content) {
+                    content.innerHTML = `
+                        <div class="space-y-4">
+                            <div class="bg-red-50 dark-mode:bg-red-900/20 rounded-lg p-4">
+                                <h5 class="font-semibold text-red-800 dark-mode:text-red-200 mb-1">❌ No se pudo extraer el contenido</h5>
+                                <div class="text-sm text-red-700 dark-mode:text-red-300">${(data && data.error) || 'Error desconocido o tiempo de espera excedido.'}</div>
+                                <div class="text-xs text-red-700 dark-mode:text-red-300 mt-2">Sugerencias: intente con otro archivo, reduzca el tamaño, o conviértalo a TXT.</div>
+                            </div>
+                            <div class="text-right">
+                                <button onclick="document.getElementById('knowledge-modal').classList.add('hidden');document.getElementById('knowledge-modal').classList.remove('flex');" class="px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">Cerrar</button>
+                            </div>
+                        </div>`;
+                } else {
+                    alert((data && data.error) ? data.error : 'No se pudo extraer contenido');
+                }
+            }
+        } catch (err) {
+            console.error('extractContent error:', err);
+            alert('Error de conexión en extracción');
+        } finally {
+            const btn = document.getElementById(`extract-btn-${knowledgeId}`);
+            if (btn) {
+                btn.disabled = false;
+                btn.textContent = '📄 Extraer Contenido Real';
+                btn.classList.add('bg-green-600','hover:bg-green-700');
+                btn.classList.remove('bg-green-500','opacity-90');
+            }
+        }
+    };
+    
+    // Función global para copiar el último texto extraído
+    window.copyExtractedText = async function() {
+        try {
+            const text = window._lastExtractedText || '';
+            await navigator.clipboard.writeText(text);
+            alert('✅ Contenido copiado al portapapeles');
+        } catch (e) {
+            console.error('Copy failed', e);
+            alert('❌ No se pudo copiar');
+        }
+    };
 });

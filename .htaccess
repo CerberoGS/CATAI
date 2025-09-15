@@ -21,9 +21,11 @@ AddType 'application/javascript; charset=UTF-8' .js
 
 <IfModule mod_rewrite.c>
 RewriteEngine On
-RewriteBase /catai/
+# RewriteBase dinámico - detecta automáticamente la carpeta
+RewriteCond %{REQUEST_URI}::$1 ^(/.+)(.+)::\2$
+RewriteRule ^(.*) - [E=BASE:%1]
 
-# 1) No tocar el backend: dejar pasar todo bajo /catai/api/
+# 1) No tocar el backend: dejar pasar todo bajo /api/
 RewriteRule ^api/ - [L]
 
 # 2) Si el archivo o directorio existe, servirlo

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Extracción Híbrida</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="static/js/config-portable.js"></script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+            🚀 Test Extracción Híbrida Mejorada
+        </h1>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                Solución Implementada
+            </h2>
+            
+            <div class="space-y-4 text-gray-700 dark:text-gray-300">
+                <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+                    <h3 class="font-semibold text-green-800 dark:text-green-200 mb-2">✅ Mejoras Implementadas:</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><strong>Rutas corregidas:</strong> Busca archivos en múltiples ubicaciones</li>
+                        <li><strong>Extracción real:</strong> Usa solo PHP nativo (sin shell_exec)</li>
+                        <li><strong>Múltiples formatos:</strong> PDF, TXT, DOC, DOCX, CSV</li>
+                        <li><strong>Metadatos PDF:</strong> Extrae título, autor, páginas</li>
+                        <li><strong>Texto visible:</strong> Extrae texto real del PDF</li>
+                        <li><strong>Resumen inteligente:</strong> Detecta temas de trading</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                    <h3 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">🔍 Archivos Disponibles:</h3>
+                    <p>Según la foto, tienes estos archivos:</p>
+                    <ul class="list-disc list-inside mt-2">
+                        <li><strong>ID 19:</strong> 12_claves_analisis_tecnico.pdf (3.28 MB)</li>
+                        <li><strong>ID 20:</strong> Patrones_de_Velas.pdf (5.78 MB)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                Probar Extracción
+            </h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        ID de Conocimiento:
+                    </label>
+                    <select id="knowledge-id" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+                        <option value="19">19 - 12_claves_analisis_tecnico.pdf</option>
+                        <option value="20">20 - Patrones_de_Velas.pdf</option>
+                    </select>
+                </div>
+                
+                <div class="flex gap-4">
+                    <button onclick="testHybridExtraction()" 
+                            class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold">
+                        🚀 Probar Extracción Híbrida
+                    </button>
+                    
+                    <button onclick="testOriginalExtraction()" 
+                            class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        📄 Probar Extracción Original
+                    </button>
+                    
+                    <button onclick="diagnoseUserFiles()" 
+                            class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                        🔍 Diagnosticar Archivos Usuario
+                    </button>
+                    
+                    <button onclick="clearResults()" 
+                            class="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                        🗑️ Limpiar
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="results" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                Resultados
+            </h2>
+            <div id="results-content" class="text-gray-700 dark:text-gray-300">
+                Selecciona un archivo y haz clic en "Probar Extracción Híbrida"...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Función para mostrar resultados
+        function showResult(title, data, success = true) {
+            const resultsContent = document.getElementById('results-content');
+            const timestamp = new Date().toLocaleString();
+            
+            const resultHtml = `
+                <div class="mb-6 p-4 rounded-lg ${success ? 'bg-green-50 dark:bg-green-900/20' : 'bg-red-50 dark:bg-red-900/20'}">
+                    <h3 class="font-semibold ${success ? 'text-green-800 dark:text-green-200' : 'text-red-800 dark:text-red-200'} mb-2">
+                        ${success ? '✅' : '❌'} ${title}
+                    </h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">${timestamp}</p>
+                    <pre class="text-sm bg-white dark:bg-gray-800 p-4 rounded border overflow-x-auto max-h-96">${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            `;
+            
+            resultsContent.innerHTML = resultHtml + resultsContent.innerHTML;
+        }
+        
+        // Función para mostrar contenido extraído
+        function showExtractedContent(title, content, fileInfo, extractionInfo) {
+            const resultsContent = document.getElementById('results-content');
+            const timestamp = new Date().toLocaleString();
+            
+            const resultHtml = `
+                <div class="mb-6 p-4 rounded-lg bg-green-50 dark:bg-green-900/20">
+                    <h3 class="font-semibold text-green-800 dark:text-green-200 mb-2">
+                        ✅ ${title}
+                    </h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">${timestamp}</p>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-white dark:bg-gray-800 p-3 rounded border">
+                            <h4 class="font-medium text-gray-800 dark:text-gray-200 mb-2">📄 Información del Archivo:</h4>
+                            <p class="text-sm text-gray-700 dark:text-gray-300">
+                                <strong>Archivo:</strong> ${fileInfo.original_filename}<br>
+                                <strong>Tipo:</strong> ${fileInfo.file_type.toUpperCase()}<br>
+                                <strong>Tamaño:</strong> ${fileInfo.file_size_mb} MB<br>
+                                <strong>Método:</strong> ${extractionInfo.extraction_method}<br>
+                                <strong>Palabras:</strong> ${extractionInfo.word_count}<br>
+                                <strong>Éxito:</strong> ${extractionInfo.extraction_success ? '✅ Sí' : '❌ No'}
+                            </p>
+                        </div>
+                        
+                        <div class="bg-white dark:bg-gray-800 p-3 rounded border">
+                            <h4 class="font-medium text-gray-800 dark:text-gray-200 mb-2">📋 Contenido Extraído:</h4>
+                            <pre class="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap max-h-64 overflow-y-auto">${content}</pre>
+                        </div>
+                        
+                        <div class="flex gap-2">
+                            <button onclick="copyToClipboard(\`${content.replace(/`/g, '\\`')}\`)" 
+                                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                📋 Copiar Contenido
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            resultsContent.innerHTML = resultHtml + resultsContent.innerHTML;
+        }
+        
+        // Función para limpiar resultados
+        function clearResults() {
+            document.getElementById('results-content').innerHTML = 'Resultados limpiados...';
+        }
+        
+        // Función para copiar al portapapeles
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ Contenido copiado al portapapeles');
+            }).catch(() => {
+                alert('❌ Error copiando al portapapeles');
+            });
+        }
+        
+        // Test de extracción híbrida
+        async function testHybridExtraction() {
+            const knowledgeId = document.getElementById('knowledge-id').value;
+            
+            try {
+                showResult('Probando extracción híbrida...', {knowledgeId}, true);
+                
+                const response = await fetch(ConfigPortable.getApiUrl('extract_content_hybrid_safe.php'), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + (localStorage.getItem('auth_token') || 'test-token')
+                    },
+                    body: JSON.stringify({
+                        knowledge_id: parseInt(knowledgeId)
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.ok) {
+                    showExtractedContent(
+                        'Extracción Híbrida Exitosa',
+                        data.content,
+                        data.file_info,
+                        data.extraction_info
+                    );
+                } else {
+                    showResult('Error en Extracción Híbrida', data, false);
+                }
+                
+            } catch (error) {
+                showResult('Error de Conexión', {error: error.message}, false);
+            }
+        }
+        
+        // Test de extracción original (para comparar)
+        async function testOriginalExtraction() {
+            const knowledgeId = document.getElementById('knowledge-id').value;
+            
+            try {
+                showResult('Probando extracción original...', {knowledgeId}, true);
+                
+                const response = await fetch(ConfigPortable.getApiUrl('extract_pdf_content.php'), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + (localStorage.getItem('auth_token') || 'test-token')
+                    },
+                    body: JSON.stringify({
+                        knowledge_id: parseInt(knowledgeId)
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.ok) {
+                    showExtractedContent(
+                        'Extracción Original',
+                        data.content,
+                        data.file_info,
+                        data.extraction_info
+                    );
+                } else {
+                    showResult('Error en Extracción Original', data, false);
+                }
+                
+            } catch (error) {
+                showResult('Error de Conexión', {error: error.message}, false);
+            }
+        }
+        
+        // Diagnóstico de archivos del usuario
+        async function diagnoseUserFiles() {
+            try {
+                showResult('🔍 Iniciando diagnóstico de archivos...', {}, true);
+                
+                // 1. Verificar usuario logueado
+                const token = localStorage.getItem('auth_token');
+                if (!token) {
+                    showResult('❌ No hay token de autenticación', {error: 'Usuario no logueado'}, false);
+                    return;
+                }
+                
+                // 2. Obtener información del usuario
+                const userResponse = await fetch(ConfigPortable.getApiUrl('auth_me.php'), {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                
+                if (!userResponse.ok) {
+                    throw new Error(`Error obteniendo usuario: HTTP ${userResponse.status}`);
+                }
+                
+                const userData = await userResponse.json();
+                const userId = userData.id;
+                
+                showResult('✅ Usuario identificado', {
+                    user_id: userId,
+                    email: userData.email,
+                    name: userData.name
+                }, true);
+                
+                // 3. Obtener lista de archivos del usuario
+                const filesResponse = await fetch(ConfigPortable.getApiUrl('ai_knowledge_list_safe.php'), {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                
+                if (!filesResponse.ok) {
+                    throw new Error(`Error obteniendo archivos: HTTP ${filesResponse.status}`);
+                }
+                
+                const filesData = await filesResponse.json();
+                
+                if (filesData.ok && filesData.knowledge) {
+                    showResult('📁 Archivos encontrados en Knowledge Base', {
+                        total_files: filesData.knowledge.length,
+                        files: filesData.knowledge.map(k => ({
+                            id: k.id,
+                            filename: k.original_filename,
+                            stored_filename: k.stored_filename,
+                            file_type: k.file_type,
+                            file_size: k.file_size,
+                            upload_status: k.upload_status,
+                            extraction_status: k.extraction_status,
+                            user_id: userId
+                        }))
+                    }, true);
+                    
+                    // 4. Verificar rutas de archivos
+                    const filePaths = filesData.knowledge.map(k => ({
+                        id: k.id,
+                        expected_path: `api/uploads/knowledge/${userId}/${k.stored_filename}`,
+                        user_id: userId,
+                        stored_filename: k.stored_filename
+                    }));
+                    
+                    showResult('🗂️ Rutas esperadas de archivos', {
+                        user_id: userId,
+                        expected_directory: `api/uploads/knowledge/${userId}/`,
+                        file_paths: filePaths
+                    }, true);
+                    
+                } else {
+                    showResult('❌ No se encontraron archivos', filesData, false);
+                }
+                
+            } catch (error) {
+                showResult('❌ Error en diagnóstico', {error: error.message}, false);
+            }
+        }
+    </script>
+</body>
+</html>

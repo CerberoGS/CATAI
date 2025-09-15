@@ -2,7 +2,7 @@
 
 class AIBehavioralIntegration {
     constructor() {
-        this.apiBase = 'api';
+        this.apiBase = ConfigPortable.API_BASE_URL;
         this.isInitialized = false;
     }
 

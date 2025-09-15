@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico de Herramientas de Extracción</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="static/js/config-portable.js"></script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+            🔧 Diagnóstico de Herramientas de Extracción
+        </h1>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                Problema Identificado
+            </h2>
+            
+            <div class="space-y-4 text-gray-700 dark:text-gray-300">
+                <div class="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg">
+                    <h3 class="font-semibold text-red-800 dark:text-red-200 mb-2">❌ Problema Principal:</h3>
+                    <p>El botón "Extraer Contenido" muestra contenido simulado en lugar de extraer texto real del PDF.</p>
+                </div>
+                
+                <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                    <h3 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">🔍 Causa Probable:</h3>
+                    <p>El servidor no tiene las herramientas necesarias instaladas (<code>pdftotext</code>, <code>shell_exec</code>, etc.)</p>
+                </div>
+                
+                <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+                    <h3 class="font-semibold text-green-800 dark:text-green-200 mb-2">✅ Solución:</h3>
+                    <p>Ejecutar diagnóstico para identificar exactamente qué herramientas están disponibles y cuáles faltan.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                Ejecutar Diagnóstico
+            </h2>
+            
+            <div class="space-y-4">
+                <button onclick="runDiagnosis()" 
+                        class="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+                    🔍 Ejecutar Diagnóstico Completo
+                </button>
+                
+                <button onclick="clearResults()" 
+                        class="w-full px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                    🗑️ Limpiar Resultados
+                </button>
+            </div>
+        </div>
+        
+        <div id="results" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                Resultados del Diagnóstico
+            </h2>
+            <div id="results-content" class="text-gray-700 dark:text-gray-300">
+                Haz clic en "Ejecutar Diagnóstico Completo" para comenzar...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Función para mostrar resultados
+        function showResult(title, data, success = true) {
+            const resultsContent = document.getElementById('results-content');
+            const timestamp = new Date().toLocaleString();
+            
+            const resultHtml = `
+                <div class="mb-6 p-4 rounded-lg ${success ? 'bg-green-50 dark:bg-green-900/20' : 'bg-red-50 dark:bg-red-900/20'}">
+                    <h3 class="font-semibold ${success ? 'text-green-800 dark:text-green-200' : 'text-red-800 dark:text-red-200'} mb-2">
+                        ${success ? '✅' : '❌'} ${title}
+                    </h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">${timestamp}</p>
+                    <pre class="text-sm bg-white dark:bg-gray-800 p-4 rounded border overflow-x-auto max-h-96">${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            `;
+            
+            resultsContent.innerHTML = resultHtml + resultsContent.innerHTML;
+        }
+        
+        // Función para limpiar resultados
+        function clearResults() {
+            document.getElementById('results-content').innerHTML = 'Resultados limpiados...';
+        }
+        
+        // Función principal de diagnóstico
+        async function runDiagnosis() {
+            try {
+                showResult('Iniciando diagnóstico de herramientas de extracción...', {}, true);
+                
+                const response = await fetch(ConfigPortable.getApiUrl('diagnose_extraction_tools_safe.php'), {
+                    headers: {
+                        'Authorization': 'Bearer ' + (localStorage.getItem('auth_token') || 'test-token')
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.ok) {
+                    showResult('Diagnóstico Completado - Análisis Detallado', data.diagnostic, true);
+                    
+                    // Análisis específico de recomendaciones
+                    if (data.diagnostic.recommendations && data.diagnostic.recommendations.length > 0) {
+                        showResult('Recomendaciones del Sistema', {
+                            recommendations: data.diagnostic.recommendations,
+                            summary: `Se encontraron ${data.diagnostic.recommendations.length} problemas que resolver`
+                        }, false);
+                    }
+                    
+                    // Análisis de herramientas disponibles
+                    const availableTools = data.diagnostic.available_tools;
+                    const toolAnalysis = {
+                        shell_exec: availableTools.shell_exec?.available ? '✅ Disponible' : '❌ No disponible',
+                        pdftotext: availableTools.pdftotext?.available ? '✅ Disponible' : '❌ No disponible',
+                        TCPDF: availableTools.TCPDF?.available ? '✅ Disponible' : '❌ No disponible',
+                        PHPWord: availableTools.PHPWord?.available ? '✅ Disponible' : '❌ No disponible'
+                    };
+                    
+                    showResult('Estado de Herramientas de Extracción', toolAnalysis, true);
+                    
+                } else {
+                    showResult('Error en Diagnóstico', data, false);
+                }
+                
+            } catch (error) {
+                showResult('Error de Conexión', {error: error.message}, false);
+            }
+        }
+        
+        // Función para mostrar resumen ejecutivo
+        function showExecutiveSummary(diagnostic) {
+            const summary = {
+                'Problema Principal': 'Herramientas de extracción no disponibles en el servidor',
+                'shell_exec': diagnostic.php_config.shell_exec_available ? '✅ Habilitado' : '❌ Deshabilitado',
+                'pdftotext': diagnostic.available_tools.pdftotext.available ? '✅ Instalado' : '❌ No instalado',
+                'TCPDF': diagnostic.available_tools.TCPDF.available ? '✅ Disponible' : '❌ No disponible',
+                'Archivos de Conocimiento': diagnostic.knowledge_files.length + ' archivos encontrados',
+                'Recomendaciones': diagnostic.recommendations.length + ' acciones requeridas'
+            };
+            
+            showResult('Resumen Ejecutivo', summary, true);
+        }
+    </script>
+</body>
+</html>

@@ -6,6 +6,7 @@
   <title>Trading Desk - CATAI</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="static/utf8-fix.js"></script>
+  <script src="static/js/config-portable.js"></script>
   <script src="static/auth.js"></script>
   <script>
     // Si no hay token válido, redirigir a login.html
@@ -62,6 +63,15 @@
 
     <div id="app-hero" data-icon="🎯" data-title="Trading Desk" data-subtitle="Análisis profesional con IA comportamental y configuración personalizada."></div>
     
+    <!-- Hero Actions - Botones de Cargar y Guardar Ajustes -->
+    <div id="hero-actions" class="flex justify-center gap-4 mb-6">
+      <button id="btn-load-settings" class="py-2 px-4 rounded-md border text-gray-700 hover:bg-gray-50 dark-mode:text-gray-300 dark-mode:hover:bg-gray-700 dark-mode:border-gray-600 transition-colors">
+        📥 Cargar ajustes
+      </button>
+      <button id="btn-save-settings" class="py-2 px-4 rounded-md border text-gray-700 hover:bg-gray-50 dark-mode:text-gray-300 dark-mode:hover:bg-gray-700 dark-mode:border-gray-600 transition-colors">
+        💾 Guardar ajustes
+      </button>
+    </div>
 
     <!-- Auth Form (hidden when logged in) -->
     <div id="auth-form" class="bg-white rounded-lg shadow-sm border p-6 mb-6 hidden">
@@ -240,10 +250,23 @@
             </div>
           </div>
           
-          <div class="grid md:grid-cols-2 gap-4 mb-4">
+          <div class="grid md:grid-cols-3 gap-4 mb-4">
             <div class="p-4 border rounded-lg border-gray-200 dark-mode:border-gray-600">
               <div class="flex items-center mb-2">
-                <input type="radio" id="mode-enriched" name="analysis-mode" value="enriched" checked class="mr-2">
+                <input type="radio" id="mode-fast" name="analysis-mode" value="fast" checked class="mr-2">
+                <label for="mode-fast" class="text-sm font-medium text-gray-900 dark-mode:text-gray-100">🚀 Análisis Rápido</label>
+              </div>
+              <p class="text-xs text-gray-600 dark-mode:text-gray-400">
+                Solo configuración básica + Prompt del Usuario
+              </p>
+              <div class="mt-2 text-xs text-orange-600 dark-mode:text-orange-400">
+                ⚡ Máxima velocidad
+              </div>
+            </div>
+            
+            <div class="p-4 border rounded-lg border-gray-200 dark-mode:border-gray-600">
+              <div class="flex items-center mb-2">
+                <input type="radio" id="mode-enriched" name="analysis-mode" value="enriched" class="mr-2">
                 <label for="mode-enriched" class="text-sm font-medium text-gray-900 dark-mode:text-gray-100">🧠 Análisis Completo</label>
               </div>
               <p class="text-xs text-gray-600 dark-mode:text-gray-400">

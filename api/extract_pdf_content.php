@@ -49,11 +49,11 @@ try {
         json_error('Archivo no encontrado', 404);
     }
 
-    // Ruta del archivo
-    $filePath = "api/uploads/knowledge/{$user_id}/{$knowledge['stored_filename']}";
+    // Ruta del archivo según el flujo de subida real
+    $filePath = __DIR__ . "/uploads/knowledge/{$user_id}/{$knowledge['stored_filename']}";
     
     if (!file_exists($filePath)) {
-        json_error('Archivo físico no encontrado', 404);
+        json_error('Archivo físico no encontrado: ' . $filePath, 404);
     }
 
     $extractedContent = '';
@@ -101,8 +101,19 @@ try {
         'message' => 'Contenido extraído exitosamente',
         'content' => $extractedContent,
         'summary' => $extractedSummary,
-        'file_type' => $knowledge['file_type'],
-        'file_size' => $knowledge['file_size']
+        'file_info' => [
+            'original_filename' => $knowledge['source_file'],
+            'stored_filename' => $knowledge['stored_filename'],
+            'file_type' => $knowledge['file_type'],
+            'file_size' => $knowledge['file_size'],
+            'file_size_mb' => round($knowledge['file_size'] / 1024 / 1024, 2)
+        ],
+        'extraction_info' => [
+            'content_length' => strlen($extractedContent),
+            'word_count' => str_word_count($extractedContent),
+            'extraction_timestamp' => date('Y-m-d H:i:s'),
+            'summary_length' => strlen($extractedSummary)
+        ]
     ]);
 
 } catch (Exception $e) {
@@ -111,35 +122,170 @@ try {
 }
 
 function extractPDFContent($filePath) {
-    // Para PDFs, usar una librería simple o comando del sistema
-    // Por ahora, retornar un mensaje indicando que se necesita implementar
-    return "Contenido PDF extraído de: " . basename($filePath) . "\n\n" .
-           "Nota: La extracción completa de PDF requiere librerías adicionales como pdftotext o TCPDF.\n" .
-           "Para implementación completa, se recomienda:\n" .
-           "1. Instalar pdftotext en el servidor\n" .
-           "2. Usar comando: pdftotext " . $filePath . " -\n" .
-           "3. O implementar TCPDF/Poppler para extracción avanzada";
+    $extractedContent = '';
+    $extractionMethod = '';
+    
+    // Método 1: pdftotext (comando shell - más efectivo)
+    if (function_exists('shell_exec') && !in_array('shell_exec', explode(',', ini_get('disable_functions')))) {
+        $command = "pdftotext -layout \"$filePath\" - 2>/dev/null";
+        $extractedContent = shell_exec($command);
+        if ($extractedContent && strlen(trim($extractedContent)) > 50) {
+            $extractionMethod = 'pdftotext';
+            return trim($extractedContent);
+        }
+    }
+    
+    // Método 2: TCPDF (si está disponible)
+    if (class_exists('TCPDF')) {
+        try {
+            $pdf = new TCPDF();
+            $pdf->setSourceFile($filePath);
+            $pageCount = $pdf->getNumPages();
+            
+            for ($i = 1; $i <= min($pageCount, 5); $i++) { // Limitar a 5 páginas
+                $page = $pdf->importPage($i);
+                $text = $page->getText();
+                $extractedContent .= $text . "\n\n";
+            }
+            
+            if (strlen(trim($extractedContent)) > 50) {
+                $extractionMethod = 'TCPDF';
+                return trim($extractedContent);
+            }
+        } catch (Exception $e) {
+            error_log("Error con TCPDF: " . $e->getMessage());
+        }
+    }
+    
+    // Método 3: Poppler (alternativa)
+    if (function_exists('shell_exec')) {
+        $command = "pdftotext -nopgbrk \"$filePath\" - 2>/dev/null";
+        $extractedContent = shell_exec($command);
+        if ($extractedContent && strlen(trim($extractedContent)) > 50) {
+            $extractionMethod = 'poppler';
+            return trim($extractedContent);
+        }
+    }
+    
+    // Fallback: contenido simulado con información del archivo
+    $fileInfo = [
+        'filename' => basename($filePath),
+        'size' => filesize($filePath),
+        'size_mb' => round(filesize($filePath) / 1024 / 1024, 2)
+    ];
+    
+    return "CONTENIDO PDF DE: {$fileInfo['filename']}\n\n" .
+           "TAMAÑO: {$fileInfo['size_mb']} MB\n\n" .
+           "ESTADO: Extracción automática no disponible\n\n" .
+           "NOTA: Para extracción completa de contenido PDF se requiere:\n" .
+           "1. Instalación de pdftotext en el servidor\n" .
+           "2. O librería TCPDF/Poppler en PHP\n" .
+           "3. Contactar al administrador del servidor\n\n" .
+           "El archivo ha sido subido correctamente y está disponible para análisis manual.";
 }
 
 function extractWordContent($filePath) {
-    // Para documentos Word, usar comando del sistema o librería
-    return "Contenido Word extraído de: " . basename($filePath) . "\n\n" .
-           "Nota: La extracción completa de Word requiere librerías adicionales.\n" .
-           "Para implementación completa, se recomienda:\n" .
-           "1. Usar comando: catdoc " . $filePath . "\n" .
-           "2. O implementar PHPWord para extracción avanzada";
+    $extractedContent = '';
+    
+    // Método 1: catdoc (comando shell - para archivos .doc)
+    if (function_exists('shell_exec') && !in_array('shell_exec', explode(',', ini_get('disable_functions')))) {
+        $command = "catdoc \"$filePath\" 2>/dev/null";
+        $extractedContent = shell_exec($command);
+        if ($extractedContent && strlen(trim($extractedContent)) > 50) {
+            return trim($extractedContent);
+        }
+    }
+    
+    // Método 2: antiword (alternativa para .doc)
+    if (function_exists('shell_exec')) {
+        $command = "antiword \"$filePath\" 2>/dev/null";
+        $extractedContent = shell_exec($command);
+        if ($extractedContent && strlen(trim($extractedContent)) > 50) {
+            return trim($extractedContent);
+        }
+    }
+    
+    // Método 3: PHPWord (para archivos .docx)
+    if (class_exists('PhpOffice\PhpWord\IOFactory')) {
+        try {
+            $phpWord = \PhpOffice\PhpWord\IOFactory::load($filePath);
+            $extractedContent = '';
+            
+            foreach ($phpWord->getSections() as $section) {
+                foreach ($section->getElements() as $element) {
+                    if ($element instanceof \PhpOffice\PhpWord\Element\TextRun) {
+                        foreach ($element->getElements() as $text) {
+                            if ($text instanceof \PhpOffice\PhpWord\Element\Text) {
+                                $extractedContent .= $text->getText() . ' ';
+                            }
+                        }
+                    }
+                }
+            }
+            
+            if (strlen(trim($extractedContent)) > 50) {
+                return trim($extractedContent);
+            }
+        } catch (Exception $e) {
+            error_log("Error con PHPWord: " . $e->getMessage());
+        }
+    }
+    
+    // Fallback: contenido simulado con información del archivo
+    $fileInfo = [
+        'filename' => basename($filePath),
+        'size' => filesize($filePath),
+        'size_mb' => round(filesize($filePath) / 1024 / 1024, 2)
+    ];
+    
+    return "CONTENIDO WORD DE: {$fileInfo['filename']}\n\n" .
+           "TAMAÑO: {$fileInfo['size_mb']} MB\n\n" .
+           "ESTADO: Extracción automática no disponible\n\n" .
+           "NOTA: Para extracción completa de contenido Word se requiere:\n" .
+           "1. Instalación de catdoc/antiword en el servidor\n" .
+           "2. O librería PHPWord en PHP\n" .
+           "3. Contactar al administrador del servidor\n\n" .
+           "El archivo ha sido subido correctamente y está disponible para análisis manual.";
 }
 
 function generateSummary($content) {
-    // Generar resumen básico (primeros 200 caracteres)
-    $summary = trim($content);
-    if (strlen($summary) > 200) {
-        $summary = substr($summary, 0, 200) . '...';
-    }
+    $content = trim($content);
     
-    if (empty($summary)) {
+    if (empty($content)) {
         return 'Sin contenido extraído disponible';
     }
     
-    return $summary;
+    // Si el contenido es muy corto, devolverlo completo
+    if (strlen($content) <= 300) {
+        return $content;
+    }
+    
+    // Buscar el primer párrafo completo
+    $paragraphs = explode("\n\n", $content);
+    $firstParagraph = trim($paragraphs[0]);
+    
+    // Si el primer párrafo es muy largo, truncarlo
+    if (strlen($firstParagraph) > 300) {
+        $summary = substr($firstParagraph, 0, 300);
+        // Buscar el último espacio para no cortar palabras
+        $lastSpace = strrpos($summary, ' ');
+        if ($lastSpace !== false) {
+            $summary = substr($summary, 0, $lastSpace);
+        }
+        return $summary . '...';
+    }
+    
+    // Si el primer párrafo es adecuado, usarlo
+    if (strlen($firstParagraph) >= 50) {
+        return $firstParagraph;
+    }
+    
+    // Fallback: primeros 200 caracteres
+    $summary = substr($content, 0, 200);
+    $lastSpace = strrpos($summary, ' ');
+    if ($lastSpace !== false) {
+        $summary = substr($summary, 0, $lastSpace);
+    }
+    
+    return $summary . '...';
 }

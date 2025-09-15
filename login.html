@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Iniciar sesión - CATAI</title>
+  <script src="static/js/config-portable.js"></script>
   <script src="static/auth.js"></script>
   <style>
     body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 2rem; }
@@ -50,7 +51,7 @@
         const p = Auth.decodeJwt(t);
         if (t && p && !Auth.isExpired(p)) {
           const next = new URLSearchParams(location.search).get('next');
-          location.href = next || 'index.html';
+          location.href = next || ConfigPortable.getPageUrl('index.html');
           return;
         }
       } catch (e) {}
@@ -76,7 +77,7 @@
           } else if (res.data && res.data.token) {
             Auth.setToken(res.data.token);
             const next = new URLSearchParams(location.search).get('next');
-            location.href = next || 'index.html';
+            location.href = next || ConfigPortable.getPageUrl('index.html');
           } else {
             err.textContent = 'Respuesta inesperada';
           }
@@ -96,7 +97,7 @@
             regErr.textContent = (res.data && (res.data.detail||res.data.error)) || ('HTTP '+res.status);
           } else if (res.data && res.data.token) {
             Auth.setToken(res.data.token);
-            location.href = 'index.html';
+            location.href = ConfigPortable.getPageUrl('index.html');
           } else {
             regErr.textContent = 'Respuesta inesperada';
           }

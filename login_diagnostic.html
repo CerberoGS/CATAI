@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Diagnóstico de Login - CATAI</title>
+  <script src="static/js/config-portable.js"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 2rem; }
+    .card { max-width: 800px; padding: 1.5rem; border: 1px solid #ddd; border-radius: 8px; margin: 0 auto; }
+    .test-section { margin: 1rem 0; padding: 1rem; border: 1px solid #eee; border-radius: 6px; }
+    .test-section h3 { margin-top: 0; color: #333; }
+    .success { color: #0b5; font-weight: bold; }
+    .error { color: #b00; font-weight: bold; }
+    .warning { color: #f80; font-weight: bold; }
+    button { margin: 0.5rem 0.5rem 0.5rem 0; padding: 0.6rem 1rem; background:#0b5; color:white; border:none; border-radius:6px; cursor:pointer; }
+    button:hover { background: #0a4; }
+    pre { background: #f5f5f5; padding: 1rem; border-radius: 4px; overflow-x: auto; font-size: 0.9em; }
+    .status { padding: 0.5rem; border-radius: 4px; margin: 0.5rem 0; }
+    .status.success { background: #d4edda; border: 1px solid #c3e6cb; }
+    .status.error { background: #f8d7da; border: 1px solid #f5c6cb; }
+    .status.warning { background: #fff3cd; border: 1px solid #ffeaa7; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🔧 Diagnóstico de Login - CATAI</h1>
+    <p>Esta página diagnostica problemas con el sistema de login.</p>
+    
+    <div class="test-section">
+      <h3>🧪 Tests de Diagnóstico</h3>
+      <button onclick="runLoginDiagnostic()">🔍 Ejecutar Diagnóstico Completo</button>
+      <button onclick="testUltraSimple()">⚡ Test Ultra Simple</button>
+      <button onclick="testConfigSimple()">⚙️ Probar Config Simple</button>
+      <button onclick="testHtaccess()">🔧 Test .htaccess</button>
+      <button onclick="testMinimalRequire()">🔍 Test Require Mínimo</button>
+      <button onclick="testConfigSimpleLoad()">⚙️ Test Config Simple Load</button>
+      <button onclick="createTestUser()">👤 Crear Usuario de Prueba</button>
+      <button onclick="updateTestUserPassword()">🔑 Actualizar Contraseña de Usuario</button>
+      <button onclick="testLoginWithUser()">🔐 Test Login con Usuario</button>
+      <button onclick="testWithJwt()">🎫 Test con JWT</button>
+      <button onclick="testComplexEndpoint()">🔧 Test Endpoint Complejo</button>
+      <button onclick="testUltraSimpleComplex()">⚡ Test Ultra Simple Complejo</button>
+      <button onclick="testIndividualFiles()">📁 Test Archivos Individuales</button>
+      <button onclick="testNoRequire()">🚫 Test Sin Require</button>
+      <button onclick="testCleanBuffer()">🧹 Test Buffer Limpio</button>
+      <button onclick="testDeepDiagnostic()">🔬 Diagnóstico Profundo</button>
+      <button onclick="testDeepDiagnosticV2()">🔬 Diagnóstico Profundo V2</button>
+      <button onclick="testStepByStep()">🔍 Test Paso a Paso</button>
+      <button onclick="testAuthDebug()">🔧 Debug de Auth</button>
+      <button onclick="testLoginEndpoint()">🔐 Probar Endpoint de Login</button>
+      <button onclick="testRegisterEndpoint()">📝 Probar Endpoint de Registro</button>
+      <button onclick="clearResults()">🗑️ Limpiar Resultados</button>
+    </div>
+
+    <div id="results"></div>
+  </div>
+
+  <script>
+    function clearResults() {
+      document.getElementById('results').innerHTML = '';
+    }
+
+    function addResult(title, content, type = 'info') {
+      const results = document.getElementById('results');
+      const div = document.createElement('div');
+      div.className = `test-section status ${type}`;
+      div.innerHTML = `<h3>${title}</h3><pre>${content}</pre>`;
+      results.appendChild(div);
+    }
+
+    async function runLoginDiagnostic() {
+      addResult('🔍 Ejecutando Diagnóstico...', 'Iniciando tests de diagnóstico...', 'info');
+      
+      try {
+        const response = await fetch(ConfigPortable.getApiUrl('test_login_diagnostic_safe.php'), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.ok) {
+          addResult('✅ Diagnóstico Completado', JSON.stringify(data, null, 2), 'success');
+          
+          // Análisis específico
+          const analysis = analyzeDiagnostic(data.diagnostic);
+          addResult('📊 Análisis de Resultados', analysis, 'info');
+        } else {
+          addResult('❌ Error en Diagnóstico', JSON.stringify(data, null, 2), 'error');
+        }
+      } catch (error) {
+        addResult('❌ Error de Conexión', `Error: ${error.message}`, 'error');
+      }
+    }
+
+    function analyzeDiagnostic(diagnostic) {
+      let analysis = '';
+      
+      // Análisis de configuración
+      if (diagnostic.config) {
+        analysis += '📋 CONFIGURACIÓN:\n';
+        analysis += `- Base URL: ${diagnostic.config.base_url}\n`;
+        analysis += `- API Base URL: ${diagnostic.config.api_base_url}\n`;
+        analysis += `- DB Host: ${diagnostic.config.db_host}\n`;
+        analysis += `- JWT Secret: ${diagnostic.config.jwt_secret_set ? 'CONFIGURADO' : 'NO CONFIGURADO'}\n\n`;
+      }
+
+      // Análisis de base de datos
+      if (diagnostic.database) {
+        analysis += '🗄️ BASE DE DATOS:\n';
+        analysis += `- Conexión: ${diagnostic.database.db_connection}\n`;
+        if (diagnostic.database.error) {
+          analysis += `- Error: ${diagnostic.database.error}\n`;
+        }
+        analysis += '\n';
+      }
+
+      // Análisis de tabla users
+      if (diagnostic.users_table) {
+        analysis += '👥 TABLA USERS:\n';
+        analysis += `- Existe: ${diagnostic.users_table.table_exists ? 'SÍ' : 'NO'}\n`;
+        if (diagnostic.users_table.user_count !== undefined) {
+          analysis += `- Usuarios: ${diagnostic.users_table.user_count}\n`;
+        }
+        if (diagnostic.users_table.error) {
+          analysis += `- Error: ${diagnostic.users_table.error}\n`;
+        }
+        analysis += '\n';
+      }
+
+      // Análisis de JWT
+      if (diagnostic.jwt_functions) {
+        analysis += '🔐 JWT:\n';
+        analysis += `- jwt_sign: ${diagnostic.jwt_functions.jwt_sign}\n`;
+        analysis += `- jwt_verify: ${diagnostic.jwt_functions.jwt_verify || 'NO PROBADO'}\n`;
+        if (diagnostic.jwt_functions.error) {
+          analysis += `- Error: ${diagnostic.jwt_functions.error}\n`;
+        }
+        analysis += '\n';
+      }
+
+      // Recomendaciones
+      analysis += '💡 RECOMENDACIONES:\n';
+      if (diagnostic.database?.db_connection === 'FAILED') {
+        analysis += '- Verificar credenciales de base de datos en config.php\n';
+      }
+      if (!diagnostic.users_table?.table_exists) {
+        analysis += '- Verificar que la tabla users existe en la base de datos\n';
+      }
+      if (diagnostic.jwt_functions?.jwt_sign === 'FUNCTION_NOT_FOUND') {
+        analysis += '- Verificar que jwt.php está incluido correctamente\n';
+      }
+      if (diagnostic.config?.jwt_secret_set === false) {
+        analysis += '- Configurar JWT_SECRET en config.php\n';
+      }
+
+      return analysis;
+    }
+
+    async function testLoginEndpoint() {
+      addResult('🔐 Probando Endpoint de Login...', 'Enviando request de prueba...', 'info');
+      
+      try {
+        const testData = {
+          email: 'test@example.com',
+          password: 'testpassword'
+        };
+
+        const response = await fetch(ConfigPortable.getApiUrl('auth_login.php'), {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(testData)
+        });
+
+        const data = await response.json();
+        
+        if (response.status === 401 && data.error === 'invalid_credentials') {
+          addResult('✅ Endpoint de Login Funciona', 'El endpoint responde correctamente (credenciales inválidas esperadas)', 'success');
+        } else if (response.status === 500) {
+          addResult('❌ Error HTTP 500 en Login', JSON.stringify(data, null, 2), 'error');
+        } else {
+          addResult('⚠️ Respuesta Inesperada', JSON.stringify(data, null, 2), 'warning');
+        }
+      } catch (error) {
+        addResult('❌ Error de Conexión', `Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function testUltraSimple() {
+      addResult('⚡ Probando Test Ultra Simple...', 'Verificando que PHP funciona...', 'info');
+      
+      try {
+        const response = await fetch(ConfigPortable.getApiUrl('test_ultra_simple_safe.php'), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.ok) {
+          addResult('✅ Test Ultra Simple Funciona', JSON.stringify(data, null, 2), 'success');
+        } else {
+          addResult('❌ Error en Test Ultra Simple', JSON.stringify(data, null, 2), 'error');
+        }
+      } catch (error) {
+        addResult('❌ Error de Conexión en Test Ultra Simple', `Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function testConfigSimple() {
+      addResult('⚙️ Probando Config Simple...', 'Verificando configuración básica...', 'info');
+      
+      try {
+        const response = await fetch(ConfigPortable.getApiUrl('test_config_simple_safe.php'), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.ok) {
+          addResult('✅ Config Simple Funciona', JSON.stringify(data, null, 2), 'success');
+        } else {
+          addResult('❌ Error en Config Simple', JSON.stringify(data, null, 2), 'error');
+        }
+      } catch (error) {
+        addResult('❌ Error de Conexión en Config', `Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function testHtaccess() {
+      addResult('🔧 Probando .htaccess...', 'Verificando configuración de rewrite...', 'info');
+      
+      try {
+        const response = await fetch(ConfigPortable.getApiUrl('test_htaccess_safe.php'), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.ok) {
+          addResult('✅ Test .htaccess Completado', JSON.stringify(data, null, 2), 'success');
+          
+          // Análisis específico del .htaccess
+          if (data.htaccess_status === 'ISSUES_DETECTED') {
+            addResult('⚠️ Problemas Detectados en .htaccess', data.rewrite_issues.join('\n'), 'warning');
+          } else {
+            addResult('✅ .htaccess Configurado Correctamente', 'No se detectaron problemas de rewrite', 'success');
+          }
+        } else {
+          addResult('❌ Error en Test .htaccess', JSON.stringify(data, null, 2), 'error');
+        }
+      } catch (error) {
+        addResult('❌ Error de Conexión en .htaccess', `Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function testMinimalRequire() {
+      addResult('🔍 Probando Require Mínimo...', 'Verificando problemas con require_once...', 'info');
+      
+      try {
+        const response = await fetch(ConfigPortable.getApiUrl('test_minimal_require_safe.php'), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.ok) {
+          addResult('✅ Test Require Mínimo Completado', JSON.stringify(data, null, 2), 'success');
+          
+          // Análisis específico
+          if (data.results) {
+            const analysis = analyzeMinimalRequire(data.results);
+            addResult('📊 Análisis Require Mínimo', analysis, 'info');
+          }
+        } else {
+          addResult('❌ Error en Test Require Mínimo', JSON.stringify(data, null, 2), 'error');
+          
+          if (data.failed_at_test) {
+            addResult('🚨 Falló en Test: ' + data.failed_at_test, `Error: ${data.error}`, 'error');
+          }
+        }
+      } catch (error) {
+        addResult('❌ Error de Conexión en Require Mínimo', `Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function testConfigSimpleLoad() {
+      addResult('⚙️ Probando Config Simple Load...', 'Verificando carga de config simplificado...', 'info');
+      
+      try {
+        const response = await fetch(ConfigPortable.getApiUrl('test_config_simple_load_safe.php'), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.ok) {
+          addResult('✅ Config Simple Load Funciona', JSON.stringify(data, null, 2), 'success');
+        } else {
+          addResult('❌ Error en Config Simple Load', JSON.stringify(data, null, 2), 'error');
+        }
+      } catch (error) {
+        addResult('❌ Error de Conexión en Config Simple Load', `Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function createTestUser() {
+      addResult('👤 Creando Usuario de Prueba...', 'Creando usuario test@example.com...', 'info');
+      
+      try {
+        const response = await fetch(ConfigPortable.getApiUrl('create_test_user_safe.php'), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.ok) {
+          addResult('✅ Usuario de Prueba Creado', JSON.stringify(data, null, 2), 'success');
+          
+          if (data.action === 'created') {
+            addResult('🎉 Nuevo Usuario Creado', `Email: ${data.credentials.email}\nPassword: ${data.credentials.password}`, 'success');
+          } else {
+            addResult('ℹ️ Usuario Ya Existía', `ID: ${data.user.id}\nEmail: ${data.user.email}`, 'info');
+          }
+        } else {
+          addResult('❌ Error Creando Usuario', JSON.stringify(data, null, 2), 'error');
+        }
+      } catch (error) {
+        addResult('❌ Error de Conexión Creando Usuario', `Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function updateTestUserPassword() {
+      addResult('🔑 Actualizando Contraseña de Usuario...', 'Actualizando contraseña del usuario test@example.com...', 'info');
+      
+      try {
+        const response = await fetch(ConfigPortable.getApiUrl('update_test_user_password_safe.php'), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.ok) {
+          addResult('✅ Contraseña Actualizada', JSON.stringify(data, null, 2), 'success');
+          
+          if (data.password_test) {
+            const test = data.password_test;
+            addResult('📊 Resultados de Actualización', 
+              `Hash actualizado: ${test.hash_updated ? '✅' : '❌'}\n` +
+              `Contraseña válida: ${test.password_valid ? '✅' : '❌'}\n` +
+              `Email: ${data.credentials.email}\n` +
+              `Password: ${data.credentials.password}`, 'info');
+          }
+        } else {
+          addResult('❌ Error Actualizando Contraseña', JSON.stringify(data, null, 2), 'error');
+        }
+      } catch (error) {
+        addResult('❌ Error de Conexión Actualizando Contraseña', `Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function testLoginWithUser() {
+      addResult('🔐 Probando Login con Usuario...', 'Verificando login con usuario de prueba...', 'info');
+      
+      try {
+        const response = await fetch(ConfigPortable.getApiUrl('test_login_with_user_safe.php'), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.ok) {
+          addResult('✅ Login con Usuario Exitoso', JSON.stringify(data, null, 2), 'success');
+          
+          if (data.login_test) {
+            const test = data.login_test;
+            addResult('📊 Resultados del Test', 
+              `Usuario encontrado: ${test.user_found ? '✅' : '❌'}\n` +
+              `Contraseña válida: ${test.password_valid ? '✅' : '❌'}\n` +
+              `Usuario activo: ${test.user_active ? '✅' : '❌'}\n` +
+              `JWT creado: ${test.jwt_created ? '✅' : '❌'}`, 'info');
+          }
+        } else {
+          addResult('❌ Error en Login con Usuario', JSON.stringify(data, null, 2), 'error');
+        }
+      } catch (error) {
+        addResult('❌ Error de Conexión en Login con Usuario', `Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function testWithJwt() {
+      addResult('🎫 Probando Test con JWT...', 'Verificando carga de archivos complejos con JWT...', 'info');
+      
+      try {
+        const response = await fetch(ConfigPortable.getApiUrl('test_with_jwt_safe.php'), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.ok) {
+          addResult('✅ Test con JWT Exitoso', JSON.stringify(data, null, 2), 'success');
+          
+          if (data.file_loading) {
+            const loading = data.file_loading;
+            addResult('📁 Carga de Archivos', 
+              `helpers.php: ${loading.helpers_loaded ? '✅' : '❌'}\n` +
+              `db.php: ${loading.db_loaded ? '✅' : '❌'}\n` +
+              `jwt.php: ${loading.jwt_loaded ? '✅' : '❌'}`, 'info');
+            
+            if (loading.helpers_error) {
+              addResult('⚠️ Error en helpers.php', loading.helpers_error, 'warning');
+            }
+            if (loading.db_error) {
+              addResult('⚠️ Error en db.php', loading.db_error, 'warning');
+            }
+            if (loading.jwt_error) {
+              addResult('⚠️ Error en jwt.php', loading.jwt_error, 'warning');
+            }
+          }
+          
+          if (data.functions_exist) {
+            const functions = data.functions_exist;
+            addResult('🔧 Funciones Disponibles', 
+              `json_out: ${functions.json_out ? '✅' : '❌'}\n` +
+              `read_json_body: ${functions.read_json_body ? '✅' : '❌'}\n` +
+              `jwt_sign: ${functions.jwt_sign ? '✅' : '❌'}\n` +
+              `jwt_verify_hs256: ${functions.jwt_verify_hs256 ? '✅' : '❌'}\n` +
+              `require_user: ${functions.require_user ? '✅' : '❌'}\n` +
+              `db: ${functions.db ? '✅' : '❌'}`, 'info');
+          }
+          
+          if (data.diagnosis) {
+            const diag = data.diagnosis;
+            addResult('🔍 Diagnóstico Final', 
+              `Todos los archivos cargados: ${diag.all_files_loaded ? '✅' : '❌'}\n` +
+              `Todas las funciones existen: ${diag.all_functions_exist ? '✅' : '❌'}\n` +
+              `Listo para endpoints complejos: ${diag.ready_for_complex_endpoints ? '✅' : '❌'}`, 
+              diag.ready_for_complex_endpoints ? 'success' : 'warning');
+          }
+        } else {
+          addResult('❌ Error en Test con JWT', JSON.stringify(data, null, 2), 'error');
+        }
+      } catch (error) {
+        addResult('❌ Error de Conexión en Test con JWT', `Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function testComplexEndpoint() {
+      addResult('🔧 Probando Test Endpoint Complejo...', 'Verificando carga completa de archivos con output...', 'info');
+      
+      try {
+        const response = await fetch(ConfigPortable.getApiUrl('test_complex_endpoint_safe.php'), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.ok) {
+          addResult('✅ Test Endpoint Complejo Exitoso', JSON.stringify(data, null, 2), 'success');
+          
+          if (data.file_loading_tests) {
+            const loading = data.file_loading_tests;
+            addResult('📁 Tests de Carga de Archivos', 
+              `config.php: ${loading.config_loaded ? '✅' : '❌'}\n` +
+              `helpers.php: ${loading.helpers_loaded ? '✅' : '❌'}\n` +
+              `db.php: ${loading.db_loaded ? '✅' : '❌'}\n` +
+              `jwt.php: ${loading.jwt_loaded ? '✅' : '❌'}`, 'info');
+            
+            if (loading.config_error) {
+              addResult('⚠️ Error en config.php', loading.config_error, 'warning');
+            }
+            if (loading.helpers_error) {
+              addResult('⚠️ Error en helpers.php', loading.helpers_error, 'warning');
+            }
+            if (loading.db_error) {
+              addResult('⚠️ Error en db.php', loading.db_error, 'warning');
+            }
+            if (loading.jwt_error) {
+              addResult('⚠️ Error en jwt.php', loading.jwt_error, 'warning');
+            }
+          }
+          
+          if (data.function_tests) {
+            const functions = data.function_tests;
+            addResult('🔧 Tests de Funciones', 
+              `require_user: ${functions.require_user_test ? '✅' : '❌'}\n` +
+              `json_out: ${functions.json_out_test ? '✅' : '❌'}`, 'info');
+            
+            if (functions.require_user_error) {
+              addResult('⚠️ Error en require_user', functions.require_user_error, 'warning');
+            }
+            if (functions.json_out_error) {
+              addResult('⚠️ Error en json_out', functions.json_out_error, 'warning');
+            }
+          }
+          
+          if (data.output_analysis) {
+            const output = data.output_analysis;
+            addResult('📊 Análisis de Output', 
+              `config.php output: ${output.config_has_output ? '⚠️' : '✅'}\n` +
+              `helpers.php output: ${output.helpers_has_output ? '⚠️' : '✅'}\n` +
+              `db.php output: ${output.db_has_output ? '⚠️' : '✅'}\n` +
+              `jwt.php output: ${output.jwt_has_output ? '⚠️' : '✅'}\n` +
+              `Total output length: ${output.total_output_length}`, 'info');
+          }
+          
+          if (data.diagnosis) {
+            const diag = data.diagnosis;
+            addResult('🔍 Diagnóstico Final Complejo', 
+              `Todos los archivos cargan: ${diag.all_files_load_successfully ? '✅' : '❌'}\n` +
+              `Todas las funciones funcionan: ${diag.all_functions_work ? '✅' : '❌'}\n` +
+              `Sin output inesperado: ${diag.no_unexpected_output ? '✅' : '❌'}\n` +
+              `Listo para endpoints complejos: ${diag.ready_for_complex_endpoints ? '✅' : '❌'}`, 
+              diag.ready_for_complex_endpoints ? 'success' : 'warning');
+          }
+        } else {
+          addResult('❌ Error en Test Endpoint Complejo', JSON.stringify(data, null, 2), 'error');
+        }
+      } catch (error) {
+        addResult('❌ Error de Conexión en Test Endpoint Complejo', `Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function testUltraSimpleComplex() {
+      addResult('⚡ Probando Test Ultra Simple Complejo...', 'Verificando carga básica de archivos...', 'info');
+      
+      try {
+        const response = await fetch(ConfigPortable.getApiUrl('test_ultra_simple_complex_safe.php'), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.ok) {
+          addResult('✅ Test Ultra Simple Complejo Exitoso', JSON.stringify(data, null, 2), 'success');
+          
+          if (data.file_loading) {
+            const loading = data.file_loading;
+            addResult('📁 Carga de Archivos', 
+              `config.php: ${loading.config_loaded ? '✅' : '❌'}\n` +
+              `helpers.php: ${loading.helpers_loaded ? '✅' : '❌'}\n` +
+              `db.php: ${loading.db_loaded ? '✅' : '❌'}\n` +
+              `jwt.php: ${loading.jwt_loaded ? '✅' : '❌'}`, 'info');
+            
+            if (loading.config_error) {
+              addResult('⚠️ Error en config.php', loading.config_error, 'warning');
+            }
+            if (loading.helpers_error) {
+              addResult('⚠️ Error en helpers.php', loading.helpers_error, 'warning');
+            }
+            if (loading.db_error) {
+              addResult('⚠️ Error en db.php', loading.db_error, 'warning');
+            }
+            if (loading.jwt_error) {
+              addResult('⚠️ Error en jwt.php', loading.jwt_error, 'warning');
+            }
+          }
+          
+          if (data.functions_exist) {
+            const functions = data.functions_exist;
+            addResult('🔧 Funciones Disponibles', 
+              `json_out: ${functions.json_out ? '✅' : '❌'}\n` +
+              `require_user: ${functions.require_user ? '✅' : '❌'}\n` +
+              `db: ${functions.db ? '✅' : '❌'}`, 'info');
+          }
+          
+          if (data.diagnosis) {
+            const diag = data.diagnosis;
+            addResult('🔍 Diagnóstico Final', 
+              `Todos los archivos cargan: ${diag.all_files_loaded ? '✅' : '❌'}\n` +
+              `Todas las funciones existen: ${diag.all_functions_exist ? '✅' : '❌'}\n` +
+              `Listo para endpoints complejos: ${diag.ready_for_complex_endpoints ? '✅' : '❌'}`, 
+              diag.ready_for_complex_endpoints ? 'success' : 'warning');
+          }
+        } else {
+          addResult('❌ Error en Test Ultra Simple Complejo', JSON.stringify(data, null, 2), 'error');
+        }
+      } catch (error) {
+        addResult('❌ Error de Conexión en Test Ultra Simple Complejo', `Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function testIndividualFiles() {
+      addResult('📁 Probando Test Archivos Individuales...', 'Verificando cada archivo por separado...', 'info');
+      
+      try {
+        const response = await fetch(ConfigPortable.getApiUrl('test_individual_files_safe.php'), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.ok) {
+          addResult('✅ Test Archivos Individuales Exitoso', JSON.stringify(data, null, 2), 'success');
+          
+          if (data.results) {
+            const results = data.results;
+            
+            // Config
+            addResult('⚙️ Config.php', 
+              `Cargado: ${results.config.loaded ? '✅' : '❌'}\n` +
+              `Tipo: ${results.config.type || 'N/A'}\n` +
+              `Claves: ${results.config.keys ? results.config.keys.length : 0}`, 
+              results.config.loaded ? 'success' : 'error');
+            
+            if (results.config.error) {
+              addResult('⚠️ Error en config.php', results.config.error, 'warning');
+            }
+            
+            // Helpers
+            addResult('🔧 Helpers.php', 
+              `Cargado: ${results.helpers.loaded ? '✅' : '❌'}\n` +
+              `json_out: ${results.helpers.functions?.json_out ? '✅' : '❌'}\n` +
+              `require_user: ${results.helpers.functions?.require_user ? '✅' : '❌'}\n` +
+              `read_json_body: ${results.helpers.functions?.read_json_body ? '✅' : '❌'}`, 
+              results.helpers.loaded ? 'success' : 'error');
+            
+            if (results.helpers.error) {
+              addResult('⚠️ Error en helpers.php', results.helpers.error, 'warning');
+            }
+            
+            // DB
+            addResult('🗄️ DB.php', 
+              `Cargado: ${results.db.loaded ? '✅' : '❌'}\n` +
+              `db function: ${results.db.functions?.db ? '✅' : '❌'}`, 
+              results.db.loaded ? 'success' : 'error');
+            
+            if (results.db.error) {
+              addResult('⚠️ Error en db.php', results.db.error, 'warning');
+            }
+            
+            // JWT
+            addResult('🎫 JWT.php', 
+              `Cargado: ${results.jwt.loaded ? '✅' : '❌'}\n` +
+              `jwt_sign: ${results.jwt.functions?.jwt_sign ? '✅' : '❌'}\n` +
+              `jwt_verify: ${results.jwt.functions?.jwt_verify ? '✅' : '❌'}\n` +
+              `jwt_decode_user: ${results.jwt.functions?.jwt_decode_user ? '✅' : '❌'}`, 
+              results.jwt.loaded ? 'success' : 'error');
+            
+            if (results.jwt.error) {
+              addResult('⚠️ Error en jwt.php', results.jwt.error, 'warning');
+            }
+          }
+          
+          if (data.summary) {
+            const summary = data.summary;
+            addResult('📊 Resumen Final', 
+              `config.php: ${summary.config_loaded ? '✅' : '❌'}\n` +
+              `helpers.php: ${summary.helpers_loaded ? '✅' : '❌'}\n` +
+              `db.php: ${summary.db_loaded ? '✅' : '❌'}\n` +
+              `jwt.php: ${summary.jwt_loaded ? '✅' : '❌'}\n` +
+              `Todos cargados: ${summary.all_loaded ? '✅' : '❌'}`, 
+              summary.all_loaded ? 'success' : 'warning');
+          }
+        } else {
+          addResult('❌ Error en Test Archivos Individuales', JSON.stringify(data, null, 2), 'error');
+        }
+      } catch (error) {
+        addResult('❌ Error de Conexión en Test Archivos Individuales', `Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function testNoRequire() {
+      addResult('🚫 Probando Test Sin Require...', 'Verificando PHP básico sin require_once...', 'info');
+      
+      try {
+        const response = await fetch(ConfigPortable.getApiUrl('test_no_require_safe.php'), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.ok) {
+          addResult('✅ Test Sin Require Exitoso', JSON.stringify(data, null, 2), 'success');
+          
+          if (data.php_info) {
+            const php = data.php_info;
+            addResult('🐘 Información PHP', 
+              `Funcionando: ${php.working ? '✅' : '❌'}\n` +
+              `Versión: ${php.version}\n` +
+              `Memoria: ${php.memory_limit}\n` +
+              `Output Buffer: ${php.output_buffer_active ? '⚠️' : '✅'}`, 'info');
+          }
+          
+          if (data.json_test) {
+            const json = data.json_test;
+            addResult('📄 Test JSON', 
+              `Funcionando: ${json.working ? '✅' : '❌'}\n` +
+              `Valor: ${json.test_value}`, 'info');
+          }
+          
+          if (data.file_tests) {
+            const files = data.file_tests;
+            addResult('📁 Test Archivos', 
+              `config.php existe: ${files.config_exists ? '✅' : '❌'}\n` +
+              `config.php legible: ${files.config_readable ? '✅' : '❌'}\n` +
+              `Tamaño: ${files.config_size} bytes\n` +
+              `Ruta: ${files.config_path}`, 'info');
+          }
+          
+          if (data.syntax_test) {
+            const syntax = data.syntax_test;
+            addResult('🔧 Test Sintaxis', 
+              `Funcionando: ${syntax.working ? '✅' : '❌'}`, 'info');
+          }
+          
+          if (data.diagnosis) {
+            const diag = data.diagnosis;
+            addResult('🔍 Diagnóstico Final', 
+              `PHP funcionando: ${diag.php_working ? '✅' : '❌'}\n` +
+              `JSON funcionando: ${diag.json_working ? '✅' : '❌'}\n` +
+              `Archivos accesibles: ${diag.files_accessible ? '✅' : '❌'}\n` +
+              `Sintaxis OK: ${diag.syntax_ok ? '✅' : '❌'}\n` +
+              `Sin output buffer: ${diag.no_output_buffer ? '✅' : '❌'}\n` +
+              `Listo para require: ${diag.ready_for_require ? '✅' : '❌'}`, 
+              diag.ready_for_require ? 'success' : 'warning');
+          }
+        } else {
+          addResult('❌ Error en Test Sin Require', JSON.stringify(data, null, 2), 'error');
+        }
+      } catch (error) {
+        addResult('❌ Error de Conexión en Test Sin Require', `Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function testCleanBuffer() {
+      addResult('🧹 Probando Test Buffer Limpio...', 'Limpiando output buffer y probando archivos...', 'info');
+      
+      try {
+        const response = await fetch(ConfigPortable.getApiUrl('test_clean_buffer_safe.php'), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.ok) {
+          addResult('✅ Test Buffer Limpio Exitoso', JSON.stringify(data, null, 2), 'success');
+          
+          if (data.buffer_status) {
+            const buffer = data.buffer_status;
+            addResult('🧹 Estado del Buffer', 
+              `Nivel inicial: ${buffer.initial_level}\n` +
+              `Buffer limpio: ${buffer.buffer_clean ? '✅' : '❌'}`, 'info');
+          }
+          
+          if (data.file_loading) {
+            const loading = data.file_loading;
+            addResult('📁 Carga de Archivos', 
+              `config.php: ${loading.config_loaded ? '✅' : '❌'}\n` +
+              `helpers.php: ${loading.helpers_loaded ? '✅' : '❌'}\n` +
+              `db.php: ${loading.db_loaded ? '✅' : '❌'}\n` +
+              `jwt.php: ${loading.jwt_loaded ? '✅' : '❌'}`, 'info');
+            
+            if (loading.config_error) {
+              addResult('⚠️ Error en config.php', loading.config_error, 'warning');
+            }
+            if (loading.helpers_error) {
+              addResult('⚠️ Error en helpers.php', loading.helpers_error, 'warning');
+            }
+            if (loading.db_error) {
+              addResult('⚠️ Error en db.php', loading.db_error, 'warning');
+            }
+            if (loading.jwt_error) {
+              addResult('⚠️ Error en jwt.php', loading.jwt_error, 'warning');
+            }
+          }
+          
+          if (data.functions_exist) {
+            const functions = data.functions_exist;
+            addResult('🔧 Funciones Disponibles', 
+              `json_out: ${functions.json_out ? '✅' : '❌'}\n` +
+              `require_user: ${functions.require_user ? '✅' : '❌'}\n` +
+              `db: ${functions.db ? '✅' : '❌'}\n` +
+              `jwt_sign: ${functions.jwt_sign ? '✅' : '❌'}\n` +
+              `jwt_verify: ${functions.jwt_verify ? '✅' : '❌'}`, 'info');
+          }
+          
+          if (data.diagnosis) {
+            const diag = data.diagnosis;
+            addResult('🔍 Diagnóstico Final', 
+              `Buffer limpio: ${diag.buffer_clean ? '✅' : '❌'}\n` +
+              `Todos los archivos cargan: ${diag.all_files_loaded ? '✅' : '❌'}\n` +
+              `Todas las funciones existen: ${diag.all_functions_exist ? '✅' : '❌'}\n` +
+              `Listo para endpoints complejos: ${diag.ready_for_complex_endpoints ? '✅' : '❌'}`, 
+              diag.ready_for_complex_endpoints ? 'success' : 'warning');
+          }
+        } else {
+          addResult('❌ Error en Test Buffer Limpio', JSON.stringify(data, null, 2), 'error');
+        }
+      } catch (error) {
+        addResult('❌ Error de Conexión en Test Buffer Limpio', `Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function testDeepDiagnostic() {
+      addResult('🔬 Ejecutando Diagnóstico Profundo...', 'Análisis completo con manejo de errores fatales...', 'info');
+      
+      try {
+        const response = await fetch(ConfigPortable.getApiUrl('test_deep_diagnostic_safe.php'), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.ok) {
+          addResult('✅ Diagnóstico Profundo Exitoso', JSON.stringify(data, null, 2), 'success');
+          
+          if (data.results) {
+            const results = data.results;
+            
+            // PHP Básico
+            if (results.php_basic) {
+              const php = results.php_basic;
+              addResult('🐘 PHP Básico', 
+                `Funcionando: ${php.working ? '✅' : '❌'}\n` +
+                `Versión: ${php.version}\n` +
+                `Memoria: ${php.memory_limit}\n` +
+                `Output Buffer: ${php.output_buffer_level}`, 'info');
+            }
+            
+            // Test JSON
+            if (results.json_test) {
+              const json = results.json_test;
+              addResult('📄 Test JSON', 
+                `Funcionando: ${json.working ? '✅' : '❌'}\n` +
+                `Resultado: ${json.result}\n` +
+                `Error: ${json.error || 'Ninguno'}`, 'info');
+            }
+            
+            // Verificación de Archivos
+            if (results.file_checks) {
+              const files = results.file_checks;
+              addResult('📁 Verificación de Archivos', 
+                `config.php: ${files['config.php'].exists ? '✅' : '❌'} (${files['config.php'].size} bytes)\n` +
+                `helpers.php: ${files['helpers.php'].exists ? '✅' : '❌'} (${files['helpers.php'].size} bytes)\n` +
+                `db.php: ${files['db.php'].exists ? '✅' : '❌'} (${files['db.php'].size} bytes)\n` +
+                `jwt.php: ${files['jwt.php'].exists ? '✅' : '❌'} (${files['jwt.php'].size} bytes)`, 'info');
+            }
+            
+            // Análisis de Config
+            if (results.config_analysis) {
+              const config = results.config_analysis;
+              if (config.syntax_check) {
+                addResult('🔧 Sintaxis de config.php', 
+                  `Válida: ${config.syntax_check.valid ? '✅' : '❌'}\n` +
+                  `Resultado: ${config.syntax_check.result}`, 'info');
+              }
+              if (config.include_test) {
+                const include = config.include_test;
+                addResult('📦 Carga de config.php', 
+                  `Éxito: ${include.success ? '✅' : '❌'}\n` +
+                  `Output capturado: ${include.output_length} bytes\n` +
+                  `Tipo de datos: ${include.config_type}\n` +
+                  `Claves: ${include.config_keys ? include.config_keys.join(', ') : 'N/A'}`, 'info');
+                if (!include.success) {
+                  addResult('⚠️ Error en config.php', 
+                    `Error: ${include.error}\n` +
+                    `Archivo: ${include.file}\n` +
+                    `Línea: ${include.line}`, 'warning');
+                }
+              }
+            }
+            
+            // Análisis de Funciones
+            if (results.function_analysis) {
+              const func = results.function_analysis;
+              if (func.helpers_loaded) {
+                const helpers = func.helpers_loaded;
+                addResult('📚 Carga de helpers.php', 
+                  `Éxito: ${helpers.success ? '✅' : '❌'}\n` +
+                  `Output capturado: ${helpers.output_length} bytes`, 'info');
+                if (!helpers.success) {
+                  addResult('⚠️ Error en helpers.php', 
+                    `Error: ${helpers.error}\n` +
+                    `Archivo: ${helpers.file}\n` +
+                    `Línea: ${helpers.line}`, 'warning');
+                }
+              }
+              if (func.functions_after_helpers) {
+                const functions = func.functions_after_helpers;
+                addResult('🔧 Funciones Después de helpers.php', 
+                  `json_out: ${functions.json_out ? '✅' : '❌'}\n` +
+                  `require_user: ${functions.require_user ? '✅' : '❌'}\n` +
+                  `getApiUrl: ${functions.getApiUrl ? '✅' : '❌'}`, 'info');
+              }
+            }
+          }
+          
+          if (data.diagnosis) {
+            const diag = data.diagnosis;
+            addResult('🔍 Diagnóstico Final', 
+              `PHP funcionando: ${diag.php_working ? '✅' : '❌'}\n` +
+              `JSON funcionando: ${diag.json_working ? '✅' : '❌'}\n` +
+              `Archivos accesibles: ${diag.files_accessible ? '✅' : '❌'}\n` +
+              `Sintaxis config OK: ${diag.config_syntax_ok ? '✅' : '❌'}\n` +
+              `Config cargable: ${diag.config_loadable ? '✅' : '❌'}\n` +
+              `Helpers cargable: ${diag.helpers_loadable ? '✅' : '❌'}\n` +
+              `Listo para endpoints complejos: ${diag.ready_for_complex_endpoints ? '✅' : '❌'}`, 
+              diag.ready_for_complex_endpoints ? 'success' : 'warning');
+          }
+        } else {
+          addResult('❌ Error en Diagnóstico Profundo', JSON.stringify(data, null, 2), 'error');
+          
+          if (data.fatal_error) {
+            addResult('💀 Error Fatal Detectado', 
+              `Tipo: ${data.fatal_error.type}\n` +
+              `Mensaje: ${data.fatal_error.message}\n` +
+              `Archivo: ${data.fatal_error.file}\n` +
+              `Línea: ${data.fatal_error.line}`, 'error');
+          }
+        }
+      } catch (error) {
+        addResult('❌ Error de Conexión en Diagnóstico Profundo', `Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function testDeepDiagnosticV2() {
+      addResult('🔬 Ejecutando Diagnóstico Profundo V2...', 'Análisis completo SIN shell_exec()...', 'info');
+      
+      try {
+        const response = await fetch(ConfigPortable.getApiUrl('test_deep_diagnostic_safe_v2.php'), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.ok) {
+          addResult('✅ Diagnóstico Profundo V2 Exitoso', JSON.stringify(data, null, 2), 'success');
+          
+          if (data.results) {
+            const results = data.results;
+            
+            // PHP Básico
+            if (results.php_basic) {
+              const php = results.php_basic;
+              addResult('🐘 PHP Básico', 
+                `Funcionando: ${php.working ? '✅' : '❌'}\n` +
+                `Versión: ${php.version}\n` +
+                `Memoria: ${php.memory_limit}\n` +
+                `Output Buffer: ${php.output_buffer_level}\n` +
+                `Funciones deshabilitadas: ${php.disabled_functions || 'Ninguna'}`, 'info');
+            }
+            
+            // Test JSON
+            if (results.json_test) {
+              const json = results.json_test;
+              addResult('📄 Test JSON', 
+                `Funcionando: ${json.working ? '✅' : '❌'}\n` +
+                `Resultado: ${json.result}\n` +
+                `Error: ${json.error || 'Ninguno'}`, 'info');
+            }
+            
+            // Verificación de Archivos
+            if (results.file_checks) {
+              const files = results.file_checks;
+              addResult('📁 Verificación de Archivos', 
+                `config.php: ${files['config.php'].exists ? '✅' : '❌'} (${files['config.php'].size} bytes, ${files['config.php'].permissions})\n` +
+                `helpers.php: ${files['helpers.php'].exists ? '✅' : '❌'} (${files['helpers.php'].size} bytes, ${files['helpers.php'].permissions})\n` +
+                `db.php: ${files['db.php'].exists ? '✅' : '❌'} (${files['db.php'].size} bytes, ${files['db.php'].permissions})\n` +
+                `jwt.php: ${files['jwt.php'].exists ? '✅' : '❌'} (${files['jwt.php'].size} bytes, ${files['jwt.php'].permissions})`, 'info');
+            }
+            
+            // Análisis de Config
+            if (results.config_analysis) {
+              const config = results.config_analysis;
+              if (config.syntax_check) {
+                addResult('🔧 Sintaxis de config.php', 
+                  `Válida: ${config.syntax_check.valid ? '✅' : '❌'}\n` +
+                  `Método: ${config.syntax_check.method}\n` +
+                  `Tokens: ${config.syntax_check.token_count}\n` +
+                  `Error: ${config.syntax_check.error || 'Ninguno'}`, 'info');
+              }
+              if (config.file_analysis) {
+                const file = config.file_analysis;
+                addResult('📄 Análisis de config.php', 
+                  `Tamaño: ${file.size} bytes\n` +
+                  `Termina con nueva línea: ${file.ends_with_newline ? '✅' : '❌'}\n` +
+                  `Termina con punto y coma: ${file.ends_with_semicolon ? '✅' : '❌'}\n` +
+                  `Tiene tag de apertura: ${file.has_opening_tag ? '✅' : '❌'}\n` +
+                  `Tiene tag de cierre: ${file.has_closing_tag ? '✅' : '❌'}`, 'info');
+              }
+              if (config.include_test) {
+                const include = config.include_test;
+                addResult('📦 Carga de config.php', 
+                  `Éxito: ${include.success ? '✅' : '❌'}\n` +
+                  `Output capturado: ${include.output_length} bytes\n` +
+                  `Tipo de datos: ${include.config_type}\n` +
+                  `Claves: ${include.config_keys ? include.config_keys.join(', ') : 'N/A'}\n` +
+                  `Cantidad: ${include.config_count}`, 'info');
+                if (!include.success) {
+                  addResult('⚠️ Error en config.php', 
+                    `Error: ${include.error}\n` +
+                    `Archivo: ${include.file}\n` +
+                    `Línea: ${include.line}`, 'warning');
+                }
+              }
+            }
+            
+            // Análisis de Funciones
+            if (results.function_analysis) {
+              const func = results.function_analysis;
+              
+              if (func.helpers_loaded) {
+                const helpers = func.helpers_loaded;
+                addResult('📚 Carga de helpers.php', 
+                  `Éxito: ${helpers.success ? '✅' : '❌'}\n` +
+                  `Output capturado: ${helpers.output_length} bytes`, 'info');
+                if (!helpers.success) {
+                  addResult('⚠️ Error en helpers.php', 
+                    `Error: ${helpers.error}\n` +
+                    `Archivo: ${helpers.file}\n` +
+                    `Línea: ${helpers.line}`, 'warning');
+                }
+              }
+              
+              if (func.functions_after_helpers) {
+                const functions = func.functions_after_helpers;
+                addResult('🔧 Funciones Después de helpers.php', 
+                  `json_out: ${functions.json_out ? '✅' : '❌'}\n` +
+                  `require_user: ${functions.require_user ? '✅' : '❌'}\n` +
+                  `getApiUrl: ${functions.getApiUrl ? '✅' : '❌'}\n` +
+                  `json_error: ${functions.json_error ? '✅' : '❌'}\n` +
+                  `read_json_body: ${functions.read_json_body ? '✅' : '❌'}`, 'info');
+              }
+              
+              if (func.db_loaded) {
+                const db = func.db_loaded;
+                addResult('🗄️ Carga de db.php', 
+                  `Éxito: ${db.success ? '✅' : '❌'}\n` +
+                  `Output capturado: ${db.output_length} bytes`, 'info');
+                if (!db.success) {
+                  addResult('⚠️ Error en db.php', 
+                    `Error: ${db.error}\n` +
+                    `Archivo: ${db.file}\n` +
+                    `Línea: ${db.line}`, 'warning');
+                }
+              }
+              
+              if (func.functions_after_db) {
+                const functions = func.functions_after_db;
+                addResult('🔧 Funciones Después de db.php', 
+                  `db: ${functions.db ? '✅' : '❌'}\n` +
+                  `PDO disponible: ${functions.pdo_available ? '✅' : '❌'}`, 'info');
+              }
+              
+              if (func.jwt_loaded) {
+                const jwt = func.jwt_loaded;
+                addResult('🎫 Carga de jwt.php', 
+                  `Éxito: ${jwt.success ? '✅' : '❌'}\n` +
+                  `Output capturado: ${jwt.output_length} bytes`, 'info');
+                if (!jwt.success) {
+                  addResult('⚠️ Error en jwt.php', 
+                    `Error: ${jwt.error}\n` +
+                    `Archivo: ${jwt.file}\n` +
+                    `Línea: ${jwt.line}`, 'warning');
+                }
+              }
+              
+              if (func.functions_after_jwt) {
+                const functions = func.functions_after_jwt;
+                addResult('🔧 Funciones Después de jwt.php', 
+                  `jwt_sign: ${functions.jwt_sign ? '✅' : '❌'}\n` +
+                  `jwt_verify: ${functions.jwt_verify ? '✅' : '❌'}\n` +
+                  `jwt_verify_hs256: ${functions.jwt_verify_hs256 ? '✅' : '❌'}`, 'info');
+              }
+            }
+          }
+          
+          if (data.diagnosis) {
+            const diag = data.diagnosis;
+            addResult('🔍 Diagnóstico Final', 
+              `PHP funcionando: ${diag.php_working ? '✅' : '❌'}\n` +
+              `JSON funcionando: ${diag.json_working ? '✅' : '❌'}\n` +
+              `Archivos accesibles: ${diag.files_accessible ? '✅' : '❌'}\n` +
+              `Sintaxis config OK: ${diag.config_syntax_ok ? '✅' : '❌'}\n` +
+              `Config cargable: ${diag.config_loadable ? '✅' : '❌'}\n` +
+              `Helpers cargable: ${diag.helpers_loadable ? '✅' : '❌'}\n` +
+              `DB cargable: ${diag.db_loadable ? '✅' : '❌'}\n` +
+              `JWT cargable: ${diag.jwt_loadable ? '✅' : '❌'}\n` +
+              `Listo para endpoints complejos: ${diag.ready_for_complex_endpoints ? '✅' : '❌'}`, 
+              diag.ready_for_complex_endpoints ? 'success' : 'warning');
+          }
+        } else {
+          addResult('❌ Error en Diagnóstico Profundo V2', JSON.stringify(data, null, 2), 'error');
+          
+          if (data.fatal_error) {
+            addResult('💀 Error Fatal Detectado', 
+              `Tipo: ${data.fatal_error.type}\n` +
+              `Mensaje: ${data.fatal_error.message}\n` +
+              `Archivo: ${data.fatal_error.file}\n` +
+              `Línea: ${data.fatal_error.line}`, 'error');
+          }
+        }
+      } catch (error) {
+        addResult('❌ Error de Conexión en Diagnóstico Profundo V2', `Error: ${error.message}`, 'error');
+      }
+    }
+
+    function analyzeMinimalRequire(results) {
+      let analysis = '';
+      
+      if (results.file_exists) {
+        analysis += '📁 ARCHIVO CONFIG:\n';
+        analysis += `- Existe: ${results.file_exists.exists ? '✅' : '❌'}\n`;
+        analysis += `- Legible: ${results.file_exists.readable ? '✅' : '❌'}\n`;
+        analysis += `- Tamaño: ${results.file_exists.size} bytes\n\n`;
+      }
+
+      if (results.php_syntax) {
+        analysis += '🔧 PHP:\n';
+        analysis += `- Versión: ${results.php_syntax.php_version}\n`;
+        analysis += `- Memoria: ${results.php_syntax.memory_limit}\n`;
+        analysis += `- Tiempo: ${results.php_syntax.max_execution_time}s\n\n`;
+      }
+
+      if (results.load_config) {
+        analysis += '⚙️ CARGA CONFIG:\n';
+        analysis += `- Éxito: ${results.load_config.success ? '✅' : '❌'}\n`;
+        if (results.load_config.success) {
+          analysis += `- Tipo: ${results.load_config.config_type}\n`;
+          analysis += `- Claves: ${results.load_config.config_keys?.length || 0}\n`;
+          analysis += `- Output: ${results.load_config.output_length} chars\n`;
+        } else {
+          analysis += `- Error: ${results.load_config.error}\n`;
+        }
+        analysis += '\n';
+      }
+
+      if (results.encoding) {
+        analysis += '📝 ENCODING:\n';
+        analysis += `- Tamaño: ${results.encoding.file_size} bytes\n`;
+        analysis += `- BOM: ${results.encoding.has_bom ? '❌ (tiene BOM)' : '✅ (sin BOM)'}\n`;
+        analysis += `- Primeros chars: ${results.encoding.first_chars}\n`;
+        analysis += `- Últimos chars: ${results.encoding.last_chars}\n\n`;
+      }
+
+      // Recomendaciones
+      analysis += '💡 RECOMENDACIONES:\n';
+      if (results.file_exists && !results.file_exists.exists) {
+        analysis += '- Verificar que config.php existe en api/\n';
+      }
+      if (results.file_exists && !results.file_exists.readable) {
+        analysis += '- Verificar permisos de lectura de config.php\n';
+      }
+      if (results.load_config && !results.load_config.success) {
+        analysis += '- Verificar sintaxis PHP en config.php\n';
+      }
+      if (results.encoding && results.encoding.has_bom) {
+        analysis += '- Eliminar BOM del archivo config.php\n';
+      }
+
+      return analysis;
+    }
+
+    async function testStepByStep() {
+      addResult('🔍 Ejecutando Test Paso a Paso...', 'Verificando cada dependencia por separado...', 'info');
+      
+      try {
+        const response = await fetch(ConfigPortable.getApiUrl('test_step_by_step_safe.php'), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.ok) {
+          addResult('✅ Test Paso a Paso Completado', JSON.stringify(data, null, 2), 'success');
+          
+          // Análisis específico de los pasos
+          const analysis = analyzeStepByStep(data.steps);
+          addResult('📊 Análisis Paso a Paso', analysis, 'info');
+        } else {
+          addResult('❌ Error en Test Paso a Paso', JSON.stringify(data, null, 2), 'error');
+          
+          // Análisis del error
+          if (data.failed_at_step) {
+            addResult('🚨 Falló en Paso ' + data.failed_at_step, `Error: ${data.error}`, 'error');
+          }
+        }
+      } catch (error) {
+        addResult('❌ Error de Conexión en Test Paso a Paso', `Error: ${error.message}`, 'error');
+      }
+    }
+
+    function analyzeStepByStep(steps) {
+      let analysis = '';
+      
+      if (steps) {
+        analysis += '📋 PASOS EJECUTADOS:\n';
+        Object.entries(steps).forEach(([stepKey, step]) => {
+          const status = step.status === 'SUCCESS' ? '✅' : '❌';
+          analysis += `${status} ${step.description}\n`;
+          
+          if (step.status === 'FAILED' && step.error) {
+            analysis += `   Error: ${step.error}\n`;
+          }
+        });
+        analysis += '\n';
+      }
+
+      // Recomendaciones
+      analysis += '💡 RECOMENDACIONES:\n';
+      if (steps) {
+        Object.entries(steps).forEach(([stepKey, step]) => {
+          if (step.status === 'FAILED') {
+            switch (stepKey) {
+              case 'step_2_config':
+                analysis += '- Verificar que config.php existe y es válido\n';
+                break;
+              case 'step_3_helpers':
+                analysis += '- Verificar que helpers.php existe y no tiene errores de sintaxis\n';
+                break;
+              case 'step_4_db':
+                analysis += '- Verificar que db.php existe y no tiene errores de sintaxis\n';
+                break;
+              case 'step_5_jwt':
+                analysis += '- Verificar que jwt.php existe y no tiene errores de sintaxis\n';
+                break;
+              case 'step_6_database':
+                analysis += '- Verificar credenciales de base de datos en config.php\n';
+                break;
+              case 'step_7_json_out':
+                analysis += '- Verificar que la función json_out está definida en helpers.php\n';
+                break;
+            }
+          }
+        });
+      }
+
+      return analysis;
+    }
+
+    async function testAuthDebug() {
+      addResult('🔧 Ejecutando Debug de Auth...', 'Verificando componentes de autenticación...', 'info');
+      
+      try {
+        const response = await fetch(ConfigPortable.getApiUrl('test_auth_debug_safe.php'), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.ok) {
+          addResult('✅ Debug de Auth Completado', JSON.stringify(data, null, 2), 'success');
+          
+          // Análisis específico del debug
+          const analysis = analyzeAuthDebug(data.debug);
+          addResult('📊 Análisis de Auth Debug', analysis, 'info');
+        } else {
+          addResult('❌ Error en Debug de Auth', JSON.stringify(data, null, 2), 'error');
+        }
+      } catch (error) {
+        addResult('❌ Error de Conexión en Debug', `Error: ${error.message}`, 'error');
+      }
+    }
+
+    function analyzeAuthDebug(debug) {
+      let analysis = '';
+      
+      // Análisis de archivos
+      if (debug.files) {
+        analysis += '📁 ARCHIVOS:\n';
+        Object.entries(debug.files).forEach(([file, exists]) => {
+          analysis += `- ${file}: ${exists ? '✅' : '❌'}\n`;
+        });
+        analysis += '\n';
+      }
+
+      // Análisis de funciones
+      if (debug.functions) {
+        analysis += '🔧 FUNCIONES:\n';
+        Object.entries(debug.functions).forEach(([func, exists]) => {
+          analysis += `- ${func}: ${exists ? '✅' : '❌'}\n`;
+        });
+        analysis += '\n';
+      }
+
+      // Análisis de configuración
+      if (debug.config) {
+        analysis += '⚙️ CONFIGURACIÓN:\n';
+        analysis += `- Cargada: ${debug.config.loaded ? '✅' : '❌'}\n`;
+        analysis += `- JWT Secret: ${debug.config.jwt_secret_set ? '✅' : '❌'}\n`;
+        analysis += `- DB Host: ${debug.config.db_host}\n`;
+        analysis += `- DB Name: ${debug.config.db_name}\n\n`;
+      }
+
+      // Análisis de base de datos
+      if (debug.database) {
+        analysis += '🗄️ BASE DE DATOS:\n';
+        analysis += `- Conexión: ${debug.database.connection}\n`;
+        if (debug.database.query_test) {
+          analysis += `- Query Test: ${debug.database.query_test}\n`;
+        }
+        if (debug.database.error) {
+          analysis += `- Error: ${debug.database.error}\n`;
+        }
+        analysis += '\n';
+      }
+
+      // Análisis de JWT
+      if (debug.jwt) {
+        analysis += '🔐 JWT:\n';
+        analysis += `- jwt_sign: ${debug.jwt.sign}\n`;
+        if (debug.jwt.token_length) {
+          analysis += `- Token Length: ${debug.jwt.token_length}\n`;
+        }
+        if (debug.jwt.error) {
+          analysis += `- Error: ${debug.jwt.error}\n`;
+        }
+        analysis += '\n';
+      }
+
+      // Recomendaciones
+      analysis += '💡 RECOMENDACIONES:\n';
+      if (debug.files) {
+        Object.entries(debug.files).forEach(([file, exists]) => {
+          if (!exists) {
+            analysis += `- Verificar que ${file} existe en api/\n`;
+          }
+        });
+      }
+      if (debug.functions) {
+        Object.entries(debug.functions).forEach(([func, exists]) => {
+          if (!exists) {
+            analysis += `- Verificar que la función ${func} está definida\n`;
+          }
+        });
+      }
+      if (debug.database?.connection === 'FAILED') {
+        analysis += '- Verificar credenciales de base de datos\n';
+      }
+      if (debug.jwt?.sign === 'FUNCTION_NOT_FOUND') {
+        analysis += '- Verificar que jwt.php está incluido correctamente\n';
+      }
+
+      return analysis;
+    }
+
+    async function testRegisterEndpoint() {
+      addResult('📝 Probando Endpoint de Registro...', 'Enviando request de prueba...', 'info');
+      
+      try {
+        const testData = {
+          email: 'test' + Date.now() + '@example.com',
+          password: 'testpassword123',
+          name: 'Test User'
+        };
+
+        const response = await fetch(ConfigPortable.getApiUrl('auth_register.php'), {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(testData)
+        });
+
+        const data = await response.json();
+        
+        if (response.status === 200 && data.token) {
+          addResult('✅ Endpoint de Registro Funciona', 'Usuario creado exitosamente', 'success');
+        } else if (response.status === 500) {
+          addResult('❌ Error HTTP 500 en Registro', JSON.stringify(data, null, 2), 'error');
+        } else {
+          addResult('⚠️ Respuesta Inesperada', JSON.stringify(data, null, 2), 'warning');
+        }
+      } catch (error) {
+        addResult('❌ Error de Conexión', `Error: ${error.message}`, 'error');
+      }
+    }
+
+    // Ejecutar diagnóstico automáticamente al cargar
+    window.addEventListener('load', () => {
+      runLoginDiagnostic();
+    });
+  </script>
+</body>
+</html>

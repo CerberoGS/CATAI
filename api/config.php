@@ -3,7 +3,29 @@
 // EDITA estos valores con tus credenciales y llaves.
 // Nota: las API keys de proveedores YA NO se gestionan aquí; se guardan por usuario en la base de datos.
 
-return [
+// Autodetección de BASE_URL (respetando proxies) + override por ENV APP_BASE_URL
+if (!function_exists('detect_base_url')) {
+  function detect_base_url(): string {
+    try {
+      $proto = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http');
+      $host  = $_SERVER['HTTP_X_FORWARDED_HOST']  ?? ($_SERVER['HTTP_HOST'] ?? 'localhost');
+      $path  = str_replace('\\','/', dirname($_SERVER['SCRIPT_NAME'] ?? '/'));
+      $path  = rtrim(preg_replace('#/api$#','', $path), '/'); // por si corre dentro de /api
+      return rtrim("$proto://$host$path", '/');
+    } catch (Throwable $e) {
+      // Fallback seguro si hay error
+      return 'https://cerberogrowthsolutions.com/catai';
+    }
+  }
+}
+
+// Usar detección automática para portabilidad completa
+$BASE_URL = detect_base_url();
+
+$CONFIG = [
+  // ───────────── URLs Portables ─────────────
+  'BASE_URL'     => $BASE_URL,              // p.ej. https://dominio.com/cataiv1
+  'API_BASE_URL' => $BASE_URL . '/api',    // p.ej. https://dominio.com/cataiv1/api
   // ───────────── Base de datos ─────────────
   'DB_HOST' => 'localhost',         // Host MySQL de Hostinger (ver hPanel)
   'DB_PORT' => 3306,
@@ -26,6 +48,9 @@ return [
   'ALPHAVANTAGE_API_KEY'  => '',
   'FINNHUB_API_KEY'       => '',
   'POLYGON_API_KEY'       => '',
+
+  // ──────────── Prompts de IA ────────────
+  'AI_PROMPT_EXTRACT_DEFAULT' => 'Eres un analista de trading experto con más de 20 años de experiencia en mercados financieros. Analiza este documento y proporciona un análisis estructurado en formato JSON con: resumen (2-3 líneas del contenido principal), puntos_clave (5-8 conceptos fundamentales extraídos), estrategias (3-5 estrategias de trading específicas), gestion_riesgo (2-3 puntos críticos de gestión de riesgo), recomendaciones (2-3 recomendaciones prácticas para implementar).',
   'GEMINI_API_KEY'        => '',
   'OPENAI_API_KEY'        => '',   // añadido por compatibilidad IA
   'XAI_API_KEY'           => '',   // añadido por compatibilidad IA (Grok)
@@ -49,12 +74,17 @@ return [
   // ─────────── Rutas/otros ───────────
   'UNIVERSE_PATH' => __DIR__ . '/../data/universe.json',
 
-  // CORS (ajusta a tu dominio final)
-  'ALLOWED_ORIGIN' => 'https://cerberogrowthsolutions.com',
+  // CORS (configurado automáticamente para portabilidad)
+  'ALLOWED_ORIGIN' => $BASE_URL,
   // Lista explícita de orígenes permitidos para CORS (mejores prácticas)
-  // Si tu frontend vive en el mismo dominio, esto cubre la mayoría de casos.
+  // Incluye el dominio detectado automáticamente + localhost para desarrollo
   'ALLOWED_ORIGINS' => [
-    'https://cerberogrowthsolutions.com',
+    $BASE_URL,
+    // Para desarrollo local
+    'http://localhost',
+    'http://127.0.0.1',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
   ],
   // Controla si se permiten credenciales en CORS (cookies/autorización). Por defecto true.
   'CORS_ALLOW_CREDENTIALS' => true,
@@ -65,3 +95,8 @@ return [
     'ia_retries'    => 1,
   ],
 ];
+
+// Establecer variable global para cfg()
+$GLOBALS['__APP_CONFIG'] = $CONFIG;
+
+return $CONFIG;

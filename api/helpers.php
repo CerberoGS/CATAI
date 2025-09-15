@@ -61,6 +61,25 @@ if (!function_exists('cfg')) {
   }
 }
 
+// Helper para URLs de API portables
+if (!function_exists('getApiUrl')) {
+  function getApiUrl(string $endpoint = ''): string {
+    // Usar la misma lógica de detección automática que config.php
+    try {
+      $proto = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http');
+      $host  = $_SERVER['HTTP_X_FORWARDED_HOST']  ?? ($_SERVER['HTTP_HOST'] ?? 'localhost');
+      $path  = str_replace('\\','/', dirname($_SERVER['SCRIPT_NAME'] ?? '/'));
+      $path  = rtrim(preg_replace('#/api$#','', $path), '/'); // por si corre dentro de /api
+      $baseUrl = rtrim("$proto://$host$path", '/');
+      $apiUrl = $baseUrl . '/api';
+      return $apiUrl . ($endpoint ? '/' . ltrim($endpoint, '/') : '');
+    } catch (Throwable $e) {
+      // Fallback seguro si hay error
+      return 'https://cerberogrowthsolutions.com/catai/api' . ($endpoint ? '/' . ltrim($endpoint, '/') : '');
+    }
+  }
+}
+
 /* --------------------------------- CORS ---------------------------------- */
 if (!function_exists('apply_cors')) {
   function apply_cors(?array $cfg = null): void {
@@ -451,16 +470,7 @@ if (!function_exists('get_api_key_for')) {
 }
 
 /* ---------------- Preferencias de red por proveedor (IA) ----------------- */
-if (!function_exists('net_for_provider')) {
-  function net_for_provider(int $userId, string $provider): array {
-    $timeout = 8000; // ms
-    $retries = 0;
-    $cfg = $GLOBALS['__APP_CONFIG'] ?? [];
-    if (isset($cfg['NET']['ia_timeout_ms'])) $timeout = (int)$cfg['NET']['ia_timeout_ms'];
-    if (isset($cfg['NET']['ia_retries']))    $retries = (int)$cfg['NET']['ia_retries'];
-    return ['timeout_ms' => $timeout, 'retries' => $retries];
-  }
-}
+// Función movida más abajo para evitar duplicación
 
 /* -------------------------- User settings (DB) --------------------------- */
 if (!function_exists('user_settings_extras')) {

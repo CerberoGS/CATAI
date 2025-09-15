@@ -88,6 +88,19 @@
         <button id="btn-test-upload">📤 Probar Subida</button>
         <button id="btn-test-list">📋 Probar Lista</button>
       </div>
+      
+      <!-- DIAGNÓSTICO IA COMPORTAMENTAL -->
+      <div style="background: linear-gradient(135deg, #8b5cf6, #ec4899); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+        <h3 style="color: white; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.75rem;">🧠 Diagnóstico IA Comportamental</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem;">
+          <button id="btn-test-ai-analysis" style="background: #7c3aed; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">🔍 Test Análisis IA</button>
+          <button id="btn-test-ai-metrics" style="background: #7c3aed; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">📊 Test Métricas IA</button>
+          <button id="btn-test-behavioral-patterns" style="background: #7c3aed; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">🎯 Test Patrones</button>
+          <button id="btn-test-knowledge-base" style="background: #7c3aed; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">📚 Test Knowledge Base</button>
+          <button id="btn-run-all-ai-tests" style="background: #059669; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">🚀 Ejecutar Todas las Pruebas IA</button>
+          <button id="btn-test-simple" style="background: #dc2626; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">🧪 Prueba Simple</button>
+        </div>
+      </div>
     </div>
 
     <div class="card">
@@ -145,7 +158,14 @@
     function setText(id, text, ok=null){
       const el = $(id);
       if (!el) return;
-      el.textContent = text;
+      
+      // Si text es un objeto, convertirlo a JSON formateado
+      if (typeof text === 'object' && text !== null) {
+        el.textContent = JSON.stringify(text, null, 2);
+      } else {
+        el.textContent = text;
+      }
+      
       if (ok === true) { el.classList.remove('muted','fail'); el.classList.add('ok'); }
       else if (ok === false) { el.classList.remove('muted','ok'); el.classList.add('fail'); }
       else { el.classList.remove('ok','fail'); el.classList.add('muted'); }
@@ -1839,6 +1859,203 @@
       }
     }
 
+    // Test de análisis IA
+    async function testAIAnalysis() {
+      try {
+        const timestamp = new Date().toLocaleTimeString();
+        setText('res-upload-test', `[🧠 TEST ANÁLISIS IA - ${timestamp}] Probando análisis en tiempo real...`, null);
+        
+        const response = await fetch('api/ai_analyze_fast.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          },
+          body: JSON.stringify({
+            prompt: 'Analiza TSLA para trading de opciones con enfoque en volatilidad',
+            provider: 'auto',
+            model: '',
+            systemPrompt: 'Eres un experto en trading de opciones'
+          })
+        });
+        
+        const data = await response.json();
+        const result = {
+          test_type: 'ANÁLISIS IA',
+          timestamp: timestamp,
+          endpoint: 'api/ai_analyze_fast.php',
+          status: response.ok ? 'SUCCESS' : 'ERROR',
+          http_status: response.status,
+          data: data
+        };
+        
+        setText('res-upload-test', `[🧠 TEST ANÁLISIS IA - ${timestamp}]`, result);
+      } catch (error) {
+        const timestamp = new Date().toLocaleTimeString();
+        setText('res-upload-test', `[🧠 TEST ANÁLISIS IA - ${timestamp}] Error: ` + error.message, null);
+      }
+    }
+
+    // Test de métricas IA
+    async function testAIMetrics() {
+      try {
+        const timestamp = new Date().toLocaleTimeString();
+        setText('res-upload-test', `[📊 TEST MÉTRICAS IA - ${timestamp}] Cargando métricas de aprendizaje...`, null);
+        
+        const response = await fetch('api/ai_learning_metrics_safe.php', {
+          headers: {
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          }
+        });
+        
+        const data = await response.json();
+        const result = {
+          test_type: 'MÉTRICAS IA',
+          timestamp: timestamp,
+          endpoint: 'api/ai_learning_metrics_safe.php',
+          status: response.ok ? 'SUCCESS' : 'ERROR',
+          http_status: response.status,
+          data: data
+        };
+        
+        setText('res-upload-test', `[📊 TEST MÉTRICAS IA - ${timestamp}]`, result);
+      } catch (error) {
+        const timestamp = new Date().toLocaleTimeString();
+        setText('res-upload-test', `[📊 TEST MÉTRICAS IA - ${timestamp}] Error: ` + error.message, null);
+      }
+    }
+
+    // Test de patrones comportamentales
+    async function testBehavioralPatterns() {
+      try {
+        const timestamp = new Date().toLocaleTimeString();
+        setText('res-upload-test', `[🎯 TEST PATRONES COMPORTAMENTALES - ${timestamp}] Cargando patrones...`, null);
+        
+        const response = await fetch('api/ai_behavioral_patterns_safe.php', {
+          headers: {
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          }
+        });
+        
+        const data = await response.json();
+        const result = {
+          test_type: 'PATRONES COMPORTAMENTALES',
+          timestamp: timestamp,
+          endpoint: 'api/ai_behavioral_patterns_safe.php',
+          status: response.ok ? 'SUCCESS' : 'ERROR',
+          http_status: response.status,
+          data: data
+        };
+        
+        setText('res-upload-test', `[🎯 TEST PATRONES COMPORTAMENTALES - ${timestamp}]`, result);
+      } catch (error) {
+        const timestamp = new Date().toLocaleTimeString();
+        setText('res-upload-test', `[🎯 TEST PATRONES COMPORTAMENTALES - ${timestamp}] Error: ` + error.message, null);
+      }
+    }
+
+    // Test de Knowledge Base
+    async function testKnowledgeBase() {
+      try {
+        const timestamp = new Date().toLocaleTimeString();
+        setText('res-upload-test', `[📚 TEST KNOWLEDGE BASE - ${timestamp}] Cargando archivos de conocimiento...`, null);
+        
+        const response = await fetch('api/ai_knowledge_list_safe.php', {
+          headers: {
+            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+          }
+        });
+        
+        const data = await response.json();
+        const result = {
+          test_type: 'KNOWLEDGE BASE',
+          timestamp: timestamp,
+          endpoint: 'api/ai_knowledge_list_safe.php',
+          status: response.ok ? 'SUCCESS' : 'ERROR',
+          http_status: response.status,
+          data: data
+        };
+        
+        setText('res-upload-test', `[📚 TEST KNOWLEDGE BASE - ${timestamp}]`, result);
+      } catch (error) {
+        const timestamp = new Date().toLocaleTimeString();
+        setText('res-upload-test', `[📚 TEST KNOWLEDGE BASE - ${timestamp}] Error: ` + error.message, null);
+      }
+    }
+
+    // Función para ejecutar todas las pruebas IA
+    async function runAllAITests() {
+      const timestamp = new Date().toLocaleTimeString();
+      setText('res-upload-test', `[🚀 EJECUTANDO TODAS LAS PRUEBAS IA - ${timestamp}] Iniciando suite completa de pruebas...`, null);
+      
+      const tests = [
+        { name: 'ANÁLISIS IA', func: testAIAnalysis },
+        { name: 'MÉTRICAS IA', func: testAIMetrics },
+        { name: 'PATRONES COMPORTAMENTALES', func: testBehavioralPatterns },
+        { name: 'KNOWLEDGE BASE', func: testKnowledgeBase }
+      ];
+      
+      const results = {
+        suite_name: 'PRUEBAS IA COMPORTAMENTAL',
+        timestamp: timestamp,
+        total_tests: tests.length,
+        tests: []
+      };
+      
+      for (const test of tests) {
+        try {
+          setText('res-upload-test', `[🚀 EJECUTANDO TODAS LAS PRUEBAS IA - ${timestamp}] Ejecutando: ${test.name}...`, null);
+          await test.func();
+          
+          // Esperar un momento entre pruebas
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          results.tests.push({
+            test_name: test.name,
+            status: 'COMPLETED',
+            timestamp: new Date().toLocaleTimeString()
+          });
+        } catch (error) {
+          results.tests.push({
+            test_name: test.name,
+            status: 'ERROR',
+            error: error.message,
+            timestamp: new Date().toLocaleTimeString()
+          });
+        }
+      }
+      
+      // Resumen final
+      const completed = results.tests.filter(t => t.status === 'COMPLETED').length;
+      const errors = results.tests.filter(t => t.status === 'ERROR').length;
+      
+      results.summary = {
+        completed: completed,
+        errors: errors,
+        success_rate: `${((completed / tests.length) * 100).toFixed(1)}%`
+      };
+      
+      setText('res-upload-test', `[🚀 RESUMEN SUITE IA - ${timestamp}]`, results);
+    }
+
+    // Función de prueba simple para verificar que setText funciona
+    function testSimple() {
+      const timestamp = new Date().toLocaleTimeString();
+      const testResult = {
+        test_type: 'PRUEBA SIMPLE',
+        timestamp: timestamp,
+        message: 'Esta es una prueba simple para verificar que los resultados se muestran correctamente',
+        status: 'SUCCESS',
+        data: {
+          elemento: 'res-upload-test',
+          funcion: 'setText',
+          tipo: 'object'
+        }
+      };
+      
+      setText('res-upload-test', `[🧪 PRUEBA SIMPLE - ${timestamp}]`, testResult);
+    }
+
     // Event listeners para botones de prueba
     $('btn-init-dirs').addEventListener('click', initUploadDirs);
     $('btn-debug-upload').addEventListener('click', debugUpload);
@@ -1873,6 +2090,14 @@
     $('btn-test-upload-endpoint').addEventListener('click', testUploadEndpoint);
     $('btn-test-upload').addEventListener('click', testFileUpload);
     $('btn-test-list').addEventListener('click', testListEndpoint);
+    
+    // Event listeners para diagnóstico IA
+    $('btn-test-ai-analysis').addEventListener('click', testAIAnalysis);
+    $('btn-test-ai-metrics').addEventListener('click', testAIMetrics);
+    $('btn-test-behavioral-patterns').addEventListener('click', testBehavioralPatterns);
+    $('btn-test-knowledge-base').addEventListener('click', testKnowledgeBase);
+    $('btn-run-all-ai-tests').addEventListener('click', runAllAITests);
+    $('btn-test-simple').addEventListener('click', testSimple);
 
     // Agregar pruebas de subida al botón principal
     const originalRun = $('btn-run').onclick;

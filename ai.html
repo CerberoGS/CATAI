@@ -6,6 +6,7 @@
   <title>IA Comportamental - CATAI</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="static/utf8-fix.js"></script>
+  <script src="static/js/config-portable.js"></script>
   <script src="static/auth.js"></script>
   <script>
     // Si no hay token válido, redirigir a login.html
@@ -34,15 +35,37 @@
     }
     .metric-card {
       background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
     }
     .learning-card {
       background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: white;
     }
     .behavior-card {
       background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+      color: white;
     }
     .insight-card {
       background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+      color: white;
+    }
+    
+    /* Dark mode compatible gradients */
+    .dark .metric-card {
+      background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+      color: white;
+    }
+    .dark .learning-card {
+      background: linear-gradient(135deg, #1e40af 0%, #0891b2 100%);
+      color: white;
+    }
+    .dark .behavior-card {
+      background: linear-gradient(135deg, #059669 0%, #0d9488 100%);
+      color: white;
+    }
+    .dark .insight-card {
+      background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%);
+      color: white;
     }
     .pulse-animation {
       animation: pulse 2s infinite;
@@ -63,7 +86,7 @@
     }
   </style>
 </head>
-<body class="bg-gray-50 dark-mode:bg-gray-900">
+<body class="bg-gray-50 dark:bg-gray-900">
   <div class="container mx-auto px-4 py-8">
     <div id="app-header"></div>
 
@@ -73,16 +96,16 @@
     <div class="grid lg:grid-cols-4 gap-6 mb-8">
       <!-- Métricas de Aprendizaje -->
       <div class="lg:col-span-2">
-        <div class="bg-white dark-mode:bg-gray-800 rounded-xl shadow-lg p-6 card-hover">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 card-hover">
           <div class="flex items-center justify-between mb-6">
-            <h2 class="text-xl font-bold text-gray-900 dark-mode:text-gray-100">📊 Métricas de Aprendizaje</h2>
+            <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">📊 Métricas de Aprendizaje</h2>
             <div class="flex items-center gap-3">
-              <button id="refresh-metrics-btn" class="px-3 py-1 text-sm bg-indigo-100 dark-mode:bg-indigo-900 text-indigo-700 dark-mode:text-indigo-200 rounded-lg hover:bg-indigo-200 dark-mode:hover:bg-indigo-800 transition-colors">
+              <button id="refresh-metrics-btn" class="px-3 py-1 text-sm bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-200 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-800 transition-colors">
                 🔄 Actualizar
               </button>
               <div class="flex items-center gap-2">
                 <div class="w-3 h-3 bg-green-500 rounded-full pulse-animation"></div>
-                <span class="text-sm text-gray-600 dark-mode:text-gray-300">Activo</span>
+                <span class="text-sm text-gray-600 dark:text-gray-300">Activo</span>
               </div>
             </div>
           </div>
@@ -110,36 +133,36 @@
 
       <!-- Perfil de Comportamiento -->
       <div class="lg:col-span-2">
-        <div class="bg-white dark-mode:bg-gray-800 rounded-xl shadow-lg p-6 card-hover">
-          <h2 class="text-xl font-bold text-gray-900 dark-mode:text-gray-100 mb-6">🎯 Perfil de Comportamiento</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 card-hover">
+          <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">🎯 Perfil de Comportamiento</h2>
           
           <div class="space-y-4">
             <div>
               <div class="flex justify-between items-center mb-2">
-                <span class="text-sm font-medium text-gray-700 dark-mode:text-gray-300">Estilo de Trading</span>
-                <span class="text-sm text-gray-600 dark-mode:text-gray-400" id="trading-style">Analizando...</span>
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Estilo de Trading</span>
+                <span class="text-sm text-gray-800 dark:text-gray-100" id="trading-style">Analizando...</span>
               </div>
-              <div class="w-full bg-gray-200 dark-mode:bg-gray-700 rounded-full h-2">
+              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <div class="bg-indigo-600 h-2 rounded-full transition-all duration-500" id="trading-style-bar" style="width: 0%"></div>
               </div>
             </div>
             
             <div>
               <div class="flex justify-between items-center mb-2">
-                <span class="text-sm font-medium text-gray-700 dark-mode:text-gray-300">Tolerancia al Riesgo</span>
-                <span class="text-sm text-gray-600 dark-mode:text-gray-400" id="risk-tolerance">Calculando...</span>
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Tolerancia al Riesgo</span>
+                <span class="text-sm text-gray-800 dark:text-gray-100" id="risk-tolerance">Calculando...</span>
               </div>
-              <div class="w-full bg-gray-200 dark-mode:bg-gray-700 rounded-full h-2">
+              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <div class="bg-red-500 h-2 rounded-full transition-all duration-500" id="risk-tolerance-bar" style="width: 0%"></div>
               </div>
             </div>
             
             <div>
               <div class="flex justify-between items-center mb-2">
-                <span class="text-sm font-medium text-gray-700 dark-mode:text-gray-300">Preferencia Temporal</span>
-                <span class="text-sm text-gray-600 dark-mode:text-gray-400" id="time-preference">Evaluando...</span>
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Preferencia Temporal</span>
+                <span class="text-sm text-gray-800 dark:text-gray-100" id="time-preference">Evaluando...</span>
               </div>
-              <div class="w-full bg-gray-200 dark-mode:bg-gray-700 rounded-full h-2">
+              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <div class="bg-green-500 h-2 rounded-full transition-all duration-500" id="time-preference-bar" style="width: 0%"></div>
               </div>
             </div>
@@ -152,43 +175,65 @@
     <div class="grid lg:grid-cols-3 gap-6 mb-8">
       <!-- Personalidad de Análisis -->
       <div class="lg:col-span-1">
-        <div class="bg-white dark-mode:bg-gray-800 rounded-xl shadow-lg p-6 card-hover">
-          <h2 class="text-xl font-bold text-gray-900 dark-mode:text-gray-100 mb-6">🤖 Personalidad de Análisis</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 card-hover">
+          <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">🤖 Personalidad de Análisis</h2>
           
           <div class="space-y-6">
             <!-- Proveedor de IA -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark-mode:text-gray-300 mb-2">Proveedor de IA</label>
-              <select id="ai-provider" class="w-full rounded-lg border-gray-300 dark-mode:border-gray-600 dark-mode:bg-gray-700 dark-mode:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                <option value="auto">Auto (Recomendado)</option>
-                <option value="gemini">Gemini</option>
-                <option value="openai">OpenAI</option>
-                <option value="claude">Claude</option>
-                <option value="xai">xAI (Grok)</option>
-                <option value="deepseek">DeepSeek</option>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Proveedor de IA
+                <span class="text-xs text-gray-700 dark:text-gray-200 ml-1">(Requerido)</span>
+              </label>
+              <select id="ai-provider" class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" 
+                      title="Selecciona el proveedor de IA para análisis comportamental. 'Auto' selecciona automáticamente el mejor disponible.">
+                <option value="auto">🔄 Auto (Recomendado)</option>
+                <option value="gemini">🧠 Gemini</option>
+                <option value="openai">🤖 OpenAI</option>
+                <option value="claude">🎭 Claude</option>
+                <option value="xai">⚡ xAI (Grok)</option>
+                <option value="deepseek">🔍 DeepSeek</option>
               </select>
+              <p class="text-xs text-gray-700 dark:text-gray-200 mt-1">
+                💡 Auto selecciona el mejor proveedor disponible según tus claves API
+              </p>
             </div>
             
             <!-- Modelo -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark-mode:text-gray-300 mb-2">Modelo</label>
-              <input id="ai-model" type="text" class="w-full rounded-lg border-gray-300 dark-mode:border-gray-600 dark-mode:bg-gray-700 dark-mode:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Auto (sugerido)">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Modelo
+                <span class="text-xs text-gray-700 dark:text-gray-200 ml-1">(Opcional)</span>
+              </label>
+              <input id="ai-model" type="text" class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" 
+                     placeholder="Auto (sugerido)" 
+                     title="Especifica un modelo específico o deja vacío para usar el recomendado del proveedor">
+              <p class="text-xs text-gray-700 dark:text-gray-200 mt-1">
+                🎯 Deja vacío para usar el modelo recomendado del proveedor seleccionado
+              </p>
             </div>
             
             <!-- Nivel de Análisis -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark-mode:text-gray-300 mb-2">Nivel de Análisis</label>
-              <select id="analysis-level" class="w-full rounded-lg border-gray-300 dark-mode:border-gray-600 dark-mode:bg-gray-700 dark-mode:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                <option value="basic">Básico</option>
-                <option value="advanced" selected>Avanzado</option>
-                <option value="expert">Experto</option>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Nivel de Análisis
+                <span class="text-xs text-gray-700 dark:text-gray-200 ml-1">(Requerido)</span>
+              </label>
+              <select id="analysis-level" class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                      title="Define la profundidad y complejidad del análisis comportamental">
+                <option value="basic">📊 Básico - Análisis simple y directo</option>
+                <option value="advanced" selected>🚀 Avanzado - Análisis detallado con contexto</option>
+                <option value="expert">🎯 Experto - Análisis profundo con patrones complejos</option>
               </select>
+              <p class="text-xs text-gray-700 dark:text-gray-200 mt-1">
+                🔍 Nivel avanzado incluye contexto del Knowledge Base y patrones comportamentales
+              </p>
             </div>
             
             <!-- Estilo de Trading -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark-mode:text-gray-300 mb-2">Estilo de Trading</label>
-              <select id="trading-style" class="w-full rounded-lg border-gray-300 dark-mode:border-gray-600 dark-mode:bg-gray-700 dark-mode:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Estilo de Trading</label>
+              <select id="trading-style" class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                 <option value="conservative">Conservador</option>
                 <option value="balanced" selected>Equilibrado</option>
                 <option value="aggressive">Agresivo</option>
@@ -198,8 +243,8 @@
             
             <!-- Tono de Análisis -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark-mode:text-gray-300 mb-2">Tono de Análisis</label>
-              <select id="analysis-tone" class="w-full rounded-lg border-gray-300 dark-mode:border-gray-600 dark-mode:bg-gray-700 dark-mode:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tono de Análisis</label>
+              <select id="analysis-tone" class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                 <option value="technical">Técnico</option>
                 <option value="educational" selected>Educativo</option>
                 <option value="concise">Conciso</option>
@@ -209,34 +254,57 @@
             
             <!-- Personalización Avanzada -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark-mode:text-gray-300 mb-3">Personalización</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Personalización</label>
               <div class="space-y-3">
                 <label class="flex items-center">
                   <input type="checkbox" id="use-behavioral-data" checked class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
-                  <span class="ml-2 text-sm text-gray-700 dark-mode:text-gray-300">Usar datos comportamentales</span>
+                  <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Usar datos comportamentales</span>
                 </label>
                 <label class="flex items-center">
                   <input type="checkbox" id="learn-from-feedback" checked class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
-                  <span class="ml-2 text-sm text-gray-700 dark-mode:text-gray-300">Aprender de feedback</span>
+                  <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Aprender de feedback</span>
                 </label>
                 <label class="flex items-center">
                   <input type="checkbox" id="adaptive-prompts" checked class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
-                  <span class="ml-2 text-sm text-gray-700 dark-mode:text-gray-300">Prompts adaptativos</span>
+                  <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Prompts adaptativos</span>
                 </label>
                 <label class="flex items-center">
                   <input type="checkbox" id="risk-aware" checked class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
-                  <span class="ml-2 text-sm text-gray-700 dark-mode:text-gray-300">Consciente del riesgo</span>
+                  <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Consciente del riesgo</span>
                 </label>
               </div>
             </div>
             
+            <!-- Indicador de Cambios -->
+            <div id="changes-indicator" class="hidden bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 mb-4">
+              <div class="flex items-center">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <p class="text-sm text-yellow-800 dark:text-yellow-200">
+                    <strong>Cambios sin guardar:</strong> Tienes modificaciones pendientes en la configuración.
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <!-- Botones de Acción -->
             <div class="space-y-2">
-              <button id="save-config-btn" class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors">
-                💾 Guardar Configuración
+              <button id="save-config-btn" class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                <span id="save-btn-text">💾 Guardar Configuración</span>
+                <span id="save-btn-loading" class="hidden">⏳ Guardando...</span>
               </button>
-              <button id="advanced-config-btn" class="w-full px-4 py-2 text-sm bg-gray-100 dark-mode:bg-gray-700 text-gray-700 dark-mode:text-gray-300 rounded-lg hover:bg-gray-200 dark-mode:hover:bg-gray-600 transition-colors">
+              <button id="advanced-config-btn" class="w-full px-4 py-2 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
                 ⚙️ Configuración Avanzada
+              </button>
+              <button id="reset-config-btn" class="w-full px-4 py-2 text-sm bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/40 transition-colors">
+                🔄 Restablecer a Valores por Defecto
+              </button>
+              <button id="init-ai-data-btn" class="w-full px-4 py-2 text-sm bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-300 rounded-lg hover:bg-green-200 dark:hover:bg-green-900/40 transition-colors">
+                🚀 Inicializar Datos IA
               </button>
             </div>
           </div>
@@ -245,15 +313,15 @@
 
       <!-- Análisis en Tiempo Real -->
       <div class="lg:col-span-2">
-        <div class="bg-white dark-mode:bg-gray-800 rounded-xl shadow-lg p-6 card-hover">
-          <h2 class="text-xl font-bold text-gray-900 dark-mode:text-gray-100 mb-6">🔍 Análisis Inteligente</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 card-hover">
+          <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">🔍 Análisis Inteligente</h2>
           
           <div class="space-y-6">
             <!-- Símbolo y Análisis -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark-mode:text-gray-300 mb-2">Símbolo a Analizar</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Símbolo a Analizar</label>
               <div class="flex gap-2">
-                <input id="analysis-symbol" type="text" class="flex-1 rounded-lg border-gray-300 dark-mode:border-gray-600 dark-mode:bg-gray-700 dark-mode:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="TSLA, AAPL, NVDA...">
+                <input id="analysis-symbol" type="text" class="flex-1 rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="TSLA, AAPL, NVDA...">
                 <button id="analyze-btn" class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors">
                   <span id="analyze-text">Analizar</span>
                   <span id="analyze-loading" class="hidden loading-dots">Analizando</span>
@@ -264,8 +332,8 @@
             <!-- Configuración de Análisis -->
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark-mode:text-gray-300 mb-2">Temporalidad</label>
-                <select id="timeframe" class="w-full rounded-lg border-gray-300 dark-mode:border-gray-600 dark-mode:bg-gray-700 dark-mode:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Temporalidad</label>
+                <select id="timeframe" class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                   <option value="1min">1 Minuto</option>
                   <option value="5min">5 Minutos</option>
                   <option value="15min" selected>15 Minutos</option>
@@ -275,8 +343,8 @@
                 </select>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark-mode:text-gray-300 mb-2">Tipo de Análisis</label>
-                <select id="analysis-type" class="w-full rounded-lg border-gray-300 dark-mode:border-gray-600 dark-mode:bg-gray-700 dark-mode:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tipo de Análisis</label>
+                <select id="analysis-type" class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                   <option value="comprehensive" selected>Comprehensivo</option>
                   <option value="technical">Solo Técnico</option>
                   <option value="behavioral">Solo Comportamental</option>
@@ -286,21 +354,21 @@
             </div>
             
             <!-- Configuración Avanzada -->
-            <div class="bg-gray-50 dark-mode:bg-gray-700 rounded-lg p-4">
-              <h3 class="text-sm font-medium text-gray-700 dark-mode:text-gray-300 mb-3">Configuración Avanzada</h3>
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+              <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Configuración Avanzada</h3>
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-xs text-gray-600 dark-mode:text-gray-400 mb-1">Incluir Opciones</label>
+                  <label class="block text-xs text-gray-800 dark:text-gray-100 mb-1">Incluir Opciones</label>
                   <label class="flex items-center">
                     <input type="checkbox" id="include-options" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
-                    <span class="ml-2 text-xs text-gray-700 dark-mode:text-gray-300">Análisis de opciones</span>
+                    <span class="ml-2 text-xs text-gray-700 dark:text-gray-300">Análisis de opciones</span>
                   </label>
                 </div>
                 <div>
-                  <label class="block text-xs text-gray-600 dark-mode:text-gray-400 mb-1">Modo Rápido</label>
+                  <label class="block text-xs text-gray-800 dark:text-gray-100 mb-1">Modo Rápido</label>
                   <label class="flex items-center">
                     <input type="checkbox" id="fast-mode" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
-                    <span class="ml-2 text-xs text-gray-700 dark-mode:text-gray-300">Análisis acelerado</span>
+                    <span class="ml-2 text-xs text-gray-700 dark:text-gray-300">Análisis acelerado</span>
                   </label>
                 </div>
               </div>
@@ -308,12 +376,12 @@
             
             <!-- Estado del Análisis -->
             <div id="analysis-status" class="hidden">
-              <div class="flex items-center justify-between p-3 bg-blue-50 dark-mode:bg-blue-900 rounded-lg">
+              <div class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900 rounded-lg">
                 <div class="flex items-center">
                   <div class="w-3 h-3 bg-blue-500 rounded-full pulse-animation mr-3"></div>
-                  <span class="text-sm text-blue-700 dark-mode:text-blue-200">Análisis en progreso...</span>
+                  <span class="text-sm text-blue-700 dark:text-blue-200">Análisis en progreso...</span>
                 </div>
-                <div class="text-xs text-blue-600 dark-mode:text-blue-300" id="analysis-progress">0%</div>
+                <div class="text-xs text-blue-600 dark:text-blue-300" id="analysis-progress">0%</div>
               </div>
             </div>
           </div>
@@ -322,9 +390,9 @@
     </div>
 
     <!-- Resultados del Análisis -->
-    <div class="bg-white dark-mode:bg-gray-800 rounded-xl shadow-lg p-6 mb-8">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-8">
       <div class="flex items-center justify-between mb-6">
-        <h2 class="text-xl font-bold text-gray-900 dark-mode:text-gray-100">📈 Resultados del Análisis</h2>
+        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">📈 Resultados del Análisis</h2>
         <div class="flex gap-2">
           <button id="save-analysis-btn" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors">
             💾 Guardar
@@ -338,8 +406,8 @@
       <div id="analysis-results" class="min-h-96">
         <div class="text-center py-12">
           <div class="text-6xl mb-4">🧠</div>
-          <h3 class="text-xl font-semibold text-gray-900 dark-mode:text-gray-100 mb-2">Análisis Inteligente</h3>
-          <p class="text-gray-600 dark-mode:text-gray-300">Selecciona un símbolo y haz clic en "Analizar" para comenzar</p>
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Análisis Inteligente</h3>
+          <p class="text-gray-600 dark:text-gray-300">Selecciona un símbolo y haz clic en "Analizar" para comenzar</p>
         </div>
       </div>
     </div>
@@ -347,14 +415,14 @@
     <!-- Insights y Patrones -->
     <div class="grid lg:grid-cols-2 gap-6 mb-8">
       <!-- Patrones Aprendidos -->
-      <div class="bg-white dark-mode:bg-gray-800 rounded-xl shadow-lg p-6">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-xl font-bold text-gray-900 dark-mode:text-gray-100">🔍 Patrones Aprendidos</h2>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">🔍 Patrones Aprendidos</h2>
           <div class="flex gap-2">
-            <button id="refresh-patterns-btn" class="px-3 py-1 text-sm bg-indigo-100 dark-mode:bg-indigo-900 text-indigo-700 dark-mode:text-indigo-200 rounded-lg hover:bg-indigo-200 dark-mode:hover:bg-indigo-800 transition-colors">
+            <button id="refresh-patterns-btn" class="px-3 py-1 text-sm bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-200 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-800 transition-colors">
               🔄 Actualizar
             </button>
-            <button id="view-patterns-chart-btn" class="px-3 py-1 text-sm bg-green-100 dark-mode:bg-green-900 text-green-700 dark-mode:text-green-200 rounded-lg hover:bg-green-200 dark-mode:hover:bg-green-800 transition-colors">
+            <button id="view-patterns-chart-btn" class="px-3 py-1 text-sm bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 rounded-lg hover:bg-green-200 dark:hover:bg-green-800 transition-colors">
               📊 Gráfico
             </button>
           </div>
@@ -362,23 +430,23 @@
         
         <!-- Resumen de Patrones -->
         <div id="patterns-summary" class="grid grid-cols-3 gap-4 mb-6 hidden">
-          <div class="bg-blue-50 dark-mode:bg-blue-900/30 rounded-lg p-4 text-center">
-            <div class="text-2xl font-bold text-blue-600 dark-mode:text-blue-400" id="total-patterns">0</div>
-            <div class="text-sm text-blue-700 dark-mode:text-blue-300">Total Patrones</div>
+          <div class="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4 text-center">
+            <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="total-patterns">0</div>
+            <div class="text-sm text-blue-700 dark:text-blue-300">Total Patrones</div>
           </div>
-          <div class="bg-green-50 dark-mode:bg-green-900/30 rounded-lg p-4 text-center">
-            <div class="text-2xl font-bold text-green-600 dark-mode:text-green-400" id="high-confidence-patterns">0</div>
-            <div class="text-sm text-green-700 dark-mode:text-green-300">Alta Confianza</div>
+          <div class="bg-green-50 dark:bg-green-900/30 rounded-lg p-4 text-center">
+            <div class="text-2xl font-bold text-green-600 dark:text-green-400" id="high-confidence-patterns">0</div>
+            <div class="text-sm text-green-700 dark:text-green-300">Alta Confianza</div>
           </div>
-          <div class="bg-purple-50 dark-mode:bg-purple-900/30 rounded-lg p-4 text-center">
-            <div class="text-2xl font-bold text-purple-600 dark-mode:text-purple-400" id="frequent-patterns">0</div>
-            <div class="text-sm text-purple-700 dark-mode:text-purple-300">Frecuentes</div>
+          <div class="bg-purple-50 dark:bg-purple-900/30 rounded-lg p-4 text-center">
+            <div class="text-2xl font-bold text-purple-600 dark:text-purple-400" id="frequent-patterns">0</div>
+            <div class="text-sm text-purple-700 dark:text-purple-300">Frecuentes</div>
           </div>
         </div>
         
         <!-- Lista de Patrones -->
         <div id="learned-patterns" class="space-y-3">
-          <div class="text-center py-8 text-gray-500 dark-mode:text-gray-400">
+          <div class="text-center py-8 text-gray-700 dark:text-gray-200">
             <div class="text-4xl mb-2">📊</div>
             <p>Los patrones aparecerán aquí conforme uses el sistema</p>
           </div>
@@ -386,10 +454,10 @@
       </div>
 
       <!-- Insights Personalizados -->
-      <div class="bg-white dark-mode:bg-gray-800 rounded-xl shadow-lg p-6">
-        <h2 class="text-xl font-bold text-gray-900 dark-mode:text-gray-100 mb-6">💡 Insights Personalizados</h2>
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">💡 Insights Personalizados</h2>
         <div id="personal-insights" class="space-y-3">
-          <div class="text-center py-8 text-gray-500 dark-mode:text-gray-400">
+          <div class="text-center py-8 text-gray-700 dark:text-gray-200">
             <div class="text-4xl mb-2">💡</div>
             <p>Los insights se generarán basados en tu comportamiento</p>
           </div>
@@ -398,33 +466,70 @@
     </div>
 
     <!-- Knowledge Base -->
-    <div class="bg-white dark-mode:bg-gray-800 rounded-xl shadow-lg p-6 mb-8">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-8">
       <div class="flex items-center justify-between mb-6">
-        <h2 class="text-xl font-bold text-gray-900 dark-mode:text-gray-100">📚 Knowledge Base</h2>
+        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">📚 Knowledge Base</h2>
         <div class="flex gap-2">
-          <button id="refresh-knowledge-btn" class="px-3 py-1 text-sm bg-indigo-100 dark-mode:bg-indigo-900 text-indigo-700 dark-mode:text-indigo-200 rounded-lg hover:bg-indigo-200 dark-mode:hover:bg-indigo-800 transition-colors">
+          <button onclick="togglePromptConfig()" class="px-3 py-1 text-sm bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-200 rounded-lg hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors">
+            ⚙️ Configurar Prompt
+          </button>
+          <button onclick="console.log('🔧 TEST: Botón de prueba funcionando'); alert('Botón de prueba funcionando')" class="px-3 py-1 text-sm bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 rounded-lg hover:bg-red-200 dark:hover:bg-red-800 transition-colors">
+            🧪 Test
+          </button>
+          <button id="refresh-knowledge-btn" class="px-3 py-1 text-sm bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-200 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-800 transition-colors">
             🔄 Actualizar
           </button>
           <button id="upload-knowledge-btn" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors">
             📤 Subir Archivo
           </button>
-          <button onclick="window.testViewButton()" class="px-3 py-1 text-sm bg-purple-100 dark-mode:bg-purple-900 text-purple-700 dark-mode:text-purple-200 rounded-lg hover:bg-purple-200 dark-mode:hover:bg-purple-800 transition-colors">
-            🔧 Test Ver
+          <button id="export-knowledge-btn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+            📥 Exportar
           </button>
         </div>
       </div>
       
+      <!-- Panel de configuración de prompt (inicialmente oculto) -->
+      <div id="promptConfigPanel" class="config-panel mb-6" style="display: none;">
+        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">🤖 Configurar Prompt de Extracción</h3>
+          <div class="form-group mb-4">
+            <label for="aiPromptExtract" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Prompt para Extracción de Contenido:
+            </label>
+            <textarea id="aiPromptExtract" rows="8" cols="80" 
+                      class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 font-mono text-sm"
+                      placeholder="Eres un analista de trading experto con más de 20 años de experiencia en mercados financieros. Analiza este documento y proporciona un análisis estructurado en formato JSON con: resumen (2-3 líneas del contenido principal), puntos_clave (5-8 conceptos fundamentales extraídos), estrategias (3-5 estrategias de trading específicas), gestion_riesgo (2-3 puntos críticos de gestión de riesgo), recomendaciones (2-3 recomendaciones prácticas para implementar).">
+            </textarea>
+            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
+              💡 Personaliza cómo la IA analiza y extrae información de tus archivos
+            </p>
+          </div>
+          
+          <div class="flex gap-2">
+            <button onclick="savePromptExtract()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors">
+              💾 Guardar Prompt
+            </button>
+            <button onclick="resetPromptExtract()" class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors">
+              🔄 Restaurar Predeterminado
+            </button>
+            <button onclick="togglePromptConfig()" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors">
+              ❌ Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+      
       <!-- Zona de Subida de Archivos -->
-      <div id="upload-zone" class="border-2 border-dashed border-gray-300 dark-mode:border-gray-600 rounded-lg p-8 text-center mb-6 hidden">
+      <div id="upload-zone" class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center mb-6 hidden">
         <div class="space-y-4">
           <div class="text-4xl">📁</div>
-          <h3 class="text-lg font-semibold text-gray-900 dark-mode:text-gray-100">Subir Archivos de Conocimiento</h3>
-          <p class="text-gray-600 dark-mode:text-gray-300">Arrastra archivos aquí o haz clic para seleccionar</p>
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Subir Archivos de Conocimiento</h3>
+          <p class="text-gray-600 dark:text-gray-300">Arrastra archivos aquí o haz clic para seleccionar</p>
           <input type="file" id="knowledge-files" multiple accept=".pdf,.txt,.doc,.docx" class="hidden">
           <button id="select-files-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
             Seleccionar Archivos
           </button>
-          <div class="text-sm text-gray-500 dark-mode:text-gray-400">
+          <div class="text-sm text-gray-700 dark:text-gray-200">
             Formatos soportados: PDF, TXT, DOC, DOCX (máx. 10MB por archivo)
           </div>
         </div>
@@ -432,7 +537,7 @@
       
       <!-- Lista de Archivos de Conocimiento -->
       <div id="knowledge-list" class="space-y-3">
-        <div class="text-center py-8 text-gray-500 dark-mode:text-gray-400">
+        <div class="text-center py-8 text-gray-700 dark:text-gray-200">
           <div class="text-4xl mb-2">📚</div>
           <p>Los archivos de conocimiento aparecerán aquí</p>
         </div>
@@ -440,15 +545,15 @@
     </div>
 
     <!-- Historial de Aprendizaje -->
-    <div class="bg-white dark-mode:bg-gray-800 rounded-xl shadow-lg p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
       <div class="flex items-center justify-between mb-6">
-        <h2 class="text-xl font-bold text-gray-900 dark-mode:text-gray-100">📚 Historial de Aprendizaje</h2>
+        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">📚 Historial de Aprendizaje</h2>
         <a href="journal.html" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
           📖 Ver Bitácora Completa
         </a>
       </div>
       <div id="learning-history" class="space-y-4">
-        <div class="text-center py-8 text-gray-500 dark-mode:text-gray-400">
+        <div class="text-center py-8 text-gray-700 dark:text-gray-200">
           <div class="text-4xl mb-2">📚</div>
           <p>El historial de aprendizaje se mostrará aquí</p>
         </div>
@@ -458,10 +563,10 @@
 
   <!-- Modal de Configuración Avanzada -->
   <div id="advanced-config-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white dark-mode:bg-gray-800 rounded-xl p-6 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
       <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-semibold text-gray-900 dark-mode:text-gray-100">Configuración Avanzada</h3>
-        <button id="close-advanced-modal" class="text-gray-400 hover:text-gray-600 dark-mode:hover:text-gray-300 text-xl font-bold">✕</button>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Configuración Avanzada</h3>
+        <button id="close-advanced-modal" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-xl font-bold">✕</button>
       </div>
       <div id="advanced-config-content">
         <!-- Contenido dinámico -->
@@ -471,10 +576,10 @@
 
   <!-- Modal de Gestión de Knowledge Base -->
   <div id="knowledge-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white dark-mode:bg-gray-800 rounded-xl p-6 max-w-4xl w-full mx-4 max-h-96 overflow-y-auto">
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-4xl w-full mx-4 max-h-96 overflow-y-auto">
       <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-semibold text-gray-900 dark-mode:text-gray-100">Gestión de Knowledge Base</h3>
-        <button id="close-knowledge-modal" class="text-gray-400 hover:text-gray-600 dark-mode:hover:text-gray-300 text-xl font-bold">✕</button>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Gestión de Knowledge Base</h3>
+        <button id="close-knowledge-modal" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-xl font-bold">✕</button>
       </div>
       <div id="knowledge-modal-content">
         <!-- Contenido dinámico -->
@@ -484,10 +589,10 @@
 
   <!-- Modal de Gráficos de Patrones -->
   <div id="patterns-chart-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white dark-mode:bg-gray-800 rounded-xl p-6 max-w-6xl w-full mx-4 max-h-96 overflow-y-auto">
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-6xl w-full mx-4 max-h-96 overflow-y-auto">
       <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-semibold text-gray-900 dark-mode:text-gray-100">Gráficos de Patrones Comportamentales</h3>
-        <button id="close-patterns-chart-modal" class="text-gray-400 hover:text-gray-600 dark-mode:hover:text-gray-300 text-xl font-bold">✕</button>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Gráficos de Patrones Comportamentales</h3>
+        <button id="close-patterns-chart-modal" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-xl font-bold">✕</button>
       </div>
       <div id="patterns-chart-content">
         <!-- Contenido dinámico -->
@@ -503,103 +608,954 @@
   <script src="static/js/debug-view-button.js"></script>
   
   <script>
-    // Función para extraer contenido real del archivo
-    window.extractContent = async function(knowledgeId) {
+    // Función para renderizar la lista de archivos de Knowledge Base
+    function renderKnowledgeList(knowledgeFiles) {
+      const container = document.getElementById('knowledge-list');
+      
+      if (!knowledgeFiles || knowledgeFiles.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 text-gray-700 dark:text-gray-200">
+            <div class="text-4xl mb-2">📚</div>
+            <p>No hay archivos de conocimiento disponibles</p>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = knowledgeFiles.map(file => `
+        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+          <div class="flex items-center justify-between">
+            <div class="flex-1">
+              <h4 class="font-semibold text-gray-900 dark:text-gray-100">${file.original_filename || file.source_file}</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-300">
+                Tipo: ${file.file_type?.toUpperCase() || 'N/A'} | 
+                Tamaño: ${file.file_size ? (file.file_size / 1024 / 1024).toFixed(2) + ' MB' : 'N/A'} | 
+                Estado: ${file.extraction_status || 'pending'}
+              </p>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Subido: ${file.created_at ? new Date(file.created_at).toLocaleDateString() : 'N/A'}
+              </p>
+            </div>
+            <div class="flex gap-2 ml-4">
+              <button onclick="console.log('🔍 BOTÓN PRINCIPAL EXTRAER CONTENIDO CLICKEADO - ID:', ${file.id}); extractContent(${file.id})" 
+                      class="px-3 py-1 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors border-2 border-green-400 shadow-lg"
+                      title="Extraer contenido del archivo"
+                      style="background-color: #10B981 !important; border-color: #059669 !important; box-shadow: 0 0 10px rgba(16, 185, 129, 0.5) !important;">
+                🔍 Extraer Contenido
+              </button>
+              <button onclick="viewKnowledgeDetails(${file.id})" 
+                      class="px-3 py-1 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                      title="Ver detalles del archivo">
+                👁️ Ver Detalles
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Función para cargar la lista de archivos de Knowledge Base
+    async function loadKnowledgeBase() {
       try {
-        // Usar el endpoint debug_view_button.php que ya existe y funciona
-        const response = await fetch(`api/debug_view_button.php?id=${knowledgeId}`, {
+        const response = await fetch(ConfigPortable.getApiUrl('ai_knowledge_list_safe.php'), {
           headers: {
-            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+            'Authorization': 'Bearer ' + (window.Auth?.getToken() || localStorage.getItem('auth_token'))
           }
         });
         
         if (!response.ok) {
+          console.error('Error cargando Knowledge Base:', response.status);
+          return;
+        }
+        
+        const data = await response.json();
+        if (data.ok && data.knowledge) {
+          renderKnowledgeList(data.knowledge);
+        } else {
+          renderKnowledgeList([]);
+        }
+      } catch (error) {
+        console.error('Error cargando Knowledge Base:', error);
+        renderKnowledgeList([]);
+      }
+    }
+
+    // Función para ver detalles del archivo de conocimiento
+    window.viewKnowledgeDetails = async function(knowledgeId) {
+      try {
+        console.log('🔍 DEBUG: viewKnowledgeDetails llamada con ID:', knowledgeId);
+        console.log('🔍 DEBUG: Token disponible:', !!localStorage.getItem('auth_token'));
+        console.log('🔍 DEBUG: URL API:', ConfigPortable.getApiUrl(`debug_view_button_safe.php?id=${knowledgeId}`));
+        
+        // Mostrar indicador de progreso
+        const progressModal = document.getElementById('progress-modal');
+        if (progressModal) {
+          progressModal.classList.remove('hidden');
+        }
+        
+        // Usar el endpoint debug_view_button_simple.php para diagnóstico
+        const response = await fetch(ConfigPortable.getApiUrl(`debug_view_button_simple.php?id=${knowledgeId}`), {
+          headers: {
+            'Authorization': 'Bearer ' + (window.Auth?.getToken() || localStorage.getItem('auth_token'))
+          }
+        });
+        
+        console.log('🔍 DEBUG: Response status:', response.status);
+        console.log('🔍 DEBUG: Response headers:', response.headers);
+        
+        if (!response.ok) {
+          console.log('🔍 DEBUG: Error en response:', response.status, response.statusText);
+          alert('Error obteniendo detalles: ' + response.status);
+          return;
+        }
+        
+        const data = await response.json();
+        console.log('🔍 DEBUG: Data recibida:', data);
+        
+        if (data.ok) {
+          const knowledge = data.knowledge;
+          
+          // Mostrar detalles en modal
+          const modal = document.getElementById('knowledge-modal');
+          const content = document.getElementById('knowledge-modal-content');
+          
+          console.log('🔍 DEBUG: Modal encontrado:', !!modal);
+          console.log('🔍 DEBUG: Content encontrado:', !!content);
+          
+          if (modal && content) {
+            content.innerHTML = `
+              <div class="space-y-4">
+                <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+                  <h4 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">📄 Detalles del Archivo</h4>
+                  <p class="text-sm text-blue-700 dark:text-blue-300">Archivo: ${knowledge.original_filename || knowledge.source_file}</p>
+                  <p class="text-sm text-blue-700 dark:text-blue-300">Tipo: ${knowledge.file_type?.toUpperCase() || 'N/A'}</p>
+                  <p class="text-sm text-blue-700 dark:text-blue-300">Tamaño: ${knowledge.file_size ? (knowledge.file_size / 1024 / 1024).toFixed(2) + ' MB' : 'N/A'}</p>
+                </div>
+                
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                  <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-2">📋 Resumen</h5>
+                  <p class="text-sm text-gray-700 dark:text-gray-300">${knowledge.summary || 'Resumen del conocimiento extraído'}</p>
+                </div>
+                
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                  <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-2">📄 Contenido Extraído</h5>
+                  <p class="text-sm text-gray-700 dark:text-gray-300">${knowledge.content || 'Contenido extraído automáticamente del archivo subido.'}</p>
+                </div>
+                
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                  <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-2">📊 Metadatos</h5>
+                  <p class="text-sm text-gray-700 dark:text-gray-300">
+                    Tipo: ${knowledge.knowledge_type || 'user_insight'}<br>
+                    Uso: ${knowledge.usage_count || 0} veces<br>
+                    Confianza: ${knowledge.confidence_score ? (parseFloat(knowledge.confidence_score) * 100).toFixed(1) + '%' : '70.0%'}<br>
+                    Tasa de éxito: ${knowledge.success_rate ? (parseFloat(knowledge.success_rate) * 100).toFixed(1) + '%' : '0.0%'}
+                  </p>
+                </div>
+                
+                <div class="flex gap-2">
+                  <button onclick="extractContent(${knowledgeId})" 
+                          class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                    🔍 Extraer Contenido Real
+                  </button>
+                  <button onclick="document.getElementById('knowledge-modal').classList.add('hidden')" 
+                          class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                    ✕ Cerrar
+                  </button>
+                </div>
+              </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            console.log('🔍 DEBUG: Modal mostrado exitosamente');
+          } else {
+            console.log('🔍 DEBUG: ERROR - Modal o content no encontrados');
+            alert('Error: Modal no encontrado');
+          }
+        } else {
+          console.log('🔍 DEBUG: Error en data:', data.error);
+          alert('Error: ' + data.error);
+        }
+        
+        // Ocultar indicador de progreso
+        if (progressModal) {
+          progressModal.classList.add('hidden');
+        }
+        
+      } catch (error) {
+        console.error('🔍 DEBUG: Error crítico:', error);
+        alert('Error obteniendo detalles del archivo: ' + error.message);
+        
+        // Ocultar indicador de progreso en caso de error
+        const progressModal = document.getElementById('progress-modal');
+        if (progressModal) {
+          progressModal.classList.add('hidden');
+        }
+      }
+    };
+
+    // Función para extraer contenido real del archivo
+    window.extractContent = async function(knowledgeId) {
+      try {
+        console.log('🔍 DEBUG: extractContent llamada con ID:', knowledgeId);
+        console.log('🔍 DEBUG: Token disponible:', !!localStorage.getItem('auth_token'));
+        console.log('🔍 DEBUG: URL API:', ConfigPortable.getApiUrl('debug_extract_simple.php'));
+        
+        // Mostrar indicador de progreso
+        const progressModal = document.getElementById('progress-modal');
+        if (progressModal) {
+          progressModal.classList.remove('hidden');
+          const progressText = progressModal.querySelector('#progress-text');
+          if (progressText) {
+            progressText.textContent = 'Extrayendo contenido del archivo...';
+          }
+        }
+        
+        // Usar el endpoint debug simple primero
+        const response = await fetch(ConfigPortable.getApiUrl('debug_extract_simple.php'), {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + (window.Auth?.getToken() || localStorage.getItem('auth_token'))
+          },
+          body: JSON.stringify({
+            knowledge_id: parseInt(knowledgeId)
+          })
+        });
+        
+        console.log('🔍 DEBUG: Response status:', response.status);
+        
+        if (!response.ok) {
+          console.log('🔍 DEBUG: Error en response:', response.status, response.statusText);
           alert('Error extrayendo contenido: ' + response.status);
           return;
         }
         
         const data = await response.json();
+        console.log('🔍 DEBUG: Data de debug recibida:', data);
+        
         if (data.ok) {
-          // Simular extracción de contenido real
-          const knowledge = data.knowledge;
-          const extractedContent = `CONTENIDO EXTRAÍDO DE: ${knowledge.original_filename || knowledge.source_file}
-
-TIPO DE ARCHIVO: ${knowledge.file_type || 'PDF'}
-TAMAÑO: ${knowledge.file_size ? (knowledge.file_size / 1024 / 1024).toFixed(2) + ' MB' : 'Desconocido'}
-
-RESUMEN AUTOMÁTICO:
-Este archivo contiene información sobre ${knowledge.source_file ? knowledge.source_file.replace('.pdf', '').replace('_', ' ') : 'trading y análisis técnico'}.
-
-CONTENIDO SIMULADO:
-El archivo "${knowledge.source_file}" ha sido procesado exitosamente. Para extracción completa de contenido PDF, se requiere:
-
-1. Instalación de pdftotext en el servidor
-2. Configuración de permisos de archivo
-3. Implementación de librerías PHP para PDF
-
-ESTADO ACTUAL:
-- Archivo subido: ✅
-- Metadatos extraídos: ✅  
-- Contenido completo: ⏳ Pendiente de librerías
-- Resumen generado: ✅
-
-PRÓXIMOS PASOS:
-Para extracción completa, contactar al administrador del servidor para instalar pdftotext o implementar TCPDF.`;
-
-          const extractedSummary = `Archivo ${knowledge.source_file} procesado exitosamente. Contiene información sobre ${knowledge.source_file ? knowledge.source_file.replace('.pdf', '').replace('_', ' ') : 'trading'}.`;
-
-          alert('✅ Contenido extraído exitosamente\n\nResumen: ' + extractedSummary);
+          // Mostrar resultado del debug en modal
+          const modal = document.getElementById('knowledge-modal');
+          const content = document.getElementById('knowledge-modal-content');
           
-          // Recargar el modal con el nuevo contenido
-          window.aiDashboard.viewKnowledge(knowledgeId);
+          if (modal && content) {
+            content.innerHTML = `
+              <div class="space-y-4">
+                <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
+                  <h4 class="font-semibold text-green-800 dark:text-green-200 mb-2">✅ DEBUG FUNCIONANDO</h4>
+                  <p class="text-sm text-green-700 dark:text-green-300">Mensaje: ${data.message}</p>
+                  <p class="text-sm text-green-700 dark:text-green-300">ID: ${data.knowledge_id}</p>
+                  <p class="text-sm text-green-700 dark:text-green-300">Timestamp: ${data.timestamp}</p>
+                  <p class="text-sm text-green-700 dark:text-green-300">Debug: ${data.debug}</p>
+                </div>
+                
+                <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+                  <h5 class="font-medium text-blue-800 dark:text-blue-200 mb-2">ℹ️ Información</h5>
+                  <p class="text-sm text-blue-700 dark:text-blue-300">
+                    El botón está funcionando correctamente.<br>
+                    El endpoint debug simple está respondiendo.<br>
+                    Ahora podemos implementar la extracción real.
+                  </p>
+                </div>
+                
+                <div class="flex gap-2">
+                  <button onclick="document.getElementById('knowledge-modal').classList.add('hidden')" 
+                          class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                    ✕ Cerrar
+                  </button>
+                </div>
+              </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            console.log('🔍 DEBUG: Modal de debug mostrado exitosamente');
+          }
         } else {
-          alert('❌ Error: ' + data.error);
+          console.log('🔍 DEBUG: Error en debug:', data.error);
+          alert('Error en debug: ' + data.error);
+        }
+        
+        // Ocultar indicador de progreso
+        if (progressModal) {
+          progressModal.classList.add('hidden');
         }
         
       } catch (error) {
-        console.error('Error extracting content:', error);
-        alert('❌ Error de conexión: ' + error.message);
+        console.error('🔍 DEBUG: Error crítico en debug:', error);
+        alert('Error en debug: ' + error.message);
+        
+        // Ocultar indicador de progreso en caso de error
+        const progressModal = document.getElementById('progress-modal');
+        if (progressModal) {
+          progressModal.classList.add('hidden');
+        }
       }
     };
 
-    // Función para probar el botón "Ver" con debugging completo
-    window.testViewButton = async function() {
-      try {
-        // Obtener el primer conocimiento disponible
-        const response = await fetch('api/ai_knowledge_list_safe.php', {
-          headers: {
-            'Authorization': 'Bearer ' + (window.Config?.getToken() || localStorage.getItem('auth_token'))
+    // Sistema de validaciones y cambios sin guardar
+    class ConfigValidator {
+      constructor() {
+        this.originalValues = {};
+        this.hasChanges = false;
+        this.init();
+      }
+
+      init() {
+        this.captureOriginalValues();
+        this.setupEventListeners();
+        this.setupResetButton();
+      }
+
+      captureOriginalValues() {
+        const inputs = ['ai-provider', 'ai-model', 'analysis-level', 'trading-style', 'risk-tolerance'];
+        inputs.forEach(id => {
+          const element = document.getElementById(id);
+          if (element) {
+            this.originalValues[id] = element.value;
           }
         });
-        
-        if (!response.ok) {
-          alert('Error obteniendo lista de conocimientos');
-          return;
+      }
+
+      setupEventListeners() {
+        const inputs = ['ai-provider', 'ai-model', 'analysis-level', 'trading-style', 'risk-tolerance'];
+        inputs.forEach(id => {
+          const element = document.getElementById(id);
+          if (element) {
+            element.addEventListener('change', () => this.checkForChanges());
+            element.addEventListener('input', () => this.checkForChanges());
+          }
+        });
+      }
+
+      setupResetButton() {
+        const resetBtn = document.getElementById('reset-config-btn');
+        if (resetBtn) {
+          resetBtn.addEventListener('click', () => this.resetToDefaults());
         }
-        
-        const data = await response.json();
-        if (!data.ok || !data.knowledge || data.knowledge.length === 0) {
-          alert('No hay conocimientos disponibles para probar');
-          return;
+
+        // Botón de inicializar datos IA
+        const initDataBtn = document.getElementById('init-ai-data-btn');
+        if (initDataBtn) {
+          initDataBtn.addEventListener('click', () => this.initAIData());
         }
+      }
+
+      checkForChanges() {
+        let hasChanges = false;
+        const inputs = ['ai-provider', 'ai-model', 'analysis-level', 'trading-style', 'risk-tolerance'];
         
-        const firstKnowledge = data.knowledge[0];
-        console.log('Testing view button with knowledge ID:', firstKnowledge.id);
+        inputs.forEach(id => {
+          const element = document.getElementById(id);
+          if (element && element.value !== this.originalValues[id]) {
+            hasChanges = true;
+          }
+        });
+
+        this.hasChanges = hasChanges;
+        this.updateChangesIndicator();
+      }
+
+      updateChangesIndicator() {
+        const indicator = document.getElementById('changes-indicator');
+        const saveBtn = document.getElementById('save-config-btn');
         
-        // Usar el debugger
-        const result = await window.debugViewButton(firstKnowledge.id);
-        
-        if (result.success) {
-          alert('✅ Botón "Ver" funcionó correctamente');
+        if (this.hasChanges) {
+          indicator?.classList.remove('hidden');
+          saveBtn?.classList.remove('opacity-50');
+          saveBtn?.classList.remove('cursor-not-allowed');
         } else {
-          alert('❌ Error en botón "Ver": ' + result.error);
+          indicator?.classList.add('hidden');
+          saveBtn?.classList.add('opacity-50');
+          saveBtn?.classList.add('cursor-not-allowed');
         }
+      }
+
+      resetToDefaults() {
+        if (confirm('¿Estás seguro de que quieres restablecer toda la configuración a los valores por defecto?')) {
+          document.getElementById('ai-provider').value = 'auto';
+          document.getElementById('ai-model').value = '';
+          document.getElementById('analysis-level').value = 'advanced';
+          document.getElementById('trading-style').value = 'balanced';
+          document.getElementById('risk-tolerance').value = 'moderate';
+          
+          this.captureOriginalValues();
+          this.checkForChanges();
+          
+          // Mostrar mensaje de éxito
+          this.showToast('✅ Configuración restablecida a valores por defecto', 'success');
+        }
+      }
+
+      showToast(message, type = 'info') {
+        // Crear toast notification
+        const toast = document.createElement('div');
+        toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg text-white ${
+          type === 'success' ? 'bg-green-500' : 
+          type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+        }`;
+        toast.textContent = message;
         
-      } catch (error) {
-        console.error('Error testing view button:', error);
-        alert('❌ Error de conexión: ' + error.message);
+        document.body.appendChild(toast);
+        
+        // Remover después de 3 segundos
+        setTimeout(() => {
+          toast.remove();
+        }, 3000);
+      }
+
+      markAsSaved() {
+        this.captureOriginalValues();
+        this.hasChanges = false;
+        this.updateChangesIndicator();
+        this.showToast('✅ Configuración guardada exitosamente', 'success');
+      }
+
+      async initAIData() {
+        if (!confirm('¿Inicializar datos de IA? Esto creará métricas, patrones y análisis de ejemplo.')) {
+          return;
+        }
+
+        try {
+          const response = await fetch('api/init_ai_data_safe.php', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${this.getToken()}`
+            }
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            this.showToast('✅ Datos IA inicializados exitosamente', 'success');
+            
+            // Recargar dashboard para mostrar los nuevos datos
+            setTimeout(() => {
+              window.location.reload();
+            }, 2000);
+          } else {
+            const error = await response.json();
+            this.showToast(`❌ Error: ${error.error}`, 'error');
+          }
+        } catch (error) {
+          this.showToast(`❌ Error de conexión: ${error.message}`, 'error');
+        }
+      }
+    }
+
+    // Inicializar validador cuando el DOM esté listo
+    document.addEventListener('DOMContentLoaded', function() {
+      window.configValidator = new ConfigValidator();
+      
+      // Configurar modal de configuración avanzada
+      const advancedConfigBtn = document.getElementById('advanced-config-btn');
+      const advancedConfigModal = document.getElementById('advanced-config-modal');
+      const closeAdvancedModal = document.getElementById('close-advanced-modal');
+      const advancedConfigContent = document.getElementById('advanced-config-content');
+      
+      if (advancedConfigBtn && advancedConfigModal) {
+        advancedConfigBtn.addEventListener('click', function() {
+          // Generar contenido dinámico
+          advancedConfigContent.innerHTML = `
+            <div class="space-y-6">
+              <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+                <h4 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">🔧 Configuración Avanzada de IA</h4>
+                <p class="text-sm text-blue-700 dark:text-blue-300">Ajustes avanzados para personalizar el comportamiento del sistema de IA</p>
+              </div>
+              
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Timeout de Análisis (ms)</label>
+                  <input type="number" id="analysis-timeout" value="30000" min="5000" max="120000" 
+                         class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Máximo de Reintentos</label>
+                  <input type="number" id="max-retries" value="3" min="1" max="10" 
+                         class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nivel de Logging</label>
+                  <select id="logging-level" class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="error">Solo Errores</option>
+                    <option value="warn" selected>Advertencias</option>
+                    <option value="info">Información</option>
+                    <option value="debug">Debug Completo</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Frecuencia de Aprendizaje</label>
+                  <select id="learning-frequency" class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="immediate">Inmediato</option>
+                    <option value="batch" selected>Por Lotes</option>
+                    <option value="daily">Diario</option>
+                    <option value="weekly">Semanal</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="space-y-3">
+                <h5 class="font-medium text-gray-800 dark:text-gray-200">Opciones Experimentales</h5>
+                <div class="space-y-2">
+                  <label class="flex items-center">
+                    <input type="checkbox" id="enable-experimental-features" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
+                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Habilitar características experimentales</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input type="checkbox" id="enable-deep-learning" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
+                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Aprendizaje profundo avanzado</span>
+                  </label>
+                  <label class="flex items-center">
+                    <input type="checkbox" id="enable-predictive-analysis" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
+                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Análisis predictivo</span>
+                  </label>
+                </div>
+              </div>
+              
+              <div class="flex gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <button onclick="saveAdvancedConfig()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                  💾 Guardar Configuración
+                </button>
+                <button onclick="resetAdvancedConfig()" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                  🔄 Restablecer
+                </button>
+                <button onclick="document.getElementById('advanced-config-modal').classList.add('hidden')" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                  ✕ Cerrar
+                </button>
+              </div>
+            </div>
+          `;
+          
+          advancedConfigModal.classList.remove('hidden');
+        });
+      }
+      
+      if (closeAdvancedModal && advancedConfigModal) {
+        closeAdvancedModal.addEventListener('click', function() {
+          advancedConfigModal.classList.add('hidden');
+        });
+      }
+      
+      // Configurar modal de gráficos de patrones
+      const viewPatternsChartBtn = document.getElementById('view-patterns-chart-btn');
+      const patternsChartModal = document.getElementById('patterns-chart-modal');
+      const closePatternsChartModal = document.getElementById('close-patterns-chart-modal');
+      const patternsChartContent = document.getElementById('patterns-chart-content');
+      
+      if (viewPatternsChartBtn && patternsChartModal) {
+        viewPatternsChartBtn.addEventListener('click', function() {
+          // Generar contenido de gráficos
+          patternsChartContent.innerHTML = `
+            <div class="space-y-6">
+              <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
+                <h4 class="font-semibold text-green-800 dark:text-green-200 mb-2">📊 Gráficos de Patrones Comportamentales</h4>
+                <p class="text-sm text-green-700 dark:text-green-300">Visualización de patrones de trading detectados por el sistema de IA</p>
+              </div>
+              
+              <div class="grid grid-cols-2 gap-6">
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                  <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-3">📈 Patrones de Entrada</h5>
+                  <div class="h-48 bg-gray-50 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                    <div class="text-center text-gray-500 dark:text-gray-400">
+                      <div class="text-4xl mb-2">📊</div>
+                      <p class="text-sm">Gráfico de patrones de entrada</p>
+                      <p class="text-xs mt-1">Se mostrará cuando haya datos suficientes</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                  <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-3">🎯 Patrones de Salida</h5>
+                  <div class="h-48 bg-gray-50 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                    <div class="text-center text-gray-500 dark:text-gray-400">
+                      <div class="text-4xl mb-2">📉</div>
+                      <p class="text-sm">Gráfico de patrones de salida</p>
+                      <p class="text-xs mt-1">Se mostrará cuando haya datos suficientes</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                  <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-3">⚖️ Gestión de Riesgo</h5>
+                  <div class="h-48 bg-gray-50 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                    <div class="text-center text-gray-500 dark:text-gray-400">
+                      <div class="text-4xl mb-2">🛡️</div>
+                      <p class="text-sm">Gráfico de gestión de riesgo</p>
+                      <p class="text-xs mt-1">Se mostrará cuando haya datos suficientes</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                  <h5 class="font-medium text-gray-800 dark:text-gray-200 mb-3">⏰ Patrones Temporales</h5>
+                  <div class="h-48 bg-gray-50 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                    <div class="text-center text-gray-500 dark:text-gray-400">
+                      <div class="text-4xl mb-2">⏰</div>
+                      <p class="text-sm">Gráfico de patrones temporales</p>
+                      <p class="text-xs mt-1">Se mostrará cuando haya datos suficientes</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+                <h5 class="font-medium text-blue-800 dark:text-blue-200 mb-2">📋 Resumen de Patrones Detectados</h5>
+                <div class="grid grid-cols-4 gap-4 text-center">
+                  <div>
+                    <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">0</div>
+                    <div class="text-sm text-blue-700 dark:text-blue-300">Total Patrones</div>
+                  </div>
+                  <div>
+                    <div class="text-2xl font-bold text-green-600 dark:text-green-400">0</div>
+                    <div class="text-sm text-green-700 dark:text-green-300">Alta Confianza</div>
+                  </div>
+                  <div>
+                    <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">0</div>
+                    <div class="text-sm text-yellow-700 dark:text-yellow-300">Media Confianza</div>
+                  </div>
+                  <div>
+                    <div class="text-2xl font-bold text-red-600 dark:text-red-400">0</div>
+                    <div class="text-sm text-red-700 dark:text-red-300">Baja Confianza</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="flex gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <button onclick="refreshPatternsCharts()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                  🔄 Actualizar Gráficos
+                </button>
+                <button onclick="exportPatternsData()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                  📤 Exportar Datos
+                </button>
+                <button onclick="document.getElementById('patterns-chart-modal').classList.add('hidden')" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                  ✕ Cerrar
+                </button>
+              </div>
+            </div>
+          `;
+          
+          patternsChartModal.classList.remove('hidden');
+        });
+      }
+      
+      if (closePatternsChartModal && patternsChartModal) {
+        closePatternsChartModal.addEventListener('click', function() {
+          patternsChartModal.classList.add('hidden');
+        });
+      }
+      
+      // Configurar botón de exportar Knowledge Base
+      const exportKnowledgeBtn = document.getElementById('export-knowledge-btn');
+      if (exportKnowledgeBtn) {
+        exportKnowledgeBtn.addEventListener('click', function() {
+          window.exportKnowledgeBase();
+        });
+      }
+      
+      // Funciones para gráficos de patrones
+      window.refreshPatternsCharts = function() {
+        showToast('🔄 Actualizando gráficos de patrones...', 'info');
+        // Aquí se implementaría la lógica para actualizar los gráficos
+      };
+      
+      window.exportPatternsData = function() {
+        const data = {
+          timestamp: new Date().toISOString(),
+          patterns: [],
+          summary: {
+            total: 0,
+            high_confidence: 0,
+            medium_confidence: 0,
+            low_confidence: 0
+          }
+        };
+        
+        const dataStr = JSON.stringify(data, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'patrones_comportamentales.json';
+        link.click();
+        URL.revokeObjectURL(url);
+        
+        showToast('✅ Datos de patrones exportados exitosamente', 'success');
+      };
+      
+      // Función para exportar Knowledge Base
+      window.exportKnowledgeBase = async function() {
+        try {
+          showToast('🔄 Exportando Knowledge Base...', 'info');
+          
+          const response = await fetch(ConfigPortable.getApiUrl('ai_knowledge_list_safe.php'), {
+            headers: {
+              'Authorization': 'Bearer ' + (window.Auth?.getToken() || localStorage.getItem('auth_token'))
+            }
+          });
+          
+          if (!response.ok) {
+            showToast('❌ Error obteniendo datos: ' + response.status, 'error');
+            return;
+          }
+          
+          const data = await response.json();
+          if (!data.ok) {
+            showToast('❌ Error: ' + data.error, 'error');
+            return;
+          }
+          
+          const exportData = {
+            timestamp: new Date().toISOString(),
+            user_id: data.user_id || 'unknown',
+            knowledge_count: data.knowledge ? data.knowledge.length : 0,
+            knowledge: data.knowledge || [],
+            summary: {
+              total_files: data.knowledge ? data.knowledge.length : 0,
+              pdf_files: data.knowledge ? data.knowledge.filter(k => k.file_type === 'pdf').length : 0,
+              txt_files: data.knowledge ? data.knowledge.filter(k => k.file_type === 'txt').length : 0,
+              doc_files: data.knowledge ? data.knowledge.filter(k => k.file_type === 'doc' || k.file_type === 'docx').length : 0,
+              total_size_mb: data.knowledge ? data.knowledge.reduce((sum, k) => sum + (k.file_size || 0), 0) / 1024 / 1024 : 0
+            }
+          };
+          
+          const dataStr = JSON.stringify(exportData, null, 2);
+          const dataBlob = new Blob([dataStr], {type: 'application/json'});
+          const url = URL.createObjectURL(dataBlob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `knowledge_base_export_${new Date().toISOString().split('T')[0]}.json`;
+          link.click();
+          URL.revokeObjectURL(url);
+          
+          showToast(`✅ Knowledge Base exportado exitosamente (${exportData.knowledge_count} archivos)`, 'success');
+          
+        } catch (error) {
+          console.error('Error exporting knowledge base:', error);
+          showToast('❌ Error de conexión: ' + error.message, 'error');
+        }
+      };
+      
+      // Funciones para configuración avanzada
+      window.saveAdvancedConfig = function() {
+        try {
+          const config = {
+            analysis_timeout: parseInt(document.getElementById('analysis-timeout')?.value) || 30000,
+            max_retries: parseInt(document.getElementById('max-retries')?.value) || 3,
+            logging_level: document.getElementById('logging-level')?.value || 'warn',
+            learning_frequency: document.getElementById('learning-frequency')?.value || 'batch',
+            experimental_features: document.getElementById('enable-experimental-features')?.checked || false,
+            deep_learning: document.getElementById('enable-deep-learning')?.checked || false,
+            predictive_analysis: document.getElementById('enable-predictive-analysis')?.checked || false,
+            saved_at: new Date().toISOString()
+          };
+          
+          // Guardar en localStorage
+          localStorage.setItem('ai_advanced_config', JSON.stringify(config));
+          
+          // Mostrar toast de éxito
+          showToast('✅ Configuración avanzada guardada exitosamente', 'success');
+          
+          // Cerrar modal
+          document.getElementById('advanced-config-modal').classList.add('hidden');
+          
+          console.log('Configuración avanzada guardada:', config);
+        } catch (error) {
+          console.error('Error guardando configuración avanzada:', error);
+          showToast('❌ Error guardando configuración', 'error');
+        }
+      };
+      
+      window.resetAdvancedConfig = function() {
+        if (confirm('¿Restablecer configuración avanzada a valores por defecto?')) {
+          try {
+            // Restablecer valores por defecto
+            const elements = {
+              'analysis-timeout': 30000,
+              'max-retries': 3,
+              'logging-level': 'warn',
+              'learning-frequency': 'batch',
+              'enable-experimental-features': false,
+              'enable-deep-learning': false,
+              'enable-predictive-analysis': false
+            };
+            
+            Object.entries(elements).forEach(([id, value]) => {
+              const element = document.getElementById(id);
+              if (element) {
+                if (element.type === 'checkbox') {
+                  element.checked = value;
+                } else {
+                  element.value = value;
+                }
+              }
+            });
+            
+            showToast('✅ Configuración restablecida a valores por defecto', 'success');
+          } catch (error) {
+            console.error('Error restableciendo configuración:', error);
+            showToast('❌ Error restableciendo configuración', 'error');
+          }
+        }
+      };
+    });
+
+    // Función para mostrar toast notifications (scope global)
+    window.showToast = function(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg text-white transition-all duration-300 ${
+          type === 'success' ? 'bg-green-500' : 
+          type === 'error' ? 'bg-red-500' : 
+          type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500'
+        }`;
+        toast.textContent = message;
+        
+        document.body.appendChild(toast);
+        
+        // Animación de entrada
+        setTimeout(() => {
+          toast.style.transform = 'translateX(0)';
+          toast.style.opacity = '1';
+        }, 100);
+        
+        // Remover después de 3 segundos
+        setTimeout(() => {
+          toast.style.transform = 'translateX(100%)';
+          toast.style.opacity = '0';
+          setTimeout(() => {
+            toast.remove();
+          }, 300);
+        }, 3000);
+    };
+
+    // Funciones para configuración de prompt (scope global)
+    window.togglePromptConfig = function() {
+      console.log('🔧 DEBUG: togglePromptConfig llamada');
+      const panel = document.getElementById('promptConfigPanel');
+      console.log('🔧 DEBUG: Panel encontrado:', !!panel);
+      
+      if (!panel) {
+        console.error('❌ Panel promptConfigPanel no encontrado');
+        return;
+      }
+      
+      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+      console.log('🔧 DEBUG: Panel display:', panel.style.display);
+      
+      if (panel.style.display === 'block') {
+        loadCurrentPrompt();
       }
     };
+
+    // Cargar prompt actual
+    window.loadCurrentPrompt = async function() {
+      console.log('🔧 DEBUG: loadCurrentPrompt llamada');
+      try {
+        const response = await fetch(ConfigPortable.getApiUrl('settings_get_safe.php'), {
+          headers: { 
+            'Authorization': 'Bearer ' + (window.Auth?.getToken() || localStorage.getItem('auth_token'))
+          }
+        });
+        console.log('🔧 DEBUG: Response status:', response.status);
+        const data = await response.json();
+        console.log('🔧 DEBUG: Response data:', data);
+        
+        if (data.ok) {
+          const customPrompt = data.settings.ai_prompt_ext_conten_file;
+          if (customPrompt) {
+            document.getElementById('aiPromptExtract').value = customPrompt;
+          } else {
+            // Cargar prompt predeterminado si no hay personalizado
+            document.getElementById('aiPromptExtract').value = 
+              'Eres un analista de trading experto con más de 20 años de experiencia en mercados financieros. Analiza este documento y proporciona un análisis estructurado en formato JSON con: resumen (2-3 líneas del contenido principal), puntos_clave (5-8 conceptos fundamentales extraídos), estrategias (3-5 estrategias de trading específicas), gestion_riesgo (2-3 puntos críticos de gestión de riesgo), recomendaciones (2-3 recomendaciones prácticas para implementar).';
+          }
+        }
+      } catch (error) {
+        console.error('Error cargando prompt:', error);
+        showToast('❌ Error cargando prompt actual', 'error');
+        // Cargar prompt predeterminado en caso de error
+        document.getElementById('aiPromptExtract').value = 
+          'Eres un analista de trading experto con más de 20 años de experiencia en mercados financieros. Analiza este documento y proporciona un análisis estructurado en formato JSON con: resumen (2-3 líneas del contenido principal), puntos_clave (5-8 conceptos fundamentales extraídos), estrategias (3-5 estrategias de trading específicas), gestion_riesgo (2-3 puntos críticos de gestión de riesgo), recomendaciones (2-3 recomendaciones prácticas para implementar).';
+      }
+    };
+
+    // Guardar prompt personalizado
+    window.savePromptExtract = async function() {
+      const prompt = document.getElementById('aiPromptExtract').value.trim();
+      
+      if (!prompt) {
+        showToast('⚠️ El prompt no puede estar vacío', 'warning');
+        return;
+      }
+      
+      try {
+        const response = await fetch(ConfigPortable.getApiUrl('settings_set_safe.php'), {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + (window.Auth?.getToken() || localStorage.getItem('auth_token')),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            ai_prompt_ext_conten_file: prompt
+          })
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          showToast('✅ Prompt guardado exitosamente', 'success');
+          togglePromptConfig();
+        } else {
+          showToast('❌ Error guardando prompt: ' + (data.error || 'Error desconocido'), 'error');
+        }
+      } catch (error) {
+        console.error('Error guardando prompt:', error);
+        showToast('❌ Error de conexión', 'error');
+      }
+    };
+
+    // Restaurar prompt predeterminado
+    window.resetPromptExtract = async function() {
+      if (confirm('¿Restaurar el prompt predeterminado? Esto eliminará tu prompt personalizado.')) {
+        try {
+          const response = await fetch(ConfigPortable.getApiUrl('settings_set_safe.php'), {
+            method: 'POST',
+            headers: {
+              'Authorization': 'Bearer ' + (window.Auth?.getToken() || localStorage.getItem('auth_token')),
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              ai_prompt_ext_conten_file: null
+            })
+          });
+          
+          const data = await response.json();
+          if (data.ok) {
+            document.getElementById('aiPromptExtract').value = '';
+            showToast('✅ Prompt restaurado a predeterminado', 'success');
+          } else {
+            showToast('❌ Error restaurando prompt: ' + (data.error || 'Error desconocido'), 'error');
+          }
+        } catch (error) {
+          console.error('Error restaurando prompt:', error);
+          showToast('❌ Error de conexión', 'error');
+        }
+      }
+    };
+
+    // Test básico de funciones
+    console.log('🔧 DEBUG: Funciones definidas:', {
+      togglePromptConfig: typeof window.togglePromptConfig,
+      loadCurrentPrompt: typeof window.loadCurrentPrompt,
+      savePromptExtract: typeof window.savePromptExtract,
+      resetPromptExtract: typeof window.resetPromptExtract,
+      showToast: typeof window.showToast
+    });
+
+    // Cargar Knowledge Base al inicializar la página
+    document.addEventListener('DOMContentLoaded', function() {
+      loadKnowledgeBase();
+    });
+
   </script>
 </body>
 </html>

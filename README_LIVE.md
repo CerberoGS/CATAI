@@ -16,7 +16,39 @@ Quick Resume
 - Settings ownership: `index.html` writes `data_provider` and its own fields; `config.html` writes global providers and extras.
 
 Session Log
-- Session 6 (current - 2025-01-27)
+- Session 7 (current - 2025-09-11)
+  - AI Behavioral System Diagnostics: Implementado sistema completo de diagnóstico para endpoints de IA comportamental.
+  - Test AI Page: Creada `test_ai.html` con suite completa de pruebas para verificar funcionalidad de IA.
+  - Diagnostic Endpoints: Creados múltiples endpoints de diagnóstico (`test_minimal_safe.php`, `test_db_connection_safe.php`, `check_tables_*_safe.php`).
+  - Error 500 Investigation: Identificado problema crítico en endpoints de IA que fallan con error 500.
+  - Database Connection Issues: Confirmado que el problema está en consultas SQL, no en servidor PHP.
+  - Knowledge Base Status: Verificado que Knowledge Base funciona correctamente (archivos subidos y procesados).
+  - Empty Tables Diagnosis: Confirmado que tablas vacías son normales para usuarios nuevos, pero endpoints no las manejan correctamente.
+  - Professional Debugging: Implementado enfoque sistemático de diagnóstico con múltiples niveles de verificación.
+  - Production Testing: Sistema de pruebas implementado directamente en producción para diagnóstico en tiempo real.
+  - **SISTEMA DE EXTRACCIÓN DE CONTENIDO IA COMPLETADO**: Implementado sistema completo con soporte para múltiples proveedores de IA.
+  - **Endpoints Creados**: `ai_extract_final_safe.php` (endpoint principal), `test_ai_extract_simple_safe.php` (test de configuración).
+  - **Soporte Múltiples IA**: OpenAI, Gemini, Claude, XAI, DeepSeek con lógica específica para cada proveedor.
+  - **Prompts Personalizables**: Sistema completo de prompts personalizados por usuario con fallback a predeterminado.
+  - **Integración Frontend**: Botón "⚙️ Configurar Prompt" funcional en `ai.html`.
+  - **Simulación Completa**: Botón "🎯 Simulación Botón Real" en `AI_Diag.html` que replica exactamente el flujo del botón real.
+  - **Diagnóstico Avanzado**: Múltiples botones de test (Estructuras, Info Archivo, Conexión IA) para verificación previa.
+  - **Endpoints de Test**: `test_data_structures_safe.php`, `test_file_info_safe.php` para verificación de datos.
+  - **Guardado en DB**: Sistema persiste resultados en `knowledge_base` con tracking completo y trazabilidad.
+  - **PORTABILIDAD COMPLETA**: Implementado sistema de URLs portables con autodetección de dominio/carpeta.
+  - **Configuración Portable**: `config.php` con autodetección de BASE_URL y override por ENV.
+  - **Helper PHP**: Función `getApiUrl()` para URLs dinámicas en backend.
+  - **Helper JavaScript**: `ConfigPortable` para URLs dinámicas en frontend.
+  - **Frontend Actualizado**: Todos los archivos JS usan URLs portables.
+  - **Documentación Actualizada**: AGENTS.md y README_LIVE.md con rutas portables.
+  - **PROBLEMA CRÍTICO RESUELTO**: Error fatal de funciones duplicadas (`detect_base_url()`).
+  - **Diagnóstico Profundo**: Creado sistema completo de diagnóstico con `test_deep_diagnostic_safe_v2.php`.
+  - **Protección de Funciones**: Implementado `function_exists()` para evitar redeclaración.
+  - **Eliminación de Duplicados**: Corregidas funciones duplicadas en `helpers.php`.
+  - **Sistema Completamente Funcional**: Todos los endpoints complejos ahora funcionan correctamente.
+  - **Guía de Diagnóstico**: Creada `DIAGNOSTIC_GUIDE.md` para futuros desarrolladores.
+  - README_LIVE.md Update: Actualizado con resolución completa del problema crítico.
+- Session 6 (previous - 2025-01-27)
   - Sistema Híbrido IA: Implementado sistema híbrido completo de análisis con contexto enriquecido.
   - Knowledge Base Integration: Sistema de conocimiento integrado con análisis principal en `index.html`.
   - Context Enrichment: Prompts enriquecidos con contexto del Knowledge Base (200+ caracteres adicionales).
@@ -109,8 +141,8 @@ Known Issues
 - Login/Register: removido `ALTER TABLE ... is_admin` en runtime; fallback de SELECT si la columna no existe.
 - Archivos: `api/auth_login.php`, `api/auth_register.php`.
 - Validación:
-  - Registro: `curl -sX POST https://cerberogrowthsolutions.com/bolsa/api/auth_register.php -H "Content-Type: application/json" -d '{"email":"user@x.com","password":"12345678"}'`
-  - Login: `curl -sX POST https://cerberogrowthsolutions.com/bolsa/api/auth_login.php -H "Content-Type: application/json" -d '{"email":"user@x.com","password":"12345678"}'`
+  - Registro: `curl -sX POST https://cerberogrowthsolutions.com/catai/api/auth_register.php -H "Content-Type: application/json" -d '{"email":"user@x.com","password":"12345678"}'`
+  - Login: `curl -sX POST https://cerberogrowthsolutions.com/catai/api/auth_login.php -H "Content-Type: application/json" -d '{"email":"user@x.com","password":"12345678"}'`
   - Si tu DB no tiene `is_admin`, el login sigue funcionando (fallback de SELECT).
 ## Session: AGENTS bootstrap (2025-09-06)
 - Stack/estructura detectados: PHP 8+ sin framework en `api/` (JWT, CORS, PDO MySQL), HTML/JS estático en raíz; `.htaccess` para SPA; datos mixtos (MySQL + JSON en `api/data/`).

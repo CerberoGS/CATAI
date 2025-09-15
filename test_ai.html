@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="es-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test IA - CATAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="static/js/config-portable.js"></script>
+    <style>
+        .dark-mode\:bg-gray-800 { background-color: #1f2937; }
+        .dark-mode\:text-white { color: #ffffff; }
+        .dark-mode\:text-gray-300 { color: #d1d5db; }
+        .dark-mode\:border-gray-600 { border-color: #4b5563; }
+        .dark-mode\:bg-gray-700 { background-color: #374151; }
+        .dark-mode\:hover\:bg-gray-600:hover { background-color: #4b5563; }
+        
+        .test-result {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .dark-mode .test-result {
+            background: #1e293b;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+        
+        .test-success { border-left: 4px solid #10b981; }
+        .test-error { border-left: 4px solid #ef4444; }
+        .test-warning { border-left: 4px solid #f59e0b; }
+        .test-info { border-left: 4px solid #3b82f6; }
+        
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #6b7280;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        
+        .copy-btn:hover { background: #4b5563; }
+        
+        .result-container {
+            position: relative;
+        }
+    </style>
+</head>
+<body class="bg-white dark-mode:bg-gray-800 text-gray-900 dark-mode:text-white">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4">
+        <div class="container mx-auto">
+            <h1 class="text-2xl font-bold">🧠 Test IA Comportamental</h1>
+            <p class="text-blue-100">Pruebas específicas para el sistema de IA comportamental</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container mx-auto p-6">
+        <!-- Test Controls -->
+        <div class="bg-white dark-mode:bg-gray-700 rounded-lg shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">🎯 Controles de Prueba</h2>
+            
+            <!-- Individual Tests -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <button id="btn-test-analysis" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium">
+                    🔍 Test Análisis IA
+                </button>
+                <button id="btn-test-metrics" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
+                    📊 Test Métricas IA
+                </button>
+                <button id="btn-test-patterns" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium">
+                    🎯 Test Patrones
+                </button>
+                <button id="btn-test-knowledge" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg font-medium">
+                    📚 Test Knowledge Base
+                </button>
+            </div>
+            
+            <!-- Suite Tests -->
+            <div class="grid grid-cols-1 md:grid-cols-14 gap-4 mb-6">
+                <button id="btn-run-all-tests" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium text-lg">
+                    🚀 Ejecutar Todas las Pruebas
+                </button>
+                <button id="btn-test-debug" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium text-lg">
+                    🧪 Test Básico
+                </button>
+                <button id="btn-test-minimal" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium text-lg">
+                    ⚡ Test Mínimo
+                </button>
+                <button id="btn-test-no-sql" class="bg-slate-600 hover:bg-slate-700 text-white px-6 py-3 rounded-lg font-medium text-lg">
+                    🚫 Sin SQL
+                </button>
+                <button id="btn-test-db-connection" class="bg-lime-600 hover:bg-lime-700 text-white px-6 py-3 rounded-lg font-medium text-lg">
+                    🗄️ Test DB
+                </button>
+                <button id="btn-test-basic-connectivity" class="bg-cyan-600 hover:bg-cyan-700 text-white px-6 py-3 rounded-lg font-medium text-lg">
+                    🔌 Conectividad Básica
+                </button>
+                <button id="btn-check-tables" class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg font-medium text-lg">
+                    📊 Verificar Tablas
+                </button>
+                <button id="btn-check-tables-exist" class="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-lg font-medium text-lg">
+                    🗂️ Verificar Existencia
+                </button>
+                <button id="btn-check-tables-simple" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium text-lg">
+                    🔍 Verificación Simple
+                </button>
+                <button id="btn-check-tables-robust" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-medium text-lg">
+                    🛡️ Verificación Robusta
+                </button>
+                <button id="btn-check-tables-ultra-simple" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium text-lg">
+                    ⚡ Ultra Simple
+                </button>
+                <button id="btn-check-tables-empty" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-3 rounded-lg font-medium text-lg">
+                    🎯 Tablas Vacías
+                </button>
+                <button id="btn-debug-real-data" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium text-lg">
+                    🔍 Verificar Datos Reales
+                </button>
+                <button id="btn-clear-results" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-medium text-lg">
+                    🗑️ Limpiar Resultados
+                </button>
+            </div>
+            
+            <!-- Status Info -->
+            <div class="bg-gray-100 dark-mode:bg-gray-600 rounded-lg p-4">
+                <h3 class="font-semibold mb-2">📊 Información del Sistema</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div>
+                        <strong>Origen:</strong> <span id="env-origin">—</span>
+                    </div>
+                    <div>
+                        <strong>Token:</strong> <span id="token-status">—</span>
+                    </div>
+                    <div>
+                        <strong>Última prueba:</strong> <span id="last-test">—</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Area -->
+        <div class="bg-white dark-mode:bg-gray-700 rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold mb-4">📋 Resultados de Pruebas</h2>
+            <div id="results-container">
+                <div class="text-center text-gray-500 dark-mode:text-gray-400 py-8">
+                    <p>👆 Haz clic en cualquier botón de prueba para comenzar</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Configuración
+        const API_BASE = 'api';
+        let testCounter = 0;
+
+        // Elementos del DOM
+        const $ = (id) => document.getElementById(id);
+        
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            loadEnvironment();
+            setupEventListeners();
+        });
+
+        // Cargar información del entorno
+        function loadEnvironment() {
+            $('env-origin').textContent = window.location.origin;
+            updateTokenStatus();
+        }
+
+        // Actualizar estado del token
+        function updateTokenStatus() {
+            const token = getToken();
+            if (token) {
+                $('token-status').textContent = '✅ Disponible';
+                $('token-status').className = 'text-green-600';
+            } else {
+                $('token-status').textContent = '❌ No disponible';
+                $('token-status').className = 'text-red-600';
+            }
+        }
+
+        // Obtener token
+        function getToken() {
+            return localStorage.getItem('auth_token') || 
+                   (window.Config && window.Config.getToken ? window.Config.getToken() : null);
+        }
+
+        // Configurar event listeners
+        function setupEventListeners() {
+            $('btn-test-analysis').addEventListener('click', () => testAIAnalysis());
+            $('btn-test-metrics').addEventListener('click', () => testAIMetrics());
+            $('btn-test-patterns').addEventListener('click', () => testBehavioralPatterns());
+            $('btn-test-knowledge').addEventListener('click', () => testKnowledgeBase());
+            $('btn-run-all-tests').addEventListener('click', () => runAllTests());
+            $('btn-test-debug').addEventListener('click', () => testDebug());
+            $('btn-test-minimal').addEventListener('click', () => testMinimal());
+            $('btn-test-no-sql').addEventListener('click', () => testNoSQL());
+            $('btn-test-db-connection').addEventListener('click', () => testDBConnection());
+            $('btn-test-basic-connectivity').addEventListener('click', () => testBasicConnectivity());
+            $('btn-check-tables').addEventListener('click', () => checkTables());
+            $('btn-check-tables-exist').addEventListener('click', () => checkTablesExist());
+            $('btn-check-tables-simple').addEventListener('click', () => checkTablesSimple());
+            $('btn-check-tables-robust').addEventListener('click', () => checkTablesRobust());
+            $('btn-check-tables-ultra-simple').addEventListener('click', () => checkTablesUltraSimple());
+            $('btn-check-tables-empty').addEventListener('click', () => checkTablesEmpty());
+            $('btn-debug-real-data').addEventListener('click', () => debugRealData());
+            $('btn-clear-results').addEventListener('click', () => clearResults());
+        }
+
+        // Agregar resultado
+        function addResult(title, data, type = 'info') {
+            testCounter++;
+            const timestamp = new Date().toLocaleTimeString();
+            $('last-test').textContent = `${timestamp} - ${title}`;
+            
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result test-${type} result-container`;
+            
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-btn';
+            copyBtn.textContent = '📋 Copiar';
+            copyBtn.onclick = () => copyToClipboard(data);
+            
+            const content = typeof data === 'object' ? JSON.stringify(data, null, 2) : data;
+            resultDiv.innerHTML = `
+                <div class="font-semibold text-sm mb-2">[${testCounter}] ${title} - ${timestamp}</div>
+                <div>${content}</div>
+            `;
+            resultDiv.appendChild(copyBtn);
+            
+            $('results-container').appendChild(resultDiv);
+            $('results-container').scrollTop = $('results-container').scrollHeight;
+        }
+
+        // Copiar al portapapeles
+        function copyToClipboard(data) {
+            const text = typeof data === 'object' ? JSON.stringify(data, null, 2) : data;
+            navigator.clipboard.writeText(text).then(() => {
+                // Mostrar feedback visual
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copiado';
+                btn.style.background = '#10b981';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#6b7280';
+                }, 1000);
+            });
+        }
+
+        // Limpiar resultados
+        function clearResults() {
+            $('results-container').innerHTML = `
+                <div class="text-center text-gray-500 dark-mode:text-gray-400 py-8">
+                    <p>👆 Haz clic en cualquier botón de prueba para comenzar</p>
+                </div>
+            `;
+            testCounter = 0;
+            $('last-test').textContent = '—';
+        }
+
+        // Test básico de conectividad
+        async function testDebug() {
+            addResult('🧪 TEST BÁSICO', 'Probando conectividad básica...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/test_debug_safe.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult('🧪 TEST BÁSICO', data, 'success');
+                } else {
+                    const errorText = await response.text();
+                    addResult('🧪 TEST BÁSICO', `Error HTTP ${response.status}: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult('🧪 TEST BÁSICO', `Error de conexión: ${error.message}`, 'error');
+            }
+        }
+
+        // Test mínimo de conectividad
+        async function testMinimal() {
+            addResult('⚡ TEST MÍNIMO', 'Probando conectividad mínima (solo autenticación)...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/test_minimal_safe.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult('⚡ TEST MÍNIMO', data, 'success');
+                } else {
+                    const errorText = await response.text();
+                    addResult('⚡ TEST MÍNIMO', `Error HTTP ${response.status}: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult('⚡ TEST MÍNIMO', `Error de conexión: ${error.message}`, 'error');
+            }
+        }
+
+        // Test sin consultas SQL
+        async function testNoSQL() {
+            addResult('🚫 TEST SIN SQL', 'Probando conectividad sin consultas SQL...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/test_no_sql_safe.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult('🚫 TEST SIN SQL', data, 'success');
+                } else {
+                    const errorText = await response.text();
+                    addResult('🚫 TEST SIN SQL', `Error HTTP ${response.status}: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult('🚫 TEST SIN SQL', `Error de conexión: ${error.message}`, 'error');
+            }
+        }
+
+        // Test de conexión a base de datos
+        async function testDBConnection() {
+            addResult('🗄️ TEST CONEXIÓN DB', 'Probando conexión específica a base de datos...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/test_db_connection_safe.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult('🗄️ TEST CONEXIÓN DB', data, 'success');
+                } else {
+                    const errorText = await response.text();
+                    addResult('🗄️ TEST CONEXIÓN DB', `Error HTTP ${response.status}: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult('🗄️ TEST CONEXIÓN DB', `Error de conexión: ${error.message}`, 'error');
+            }
+        }
+
+        // Test de conectividad básica
+        async function testBasicConnectivity() {
+            addResult('🔌 TEST CONECTIVIDAD BÁSICA', 'Probando conectividad básica con base de datos...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/test_basic_connectivity_safe.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult('🔌 TEST CONECTIVIDAD BÁSICA', data, 'success');
+                } else {
+                    const errorText = await response.text();
+                    addResult('🔌 TEST CONECTIVIDAD BÁSICA', `Error HTTP ${response.status}: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult('🔌 TEST CONECTIVIDAD BÁSICA', `Error de conexión: ${error.message}`, 'error');
+            }
+        }
+
+        // Verificar tablas principales
+        async function checkTables() {
+            addResult('📊 VERIFICACIÓN DE TABLAS', 'Verificando tablas principales...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/check_main_tables_safe.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult('📊 VERIFICACIÓN DE TABLAS', data, 'success');
+                } else {
+                    const errorText = await response.text();
+                    addResult('📊 VERIFICACIÓN DE TABLAS', `Error HTTP ${response.status}: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult('📊 VERIFICACIÓN DE TABLAS', `Error de conexión: ${error.message}`, 'error');
+            }
+        }
+
+        // Verificar existencia de tablas
+        async function checkTablesExist() {
+            addResult('🗂️ VERIFICACIÓN DE EXISTENCIA DE TABLAS', 'Verificando qué tablas existen en la base de datos...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/check_tables_exist_safe.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult('🗂️ VERIFICACIÓN DE EXISTENCIA DE TABLAS', data, 'success');
+                } else {
+                    const errorText = await response.text();
+                    addResult('🗂️ VERIFICACIÓN DE EXISTENCIA DE TABLAS', `Error HTTP ${response.status}: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult('🗂️ VERIFICACIÓN DE EXISTENCIA DE TABLAS', `Error de conexión: ${error.message}`, 'error');
+            }
+        }
+
+        // Verificación simple de tablas
+        async function checkTablesSimple() {
+            addResult('🔍 VERIFICACIÓN SIMPLE DE TABLAS', 'Verificando estado de tablas críticas para IA...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/check_tables_simple_safe.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult('🔍 VERIFICACIÓN SIMPLE DE TABLAS', data, 'success');
+                } else {
+                    const errorText = await response.text();
+                    addResult('🔍 VERIFICACIÓN SIMPLE DE TABLAS', `Error HTTP ${response.status}: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult('🔍 VERIFICACIÓN SIMPLE DE TABLAS', `Error de conexión: ${error.message}`, 'error');
+            }
+        }
+
+        // Verificación robusta de tablas
+        async function checkTablesRobust() {
+            addResult('🛡️ VERIFICACIÓN ROBUSTA DE TABLAS', 'Verificando estado de tablas con manejo robusto de errores...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/check_tables_robust_safe.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult('🛡️ VERIFICACIÓN ROBUSTA DE TABLAS', data, 'success');
+                } else {
+                    const errorText = await response.text();
+                    addResult('🛡️ VERIFICACIÓN ROBUSTA DE TABLAS', `Error HTTP ${response.status}: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult('🛡️ VERIFICACIÓN ROBUSTA DE TABLAS', `Error de conexión: ${error.message}`, 'error');
+            }
+        }
+
+        // Verificación ultra simple de tablas
+        async function checkTablesUltraSimple() {
+            addResult('⚡ VERIFICACIÓN ULTRA SIMPLE DE TABLAS', 'Verificando estado de tablas con código ultra simple...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/check_tables_ultra_simple_safe.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult('⚡ VERIFICACIÓN ULTRA SIMPLE DE TABLAS', data, 'success');
+                } else {
+                    const errorText = await response.text();
+                    addResult('⚡ VERIFICACIÓN ULTRA SIMPLE DE TABLAS', `Error HTTP ${response.status}: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult('⚡ VERIFICACIÓN ULTRA SIMPLE DE TABLAS', `Error de conexión: ${error.message}`, 'error');
+            }
+        }
+
+        // Verificación de tablas vacías
+        async function checkTablesEmpty() {
+            addResult('🎯 VERIFICACIÓN DE TABLAS VACÍAS', 'Verificando si las tablas vacías son normales para un usuario nuevo...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/check_tables_empty_safe.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult('🎯 VERIFICACIÓN DE TABLAS VACÍAS', data, 'success');
+                } else {
+                    const errorText = await response.text();
+                    addResult('🎯 VERIFICACIÓN DE TABLAS VACÍAS', `Error HTTP ${response.status}: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult('🎯 VERIFICACIÓN DE TABLAS VACÍAS', `Error de conexión: ${error.message}`, 'error');
+            }
+        }
+
+        // Verificar datos reales en la base de datos
+        async function debugRealData() {
+            addResult('🔍 VERIFICACIÓN DE DATOS REALES', 'Verificando datos existentes en la base de datos...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/debug_data_robust_safe.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult('🔍 VERIFICACIÓN DE DATOS REALES', data, 'success');
+                } else {
+                    const errorText = await response.text();
+                    addResult('🔍 VERIFICACIÓN DE DATOS REALES', `Error HTTP ${response.status}: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                addResult('🔍 VERIFICACIÓN DE DATOS REALES', `Error de conexión: ${error.message}`, 'error');
+            }
+        }
+
+        // Test de Análisis IA
+        async function testAIAnalysis() {
+            addResult('🧠 TEST ANÁLISIS IA', 'Iniciando prueba de análisis...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/ai_analyze_fast.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getToken()}`
+                    },
+                    body: JSON.stringify({
+                        prompt: 'Analiza TSLA para trading de opciones con enfoque en volatilidad',
+                        provider: 'auto',
+                        model: '',
+                        systemPrompt: 'Eres un experto en trading de opciones'
+                    })
+                });
+                
+                const data = await response.json();
+                const result = {
+                    test_type: 'ANÁLISIS IA',
+                    timestamp: new Date().toISOString(),
+                    endpoint: 'api/ai_analyze_fast.php',
+                    status: response.ok ? 'SUCCESS' : 'ERROR',
+                    http_status: response.status,
+                    data: data
+                };
+                
+                addResult('🧠 TEST ANÁLISIS IA', result, response.ok ? 'success' : 'error');
+            } catch (error) {
+                addResult('🧠 TEST ANÁLISIS IA', { error: error.message }, 'error');
+            }
+        }
+
+        // Test de Métricas IA
+        async function testAIMetrics() {
+            addResult('📊 TEST MÉTRICAS IA', 'Cargando métricas de aprendizaje...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/ai_learning_metrics_safe.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+                
+                const data = await response.json();
+                const result = {
+                    test_type: 'MÉTRICAS IA',
+                    timestamp: new Date().toISOString(),
+                    endpoint: 'api/ai_learning_metrics_safe.php',
+                    status: response.ok ? 'SUCCESS' : 'ERROR',
+                    http_status: response.status,
+                    data: data
+                };
+                
+                addResult('📊 TEST MÉTRICAS IA', result, response.ok ? 'success' : 'error');
+            } catch (error) {
+                addResult('📊 TEST MÉTRICAS IA', { error: error.message }, 'error');
+            }
+        }
+
+        // Test de Patrones Comportamentales
+        async function testBehavioralPatterns() {
+            addResult('🎯 TEST PATRONES COMPORTAMENTALES', 'Cargando patrones...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/ai_behavioral_patterns_safe.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+                
+                const data = await response.json();
+                const result = {
+                    test_type: 'PATRONES COMPORTAMENTALES',
+                    timestamp: new Date().toISOString(),
+                    endpoint: 'api/ai_behavioral_patterns_safe.php',
+                    status: response.ok ? 'SUCCESS' : 'ERROR',
+                    http_status: response.status,
+                    data: data
+                };
+                
+                addResult('🎯 TEST PATRONES COMPORTAMENTALES', result, response.ok ? 'success' : 'error');
+            } catch (error) {
+                addResult('🎯 TEST PATRONES COMPORTAMENTALES', { error: error.message }, 'error');
+            }
+        }
+
+        // Test de Knowledge Base
+        async function testKnowledgeBase() {
+            addResult('📚 TEST KNOWLEDGE BASE', 'Cargando archivos de conocimiento...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/ai_knowledge_list_safe.php`, {
+                    headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                    }
+                });
+                
+                const data = await response.json();
+                const result = {
+                    test_type: 'KNOWLEDGE BASE',
+                    timestamp: new Date().toISOString(),
+                    endpoint: 'api/ai_knowledge_list_safe.php',
+                    status: response.ok ? 'SUCCESS' : 'ERROR',
+                    http_status: response.status,
+                    data: data
+                };
+                
+                addResult('📚 TEST KNOWLEDGE BASE', result, response.ok ? 'success' : 'error');
+            } catch (error) {
+                addResult('📚 TEST KNOWLEDGE BASE', { error: error.message }, 'error');
+            }
+        }
+
+        // Ejecutar todas las pruebas
+        async function runAllTests() {
+            addResult('🚀 SUITE COMPLETA DE PRUEBAS', 'Iniciando suite completa...', 'info');
+            
+            const tests = [
+                { name: 'ANÁLISIS IA', func: testAIAnalysis },
+                { name: 'MÉTRICAS IA', func: testAIMetrics },
+                { name: 'PATRONES COMPORTAMENTALES', func: testBehavioralPatterns },
+                { name: 'KNOWLEDGE BASE', func: testKnowledgeBase }
+            ];
+            
+            const results = {
+                suite_name: 'PRUEBAS IA COMPORTAMENTAL',
+                timestamp: new Date().toISOString(),
+                total_tests: tests.length,
+                tests: []
+            };
+            
+            for (const test of tests) {
+                try {
+                    addResult(`🚀 EJECUTANDO: ${test.name}`, 'Ejecutando prueba...', 'info');
+                    await test.func();
+                    
+                    results.tests.push({
+                        test_name: test.name,
+                        status: 'COMPLETED',
+                        timestamp: new Date().toISOString()
+                    });
+                    
+                    // Esperar un momento entre pruebas
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                } catch (error) {
+                    results.tests.push({
+                        test_name: test.name,
+                        status: 'ERROR',
+                        error: error.message,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            }
+            
+            // Resumen final
+            const completed = results.tests.filter(t => t.status === 'COMPLETED').length;
+            const errors = results.tests.filter(t => t.status === 'ERROR').length;
+            
+            results.summary = {
+                completed: completed,
+                errors: errors,
+                success_rate: `${((completed / tests.length) * 100).toFixed(1)}%`
+            };
+            
+            addResult('🚀 RESUMEN SUITE COMPLETA', results, completed === tests.length ? 'success' : 'warning');
+        }
+    </script>
+</body>
+</html>

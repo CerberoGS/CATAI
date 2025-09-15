@@ -9,6 +9,41 @@ README_DEV.md
 README_LIVE.md
 README_MODULAR.md
 
+TAREA
+Portabilizar COMPLETAMENTE la app PHP/JS/HTML/MariaDB para que funcione igual si:
+(a) cambia el DOMINIO (host), y/o
+(b) cambia la CARPETA (path) bajo ese dominio (p. ej., /catai → /cataiv1),
+manteniendo la misma estructura interna (api, static, etc.).
+
+ALCANCE Y GUARDARRAÍLES
+- Mantener lógica y DB SIN cambios de esquema.
+- No agregar frameworks ni dependencias nuevas.
+- No tocar credenciales ni .env reales.
+- Entregables: parches en formato unified diff (git), sin texto extra.
+- Compatibilidad: PHP 8.x, Apache (.htaccess), hosting compartido.
+- PROHIBIDO usar rutas absolutas internas con barra inicial:
+  - NO “/api/...”, NO “/static/...”, NO “/dashboard”.
+  - Aplica a PHP, JS y HTML (<a href>, <form action>, <script src>, <link href>).
+
+OBJETIVO TÉCNICO
+Eliminar URLs hardcodeadas y unificar la construcción de rutas con helpers portables (PHP y JS), autodetectando BASE_URL en runtime con override por ENV. Ajustar sesiones/cookies y rewrites para no depender del nombre de carpeta. Actualizar HTML y JS legacy.
+
+CAMBIOS CONCRETOS (HAZLOS)
+
+1) config.php
+- Autodetección de BASE_URL (respetando proxies) + override por ENV APP_BASE_URL:
+```php
+function detect_base_url(): string {
+  $proto = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http');
+  $host  = $_SERVER['HTTP_X_FORWARDED_HOST']  ?? ($_SERVER['HTTP_HOST'] ?? 'localhost');
+  $path  = str_replace('\\','/', dirname($_SERVER['SCRIPT_NAME'] ?? '/'));
+  $path  = rtrim(preg_replace('#/api$#','', $path), '/'); // por si corre dentro de /api
+  return rtrim("$proto://$host$path", '/');
+}
+$BASE_URL = getenv('APP_BASE_URL') ?: detect_base_url();
+$CONFIG['BASE_URL']     = $BASE_URL;              // p.ej. https://dominio.com/cataiv1
+$CONFIG['API_BASE_URL'] = $BASE_URL . '/api';
+
 Objetivo
 - Establecer pautas claras para operar en este repo sin inventar comportamientos.
 - Basado en el código real: PHP bajo `api/` y frontends HTML en la raíz.

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es-US">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Analizador de Inversiones</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="static/js/config-simple.js"></script>
+  <script src="static/js/utf8-fix.js"></script>
+  <script src="static/js/auth.js"></script>
+  <script>
+    // Verificación simple de auth sin bucles
+    function checkAuth() {
+      try {
+        const token = localStorage.getItem('auth_token');
+        if (!token) {
+          console.log('No hay token, redirigiendo a login');
+          window.location.href = 'login.html';
+          return;
+        }
+        
+        // Verificar si el token es válido (básico)
+        const parts = token.split('.');
+        if (parts.length !== 3) {
+          console.log('Token inválido, redirigiendo a login');
+          localStorage.removeItem('auth_token');
+          window.location.href = 'login.html';
+          return;
+        }
+        
+        console.log('Token encontrado, continuando...');
+      } catch (e) { 
+        console.warn('Error en verificación de auth:', e);
+        window.location.href = 'login.html';
+      }
+    }
+    
+    // Ejecutar inmediatamente
+    checkAuth();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body class="bg-gray-50">
+  <div class="container mx-auto px-4 py-8">
+    <div id="app-header"></div>
+
+    <div id="app-hero" data-icon="📈" data-title="Analizador" data-subtitle="Explora símbolos, configura y ejecuta análisis con opciones."></div>
+    <div id="hero-actions">
+      <button id="btn-load-settings" class="py-2 px-4 rounded-md border text-gray-700 hover:bg-gray-50 dark-mode:text-gray-300 dark-mode:hover:bg-gray-700 dark-mode:border-gray-600">
+        📥 Cargar ajustes
+      </button>
+      <button id="btn-save-settings" class="py-2 px-4 rounded-md border text-gray-700 hover:bg-gray-50 dark-mode:text-gray-300 dark-mode:hover:bg-gray-700 dark-mode:border-gray-600">
+        💾 Guardar ajustes
+      </button>
+    </div>
+
+    <!-- Auth Form (hidden when logged in) -->
+    <div id="auth-form" class="bg-white rounded-lg shadow-sm border p-6 mb-6 hidden">
+      <h2 class="text-xl font-semibold mb-4">Iniciar Sesión</h2>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <input id="auth-email" type="email" class="w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="tu@email.com"/>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+          <input id="auth-pass" type="password" class="w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="••••••••"/>
+        </div>
+        <div class="flex space-x-3">
+          <button id="btn-login" class="flex-1 py-2 px-4 rounded-md bg-indigo-600 text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Iniciar Sesión
+          </button>
+          <button id="btn-register" class="flex-1 py-2 px-4 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Registrarse
+          </button>
+        </div>
+        <div id="auth-msg" class="text-sm text-red-600"></div>
+      </div>
+    </div>
+
+    
+
+    <!-- Main Content -->
+    <div class="grid lg:grid-cols-3 gap-6">
+      <!-- Left Column: Symbol Selection -->
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-lg shadow-sm border p-6">
+          <h2 class="text-lg font-semibold mb-4">Selección de Símbolo</h2>
+          
+          <div class="space-y-4">
+            <div class="grid md:grid-cols-2 gap-4 items-end">
+              <div class="relative">
+                <label class="block text-sm font-medium text-gray-700">Símbolo (Ticker)</label>
+                <input id="symbol" class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="TSLA, AAPL, NVDA..." autocomplete="off"/>
+                <div id="symbol-list" class="autocomplete-list rounded-md shadow-lg hidden"></div>
+              </div>
+              <div>
+                <div id="provider-container"></div>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Lista de empresas</label>
+              <select id="symbol-select" class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <option value="">Cargando lista…</option>
+              </select>
+              <p id="universe-info" class="text-xs text-gray-500 mt-1"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analysis Blocks -->
+        <div class="bg-white rounded-lg shadow-sm border p-6 mt-6">
+          <h2 class="text-lg font-semibold mb-4">Configuración de Análisis</h2>
+          <div id="blocks" class="space-y-4">
+            <!-- Blocks will be generated by JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Settings and Results -->
+      <div class="lg:col-span-2">
+        <!-- Settings Panel -->
+        <div class="bg-white rounded-lg shadow-sm border p-6 mb-6">
+          <h2 class="text-lg font-semibold mb-4">Configuración Avanzada</h2>
+          
+          <div class="grid md:grid-cols-2 gap-6">
+            <!-- AI Settings -->
+            <div>
+              <h3 class="text-sm font-medium text-gray-700 mb-3">Configuración de IA</h3>
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-xs text-gray-600 mb-1">Proveedor de IA</label>
+                  <select id="ai-provider" class="w-full text-sm border rounded px-2 py-1">
+                    <option value="auto">Auto (sugerido)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs text-gray-600 mb-1">Modelo</label>
+                  <select id="ai-model" class="w-full text-sm border rounded px-2 py-1" disabled>
+                    <option value="">Auto (sugerido)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Trading Settings -->
+            <div>
+              <h3 class="text-sm font-medium text-gray-700 mb-3">Configuración de Trading</h3>
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-xs text-gray-600 mb-1">Cantidad</label>
+                  <input id="amount" type="number" class="w-full text-sm border rounded px-2 py-1" value="1000"/>
+                </div>
+                <div>
+                  <label class="block text-xs text-gray-600 mb-1">Take Profit (%)</label>
+                  <input id="tp" type="number" class="w-full text-sm border rounded px-2 py-1" value="5"/>
+                </div>
+                <div>
+                  <label class="block text-xs text-gray-600 mb-1">Stop Loss (%)</label>
+                  <input id="sl" type="number" class="w-full text-sm border rounded px-2 py-1" value="3"/>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Options Settings -->
+          <div class="mt-6 pt-6 border-t">
+            <h3 class="text-sm font-medium text-gray-700 mb-3">Configuración de Opciones</h3>
+            <div class="grid md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs text-gray-600 mb-1">Regla de Vencimiento</label>
+                <select id="options-expiry-rule" class="w-full text-sm border rounded px-2 py-1">
+                  <option value="weekly">Semanal</option>
+                  <option value="monthly">Mensual</option>
+                  <option value="quarterly">Trimestral</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs text-gray-600 mb-1">Número de Strikes</label>
+                <input id="options-strike-count" type="number" class="w-full text-sm border rounded px-2 py-1" value="5"/>
+              </div>
+              <div>
+                <label class="block text-xs text-gray-600 mb-1">Fuente de Precio ATM</label>
+                <select id="atm-price-source" class="w-full text-sm border rounded px-2 py-1">
+                  <option value="last">Último Precio</option>
+                  <option value="bid">Bid</option>
+                  <option value="ask">Ask</option>
+                  <option value="mid">Mid</option>
+                </select>
+              </div>
+            </div>
+            <div class="mt-3">
+              <label class="block text-xs text-gray-600 mb-1">Net</label>
+              <input id="net" type="text" class="w-full text-sm border rounded px-2 py-1" placeholder="Net value"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analysis Button -->
+        <div class="bg-white rounded-lg shadow-sm border p-6 mb-6">
+          <button id="run" class="w-full py-3 px-6 rounded-md shadow-sm text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            📊 Analizar
+          </button>
+        </div>
+
+        <!-- Results -->
+        <div class="bg-white rounded-lg shadow-sm border p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold">Resultados del Análisis</h2>
+            <div id="context-indicators" class="flex items-center gap-2 hidden">
+              <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 text-green-800 text-xs">
+                🧠 Contexto Enriquecido
+              </span>
+              <span id="knowledge-count" class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-100 text-blue-800 text-xs hidden">
+                📚 <span id="knowledge-items">0</span> conocimiento aplicado
+              </span>
+            </div>
+          </div>
+          <div id="results" class="min-h-32">
+            <div id="loading" class="hidden text-center py-8">
+              <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+              <p class="text-gray-500 mt-2">Analizando...</p>
+            </div>
+            <div id="out" class="prose max-w-none">
+              <p class="text-gray-500 text-center py-8">Selecciona un símbolo y haz clic en "Analizar" para comenzar</p>
+            </div>
+          </div>
+          <div class="mt-4 flex justify-between">
+            <button id="btn-save-analysis" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+              💾 Guardar Análisis
+            </button>
+            <button id="btn-copy" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
+              📋 Copiar Resultados
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Modal para guardar análisis -->
+  <div id="modal-save" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-medium text-gray-900">Guardar Análisis</h3>
+        <button id="ms-close" class="text-gray-400 hover:text-gray-600 text-xl font-bold">✕</button>
+      </div>
+      <div id="ms-body" class="space-y-4">
+        <!-- Contenido dinámico -->
+      </div>
+      <div class="mt-6 flex justify-end space-x-3">
+        <button id="ms-cancel" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50">
+          Cancelar
+        </button>
+        <button id="ms-save" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+          Guardar
+        </button>
+      </div>
+      <div id="ms-msg" class="mt-3 text-sm text-gray-600"></div>
+    </div>
+  </div>
+
+  <!-- Modal de feedback -->
+  <div id="modal-fb" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-medium text-gray-900">Enviar feedback</h3>
+        <button id="fb-close" class="text-gray-400 hover:text-gray-600 text-xl font-bold">✕</button>
+      </div>
+      <div id="fb-body" class="space-y-4">
+        <!-- Contenido dinámico -->
+      </div>
+      <div class="mt-6 flex justify-end space-x-3">
+        <button id="fb-cancel" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50">
+          Cancelar
+        </button>
+        <button id="fb-send" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+          Enviar
+        </button>
+      </div>
+      <div id="fb-msg" class="mt-3 text-sm text-gray-600"></div>
+    </div>
+  </div>
+
+  <!-- Load JavaScript Modules -->
+  <script src="static/js/hero.js"></script>
+  <script src="static/js/header.js"></script>
+  <script src="static/js/main.js"></script>
+  
+  <!-- Solución de Emergencia para el Botón de Análisis -->
+  <script>
+    // Verificar y cargar módulos críticos
+    function ensureCriticalModules() {
+      return new Promise((resolve) => {
+        let attempts = 0;
+        const maxAttempts = 50; // 5 segundos máximo
+        
+        const checkModules = () => {
+          attempts++;
+          
+          if (window.Config && window.Analysis) {
+            console.log('✅ Módulos críticos cargados correctamente');
+            resolve(true);
+          } else if (attempts >= maxAttempts) {
+            console.warn('⚠️ Timeout esperando módulos críticos');
+            resolve(false);
+          } else {
+            setTimeout(checkModules, 100);
+          }
+        };
+        
+        checkModules();
+      });
+    }
+    
+    // Función de análisis de emergencia
+    async function emergencyAnalyze() {
+      console.log('🚨 Ejecutando análisis de emergencia');
+      
+      try {
+        // Verificar autenticación
+        const token = localStorage.getItem('auth_token');
+        if (!token) {
+          throw new Error('No hay token de autenticación. Inicia sesión primero.');
+        }
+        
+        // Verificar configuración básica
+        const symbol = document.getElementById('symbol')?.value?.trim();
+        if (!symbol) {
+          throw new Error('Selecciona un símbolo para analizar');
+        }
+        
+        // Mostrar mensaje de carga
+        const results = document.getElementById('results');
+        const loading = document.getElementById('loading');
+        const out = document.getElementById('out');
+        
+        if (loading) loading.style.display = 'block';
+        if (out) out.innerHTML = '<div class="text-blue-600">⏳ Ejecutando análisis...</div>';
+        
+        // Primero diagnosticar el problema
+        const debugResponse = await fetch(`${Config.API_BASE}/debug_analysis_safe.php`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({
+            provider: 'auto',
+            symbol: symbol
+          })
+        });
+        
+        if (!debugResponse.ok) {
+          throw new Error(`Error de diagnóstico: ${debugResponse.status}`);
+        }
+        
+        const debugData = await debugResponse.json();
+        console.log('🔍 Diagnóstico:', debugData);
+        
+        if (debugData.status === 'error') {
+          throw new Error(debugData.error || 'Error de configuración');
+        }
+        
+        // Llamar al endpoint de análisis directamente
+        const response = await fetch(`${Config.API_BASE}/ai_analyze_enhanced_safe.php`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({
+            provider: 'auto',
+            prompt: `Analiza ${symbol} con enfoque en opciones intradía. Proporciona recomendaciones claras de compra/venta con niveles de entrada, stop loss y take profit.`,
+            symbol: symbol,
+            analysis_type: 'technical_analysis'
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Error del servidor: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.error) {
+          throw new Error(data.error);
+        }
+        
+        // Mostrar resultados
+        if (out) {
+          out.innerHTML = `
+            <div class="space-y-4">
+              <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+                <h3 class="font-semibold text-green-800 mb-2">📊 Análisis de ${symbol}</h3>
+                <div class="text-green-700 whitespace-pre-wrap">${data.text || 'Análisis completado'}</div>
+              </div>
+              ${data.context_enriched ? '<div class="text-sm text-blue-600">🧠 Contexto enriquecido aplicado</div>' : ''}
+            </div>
+          `;
+        }
+        
+        console.log('✅ Análisis completado exitosamente');
+        
+      } catch (error) {
+        console.error('❌ Error en análisis de emergencia:', error);
+        
+        const out = document.getElementById('out');
+        if (out) {
+          out.innerHTML = `
+            <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
+              <h3 class="font-semibold text-red-800 mb-2">❌ Error en el Análisis</h3>
+              <div class="text-red-700">${error.message}</div>
+              <div class="mt-2 text-sm text-red-600">
+                Verifica que tengas configuradas las API keys en Config.
+              </div>
+            </div>
+          `;
+        }
+      } finally {
+        const loading = document.getElementById('loading');
+        if (loading) loading.style.display = 'none';
+      }
+    }
+    
+    // Inicializar botón de análisis cuando esté listo
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        console.log('🔍 Inicializando botón de análisis...');
+        
+        // Esperar a que los módulos críticos estén disponibles
+        const modulesReady = await ensureCriticalModules();
+        
+        // Inicializar el botón de análisis
+        const runBtn = document.getElementById('run');
+        if (runBtn) {
+          runBtn.addEventListener('click', async () => {
+            console.log('🔍 Botón de análisis clickeado');
+            
+            try {
+              if (modulesReady && window.Analysis && window.Analysis.analyze) {
+                console.log('✅ Usando Analysis.analyze');
+                await window.Analysis.analyze();
+              } else if (window.analyze) {
+                console.log('✅ Usando analyze global');
+                await window.analyze();
+              } else {
+                console.log('⚠️ Módulos no disponibles, usando análisis de emergencia');
+                await emergencyAnalyze();
+              }
+            } catch (error) {
+              console.error('❌ Error en análisis:', error);
+              await emergencyAnalyze();
+            }
+          });
+          
+          console.log('✅ Botón de análisis inicializado correctamente');
+        } else {
+          console.error('❌ Botón de análisis no encontrado');
+        }
+      } catch (error) {
+        console.error('❌ Error inicializando botón:', error);
+      }
+    });
+  </script>
+</body>
+</html>

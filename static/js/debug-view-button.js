@@ -1,7 +1,7 @@
 // Debugger para el botón "Ver" del Knowledge Base
 class ViewButtonDebugger {
     constructor() {
-        this.logFile = 'api/logs/debug_view_button_frontend.log';
+        this.logFile = ConfigPortable.getApiUrl('logs/debug_view_button_frontend.log');
         this.logs = [];
         this.init();
     }
@@ -214,7 +214,7 @@ class ViewButtonDebugger {
 
     async saveLogs() {
         try {
-            const response = await fetch('api/log_debug.php', {
+            const response = await fetch(ConfigPortable.getApiUrl('log_debug.php'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

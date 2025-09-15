@@ -194,12 +194,26 @@ async function analyze() {
     let aiRes;
     const analysisMode = document.querySelector('input[name="analysis-mode"]:checked')?.value || 'enriched';
     
-    if (analysisMode === 'enriched') {
+    if (analysisMode === 'fast') {
+      // Análisis Rápido: Solo configuración básica + Prompt del Usuario
+      const effectiveProvider = aiConfig?.ai_provider || aiProvider;
+      const effectiveModel = aiConfig?.ai_model || aiModel;
+      
+      aiRes = await Config.apiPost('ai_analyze_fast.php', {
+        provider: effectiveProvider,
+        model: effectiveModel,
+        prompt: enrichedPrompt,
+        systemPrompt: buildSystemPrompt(aiConfig, behavioralContext)
+      }, true).catch(()=>({ text: '' }));
+      
+      // Mostrar fuentes de contexto utilizadas (vacías para modo rápido)
+      showContextSources([], 0);
+    } else if (analysisMode === 'enriched') {
       // Análisis Completo: Knowledge Base + Patrones + Historial + Prompt del Usuario
       const effectiveProvider = aiConfig?.ai_provider || aiProvider;
       const effectiveModel = aiConfig?.ai_model || aiModel;
       
-      aiRes = await Config.apiPost('ai_analyze_hybrid.php', {
+      aiRes = await Config.apiPost('ai_analyze_hybrid_optimized.php', {
         provider: effectiveProvider,
         model: effectiveModel,
         prompt: enrichedPrompt,
@@ -219,7 +233,7 @@ async function analyze() {
       const effectiveProvider = aiConfig?.ai_provider || aiProvider;
       const effectiveModel = aiConfig?.ai_model || aiModel;
       
-      aiRes = await Config.apiPost('ai_analyze_hybrid.php', {
+      aiRes = await Config.apiPost('ai_analyze_hybrid_optimized.php', {
         provider: effectiveProvider,
         model: effectiveModel,
         prompt: enrichedPrompt,

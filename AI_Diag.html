@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="es-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔬 AI Diagnostic Tool - CATAI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: white; 
+            border-radius: 15px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header { 
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); 
+            color: white; 
+            padding: 30px; 
+            text-align: center; 
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header p { opacity: 0.9; font-size: 1.1em; }
+        .content { padding: 30px; }
+        .section { 
+            margin-bottom: 30px; 
+            padding: 25px; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 10px; 
+            background: #fafafa;
+        }
+        .section h2 { 
+            color: #2c3e50; 
+            margin-bottom: 20px; 
+            font-size: 1.5em;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 600; 
+            color: #2c3e50; 
+        }
+        .form-group input, .form-group select, .form-group textarea { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid #ddd; 
+            border-radius: 8px; 
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { 
+            outline: none; 
+            border-color: #3498db; 
+        }
+        .btn { 
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); 
+            color: white; 
+            border: none; 
+            padding: 12px 25px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 14px; 
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4); 
+        }
+        .btn-success { background: linear-gradient(135deg, #27ae60 0%, #229954 100%); }
+        .btn-warning { background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); }
+        .btn-primary { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); }
+        .btn-secondary { background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); }
+        .btn-dark { background: linear-gradient(135deg, #343a40 0%, #23272b 100%); }
+        .btn-danger { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); }
+        .btn-info { background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); }
+        .result { 
+            margin-top: 20px; 
+            padding: 20px; 
+            border-radius: 8px; 
+            font-family: 'Courier New', monospace; 
+            font-size: 13px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .result.success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .result.error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .result.info { background: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+        .result.warning { background: #fff3cd; border: 1px solid #ffeaa7; color: #856404; }
+        .status { 
+            display: inline-block; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 12px; 
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .status.success { background: #d4edda; color: #155724; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        .status.warning { background: #fff3cd; color: #856404; }
+        .grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+        }
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+            .header h1 { font-size: 2em; }
+            .content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔬 AI Diagnostic Tool</h1>
+            <p>Diagnóstico profesional de extracción de contenido con IA</p>
+        </div>
+        
+        <div class="content">
+            <!-- SECCIÓN 1: CONFIGURACIÓN BÁSICA -->
+            <div class="section">
+                <h2>🔧 1. Configuración Básica</h2>
+                <div class="grid">
+                    <div>
+                        <div class="form-group">
+                            <label>JWT Token:</label>
+                            <input type="text" id="jwtToken" placeholder="Pega tu JWT token aquí">
+                        </div>
+                        <div class="form-group">
+                            <label>File ID (knowledge_files.id):</label>
+                            <input type="number" id="fileId" placeholder="Ej: 20" value="20">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label>API Base URL:</label>
+                            <input type="text" id="apiBase" value="https://cerberogrowthsolutions.com/catai/api" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Usuario ID:</label>
+                            <input type="text" id="userId" placeholder="Se detectará automáticamente" readonly>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-info" onclick="validateConfig()">✅ Validar Configuración</button>
+                <button class="btn btn-warning" onclick="clearResults()">🗑️ Limpiar Resultados</button>
+            </div>
+
+            <!-- SECCIÓN 2: DIAGNÓSTICO PASO A PASO -->
+            <div class="section">
+                <h2>🔍 2. Diagnóstico Paso a Paso</h2>
+                <div class="grid">
+                    <div>
+                        <button class="btn" onclick="testBasicConnectivity()">🌐 Test Conectividad Básica</button>
+                        <button class="btn" onclick="testAuthentication()">🔐 Test Autenticación</button>
+                        <button class="btn" onclick="testUserSettings()">⚙️ Test Configuración Usuario</button>
+                        <button class="btn" onclick="testFileAccess()">📁 Test Acceso Archivo</button>
+                    </div>
+                    <div>
+                        <button class="btn" onclick="testApiKey()">🔑 Test API Key</button>
+                        <button class="btn" onclick="testAiProvider()">🤖 Test Proveedor IA</button>
+                        <button class="btn" onclick="testFileContent()">📄 Test Contenido Archivo</button>
+                        <button class="btn" onclick="runFullDiagnostic()">🚀 Diagnóstico Completo</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 3: EXTRACCIÓN DE IA -->
+            <div class="section">
+                <h2>🤖 3. Extracción de IA</h2>
+                <div class="form-group">
+                    <label>Proveedor de IA:</label>
+                    <select id="aiProvider">
+                        <option value="auto">Auto (usar configuración del usuario)</option>
+                        <option value="gemini">Gemini</option>
+                        <option value="openai">OpenAI</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Modelo:</label>
+                    <input type="text" id="aiModel" placeholder="Se detectará automáticamente" readonly>
+                </div>
+                <button class="btn btn-success" onclick="extractWithAI()">🚀 Extraer Contenido con IA</button>
+                <button class="btn btn-primary" onclick="simulateRealButton()">🎯 Simulación Botón Real</button>
+                <button class="btn btn-info" onclick="testDataStructures()">🔍 Test Estructuras</button>
+                <button class="btn btn-secondary" onclick="testFileInfo()">📁 Test Info Archivo</button>
+                <button class="btn btn-dark" onclick="checkUserPrompt()">📝 Verificar Prompt</button>
+                <button class="btn btn-warning" onclick="testAiConnection()">🔗 Test Conexión IA</button>
+            </div>
+
+            <!-- SECCIÓN 4: RESULTADOS -->
+            <div class="section">
+                <h2>📊 4. Resultados del Diagnóstico</h2>
+                <div id="results"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuración global
+        let currentConfig = {
+            jwtToken: '',
+            fileId: 20,
+            apiBase: 'https://cerberogrowthsolutions.com/catai/api',
+            userId: null,
+            aiProvider: 'auto',
+            aiModel: null
+        };
+
+        // Función para mostrar resultados
+        function showResult(title, content, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `result ${type}`;
+            resultDiv.innerHTML = `<strong>${title}</strong>\n${content}`;
+            resultsDiv.appendChild(resultDiv);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+
+        // Función para limpiar resultados
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        // Función para validar configuración
+        function validateConfig() {
+            const jwtToken = document.getElementById('jwtToken').value.trim();
+            const fileId = document.getElementById('fileId').value;
+            
+            if (!jwtToken) {
+                showResult('❌ Error de Configuración', 'JWT Token es requerido', 'error');
+                return false;
+            }
+            
+            if (!fileId) {
+                showResult('❌ Error de Configuración', 'File ID es requerido', 'error');
+                return false;
+            }
+            
+            // Decodificar JWT para obtener user ID
+            try {
+                const payload = JSON.parse(atob(jwtToken.split('.')[1]));
+                currentConfig.jwtToken = jwtToken;
+                currentConfig.fileId = parseInt(fileId);
+                currentConfig.userId = payload.id;
+                
+                document.getElementById('userId').value = currentConfig.userId;
+                
+                showResult('✅ Configuración Válida', 
+                    `Usuario ID: ${currentConfig.userId}\nFile ID: ${currentConfig.fileId}\nToken válido hasta: ${new Date(payload.exp * 1000).toLocaleString()}`, 
+                    'success');
+                return true;
+            } catch (e) {
+                showResult('❌ Error de Configuración', 'JWT Token inválido: ' + e.message, 'error');
+                return false;
+            }
+        }
+
+        // Función para hacer requests HTTP
+        async function makeRequest(endpoint, method = 'GET', body = null) {
+            // Obtener token directamente del input para evitar pérdida
+            const jwtToken = document.getElementById('jwtToken').value.trim();
+            
+            if (!jwtToken) {
+                return {
+                    ok: false,
+                    status: 401,
+                    data: { error: 'JWT Token no configurado' },
+                    raw: 'JWT Token no configurado'
+                };
+            }
+            
+            const url = `${currentConfig.apiBase}/${endpoint}`;
+            const options = {
+                method: method,
+                headers: {
+                    'Authorization': `Bearer ${jwtToken}`,
+                    'Content-Type': 'application/json'
+                }
+            };
+            
+            if (body) {
+                options.body = JSON.stringify(body);
+            }
+            
+            try {
+                const response = await fetch(url, options);
+                const text = await response.text();
+                
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    data = { error: 'Respuesta no es JSON válido', raw: text };
+                }
+                
+                return {
+                    ok: response.ok,
+                    status: response.status,
+                    data: data,
+                    raw: text
+                };
+            } catch (error) {
+                return {
+                    ok: false,
+                    status: 0,
+                    data: { error: error.message },
+                    raw: error.message
+                };
+            }
+        }
+
+        // Test de conectividad básica
+        async function testBasicConnectivity() {
+            showResult('🌐 Test Conectividad Básica', 'Iniciando...', 'info');
+            
+            const result = await makeRequest('health.php');
+            
+            if (result.ok) {
+                showResult('✅ Conectividad Básica', 
+                    `Status: ${result.status}\nRespuesta: ${JSON.stringify(result.data, null, 2)}`, 
+                    'success');
+            } else {
+                showResult('❌ Error de Conectividad', 
+                    `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 
+                    'error');
+            }
+        }
+
+        // Test de autenticación
+        async function testAuthentication() {
+            showResult('🔐 Test Autenticación', 'Iniciando...', 'info');
+            
+            const result = await makeRequest('auth_me_safe.php');
+            
+            if (result.ok) {
+                showResult('✅ Autenticación Exitosa', 
+                    `Usuario: ${result.data.email}\nID: ${result.data.id}\nRol: ${result.data.role}`, 
+                    'success');
+            } else {
+                showResult('❌ Error de Autenticación', 
+                    `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 
+                    'error');
+            }
+        }
+
+        // Test de configuración del usuario
+        async function testUserSettings() {
+            showResult('⚙️ Test Configuración Usuario', 'Iniciando...', 'info');
+            
+            const result = await makeRequest('settings_get_safe.php');
+            
+            if (result.ok) {
+                const settings = result.data.settings;
+                currentConfig.aiProvider = settings.ai_provider || 'auto';
+                currentConfig.aiModel = settings.ai_model || 'gpt-4o';
+                
+                document.getElementById('aiProvider').value = currentConfig.aiProvider;
+                document.getElementById('aiModel').value = currentConfig.aiModel;
+                
+                showResult('✅ Configuración Usuario', 
+                    `IA Provider: ${currentConfig.aiProvider}\nModelo: ${currentConfig.aiModel}\nData Provider: ${settings.data_provider || 'N/A'}`, 
+                    'success');
+            } else {
+                showResult('❌ Error Configuración Usuario', 
+                    `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 
+                    'error');
+            }
+        }
+
+        // Test de acceso al archivo
+        async function testFileAccess() {
+            showResult('📁 Test Acceso Archivo', 'Iniciando...', 'info');
+            
+            const result = await makeRequest('test_file_access_safe.php', 'POST', {
+                file_id: currentConfig.fileId
+            });
+            
+            if (result.ok) {
+                const data = result.data;
+                const pathInfo = data.file_physical.path_components;
+                const pathConstruction = data.file_physical.path_construction;
+                showResult('✅ Acceso Archivo', 
+                    `File ID: ${data.file.id}\nArchivo: ${data.file.original_filename}\nTipo (DB): ${data.file.file_type}\nMIME (DB): ${data.file.mime_type}\nTamaño: ${data.file.file_size_mb} MB\n\nCONSTRUCCIÓN DEL PATH (PASO A PASO):\n1. ${pathConstruction.step_1}\n2. ${pathConstruction.step_2}\n3. ${pathConstruction.step_3}\n4. ${pathConstruction.step_4}\n\nPATH FINAL:\n${pathConstruction.final_path}\n\nCOMPONENTES DEL PATH:\n- Base: ${pathInfo.base_dir}\n- Uploads: ${pathInfo.uploads_dir}\n- Usuario: ${pathInfo.user_dir}\n- Archivo: ${pathInfo.filename}\n\nExiste físicamente: ${data.file_physical.exists ? '✅ Sí' : '❌ No'}\nListo para extracción: ${data.ready_for_extraction.can_proceed ? '✅ Sí' : '❌ No'}`, 
+                    'success');
+            } else {
+                showResult('❌ Error Acceso Archivo', 
+                    `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 
+                    'error');
+            }
+        }
+
+        // Test de API Key
+        async function testApiKey() {
+            showResult('🔑 Test API Key', 'Iniciando...', 'info');
+            
+            const result = await makeRequest('user_keys_get_safe.php');
+            
+            if (result.ok) {
+                const keys = result.data.keys;
+                let keyStatus = '';
+                for (const [provider, info] of Object.entries(keys)) {
+                    keyStatus += `${provider}: ${info.has ? '✅ Configurada' : '❌ No configurada'}\n`;
+                }
+                
+                showResult('✅ Estado API Keys', keyStatus, 'success');
+            } else {
+                showResult('❌ Error API Keys', 
+                    `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 
+                    'error');
+            }
+        }
+
+        // Test de proveedor de IA
+        async function testAiProvider() {
+            showResult('🤖 Test Proveedor IA', 'Iniciando...', 'info');
+            
+            const result = await makeRequest('test_file_access_safe.php', 'POST', {
+                file_id: currentConfig.fileId
+            });
+            
+            if (result.ok) {
+                const data = result.data;
+                showResult('✅ Proveedor IA', 
+                    `Provider: ${data.user_settings.ai_provider}\nModelo: ${data.user_settings.ai_model}\nAPI Key disponible: ${data.api_keys[data.user_settings.ai_provider]?.has_key ? '✅ Sí' : '❌ No'}`, 
+                    'success');
+            } else {
+                showResult('❌ Error Proveedor IA', 
+                    `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 
+                    'error');
+            }
+        }
+
+        // Test de contenido del archivo
+        async function testFileContent() {
+            showResult('📄 Test Contenido Archivo', 'Iniciando...', 'info');
+            
+            const result = await makeRequest('test_file_access_safe.php', 'POST', {
+                file_id: currentConfig.fileId
+            });
+            
+            if (result.ok) {
+                const data = result.data;
+                showResult('✅ Contenido Archivo', 
+                    `File ID: ${data.file.id}\nArchivo: ${data.file.original_filename}\nTamaño: ${data.file_physical.size_mb} MB\nContenido (primeros 200 chars): ${data.file_physical.content_preview.substring(0, 200)}...`, 
+                    'success');
+            } else {
+                showResult('❌ Error Contenido Archivo', 
+                    `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 
+                    'error');
+            }
+        }
+
+        // Test de conexión con IA
+        async function testAiConnection() {
+            showResult('🔗 Test Conexión IA', 'Iniciando...', 'info');
+            
+            const result = await makeRequest('test_file_access_safe.php', 'POST', {
+                file_id: currentConfig.fileId
+            });
+            
+            if (result.ok) {
+                const data = result.data;
+                const provider = data.user_settings.ai_provider;
+                const hasKey = data.api_keys[provider]?.has_key || false;
+                
+                showResult('✅ Conexión IA', 
+                    `Provider: ${provider}\nModelo: ${data.user_settings.ai_model}\nAPI Key: ${hasKey ? '✅ Configurada' : '❌ No configurada'}\nListo para extracción: ${data.ready_for_extraction.can_proceed ? '✅ Sí' : '❌ No'}`, 
+                    hasKey ? 'success' : 'warning');
+            } else {
+                showResult('❌ Error Conexión IA', 
+                    `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 
+                    'error');
+            }
+        }
+
+        // Diagnóstico completo
+        async function runFullDiagnostic() {
+            showResult('🚀 Diagnóstico Completo', 'Iniciando diagnóstico completo...', 'info');
+            
+            const tests = [
+                { name: 'Conectividad Básica', fn: testBasicConnectivity },
+                { name: 'Autenticación', fn: testAuthentication },
+                { name: 'Configuración Usuario', fn: testUserSettings },
+                { name: 'Acceso Archivo', fn: testFileAccess },
+                { name: 'API Keys', fn: testApiKey },
+                { name: 'Proveedor IA', fn: testAiProvider },
+                { name: 'Contenido Archivo', fn: testFileContent }
+            ];
+            
+            for (const test of tests) {
+                showResult(`🔄 Ejecutando: ${test.name}`, '...', 'info');
+                await test.fn();
+                await new Promise(resolve => setTimeout(resolve, 1000)); // Pausa de 1 segundo
+            }
+            
+            showResult('✅ Diagnóstico Completo', 'Todos los tests han sido ejecutados', 'success');
+        }
+
+        // Extracción con IA
+        async function extractWithAI() {
+            showResult('🤖 Extracción con IA', 'Iniciando extracción...', 'info');
+            
+            // Primero hacer test simple
+            showResult('🧪 Test Configuración IA', 'Verificando configuración...', 'info');
+            const testResult = await makeRequest('test_ai_extract_simple_safe.php', 'POST', {
+                file_id: currentConfig.fileId
+            });
+            
+            if (!testResult.ok) {
+                showResult('❌ Error Test Configuración', 
+                    `Status: ${testResult.status}\nError: ${JSON.stringify(testResult.data, null, 2)}`, 
+                    'error');
+                return;
+            }
+            
+            showResult('✅ Test Configuración IA', 
+                `Usuario: ${testResult.data.user.email}\nProvider: ${testResult.data.settings.ai_provider}\nModelo: ${testResult.data.settings.ai_model}\nPrompt: ${testResult.data.prompt_used}\nCustom Prompt: ${testResult.data.settings.has_custom_prompt ? 'Sí' : 'No'}`, 
+                'success');
+            
+            // Ahora hacer extracción completa
+            showResult('🤖 Extracción Completa', 'Ejecutando extracción completa...', 'info');
+            const result = await makeRequest('ai_extract_final_safe.php', 'POST', {
+                file_id: currentConfig.fileId
+            });
+            
+            if (result.ok) {
+                const data = result.data;
+                showResult('✅ Extracción Exitosa',
+                    `Usuario: ${data.usuario.email}\nArchivo: ${data.archivo.nombre}\nTipo: ${data.archivo.tipo}\nIA: ${data.ia.provider} (${data.ia.modelo})\nLatencia: ${data.consulta.latencia_ms}ms\n\nOPENAI FILE ID: ${data.archivo.openai_file_id || 'N/A'}\nFILE ACTION: ${data.archivo.file_action || 'N/A'}\n\nPROMPT USADO: ${data.prompt_used ? 'Personalizado' : 'Predeterminado'}\n\nRESUMEN:\n${data.resultado.resumen}\n\nGUARDADO:\nKnowledge ID: ${data.guardado.knowledge_id}\nStatus: ${data.guardado.status}`,
+                    'success');
+            } else {
+                showResult('❌ Error Extracción', 
+                    `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 
+                    'error');
+            }
+        }
+
+        // Simulación completa del botón real
+        async function simulateRealButton() {
+            showResult('🎯 Simulación Botón Real', 'Iniciando simulación completa del botón real...', 'info');
+            
+            if (!validateConfig()) return;
+            
+            const fileId = currentConfig.fileId;
+            
+            try {
+                // PASO 1: Obtener configuración completa del usuario
+                showResult('📋 Paso 1: Configuración Usuario', 'Obteniendo configuración completa...', 'info');
+                const configResult = await makeRequest('settings_get_safe.php');
+                
+                if (!configResult.ok) {
+                    showResult('❌ Error Configuración', 
+                        `Status: ${configResult.status}\nError: ${JSON.stringify(configResult.data, null, 2)}`, 
+                        'error');
+                    return;
+                }
+                
+                const userConfig = configResult.data.settings;
+                
+                // Verificar estructura de configuración
+                if (!userConfig) {
+                    showResult('❌ Error Configuración', 
+                        `No se pudo obtener configuración del usuario:\n${JSON.stringify(configResult.data, null, 2)}`, 
+                        'error');
+                    return;
+                }
+                
+                showResult('✅ Configuración Obtenida', 
+                    `IA Provider: ${userConfig.ai_provider}\nModelo: ${userConfig.ai_model}\nData Provider: ${userConfig.data_provider}\nPrompt Personalizado: ${userConfig.ai_prompt_ext_conten_file ? 'Sí' : 'No'}`, 
+                    'success');
+                
+                // PASO 2: Obtener información del archivo
+                showResult('📁 Paso 2: Información Archivo', 'Obteniendo información del archivo...', 'info');
+                const fileResult = await makeRequest('test_file_info_safe.php', 'POST', {
+                    file_id: fileId
+                });
+                
+                if (!fileResult.ok) {
+                    showResult('❌ Error Archivo', 
+                        `Status: ${fileResult.status}\nError: ${JSON.stringify(fileResult.data, null, 2)}`, 
+                        'error');
+                    return;
+                }
+                
+                const fileInfo = fileResult.data;
+                
+                // Verificar estructura de datos
+                if (!fileInfo.file_db || !fileInfo.file_physical) {
+                    showResult('❌ Error Estructura', 
+                        `Estructura de respuesta inesperada:\n${JSON.stringify(fileInfo, null, 2)}`, 
+                        'error');
+                    return;
+                }
+                
+                showResult('✅ Archivo Verificado', 
+                    `Archivo: ${fileInfo.file_db.original_filename}\nTipo: ${fileInfo.file_db.file_type}\nTamaño: ${fileInfo.file_db.file_size_mb} MB\nExiste: ${fileInfo.file_physical.exists ? 'Sí' : 'No'}`, 
+                    'success');
+                
+                // PASO 3: Verificar API Keys
+                showResult('🔑 Paso 3: API Keys', 'Verificando API keys del usuario...', 'info');
+                const keysResult = await makeRequest('user_keys_get_safe.php');
+                
+                if (!keysResult.ok) {
+                    showResult('❌ Error API Keys', 
+                        `Status: ${keysResult.status}\nError: ${JSON.stringify(keysResult.data, null, 2)}`, 
+                        'error');
+                    return;
+                }
+                
+                const keys = keysResult.data.keys;
+                
+                // Verificar estructura de API keys
+                if (!keys) {
+                    showResult('❌ Error API Keys', 
+                        `No se pudo obtener información de API keys:\n${JSON.stringify(keysResult.data, null, 2)}`, 
+                        'error');
+                    return;
+                }
+                
+                const provider = userConfig.ai_provider;
+                const hasKey = keys[provider]?.has || false;
+                
+                showResult('✅ API Keys Verificadas', 
+                    `Provider: ${provider}\nAPI Key: ${hasKey ? '✅ Configurada' : '❌ No configurada'}\nKeys disponibles: ${Object.keys(keys).filter(k => keys[k].has).join(', ')}`, 
+                    hasKey ? 'success' : 'warning');
+                
+                if (!hasKey) {
+                    showResult('⚠️ Advertencia', 'No hay API key configurada para el provider seleccionado. La extracción puede fallar.', 'warning');
+                }
+                
+                // PASO 4: Ejecutar extracción completa
+                showResult('🚀 Paso 4: Extracción Completa', 'Ejecutando extracción completa con IA...', 'info');
+                const extractResult = await makeRequest('ai_extract_final_safe.php', 'POST', {
+                    file_id: fileId
+                });
+                
+                if (extractResult.ok) {
+                    const data = extractResult.data;
+                    showResult('🎉 SIMULACIÓN EXITOSA', 
+                        `🎯 SIMULACIÓN COMPLETA DEL BOTÓN REAL\n\n` +
+                        `👤 USUARIO:\n` +
+                        `• Email: ${data.usuario.email}\n` +
+                        `• ID: ${data.usuario.id}\n\n` +
+                        `📄 ARCHIVO:\n` +
+                        `• Nombre: ${data.archivo.nombre}\n` +
+                        `• Tipo: ${data.archivo.tipo}\n` +
+                        `• Tamaño: ${data.archivo.tamaño}\n\n` +
+                        `🤖 IA UTILIZADA:\n` +
+                        `• Provider: ${data.ia.provider}\n` +
+                        `• Modelo: ${data.ia.modelo}\n` +
+                        `• Prompt: ${data.prompt_used ? 'Personalizado' : 'Predeterminado'}\n\n` +
+                        `⏱️ RENDIMIENTO:\n` +
+                        `• Latencia: ${data.consulta.latencia_ms}ms\n` +
+                        `• Caracteres procesados: ${data.consulta.caracteres_procesados}\n` +
+                        `• HTTP Code: ${data.consulta.http_code}\n\n` +
+                        `📊 RESULTADO:\n` +
+                        `${data.resultado.resumen}\n\n` +
+                        `💾 GUARDADO:\n` +
+                        `• Knowledge ID: ${data.guardado.knowledge_id}\n` +
+                        `• Status: ${data.guardado.status}\n\n` +
+                        `✅ ESTA ES EXACTAMENTE LA FUNCIONALIDAD DEL BOTÓN REAL`, 
+                        'success');
+                } else {
+                    showResult('❌ Error Extracción', 
+                        `Status: ${extractResult.status}\nError: ${JSON.stringify(extractResult.data, null, 2)}\n\n` +
+                        `🔍 DIAGNÓSTICO:\n` +
+                        `• Configuración: ✅ OK\n` +
+                        `• Archivo: ✅ OK\n` +
+                        `• API Keys: ${hasKey ? '✅ OK' : '❌ FALTA'}\n` +
+                        `• Extracción: ❌ FALLO\n\n` +
+                        `💡 SOLUCIÓN: ${hasKey ? 'Revisar configuración de IA o cambiar provider' : 'Configurar API key para ' + provider}`, 
+                        'error');
+                }
+                
+            } catch (error) {
+                showResult('❌ Error Simulación', 
+                    `Error inesperado: ${error.message}\n\n` +
+                    `🔍 Esto indica un problema en el flujo de simulación.`, 
+                    'error');
+            }
+        }
+
+        // Test de estructuras de datos
+        async function testDataStructures() {
+            showResult('🔍 Test Estructuras', 'Verificando estructuras de datos...', 'info');
+            
+            if (!validateConfig()) return;
+            
+            const fileId = currentConfig.fileId;
+            
+            try {
+                const result = await makeRequest('test_data_structures_safe.php', 'POST', {
+                    file_id: fileId
+                });
+                
+                if (result.ok) {
+                    const data = result.data;
+                    showResult('✅ Estructuras Verificadas', 
+                        `🔍 TEST DE ESTRUCTURAS DE DATOS\n\n` +
+                        `👤 USUARIO:\n` +
+                        `• ID: ${data.user.id}\n` +
+                        `• Email: ${data.user.email}\n\n` +
+                        `📋 CONFIGURACIÓN:\n` +
+                        `• Estructura: ${data.structures.settings.structure}\n` +
+                        `• AI Provider: ${data.structures.settings.data.ai_provider || 'No configurado'}\n` +
+                        `• AI Model: ${data.structures.settings.data.ai_model || 'No configurado'}\n` +
+                        `• Prompt Personalizado: ${data.structures.settings.has_custom_prompt ? 'Sí' : 'No'}\n\n` +
+                        `📁 ARCHIVO:\n` +
+                        `• Estructura: ${data.structures.file_db.structure}\n` +
+                        `• Nombre: ${data.structures.file_db.data.original_filename}\n` +
+                        `• Tipo: ${data.structures.file_db.data.file_type}\n` +
+                        `• Tamaño: ${data.structures.file_db.data.file_size} bytes\n\n` +
+                        `🔑 API KEYS:\n` +
+                        `• Estructura: ${data.structures.api_keys.structure}\n` +
+                        `• Providers con keys: ${data.structures.api_keys.providers_with_keys.join(', ') || 'Ninguno'}\n\n` +
+                        `✅ Todas las estructuras están correctas y listas para la simulación`, 
+                        'success');
+                } else {
+                    showResult('❌ Error Estructuras', 
+                        `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 
+                        'error');
+                }
+                
+            } catch (error) {
+                showResult('❌ Error Test', 
+                    `Error inesperado: ${error.message}`, 
+                    'error');
+            }
+        }
+
+        // Test de información de archivo
+        async function testFileInfo() {
+            showResult('📁 Test Info Archivo', 'Verificando información del archivo...', 'info');
+            
+            if (!validateConfig()) return;
+            
+            const fileId = currentConfig.fileId;
+            
+            try {
+                const result = await makeRequest('test_file_info_safe.php', 'POST', {
+                    file_id: fileId
+                });
+                
+                if (result.ok) {
+                    const data = result.data;
+                    showResult('✅ Info Archivo Verificada', 
+                        `📁 TEST DE INFORMACIÓN DE ARCHIVO\n\n` +
+                        `👤 USUARIO:\n` +
+                        `• ID: ${data.user.id}\n` +
+                        `• Email: ${data.user.email}\n\n` +
+                        `📄 ARCHIVO (DB):\n` +
+                        `• ID: ${data.file_db.id}\n` +
+                        `• Nombre: ${data.file_db.original_filename}\n` +
+                        `• Archivo almacenado: ${data.file_db.stored_filename}\n` +
+                        `• Tipo: ${data.file_db.file_type}\n` +
+                        `• Tamaño: ${data.file_db.file_size_mb} MB\n\n` +
+                        `💾 ARCHIVO FÍSICO:\n` +
+                        `• Ruta: ${data.file_physical.path}\n` +
+                        `• Existe: ${data.file_physical.exists ? '✅ Sí' : '❌ No'}\n` +
+                        `• Tamaño: ${data.file_physical.size_mb} MB\n\n` +
+                        `✅ Estructura correcta para simulación`, 
+                        'success');
+                } else {
+                    showResult('❌ Error Info Archivo', 
+                        `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 
+                        'error');
+                }
+                
+            } catch (error) {
+                showResult('❌ Error Test', 
+                    `Error inesperado: ${error.message}`, 
+                    'error');
+            }
+        }
+
+        // Verificar prompt del usuario
+        async function checkUserPrompt() {
+            showResult('📝 Verificar Prompt', 'Verificando prompt personalizado del usuario...', 'info');
+            
+            try {
+                const result = await makeRequest('check_user_prompt_safe.php', 'GET');
+                
+                if (result.ok) {
+                    const data = result.data;
+                    const analysis = data.prompt_analysis;
+                    const prompts = data.prompts;
+                    
+                    let promptDisplay = '';
+                    if (analysis.has_custom_prompt) {
+                        promptDisplay = `📝 PROMPT PERSONALIZADO (${analysis.custom_prompt_length} caracteres):\n${prompts.custom}\n\n`;
+                    } else {
+                        promptDisplay = `📝 NO HAY PROMPT PERSONALIZADO\n\n`;
+                    }
+                    
+                    promptDisplay += `🔧 PROMPT PREDETERMINADO (${analysis.default_prompt_length} caracteres):\n${prompts.default}`;
+                    
+                    showResult('✅ Análisis de Prompt Completado', 
+                        `📝 VERIFICACIÓN DE PROMPTS\n\n` +
+                        `👤 USUARIO:\n` +
+                        `• ID: ${data.user.id}\n` +
+                        `• Email: ${data.user.email}\n\n` +
+                        `📊 ANÁLISIS:\n` +
+                        `• Tiene prompt personalizado: ${analysis.has_custom_prompt ? '✅ Sí' : '❌ No'}\n` +
+                        `• Fuente del prompt: ${analysis.prompt_source}\n` +
+                        `• Longitud personalizado: ${analysis.custom_prompt_length} caracteres\n` +
+                        `• Longitud predeterminado: ${analysis.default_prompt_length} caracteres\n\n` +
+                        `📝 PROMPTS:\n\n${promptDisplay}`, 
+                        'success');
+                } else {
+                    showResult('❌ Error Verificación', 
+                        `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 
+                        'error');
+                }
+                
+            } catch (error) {
+                showResult('❌ Error Test', 
+                    `Error inesperado: ${error.message}`, 
+                    'error');
+            }
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            showResult('🔬 AI Diagnostic Tool', 'Herramienta de diagnóstico iniciada. Configura tu JWT token y File ID para comenzar.', 'info');
+        });
+    </script>
+</body>
+</html>

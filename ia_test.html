@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IA Test - Extracción de Contenido (Responses v2)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body{background:#1a1a1a;color:#fff}
+    .container{background:#2d2d2d;border-radius:8px;padding:20px}
+    input,textarea,select{background:#404040;color:#fff;border:2px solid #666;border-radius:6px;padding:12px}
+    input:focus,textarea:focus,select:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.3);outline:none}
+    .result-box{background:#1e1e1e;border:2px solid #404040;color:#00ff00;font-family:"Courier New",monospace;font-size:13px;line-height:1.4}
+    .result-label{color:#29d437;font-weight:bold;margin-bottom:8px;padding:8px 12px;background:#333;border-radius:4px;border-left:4px solid #3b82f6}
+  </style>
+</head>
+<body class="dark">
+  <div class="container mx-auto p-6 max-w-4xl">
+    <h1 class="text-3xl font-bold mb-6 text-blue-400">🧠 IA Test - Extracción de Contenido (Responses API)</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <div>
+        <label class="block text-sm font-medium mb-2">Token de Usuario (JWT)</label>
+        <input id="token" type="text" class="w-full p-3 border rounded-lg" placeholder="Bearer eyJ..." value="">
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-2">OpenAI API Key</label>
+        <input id="openaiKey" type="password" class="w-full p-3 border rounded-lg" placeholder="sk-xxxx">
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-2">File ID (knowledge_files.id)</label>
+        <input id="fileId" type="number" class="w-full p-3 border rounded-lg" placeholder="20" value="20">
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-2">API Base</label>
+        <input id="apiBase" type="text" class="w-full p-3 border rounded-lg"
+               value="https://cerberogrowthsolutions.com/catai/api">
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+      <button onclick="getUserSettings()" class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg">🔧 Obtener Config IA</button>
+      <button onclick="getFileInfo()" class="bg-green-600 hover:bg-green-700 text-white p-3 rounded-lg">📁 Info del Archivo</button>
+      <button onclick="buildPrompt()" class="bg-yellow-600 hover:bg-yellow-700 text-white p-3 rounded-lg">📝 Construir Prompt</button>
+      <button onclick="buildRequest()" class="bg-purple-600 hover:bg-purple-700 text-white p-3 rounded-lg">🔗 Armar Consulta (muestra)</button>
+      <button onclick="sendToAI()" class="bg-red-600 hover:bg-red-700 text-white p-3 rounded-lg">🚀 Extraer Contenido Real (Auto-detecta tipo)</button>
+      
+      <button onclick="debugExtraction()" class="bg-yellow-600 hover:bg-yellow-700 text-white p-3 rounded-lg ml-4">🔍 Diagnóstico de Extracción</button>
+      
+      <button onclick="testMinimal()" class="bg-orange-600 hover:bg-orange-700 text-white p-3 rounded-lg ml-4">🧪 Test Minimal</button>
+      
+      <button onclick="testBasic()" class="bg-gray-600 hover:bg-gray-700 text-white p-3 rounded-lg ml-4">🔧 Test Básico</button>
+      
+      <button onclick="testDependencies()" class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg ml-4">🔗 Test Dependencias</button>
+      
+      <button onclick="testConfigOnly()" class="bg-purple-600 hover:bg-purple-700 text-white p-3 rounded-lg ml-4">⚙️ Test Config</button>
+      <button onclick="testDbConnection()" class="bg-green-600 hover:bg-green-700 text-white p-3 rounded-lg">🔧 Probar Conexión DB</button>
+      <button onclick="testExtractDebug()" class="bg-orange-600 hover:bg-orange-700 text-white p-3 rounded-lg">🔍 Debug Extracción</button>
+      <button onclick="testSimple()" class="bg-pink-600 hover:bg-pink-700 text-white p-3 rounded-lg">🧪 Test Simple</button>
+      <button onclick="testConfig()" class="bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-lg">⚙️ Test Config</button>
+      <button onclick="testAIProcessing()" class="bg-teal-600 hover:bg-teal-700 text-white p-3 rounded-lg">🧠 Test IA Processing</button>
+      <button onclick="testAsyncExtraction()" class="bg-cyan-600 hover:bg-cyan-700 text-white p-3 rounded-lg">⚡ Extracción Asíncrona</button>
+      <button onclick="testOptimizedExtraction()" class="bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-lg">🚀 Extracción Optimizada</button>
+      <button onclick="testDebugReal()" class="bg-violet-600 hover:bg-violet-700 text-white p-3 rounded-lg">🔬 Debug Real</button>
+      <button onclick="testOpenAIConnection()" class="bg-amber-600 hover:bg-amber-700 text-white p-3 rounded-lg">🔗 Test OpenAI</button>
+      <button onclick="testFilesAPI()" class="bg-lime-600 hover:bg-lime-700 text-white p-3 rounded-lg">📁 Files API</button>
+      <button onclick="testSimulated()" class="bg-slate-600 hover:bg-slate-700 text-white p-3 rounded-lg">🎭 Simulado</button>
+      <button onclick="testGemini()" class="bg-purple-600 hover:bg-purple-700 text-white p-3 rounded-lg">💎 Gemini</button>
+      <button onclick="testHybrid()" class="bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-lg">🔄 Híbrido</button>
+      <button onclick="extractUserData()" class="bg-cyan-600 hover:bg-cyan-700 text-white p-3 rounded-lg">👤 Extraer Datos Usuario</button>
+      <button onclick="clearResults()" class="bg-gray-600 hover:bg-gray-700 text-white p-3 rounded-lg">🗑️ Limpiar</button>
+    </div>
+
+    <!-- Indicador de Estado -->
+    <div id="statusIndicator" class="mb-4 p-3 rounded-lg bg-gray-100 border border-gray-300 text-sm">
+      <span class="font-semibold text-black">📊 Estado del Sistema:</span>
+      <span id="statusText" class="text-black">✅ Listo para extracción</span>
+      <span id="cooldownTimer" class="ml-2 text-blue-600 font-mono"></span>
+    </div>
+
+    <div class="space-y-4">
+      <div>
+        <div class="result-label">🔧 Configuración IA del Usuario</div>
+        <pre id="userSettings" class="result-box p-4 rounded-lg text-sm overflow-auto max-h-40"></pre>
+      </div>
+      <div>
+        <div class="result-label">📁 Información del Archivo</div>
+        <pre id="fileInfo" class="result-box p-4 rounded-lg text-sm overflow-auto max-h-40"></pre>
+      </div>
+      <div>
+        <div class="result-label">📝 Prompt Construido</div>
+        <pre id="prompt" class="result-box p-4 rounded-lg text-sm overflow-auto max-h-40"></pre>
+      </div>
+      <div>
+        <div class="result-label">🔗 Consulta Completa (muestra)</div>
+        <pre id="request" class="result-box p-4 rounded-lg text-sm overflow-auto max-h-60"></pre>
+      </div>
+      <div>
+        <div class="result-label">🚀 Resultado de la IA (respuesta del backend)</div>
+        <pre id="aiResult" class="result-box p-4 rounded-lg text-sm overflow-auto max-h-60"></pre>
+      </div>
+    </div>
+    
+    <div class="mt-6">
+      <div class="result-label">📋 Datos que se guardarían en Knowledge Base</div>
+      <pre id="knowledgeBaseData" class="result-box p-4 rounded-lg text-sm overflow-auto max-h-60 bg-blue-50 border border-blue-200"></pre>
+    </div>
+    
+    <div class="mt-6">
+      <div class="result-label">🔍 Debug Completo - Todas las Pruebas</div>
+      <div class="flex gap-2 mb-2">
+        <button onclick="runAllTests()" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">🚀 Ejecutar Extracción Completa</button>
+        <button onclick="copyDebugInfo()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">📋 Copiar Debug Info</button>
+        <button onclick="clearDebugInfo()" class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">🗑️ Limpiar</button>
+      </div>
+      <pre id="debugInfo" class="result-box p-4 rounded-lg text-sm overflow-auto max-h-96 bg-gray-50 border border-gray-200"></pre>
+    </div>
+  </div>
+
+  <script>
+    const el = id => document.getElementById(id);
+    const API_BASE = () => el('apiBase').value.trim();
+    const getToken = () => {
+      const token = el('token').value.trim();
+      if (token) localStorage.setItem('ia_test_jwt', token);
+      return token;
+    };
+    const getOpenAIKey = () => {
+      const key = el('openaiKey').value.trim();
+      if (key) localStorage.setItem('ia_test_openai_key', key);
+      return key;
+    };
+    const getFileId = () => parseInt(el('fileId').value.trim(), 10);
+    
+    // Cargar datos guardados al cargar la página
+    function loadSavedData() {
+      const savedToken = localStorage.getItem('ia_test_jwt');
+      const savedKey = localStorage.getItem('ia_test_openai_key');
+      if (savedToken) el('token').value = savedToken;
+      if (savedKey) el('openaiKey').value = savedKey;
+    }
+
+    let userSettings = null, fileInfo = null, promptTxt = null;
+
+    async function getUserSettings() {
+      const token = getToken();
+      if (!token) return alert('❌ Ingresa el token (JWT)');
+      try {
+        el('userSettings').textContent = '⏳ Cargando configuración del usuario...';
+        const r = await fetch(`${API_BASE()}/settings_get_safe.php`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const j = await r.json(); userSettings = j;
+        
+        // Mostrar qué datos estamos extrayendo para la consulta
+        const extractedData = {
+          'ai_provider': j.settings?.ai_provider || 'NO_ENCONTRADO',
+          'ai_model': j.settings?.ai_model || 'NO_ENCONTRADO',
+          'source': j.source || 'NO_ENCONTRADO'
+        };
+        
+        el('userSettings').textContent = `📋 CONFIGURACIÓN COMPLETA:\n${JSON.stringify(j, null, 2)}\n\n🎯 DATOS EXTRAÍDOS PARA LA CONSULTA:\n${JSON.stringify(extractedData, null, 2)}`;
+      } catch (e) { el('userSettings').textContent = `Error: ${e.message}`; }
+    }
+
+    async function getFileInfo() {
+      const token = getToken(), fileId = getFileId();
+      if (!token || !fileId) return alert('❌ Ingresa token y file ID');
+      try {
+        el('fileInfo').textContent = '⏳ Obteniendo información del archivo...';
+        const r = await fetch(`${API_BASE()}/ai_summarize_probe_safe.php`, {
+          method: 'POST',
+          headers: { 'Content-Type':'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ file_id: fileId, knowledge_id: fileId })
+        });
+        const j = await r.json(); fileInfo = j;
+        
+        // Mostrar qué datos estamos extrayendo para la consulta
+        const extractedData = {
+          'file_id': j.probe?.used_file_id || 'NO_ENCONTRADO',
+          'original_filename': j.probe?.file?.original_filename || 'NO_ENCONTRADO',
+          'file_path': j.probe?.file?.expected_path || 'NO_ENCONTRADO',
+          'file_size_mb': j.probe?.file?.size_bytes ? (j.probe.file.size_bytes / 1024 / 1024).toFixed(2) : 'NO_ENCONTRADO',
+          'mime_type': j.probe?.file?.mime_type || 'NO_ENCONTRADO'
+        };
+        
+        el('fileInfo').textContent = `📁 INFORMACIÓN COMPLETA DEL ARCHIVO:\n${JSON.stringify(j, null, 2)}\n\n🎯 DATOS EXTRAÍDOS PARA LA CONSULTA:\n${JSON.stringify(extractedData, null, 2)}`;
+      } catch (e) { el('fileInfo').textContent = `Error: ${e.message}`; }
+    }
+
+    function buildPrompt() {
+      if (!fileInfo || !userSettings) return alert('❌ Primero settings + file info');
+      const f = fileInfo?.probe?.file || {};
+      const s = userSettings?.settings || {};
+      
+      promptTxt = `Eres un analista de trading experto. Analiza el siguiente documento y extrae información valiosa para trading:
+
+ARCHIVO: ${f.original_filename || 'N/A'}
+TIPO: ${f.mime_type || 'N/A'}
+TAMAÑO: ${f.size_bytes ? (Math.round(f.size_bytes/1024/1024*100)/100) : 'N/A'} MB
+
+Proporciona un resumen estructurado en español con:
+1. RESUMEN EJECUTIVO (2-3 líneas)
+2. CONCEPTOS CLAVE (5-8 puntos)
+3. ESTRATEGIAS DE TRADING (3-5 puntos)
+4. GESTIÓN DE RIESGO (2-3 puntos)
+5. RECOMENDACIONES (2-3 puntos)
+
+Enfócate en información práctica y accionable para traders.`;
+      
+      // Mostrar qué datos estamos usando para construir el prompt
+      const promptData = {
+        'archivo': f.original_filename || 'NO_ENCONTRADO',
+        'tipo': f.mime_type || 'NO_ENCONTRADO',
+        'tamaño_mb': f.size_bytes ? (Math.round(f.size_bytes/1024/1024*100)/100) : 'NO_ENCONTRADO',
+        'ai_provider': s.ai_provider || 'NO_ENCONTRADO',
+        'ai_model': s.ai_model || 'NO_ENCONTRADO'
+      };
+      
+      el('prompt').textContent = `📝 PROMPT CONSTRUIDO:\n${promptTxt}\n\n🎯 DATOS USADOS PARA CONSTRUIR EL PROMPT:\n${JSON.stringify(promptData, null, 2)}`;
+    }
+
+    // Solo display: muestra cómo luce el payload correcto para /v1/responses
+    function buildRequest() {
+      if (!promptTxt || !userSettings) return alert('❌ Construye el prompt');
+      const model = (userSettings.settings?.ai_model) || 'gpt-4o';
+      const openaiPayloadSample = {
+        model,
+        temperature: 0.3,
+        max_output_tokens: 1800,
+        text: {
+          format: {
+            type: 'json_schema',
+            name: 'knowledge_card',
+            strict: true,
+            schema: {
+              type: 'object',
+              required: ['resumen','puntos_clave','estrategias','gestion_riesgo','recomendaciones'],
+              properties: {
+                resumen:        { type:'string' },
+                puntos_clave:   { type:'array', items:{ type:'string' } },
+                estrategias:    { type:'array', items:{ type:'string' } },
+                gestion_riesgo: { type:'array', items:{ type:'string' } },
+                recomendaciones:{ type:'array', items:{ type:'string' } }
+              },
+              additionalProperties: false
+            }
+          }
+        },
+        input: [{
+          role: 'user',
+          content: [
+            { type:'input_text', text: 'Eres analista de trading. Resume el PDF según el esquema. No inventes; si faltan datos usa null.' },
+            { type:'input_file', file_id: 'file_XXXXXXXX (ejemplo)' }
+          ]
+        }]
+      };
+
+      const backendRequest = {
+        endpoint: `${API_BASE()}/ai_extract_content_real_v3_safe.php`,
+        method: 'POST',
+        headers: {
+          'Authorization': getToken(),
+          'X-OpenAI-Key': getOpenAIKey(),
+          'Content-Type': 'application/json'
+        },
+        body: { file_id: getFileId() }
+      };
+
+      el('request').textContent = JSON.stringify({ backendRequest, openaiPayloadSample }, null, 2);
+    }
+
+    // Variables de control de rate limiting
+    let isProcessing = false;
+    let lastRequestTime = 0;
+    const MIN_REQUEST_INTERVAL = 5000; // 5 segundos mínimo entre requests
+    let cooldownInterval = null;
+
+    // Función para actualizar el indicador de estado
+    function updateStatusIndicator() {
+      const statusText = el('statusText');
+      const cooldownTimer = el('cooldownTimer');
+      const statusIndicator = el('statusIndicator');
+      
+      if (isProcessing) {
+        statusText.textContent = '⏳ Procesando extracción...';
+        statusIndicator.className = 'mb-4 p-3 rounded-lg bg-yellow-100 border border-yellow-300 text-sm';
+        cooldownTimer.textContent = '';
+      } else {
+        const now = Date.now();
+        const timeSinceLastRequest = now - lastRequestTime;
+        const remainingTime = MIN_REQUEST_INTERVAL - timeSinceLastRequest;
+        
+        if (remainingTime > 0) {
+          statusText.textContent = '⏳ En cooldown';
+          statusIndicator.className = 'mb-4 p-3 rounded-lg bg-orange-100 border border-orange-300 text-sm';
+          cooldownTimer.textContent = `(${Math.ceil(remainingTime / 1000)}s)`;
+        } else {
+          statusText.textContent = '✅ Listo para extracción';
+          statusIndicator.className = 'mb-4 p-3 rounded-lg bg-green-100 border border-green-300 text-sm';
+          cooldownTimer.textContent = '';
+        }
+      }
+    }
+
+    // Función para iniciar el timer de cooldown
+    function startCooldownTimer() {
+      if (cooldownInterval) clearInterval(cooldownInterval);
+      
+      cooldownInterval = setInterval(() => {
+        updateStatusIndicator();
+        const now = Date.now();
+        const timeSinceLastRequest = now - lastRequestTime;
+        if (timeSinceLastRequest >= MIN_REQUEST_INTERVAL) {
+          clearInterval(cooldownInterval);
+          cooldownInterval = null;
+        }
+      }, 1000);
+    }
+
+    async function debugExtraction() {
+      const token = getToken(), fileId = getFileId();
+      if (!token || !fileId) return alert('❌ Completa JWT Token y File ID');
+
+      try {
+        el('aiResult').textContent = '🔍 INICIANDO DIAGNÓSTICO DE EXTRACCIÓN...';
+        el('statusText').textContent = '🔍 Verificando configuración, archivo y conectividad...';
+        
+        const response = await fetch(`${API_BASE()}/ai_extract_content_debug_safe.php`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ file_id: fileId })
+        });
+        
+        const result = await response.json();
+        
+        el('aiResult').textContent = `🔍 DIAGNÓSTICO COMPLETO:\n${JSON.stringify(result, null, 2)}`;
+        
+        if (result.ok) {
+          el('statusText').textContent = '✅ Diagnóstico completado - Revisa los resultados';
+        } else {
+          el('statusText').textContent = '⚠️ Problemas encontrados en diagnóstico';
+        }
+        
+      } catch (error) {
+        el('aiResult').textContent = `❌ ERROR EN DIAGNÓSTICO:\n${error.message}`;
+        el('statusText').textContent = '❌ Error en diagnóstico';
+      }
+    }
+
+    async function testMinimal() {
+      const token = getToken(), fileId = getFileId();
+      if (!token || !fileId) return alert('❌ Completa JWT Token y File ID');
+
+      try {
+        el('aiResult').textContent = '🧪 INICIANDO TEST MINIMAL...';
+        el('statusText').textContent = '🧪 Test ultra-simple con solo 1000 caracteres...';
+        
+        const response = await fetch(`${API_BASE()}/ai_extract_content_minimal_safe.php`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ file_id: fileId })
+        });
+        
+        const result = await response.json();
+        
+        el('aiResult').textContent = `🧪 TEST MINIMAL COMPLETO:\n${JSON.stringify(result, null, 2)}`;
+        
+        if (result.ok) {
+          el('statusText').textContent = '✅ Test minimal completado - Revisa los resultados';
+        } else {
+          el('statusText').textContent = '⚠️ Problemas encontrados en test minimal';
+        }
+        
+      } catch (error) {
+        el('aiResult').textContent = `❌ ERROR EN TEST MINIMAL:\n${error.message}`;
+        el('statusText').textContent = '❌ Error en test minimal';
+      }
+    }
+
+    async function testBasic() {
+      try {
+        el('aiResult').textContent = '🔧 INICIANDO TEST BÁSICO...';
+        el('statusText').textContent = '🔧 Test básico del servidor PHP...';
+        
+        const response = await fetch(`${API_BASE()}/test_basic_safe.php`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        const result = await response.json();
+        
+        el('aiResult').textContent = `🔧 TEST BÁSICO COMPLETO:\n${JSON.stringify(result, null, 2)}`;
+        
+        if (result.ok) {
+          el('statusText').textContent = '✅ Test básico completado - Servidor PHP funcionando';
+        } else {
+          el('statusText').textContent = '⚠️ Problemas encontrados en test básico';
+        }
+        
+      } catch (error) {
+        el('aiResult').textContent = `❌ ERROR EN TEST BÁSICO:\n${error.message}`;
+        el('statusText').textContent = '❌ Error en test básico';
+      }
+    }
+
+    async function testDependencies() {
+      try {
+        el('aiResult').textContent = '🔗 INICIANDO TEST DE DEPENDENCIAS...';
+        el('statusText').textContent = '🔗 Verificando config.php, helpers.php, db.php, CORS, base de datos...';
+        
+        const response = await fetch(`${API_BASE()}/test_dependencies_safe.php`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        const result = await response.json();
+        
+        el('aiResult').textContent = `🔗 TEST DE DEPENDENCIAS COMPLETO:\n${JSON.stringify(result, null, 2)}`;
+        
+        if (result.ok) {
+          el('statusText').textContent = '✅ Test de dependencias completado - Todas las dependencias OK';
+        } else {
+          el('statusText').textContent = '⚠️ Problemas encontrados en dependencias';
+        }
+        
+      } catch (error) {
+        el('aiResult').textContent = `❌ ERROR EN TEST DE DEPENDENCIAS:\n${error.message}`;
+        el('statusText').textContent = '❌ Error en test de dependencias';
+      }
+    }
+
+    async function testConfigOnly() {
+      try {
+        el('aiResult').textContent = '⚙️ INICIANDO TEST DE CONFIG...';
+        el('statusText').textContent = '⚙️ Verificando solo config.php...';
+        
+        const response = await fetch(`${API_BASE()}/test_config_only_safe.php`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        const result = await response.json();
+        
+        el('aiResult').textContent = `⚙️ TEST DE CONFIG COMPLETO:\n${JSON.stringify(result, null, 2)}`;
+        
+        if (result.ok) {
+          el('statusText').textContent = '✅ Test de config completado - config.php OK';
+        } else {
+          el('statusText').textContent = '⚠️ Problemas encontrados en config.php';
+        }
+        
+      } catch (error) {
+        el('aiResult').textContent = `❌ ERROR EN TEST DE CONFIG:\n${error.message}`;
+        el('statusText').textContent = '❌ Error en test de config';
+      }
+    }
+
+    async function sendToAI() {
+      const token = getToken(), key = getOpenAIKey(), fileId = getFileId();
+      if (!token || !key || !fileId) return alert('❌ Completa JWT, OpenAI Key y File ID');
+
+      // Verificar rate limiting
+      const now = Date.now();
+      if (isProcessing) {
+        return alert('⏳ Ya hay una extracción en proceso. Espera a que termine.');
+      }
+      
+      if (now - lastRequestTime < MIN_REQUEST_INTERVAL) {
+        const remaining = Math.ceil((MIN_REQUEST_INTERVAL - (now - lastRequestTime)) / 1000);
+        return alert(`⏳ Espera ${remaining} segundos antes de hacer otra extracción.`);
+      }
+
+      // Marcar como procesando
+      isProcessing = true;
+      lastRequestTime = now;
+      updateStatusIndicator();
+      
+      // Deshabilitar botón
+      const btn = document.querySelector('button[onclick="sendToAI()"]');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '⏳ Procesando Extracción...';
+      }
+
+      try {
+        // Mostrar exactamente qué estamos enviando
+        const requestData = {
+          'endpoint': `${API_BASE()}/ai_extract_working_safe.php`,
+          'method': 'POST',
+          'headers': {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          'body': { file_id: fileId }
+        };
+        el('aiResult').textContent = `🚀 ENVIANDO REQUEST AL ENDPOINT MEJORADO:\n${JSON.stringify(requestData, null, 2)}\n\n⏳ Esperando respuesta...`;
+        
+        const r = await fetch(`${API_BASE()}/ai_extract_working_safe.php`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,           // JWT de tu sesión con prefijo Bearer
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ file_id: fileId })
+        });
+        
+        // Verificar el status de la respuesta
+        if (!r.ok) {
+          throw new Error(`HTTP ${r.status}: ${r.statusText}`);
+        }
+        
+        // Verificar si hay contenido
+        const responseText = await r.text();
+        if (!responseText || responseText.trim() === '') {
+          throw new Error('Respuesta vacía del servidor');
+        }
+        
+        // Intentar parsear JSON
+        let j;
+        try {
+          j = JSON.parse(responseText);
+        } catch (parseError) {
+          throw new Error(`Error al parsear JSON: ${parseError.message}. Respuesta: ${responseText.substring(0, 200)}...`);
+        }
+        
+        // Mostrar respuesta completa
+        el('aiResult').textContent = `🚀 REQUEST ENVIADO AL ENDPOINT MEJORADO:\n${JSON.stringify(requestData, null, 2)}\n\n📥 RESPUESTA RECIBIDA:\n${JSON.stringify(j, null, 2)}`;
+        
+        // Mostrar específicamente qué se guardaría en knowledge_base en sección separada
+        if (j.ok && j['📋 SIMULACIÓN: DATOS QUE SE GUARDARÍAN EN KNOWLEDGE_BASE']) {
+          const knowledgeData = j['📋 SIMULACIÓN: DATOS QUE SE GUARDARÍAN EN KNOWLEDGE_BASE'];
+          const knowledgeFilesData = j['📋 SIMULACIÓN: DATOS QUE SE ACTUALIZARÍAN EN KNOWLEDGE_FILES'];
+          
+          el('knowledgeBaseData').textContent = `📋 DATOS QUE SE GUARDARÍAN EN KNOWLEDGE_BASE:\n${JSON.stringify(knowledgeData, null, 2)}\n\n📋 DATOS QUE SE ACTUALIZARÍAN EN KNOWLEDGE_FILES:\n${JSON.stringify(knowledgeFilesData, null, 2)}`;
+        } else {
+          el('knowledgeBaseData').textContent = 'No hay datos de knowledge_base para mostrar';
+        }
+      } catch (e) {
+        el('aiResult').textContent = `❌ ERROR EN REQUEST AL ENDPOINT MEJORADO:\n${JSON.stringify(requestData, null, 2)}\n\n💥 ERROR:\n${e.message}`;
+      } finally {
+        // Restaurar botón y estado
+        isProcessing = false;
+        updateStatusIndicator();
+        startCooldownTimer();
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = '🚀 Extraer Contenido Real (Auto-detecta tipo)';
+        }
+      }
+    }
+
+    async function testDbConnection() {
+      const token = getToken();
+      if (!token) return alert('❌ Completa JWT Token');
+
+      try {
+        el('aiResult').textContent = '🔧 Probando conexión a la base de datos...';
+        
+        const response = await fetch(`${API_BASE()}/test_db_reconnection_safe.php`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        const result = await response.json();
+        
+        el('aiResult').textContent = `🔧 PRUEBA DE CONEXIÓN DB:\n${JSON.stringify(result, null, 2)}`;
+        
+        if (result.ok && result.all_tests_passed) {
+          el('statusText').textContent = '✅ Conexión DB estable';
+          el('statusIndicator').className = 'mb-4 p-3 rounded-lg bg-green-100 border border-green-300 text-sm';
+        } else {
+          el('statusText').textContent = '⚠️ Problemas de conexión DB';
+          el('statusIndicator').className = 'mb-4 p-3 rounded-lg bg-orange-100 border border-orange-300 text-sm';
+        }
+        
+      } catch (error) {
+        el('aiResult').textContent = `❌ ERROR EN PRUEBA DB:\n${error.message}`;
+        el('statusText').textContent = '❌ Error de conexión DB';
+        el('statusIndicator').className = 'mb-4 p-3 rounded-lg bg-red-100 border border-red-300 text-sm';
+      }
+    }
+
+    async function testExtractDebug() {
+      const token = getToken();
+      const key = getOpenAIKey();
+      const fileId = getFileId();
+      
+      if (!token) return alert('❌ Completa JWT Token');
+      if (!key) return alert('❌ Completa OpenAI API Key');
+      if (!fileId) return alert('❌ Completa File ID');
+
+      try {
+        el('aiResult').textContent = '🔍 Probando endpoint de extracción...';
+        
+        const response = await fetch(`${API_BASE()}/test_ai_extract_debug_safe.php`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'X-OpenAI-Key': key,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ file_id: fileId })
+        });
+        
+        const result = await response.json();
+        
+        el('aiResult').textContent = `🔍 DEBUG EXTRACCIÓN:\n${JSON.stringify(result, null, 2)}`;
+        
+        if (result.ok) {
+          el('statusText').textContent = '✅ Endpoint de extracción funcionando';
+        } else {
+          el('statusText').textContent = '⚠️ Problemas en endpoint de extracción';
+        }
+        
+      } catch (error) {
+        el('aiResult').textContent = `❌ ERROR EN DEBUG EXTRACCIÓN:\n${error.message}`;
+        el('statusText').textContent = '❌ Error en endpoint de extracción';
+      }
+    }
+
+    async function testSimple() {
+      try {
+        el('aiResult').textContent = '🧪 Probando endpoint simple...';
+        
+        const response = await fetch(`${API_BASE()}/simple_test_safe.php`, {
+          method: 'GET'
+        });
+        
+        const result = await response.json();
+        
+        el('aiResult').textContent = `🧪 TEST SIMPLE:\n${JSON.stringify(result, null, 2)}`;
+        
+        if (result.ok) {
+          el('statusText').textContent = '✅ Servidor PHP funcionando';
+        } else {
+          el('statusText').textContent = '⚠️ Problemas en servidor PHP';
+        }
+        
+      } catch (error) {
+        el('aiResult').textContent = `❌ ERROR EN TEST SIMPLE:\n${error.message}`;
+        el('statusText').textContent = '❌ Error crítico en servidor';
+      }
+    }
+
+    async function testConfig() {
+      try {
+        el('aiResult').textContent = '⚙️ Probando configuración del sistema...';
+        
+        const response = await fetch(`${API_BASE()}/test_config_safe.php`, {
+          method: 'GET'
+        });
+        
+        const result = await response.json();
+        
+        el('aiResult').textContent = `⚙️ TEST CONFIGURACIÓN:\n${JSON.stringify(result, null, 2)}`;
+        
+        if (result.ok) {
+          el('statusText').textContent = '✅ Configuración del sistema OK';
+        } else {
+          el('statusText').textContent = '⚠️ Problemas en configuración';
+        }
+        
+      } catch (error) {
+        el('aiResult').textContent = `❌ ERROR EN TEST CONFIG:\n${error.message}`;
+        el('statusText').textContent = '❌ Error en configuración';
+      }
+    }
+
+    async function testAIProcessing() {
+      const token = getToken();
+      const key = getOpenAIKey();
+      const fileId = getFileId();
+      
+      if (!token) return alert('❌ Completa JWT Token');
+      if (!key) return alert('❌ Completa OpenAI API Key');
+      if (!fileId) return alert('❌ Completa File ID');
+
+      try {
+        el('aiResult').textContent = '🧠 Probando procesamiento de IA...';
+        
+        const response = await fetch(`${API_BASE()}/test_ai_processing_safe.php`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'X-OpenAI-Key': key,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ file_id: fileId })
+        });
+        
+        const result = await response.json();
+        
+        el('aiResult').textContent = `🧠 TEST IA PROCESSING:\n${JSON.stringify(result, null, 2)}`;
+        
+        if (result.ok) {
+          el('statusText').textContent = '✅ Procesamiento de IA listo';
+        } else {
+          el('statusText').textContent = '⚠️ Problemas en procesamiento de IA';
+        }
+        
+      } catch (error) {
+        el('aiResult').textContent = `❌ ERROR EN TEST IA PROCESSING:\n${error.message}`;
+        el('statusText').textContent = '❌ Error en procesamiento de IA';
+      }
+    }
+
+    async function testAsyncExtraction() {
+      const token = getToken();
+      const key = getOpenAIKey();
+      const fileId = getFileId();
+      
+      if (!token) return alert('❌ Completa JWT Token');
+      if (!key) return alert('❌ Completa OpenAI API Key');
+      if (!fileId) return alert('❌ Completa File ID');
+
+      try {
+        el('aiResult').textContent = '⚡ Iniciando extracción asíncrona...';
+        el('statusText').textContent = '⚡ Procesando con timeout extendido...';
+        
+        const response = await fetch(`${API_BASE()}/ai_extract_content_async_safe.php`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'X-OpenAI-Key': key,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ file_id: fileId })
+        });
+        
+        const result = await response.json();
+        
+        el('aiResult').textContent = `⚡ EXTRACCIÓN ASÍNCRONA:\n${JSON.stringify(result, null, 2)}`;
+        
+        if (result.ok) {
+          el('statusText').textContent = '✅ Extracción asíncrona completada';
+        } else {
+          el('statusText').textContent = '⚠️ Problemas en extracción asíncrona';
+        }
+        
+      } catch (error) {
+        el('aiResult').textContent = `❌ ERROR EN EXTRACCIÓN ASÍNCRONA:\n${error.message}`;
+        el('statusText').textContent = '❌ Error en extracción asíncrona';
+      }
+    }
+
+    async function testOptimizedExtraction() {
+      const token = getToken();
+      const key = getOpenAIKey();
+      const fileId = getFileId();
+      
+      if (!token) return alert('❌ Completa JWT Token');
+      if (!key) return alert('❌ Completa OpenAI API Key');
+      if (!fileId) return alert('❌ Completa File ID');
+
+      try {
+        el('aiResult').textContent = '🚀 Iniciando extracción optimizada...';
+        el('statusText').textContent = '🚀 Procesando con límites optimizados...';
+        
+        const response = await fetch(`${API_BASE()}/ai_extract_content_optimized_safe.php`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'X-OpenAI-Key': key,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ file_id: fileId })
+        });
+        
+        const result = await response.json();
+        
+        el('aiResult').textContent = `🚀 EXTRACCIÓN OPTIMIZADA:\n${JSON.stringify(result, null, 2)}`;
+        
+        if (result.ok) {
+          el('statusText').textContent = '✅ Extracción optimizada completada';
+        } else {
+          el('statusText').textContent = '⚠️ Problemas en extracción optimizada';
+        }
+        
+      } catch (error) {
+        el('aiResult').textContent = `❌ ERROR EN EXTRACCIÓN OPTIMIZADA:\n${error.message}`;
+        el('statusText').textContent = '❌ Error en extracción optimizada';
+      }
+    }
+
+    async function testDebugReal() {
+      const token = getToken();
+      const key = getOpenAIKey();
+      const fileId = getFileId();
+      
+      if (!token) return alert('❌ Completa JWT Token');
+      if (!key) return alert('❌ Completa OpenAI API Key');
+      if (!fileId) return alert('❌ Completa File ID');
+
+      try {
+        el('aiResult').textContent = '🔬 Iniciando debug real...';
+        el('statusText').textContent = '🔬 Debugging extracción real...';
+        
+        const response = await fetch(`${API_BASE()}/ai_extract_content_debug_real_safe.php`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'X-OpenAI-Key': key,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ file_id: fileId })
+        });
+        
+        const result = await response.json();
+        
+        el('aiResult').textContent = `🔬 DEBUG REAL:\n${JSON.stringify(result, null, 2)}`;
+        
+        if (result.ok) {
+          el('statusText').textContent = '✅ Debug real completado';
+        } else {
+          el('statusText').textContent = '⚠️ Problemas en debug real';
+        }
+        
+      } catch (error) {
+        el('aiResult').textContent = `❌ ERROR EN DEBUG REAL:\n${error.message}`;
+        el('statusText').textContent = '❌ Error en debug real';
+      }
+    }
+
+    async function testOpenAIConnection() {
+      const token = getToken();
+      const key = getOpenAIKey();
+      
+      if (!token) return alert('❌ Completa JWT Token');
+      if (!key) return alert('❌ Completa OpenAI API Key');
+
+      try {
+        el('aiResult').textContent = '🔗 Probando conexión a OpenAI...';
+        el('statusText').textContent = '🔗 Testeando endpoints de OpenAI...';
+        
+        const response = await fetch(`${API_BASE()}/test_openai_connection_safe.php`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'X-OpenAI-Key': key,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({})
+        });
+        
+        const result = await response.json();
+        
+        el('aiResult').textContent = `🔗 TEST OPENAI CONNECTION:\n${JSON.stringify(result, null, 2)}`;
+        
+        if (result.ok) {
+          el('statusText').textContent = '✅ Conexión a OpenAI verificada';
+        } else {
+          el('statusText').textContent = '⚠️ Problemas en conexión a OpenAI';
+        }
+        
+      } catch (error) {
+        el('aiResult').textContent = `❌ ERROR EN TEST OPENAI:\n${error.message}`;
+        el('statusText').textContent = '❌ Error en test de OpenAI';
+      }
+    }
+
+    async function testFilesAPI() {
+      const token = getToken();
+      const key = getOpenAIKey();
+      const fileId = getFileId();
+      
+      if (!token) return alert('❌ Completa JWT Token');
+      if (!key) return alert('❌ Completa OpenAI API Key');
+      if (!fileId) return alert('❌ Completa File ID');
+
+      try {
+        el('aiResult').textContent = '📁 Probando Files API...';
+        el('statusText').textContent = '📁 Testeando con Files API (no Responses)...';
+        
+        const response = await fetch(`${API_BASE()}/ai_extract_content_files_api_safe.php`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'X-OpenAI-Key': key,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ file_id: fileId })
+        });
+        
+        const result = await response.json();
+        
+        el('aiResult').textContent = `📁 FILES API TEST:\n${JSON.stringify(result, null, 2)}`;
+        
+        if (result.ok) {
+          el('statusText').textContent = '✅ Files API funciona correctamente';
+        } else {
+          el('statusText').textContent = '⚠️ Problemas con Files API';
+        }
+        
+      } catch (error) {
+        el('aiResult').textContent = `❌ ERROR EN FILES API:\n${error.message}`;
+        el('statusText').textContent = '❌ Error en Files API';
+      }
+    }
+
+    async function testSimulated() {
+      const token = getToken();
+      const fileId = getFileId();
+      
+      if (!token) return alert('❌ Completa JWT Token');
+      if (!fileId) return alert('❌ Completa File ID');
+
+      try {
+        el('aiResult').textContent = '🎭 Probando extracción simulada...';
+        el('statusText').textContent = '🎭 Simulando sin llamadas a OpenAI...';
+        
+        const response = await fetch(`${API_BASE()}/ai_extract_content_simulated_safe.php`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ file_id: fileId })
+        });
+        
+        const result = await response.json();
+        
+        el('aiResult').textContent = `🎭 EXTRACCIÓN SIMULADA:\n${JSON.stringify(result, null, 2)}`;
+        
+        if (result.ok) {
+          el('statusText').textContent = '✅ Extracción simulada completada';
+        } else {
+          el('statusText').textContent = '⚠️ Problemas en extracción simulada';
+        }
+        
+      } catch (error) {
+        el('aiResult').textContent = `❌ ERROR EN EXTRACCIÓN SIMULADA:\n${error.message}`;
+        el('statusText').textContent = '❌ Error en extracción simulada';
+      }
+    }
+
+    async function testGemini() {
+      const token = getToken();
+      const fileId = getFileId();
+      
+      if (!token) return alert('❌ Completa JWT Token');
+      if (!fileId) return alert('❌ Completa File ID');
+
+      try {
+        el('aiResult').textContent = '💎 Probando extracción con Gemini...';
+        el('statusText').textContent = '💎 Usando Gemini API en lugar de OpenAI...';
+        
+        const response = await fetch(`${API_BASE()}/ai_extract_content_gemini_safe.php`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ file_id: fileId })
+        });
+        
+        const result = await response.json();
+        
+        el('aiResult').textContent = `💎 EXTRACCIÓN CON GEMINI:\n${JSON.stringify(result, null, 2)}`;
+        
+        if (result.ok) {
+          el('statusText').textContent = '✅ Extracción con Gemini completada';
+        } else {
+          el('statusText').textContent = '⚠️ Problemas con Gemini';
+        }
+        
+      } catch (error) {
+        el('aiResult').textContent = `❌ ERROR EN EXTRACCIÓN CON GEMINI:\n${error.message}`;
+        el('statusText').textContent = '❌ Error en extracción con Gemini';
+      }
+    }
+
+    async function testHybrid() {
+      const token = getToken();
+      const fileId = getFileId();
+      
+      if (!token) return alert('❌ Completa JWT Token');
+      if (!fileId) return alert('❌ Completa File ID');
+
+      try {
+        el('aiResult').textContent = '🔄 Probando extracción híbrida...';
+        el('statusText').textContent = '🔄 Gemini como principal, OpenAI como fallback...';
+        
+        const response = await fetch(`${API_BASE()}/ai_extract_content_hybrid_safe.php`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ file_id: fileId })
+        });
+        
+        const result = await response.json();
+        
+        el('aiResult').textContent = `🔄 EXTRACCIÓN HÍBRIDA:\n${JSON.stringify(result, null, 2)}`;
+        
+        if (result.ok) {
+          el('statusText').textContent = '✅ Extracción híbrida completada';
+        } else {
+          el('statusText').textContent = '⚠️ Problemas en extracción híbrida';
+        }
+        
+      } catch (error) {
+        el('aiResult').textContent = `❌ ERROR EN EXTRACCIÓN HÍBRIDA:\n${error.message}`;
+        el('statusText').textContent = '❌ Error en extracción híbrida';
+      }
+    }
+
+    async function extractUserData() {
+      const token = getToken();
+      if (!token) return alert('❌ Completa JWT Token');
+      
+      try {
+        el('aiResult').textContent = '👤 Extrayendo datos específicos del usuario...';
+        el('statusText').textContent = '👤 Obteniendo IA, modelo y API key reales...';
+        
+        // 1. Obtener configuración del usuario
+        const settingsResponse = await fetch(`${API_BASE()}/settings_get_safe.php`, {
+          method: 'GET',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        const settingsResult = await settingsResponse.json();
+        
+        // 2. Obtener API keys REALES del usuario (no enmascaradas)
+        const keysResponse = await fetch(`${API_BASE()}/user_keys_get_safe.php`, {
+          method: 'GET',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        const keysResult = await keysResponse.json();
+        
+        // 3. Extraer API key REAL del proveedor configurado usando endpoint de prueba
+        let apiKeyReal = 'NO DISPONIBLE';
+        const provider = settingsResult.settings?.ai_provider;
+        
+        if (provider === 'gemini' && keysResult.keys?.gemini?.has) {
+          // PROBAR AMBAS FUNCIONES: get_api_key_for() y decrypt_text()
+          const testResponse = await fetch(`${API_BASE()}/test_api_key_functions_safe.php`, {
+            method: 'POST',
+            headers: { 
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ provider: 'gemini' })
+          });
+          
+          if (testResponse.ok) {
+            const testResult = await testResponse.json();
+            
+            // Mostrar resultados de ambas funciones
+            const helperResult = testResult.test_results?.get_api_key_for;
+            const decryptResult = testResult.test_results?.decrypt_text;
+            
+            if (helperResult?.success) {
+              apiKeyReal = `HELPER: ${helperResult.key_full}`;
+            } else if (decryptResult?.success) {
+              apiKeyReal = `DECRYPT: ${decryptResult.key_full}`;
+            } else {
+              apiKeyReal = 'NO DISPONIBLE - Ambas funciones fallaron';
+            }
+            
+            // Agregar información de debug
+            apiKeyReal += `\n\n🔍 DEBUG INFO:
+- Helper function: ${helperResult?.success ? '✅ FUNCIONA' : '❌ FALLA'}
+- Decrypt function: ${decryptResult?.success ? '✅ FUNCIONA' : '❌ FALLA'}
+- Ambas iguales: ${testResult.comparison?.both_same ? '✅ SÍ' : '❌ NO'}
+- Helper key: ${helperResult?.key_preview || 'EMPTY'}
+- Decrypt key: ${decryptResult?.key_preview || 'EMPTY'}`;
+          }
+        } else if (provider === 'openai' && keysResult.keys?.openai?.has) {
+          // PROBAR AMBAS FUNCIONES: get_api_key_for() y decrypt_text()
+          const testResponse = await fetch(`${API_BASE()}/test_api_key_functions_safe.php`, {
+            method: 'POST',
+            headers: { 
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ provider: 'openai' })
+          });
+          
+          if (testResponse.ok) {
+            const testResult = await testResponse.json();
+            
+            // Mostrar resultados de ambas funciones
+            const helperResult = testResult.test_results?.get_api_key_for;
+            const decryptResult = testResult.test_results?.decrypt_text;
+            
+            if (helperResult?.success) {
+              apiKeyReal = `HELPER: ${helperResult.key_full}`;
+            } else if (decryptResult?.success) {
+              apiKeyReal = `DECRYPT: ${decryptResult.key_full}`;
+            } else {
+              apiKeyReal = 'NO DISPONIBLE - Ambas funciones fallaron';
+            }
+            
+            // Agregar información de debug
+            apiKeyReal += `\n\n🔍 DEBUG INFO:
+- Helper function: ${helperResult?.success ? '✅ FUNCIONA' : '❌ FALLA'}
+- Decrypt function: ${decryptResult?.success ? '✅ FUNCIONA' : '❌ FALLA'}
+- Ambas iguales: ${testResult.comparison?.both_same ? '✅ SÍ' : '❌ NO'}
+- Helper key: ${helperResult?.key_preview || 'EMPTY'}
+- Decrypt key: ${decryptResult?.key_preview || 'EMPTY'}`;
+          }
+        }
+        
+        // 3. Decodificar JWT para obtener info del usuario
+        const jwtPayload = JSON.parse(atob(token.split('.')[1]));
+        
+        // 4. Extraer datos específicos del usuario logueado
+        const userSpecificData = {
+          usuario_logueado: {
+            id: jwtPayload.id,
+            email: jwtPayload.email
+          },
+          ia_configurada: {
+            provider: settingsResult.settings?.ai_provider || 'No configurado',
+            modelo: settingsResult.settings?.ai_model || 'No configurado'
+          },
+          api_key_real: {
+            openai: keysResult.keys?.openai?.has ? 'CONFIGURADA' : 'NO CONFIGURADA',
+            gemini: keysResult.keys?.gemini?.has ? 'CONFIGURADA' : 'NO CONFIGURADA'
+          },
+          api_key_actual: {
+            provider_usado: provider,
+            key_real: apiKeyReal
+          }
+        };
+        
+        // 5. Mostrar resultado específico y claro
+        el('aiResult').textContent = `👤 DATOS ESPECÍFICOS DEL USUARIO LOGUEADO:
+
+🔑 USUARIO: ${userSpecificData.usuario_logueado.email} (ID: ${userSpecificData.usuario_logueado.id})
+
+🤖 IA CONFIGURADA:
+   • Provider: ${userSpecificData.ia_configurada.provider}
+   • Modelo: ${userSpecificData.ia_configurada.modelo}
+
+🔐 API KEYS:
+   • OpenAI: ${userSpecificData.api_key_real.openai}
+   • Gemini: ${userSpecificData.api_key_real.gemini}
+
+🔑 API KEY REAL (${userSpecificData.api_key_actual.provider_usado}):
+   ${userSpecificData.api_key_actual.key_real}
+
+📊 DATOS COMPLETOS:
+${JSON.stringify(userSpecificData, null, 2)}`;
+        
+        el('statusText').textContent = '✅ Datos específicos del usuario extraídos';
+        
+      } catch (error) {
+        el('aiResult').textContent = `❌ ERROR EXTRAYENDO DATOS:\n${error.message}`;
+        el('statusText').textContent = '❌ Error extrayendo datos del usuario';
+      }
+    }
+
+
+    function clearResults(){
+      ['userSettings','fileInfo','prompt','request','aiResult','knowledgeBaseData'].forEach(id => el(id).textContent = '');
+      userSettings = fileInfo = promptTxt = null;
+    }
+    
+    // Cargar datos guardados cuando se carga la página
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSavedData();
+      updateStatusIndicator();
+    });
+    
+    // Funciones de debug
+    async function runAllTests() {
+      // Verificar rate limiting para pruebas completas
+      if (isProcessing) {
+        return alert('⏳ Ya hay una extracción en proceso. Espera a que termine.');
+      }
+      
+      const now = Date.now();
+      if (now - lastRequestTime < MIN_REQUEST_INTERVAL) {
+        const remaining = Math.ceil((MIN_REQUEST_INTERVAL - (now - lastRequestTime)) / 1000);
+        return alert(`⏳ Espera ${remaining} segundos antes de hacer otra extracción.`);
+      }
+
+      // Marcar como procesando
+      isProcessing = true;
+      lastRequestTime = now;
+      updateStatusIndicator();
+      
+      // Deshabilitar botón
+      const btn = document.querySelector('button[onclick="runAllTests()"]');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '⏳ Ejecutando Todas las Pruebas...';
+      }
+
+      try {
+        const debugEl = el('debugInfo');
+        debugEl.textContent = '🚀 INICIANDO EXTRACCIÓN COMPLETA CON ENDPOINT MEJORADO (AUTO-DETECTA TIPO + USA DATOS USUARIO + GUARDA EN DB PERMANENTEMENTE EN TABLA knowledge_base + knowledge_files + openai_file_id + TRACEABILITY + LOGS)...\n\n';
+        
+        // Función helper para delay
+        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        // 1. Configuración del usuario
+        debugEl.textContent += '1️⃣ CONFIGURACIÓN DEL USUARIO (IA + MODELO + API KEY):\n';
+        await getUserSettings();
+        debugEl.textContent += el('userSettings').textContent + '\n\n';
+        await delay(500); // 500ms delay
+        
+        // 2. Información del archivo
+        debugEl.textContent += '2️⃣ INFORMACIÓN DEL ARCHIVO (AUTO-DETECTA TIPO):\n';
+        await getFileInfo();
+        debugEl.textContent += el('fileInfo').textContent + '\n\n';
+        await delay(500); // 500ms delay
+        
+        // 3. Prompt construido
+        debugEl.textContent += '3️⃣ PROMPT CONSTRUIDO (MUESTRA):\n';
+        buildPrompt();
+        debugEl.textContent += el('prompt').textContent + '\n\n';
+        await delay(200); // 200ms delay
+        
+        // 4. Consulta completa
+        debugEl.textContent += '4️⃣ CONSULTA COMPLETA (MUESTRA):\n';
+        buildRequest();
+        debugEl.textContent += el('request').textContent + '\n\n';
+        await delay(200); // 200ms delay
+        
+        // 5. Enviar a IA (esta es la operación más pesada)
+        debugEl.textContent += '5️⃣ ENVIANDO A IA (ENDPOINT MEJORADO - AUTO-DETECTA TIPO + USA DATOS USUARIO + GUARDA EN DB PERMANENTEMENTE EN TABLA knowledge_base + knowledge_files + openai_file_id + TRACEABILITY + LOGS):\n';
+        await sendToAI();
+        debugEl.textContent += el('aiResult').textContent + '\n\n';
+        await delay(1000); // 1 segundo delay después de la operación más pesada
+        
+        // 6. Datos de Knowledge Base
+        debugEl.textContent += '6️⃣ DATOS DE KNOWLEDGE BASE (GUARDADO REAL EN DB - PERSISTE RESULTADO PERMANENTEMENTE EN TABLA knowledge_base + knowledge_files + openai_file_id + TRACEABILITY + LOGS):\n';
+        debugEl.textContent += el('knowledgeBaseData').textContent + '\n\n';
+        
+        debugEl.textContent += '✅ EXTRACCIÓN COMPLETA CON ENDPOINT MEJORADO COMPLETADA (AUTO-DETECTA TIPO + USA DATOS USUARIO + GUARDA EN DB PERMANENTEMENTE EN TABLA knowledge_base + knowledge_files + openai_file_id + TRACEABILITY + LOGS)\n';
+        
+      } catch (error) {
+        debugEl.textContent += `❌ ERROR EN PRUEBAS: ${error.message}\n`;
+      } finally {
+        // Restaurar botón y estado
+        isProcessing = false;
+        updateStatusIndicator();
+        startCooldownTimer();
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = '🚀 Ejecutar Todas las Pruebas';
+        }
+      }
+    }
+    
+    function copyDebugInfo() {
+      const debugText = el('debugInfo').textContent;
+      navigator.clipboard.writeText(debugText).then(() => {
+        alert('✅ Debug info copiado al portapapeles');
+      }).catch(() => {
+        alert('❌ Error al copiar');
+      });
+    }
+    
+    function clearDebugInfo() {
+      el('debugInfo').textContent = '';
+    }
+  </script>
+</body>
+</html>

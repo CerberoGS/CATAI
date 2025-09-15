@@ -2,6 +2,7 @@ AGENTS.md — Guía para Agentes de IA
 DB: Versión: 10.11.10-MariaDB-log (MariaDB Server), SO: Linu
 Hosting:hostinger.com
 Testeo directo en linea: https://cerberogrowthsolutions.com/catai
+**NOTA**: URLs portables - la app detecta automáticamente el dominio y carpeta
 ## UI & i18n Guardrails (OBLIGATORIO: ES/EN + Claro/Oscuro + Accesibilidad)
 
 **Alcance**
@@ -53,7 +54,7 @@ Inicio Rápido (local)
   - los logs que cree para debug deben ser hacia un archivo, no pedir que revise la consola del navegador F12.
   - Apache recomendado para respetar `.htaccess` (SPA y cabeceras). Ruta esperada: raíz del repo, endpoints bajo `/api/*.php`.
   - Alternativa simple: `php -S 127.0.0.1:80` en la raíz sirve `index.html` y `/api/*.php` sin fallback SPA (navega desde `/` o `index.html`).
-- Base URL front: los HTML llaman a `/bolsa/api` en algunos flujos legados; en este repo, los endpoints viven en `api/`. Ajusta el `origin`/path si tu despliegue no está bajo `/bolsa/`.
+- Base URL front: **PORTABLE** - la app detecta automáticamente el dominio y carpeta. Los HTML usan `ConfigPortable.getApiUrl()` para URLs dinámicas. Compatible con cualquier dominio/carpeta.
 
 Comandos existentes (build/test/lint)
 - No hay scripts ni tooling declarados (no `composer.json`/`package.json`/tests). Usa los endpoints reales para validar.
@@ -111,16 +112,17 @@ Flujo de cambios/PR
   - Verificar logs en `api/logs/` y respuestas JSON consistentes.
 
 Validación (cURL ejemplos)
+**NOTA**: URLs portables - sustituye `https://tu-dominio.com/tu-carpeta` por tu configuración real
 - Registrar y login (obtener `TOKEN`):
-  - `curl -sX POST https://cerberogrowthsolutions.com/bolsa/api/auth_register.php -H "Content-Type: application/json" -d '{"email":"u@x.com","password":"p"}'`
-  - `curl -sX POST https://cerberogrowthsolutions.com/bolsa/api/auth_login.php -H "Content-Type: application/json" -d '{"email":"u@x.com","password":"p"}'`
+  - `curl -sX POST https://tu-dominio.com/tu-carpeta/api/auth_register.php -H "Content-Type: application/json" -d '{"email":"u@x.com","password":"p"}'`
+  - `curl -sX POST https://tu-dominio.com/tu-carpeta/api/auth_login.php -H "Content-Type: application/json" -d '{"email":"u@x.com","password":"p"}'`
 - Settings GET/SET:
-  - `curl -s https://cerberogrowthsolutions.com/bolsa/api/settings_get_safe.php -H "Authorization: Bearer $TOKEN"`
-  - `curl -sX POST https://cerberogrowthsolutions.com/bolsa/api/settings_set_safe.php -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d '{"data_provider":"finnhub"}'`
+  - `curl -s https://tu-dominio.com/tu-carpeta/api/settings_get_safe.php -H "Authorization: Bearer $TOKEN"`
+  - `curl -sX POST https://tu-dominio.com/tu-carpeta/api/settings_set_safe.php -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d '{"data_provider":"finnhub"}'`
 - Series:
-  - `curl -sX POST https://cerberogrowthsolutions.com/bolsa/api/time_series_safe.php -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d '{"symbol":"TSLA","provider":"auto","resolutions":["daily","weekly"]}'`
+  - `curl -sX POST https://tu-dominio.com/tu-carpeta/api/time_series_safe.php -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d '{"symbol":"TSLA","provider":"auto","resolutions":["daily","weekly"]}'`
 - IA:
-  - `curl -sX POST https://cerberogrowthsolutions.com/bolsa/api/ai_analyze.php -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d '{"prompt":"Hola"}'`
+  - `curl -sX POST https://tu-dominio.com/tu-carpeta/api/ai_analyze.php -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d '{"prompt":"Hola"}'`
   - Nota: para entorno local de desarrollo, sustituye el origen por `http://localhost:8000`.
 Estilo:
 Modo claro y Oscuro: tener en cuenta el color de texto que no sea igual que el de fondo, en ningua parte de la app.

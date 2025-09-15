@@ -76,6 +76,19 @@ try {
         $knowledge['upload_status'] = $file['upload_status'];
         $knowledge['extraction_status'] = $file['extraction_status'];
         $knowledge['extracted_items'] = $file['extracted_items'];
+    } else {
+        // Intento alternativo: source_file puede almacenarse como stored_filename
+        $stmt2 = $pdo->prepare("SELECT id, original_filename, stored_filename, file_type, file_size, mime_type FROM knowledge_files WHERE stored_filename = ? AND user_id = ? ORDER BY created_at DESC LIMIT 1");
+        $stmt2->execute([$knowledge['source_file'], $user_id]);
+        $file2 = $stmt2->fetch(PDO::FETCH_ASSOC);
+        if ($file2) {
+            $knowledge['file_id'] = (int)$file2['id'];
+            $knowledge['original_filename'] = $file2['original_filename'];
+            $knowledge['stored_filename'] = $file2['stored_filename'];
+            $knowledge['file_type'] = $file2['file_type'];
+            $knowledge['file_size'] = $file2['file_size'];
+            $knowledge['mime_type'] = $file2['mime_type'];
+        }
     }
 
     return json_out([

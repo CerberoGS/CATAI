@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Extracción de Contenido</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="static/js/config-portable.js"></script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+            🧪 Test de Extracción de Contenido
+        </h1>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                Pruebas de Endpoints
+            </h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        ID de Conocimiento:
+                    </label>
+                    <input type="number" id="knowledge-id" value="1" 
+                           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+                </div>
+                
+                <div class="flex gap-4 flex-wrap">
+                    <button onclick="testDebugViewButton()" 
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        🔍 Test debug_view_button.php
+                    </button>
+                    
+                    <button onclick="testExtractPdfContent()" 
+                            class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                        📄 Test extract_pdf_content.php
+                    </button>
+                    
+                    <button onclick="testExtractDiagnostic()" 
+                            class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
+                        🔧 Test Diagnóstico
+                    </button>
+                    
+                    <button onclick="clearResults()" 
+                            class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                        🗑️ Limpiar
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="results" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                Resultados
+            </h2>
+            <div id="results-content" class="text-gray-700 dark:text-gray-300">
+                Haz clic en un botón para probar los endpoints...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Función para mostrar resultados
+        function showResult(title, data, success = true) {
+            const resultsContent = document.getElementById('results-content');
+            const timestamp = new Date().toLocaleString();
+            
+            const resultHtml = `
+                <div class="mb-4 p-4 rounded-lg ${success ? 'bg-green-50 dark:bg-green-900/20' : 'bg-red-50 dark:bg-red-900/20'}">
+                    <h3 class="font-semibold ${success ? 'text-green-800 dark:text-green-200' : 'text-red-800 dark:text-red-200'}">
+                        ${success ? '✅' : '❌'} ${title}
+                    </h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">${timestamp}</p>
+                    <pre class="text-sm bg-white dark:bg-gray-800 p-3 rounded border overflow-x-auto">${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            `;
+            
+            resultsContent.innerHTML = resultHtml + resultsContent.innerHTML;
+        }
+        
+        // Función para limpiar resultados
+        function clearResults() {
+            document.getElementById('results-content').innerHTML = 'Resultados limpiados...';
+        }
+        
+        // Test del endpoint debug_view_button.php (versión que funciona)
+        async function testDebugViewButton() {
+            const knowledgeId = document.getElementById('knowledge-id').value;
+            
+            try {
+                showResult('Probando debug_view_button.php...', {knowledgeId}, true);
+                
+                const response = await fetch(ConfigPortable.getApiUrl(`debug_view_button.php?id=${knowledgeId}`), {
+                    headers: {
+                        'Authorization': 'Bearer ' + (localStorage.getItem('auth_token') || 'test-token')
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                showResult('debug_view_button.php - ÉXITO', data, true);
+                
+            } catch (error) {
+                showResult('debug_view_button.php - ERROR', {error: error.message}, false);
+            }
+        }
+        
+        // Test del endpoint extract_pdf_content.php (versión nueva)
+        async function testExtractPdfContent() {
+            const knowledgeId = document.getElementById('knowledge-id').value;
+            
+            try {
+                showResult('Probando extract_pdf_content.php...', {knowledgeId}, true);
+                
+                const response = await fetch(ConfigPortable.getApiUrl('extract_pdf_content.php'), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + (localStorage.getItem('auth_token') || 'test-token')
+                    },
+                    body: JSON.stringify({
+                        knowledge_id: parseInt(knowledgeId)
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                showResult('extract_pdf_content.php - ÉXITO', data, true);
+                
+            } catch (error) {
+                showResult('extract_pdf_content.php - ERROR', {error: error.message}, false);
+            }
+        }
+        
+        // Test del endpoint de diagnóstico
+        async function testExtractDiagnostic() {
+            const knowledgeId = document.getElementById('knowledge-id').value;
+            
+            try {
+                showResult('Probando test_extract_diagnostic_safe.php...', {knowledgeId}, true);
+                
+                const response = await fetch(ConfigPortable.getApiUrl('test_extract_diagnostic_safe.php'), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + (localStorage.getItem('auth_token') || 'test-token')
+                    },
+                    body: JSON.stringify({
+                        knowledge_id: parseInt(knowledgeId)
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                showResult('test_extract_diagnostic_safe.php - ÉXITO', data, data.ok);
+                
+            } catch (error) {
+                showResult('test_extract_diagnostic_safe.php - ERROR', {error: error.message}, false);
+            }
+        }
+        
+        // Función para probar ambos endpoints automáticamente
+        async function testBothEndpoints() {
+            const knowledgeId = document.getElementById('knowledge-id').value;
+            
+            showResult('🧪 Iniciando pruebas automáticas...', {knowledgeId}, true);
+            
+            // Probar debug_view_button.php
+            await testDebugViewButton();
+            
+            // Esperar un poco
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Probar extract_pdf_content.php
+            await testExtractPdfContent();
+        }
+        
+        // Agregar botón para probar ambos
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttonContainer = document.querySelector('.flex.gap-4');
+            const testBothBtn = document.createElement('button');
+            testBothBtn.textContent = '🧪 Probar Ambos';
+            testBothBtn.className = 'px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors';
+            testBothBtn.onclick = testBothEndpoints;
+            buttonContainer.appendChild(testBothBtn);
+        });
+    </script>
+</body>
+</html>
