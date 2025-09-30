@@ -26,6 +26,11 @@ $CONFIG = [
   // ───────────── URLs Portables ─────────────
   'BASE_URL'     => $BASE_URL,              // p.ej. https://dominio.com/cataiv1
   'API_BASE_URL' => $BASE_URL . '/api',    // p.ej. https://dominio.com/cataiv1/api
+  
+  // ───────────── Sistema de Cifrado ─────────────
+  'KEYRING_PATH' => '/home/u522228883/.secrets/catai.keyring.json',  // Archivo externo de claves
+
+
   // ───────────── Base de datos ─────────────
   'DB_HOST' => 'localhost',         // Host MySQL de Hostinger (ver hPanel)
   'DB_PORT' => 3306,
@@ -50,7 +55,7 @@ $CONFIG = [
   'POLYGON_API_KEY'       => '',
 
   // ──────────── Prompts de IA ────────────
-  'AI_PROMPT_EXTRACT_DEFAULT' => 'Eres un analista de trading experto con más de 20 años de experiencia en mercados financieros. Analiza este documento y proporciona un análisis estructurado en formato JSON con: resumen (2-3 líneas del contenido principal), puntos_clave (5-8 conceptos fundamentales extraídos), estrategias (3-5 estrategias de trading específicas), gestion_riesgo (2-3 puntos críticos de gestión de riesgo), recomendaciones (2-3 recomendaciones prácticas para implementar).',
+  'AI_PROMPT_EXTRACT_DEFAULT' => 'Eres un analista de trading experto con más de 20 años de experiencia en mercados financieros. Analiza este documento y proporciona un análisis estructurado con: resumen (2-3 líneas del contenido principal), puntos_clave (5-8 conceptos fundamentales extraídos), estrategias (3-5 estrategias de trading específicas), gestion_riesgo (2-3 puntos críticos de gestión de riesgo), recomendaciones (2-3 recomendaciones prácticas para implementar).',
   'GEMINI_API_KEY'        => '',
   'OPENAI_API_KEY'        => '',   // añadido por compatibilidad IA
   'XAI_API_KEY'           => '',   // añadido por compatibilidad IA (Grok)

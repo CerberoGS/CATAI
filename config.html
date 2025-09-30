@@ -46,6 +46,817 @@
     .dark-mode .btn.r { background:#ef4444; color:#fff; border-color:#ef4444 }
     .dark-mode .chip { background:#4b5563; border-color:#6b7280; color:#f9fafb; }
   </style>
+  <style>
+    /* Aislar visualmente los paneles y tarjetas para evitar colapsos */
+    .tab-content {
+      min-height: 280px !important;
+      box-sizing: border-box;
+      padding: 1rem !important;
+      overflow: visible !important;
+      background: transparent !important;
+    }
+
+    /* Asegurar que el contenedor principal no recorte las tarjetas */
+    .card {
+      overflow: visible !important;
+      position: relative;
+      background-clip: padding-box;
+    }
+
+    /* Grillas de proveedores: columna flexible y espacio consistente */
+    #ai-providers-grid,
+    #data-providers-grid,
+    #trade-providers-grid {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
+      gap: 1rem !important;
+      align-content: start !important;
+      width: 100%;
+      padding: 0.25rem 0 !important;
+      box-sizing: border-box;
+    }
+
+    /* Tarjetas: fondo separado, padding y border-radius para aislar del fondo */
+    .provider-card {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      width: 100% !important;
+      min-height: 140px !important;
+      padding: 1rem !important;
+      box-sizing: border-box !important;
+      background: var(--bg-white) !important;
+      border: 1px solid var(--border-color) !important;
+      border-radius: 0.75rem !important;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.04) !important;
+      overflow: hidden !important;
+      margin: 0.5rem 0 !important;
+      z-index: 1 !important;
+    }
+
+    /* Small visual tuning: padding on card and tab-content to avoid content touching edges */
+    .card { padding: 1rem !important; background-clip: padding-box; overflow: visible !important; position: relative; }
+    .tab-content { background: transparent !important; padding: 1rem 0 !important; }
+    .provider-card .provider-icon { margin-bottom: 0.6rem !important; }
+    .provider-card .provider-name { margin-bottom: 0.25rem !important; }
+
+
+    /* Ajustes para modo oscuro: tarjetas con fondo oscuro */
+    .dark-mode .provider-card {
+      background: var(--bg-dark-secondary) !important;
+      border-color: var(--border-dark) !important;
+      box-shadow: none !important;
+    }
+
+    /* Icono y nombre ocupen la anchura de la tarjeta */
+    .provider-icon { width: 3rem; height: 3rem; margin-bottom: 0.5rem; }
+    .provider-name { text-align: center; margin-bottom: 0.25rem; word-break: normal; white-space: normal; font-weight:600; color:var(--text-primary) !important; }
+    .dark-mode .provider-name { color: var(--text-dark-primary) !important; }
+
+    /* URLs en horizontal, evitando column-layout o rotaciones */
+    .provider-url {
+      text-align: center;
+      word-break: break-word !important;
+      white-space: normal !important;
+      writing-mode: horizontal-tb !important;
+      transform: none !important;
+      max-width: 100% !important;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .dark-mode .provider-url { color: var(--text-dark-secondary) !important; }
+
+    /* Forzar que los hijos no generen barras verticales o rotaciones */
+    .provider-card > div { display: block !important; }
+
+    /* Nota/aviso al final: evitar empujar el layout */
+    .card .text-center p { margin: 0 !important; padding: 0.5rem !important; border-radius: 0.5rem; background: rgba(0,0,0,0.03); }
+
+    /* Responsive tweaks */
+    @media (max-width: 640px) {
+      #ai-providers-grid,
+      #data-providers-grid,
+      #trade-providers-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
+      }
+      .provider-card { min-height: 120px !important; padding: 0.75rem !important; }
+    }
+
+    /* =================== SISTEMA DE PESTAÑAS =================== */
+    
+    /* Navegación de Pestañas */
+    .tabs-navigation {
+      display: flex;
+      gap: 0.25rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 0.5rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    
+    .tabs-navigation::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .tab-button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.75rem 1rem;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.75rem 0.75rem 0 0;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 120px;
+      position: relative;
+      border-bottom: none;
+      color: #6b7280;
+    }
+    
+    .tab-button:hover {
+      background: #f3f4f6;
+      color: #374151;
+      transform: translateY(-1px);
+    }
+    
+    .tab-button.active {
+      background: #fff;
+      color: #111827;
+      border-color: #4338ca;
+      border-bottom-color: #fff;
+      z-index: 10;
+      box-shadow: 0 -2px 8px rgba(67, 56, 202, 0.1);
+    }
+    
+    .tab-icon {
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+    
+    .tab-label {
+      font-weight: 600;
+      font-size: 0.875rem;
+      line-height: 1;
+    }
+    
+    .tab-desc {
+      font-size: 0.75rem;
+      opacity: 0.7;
+      line-height: 1;
+      text-align: center;
+    }
+    
+    /* Contenido de Pestañas */
+    .tabs-content {
+      position: relative;
+      background: #fff;
+      border-radius: 0 0.75rem 0.75rem 0.75rem;
+      border: 1px solid #e5e7eb;
+      border-top: none;
+      min-height: 400px;
+      overflow: hidden;
+    }
+    
+    .tab-pane {
+      display: none;
+      padding: 1.5rem;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    
+    .tab-pane.active {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Headers de Pestañas */
+    .tab-header {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    
+    .tab-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #111827;
+      margin: 0 0 0.5rem 0;
+    }
+    
+    .tab-subtitle {
+      color: #6b7280;
+      font-size: 0.875rem;
+      margin: 0;
+      line-height: 1.4;
+    }
+    
+    /* Modo Oscuro para Pestañas */
+    .dark-mode .tabs-navigation {
+      border-bottom-color: #4b5563;
+    }
+    
+    .dark-mode .tab-button {
+      background: #374151;
+      border-color: #4b5563;
+      color: #d1d5db;
+    }
+    
+    .dark-mode .tab-button:hover {
+      background: #4b5563;
+      color: #f9fafb;
+    }
+    
+    .dark-mode .tab-button.active {
+      background: #111827;
+      color: #f9fafb;
+      border-color: #818cf8;
+      border-bottom-color: #111827;
+    }
+    
+    .dark-mode .tabs-content {
+      background: #111827;
+      border-color: #4b5563;
+    }
+    
+    .dark-mode .tab-header {
+      border-bottom-color: #374151;
+    }
+    
+    .dark-mode .tab-title {
+      color: #f9fafb;
+    }
+    
+    .dark-mode .tab-subtitle {
+      color: #d1d5db;
+    }
+    
+    /* Responsive para Pestañas */
+    @media (max-width: 768px) {
+      .tabs-navigation {
+        gap: 0.125rem;
+        padding-bottom: 0.25rem;
+      }
+      
+      .tab-button {
+        min-width: 100px;
+        padding: 0.5rem 0.75rem;
+        gap: 0.125rem;
+      }
+      
+      .tab-icon {
+        font-size: 1rem;
+      }
+      
+      .tab-label {
+        font-size: 0.75rem;
+      }
+      
+      .tab-desc {
+        font-size: 0.625rem;
+      }
+      
+      .tab-pane {
+        padding: 1rem;
+      }
+    }
+    
+    @media (max-width: 640px) {
+      .tab-button {
+        min-width: 80px;
+        padding: 0.5rem;
+      }
+      
+      .tab-desc {
+        display: none;
+      }
+    }
+
+    /* =================== TABLA DINÁMICA DE PROVEEDORES =================== */
+    
+    .providers-table-container {
+      background: #fff;
+      border-radius: 0.75rem;
+      border: 1px solid #e5e7eb;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      background: #f9fafb;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .table-title {
+      font-weight: 600;
+      color: #111827;
+      font-size: 1rem;
+    }
+    
+    .btn-icon {
+      margin-right: 0.5rem;
+    }
+    
+    .table-wrapper {
+      overflow-x: auto;
+    }
+    
+    .providers-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    
+    .providers-table th {
+      background: #f3f4f6;
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: #374151;
+      border-bottom: 1px solid #e5e7eb;
+      white-space: nowrap;
+    }
+    
+    .providers-table td {
+      padding: 1rem;
+      border-bottom: 1px solid #f3f4f6;
+      vertical-align: middle;
+    }
+    
+    .providers-table tbody tr:hover {
+      background: #f9fafb;
+    }
+    
+    .providers-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    /* Columnas específicas */
+    .col-provider {
+      min-width: 140px;
+    }
+    
+    .col-key {
+      min-width: 200px;
+    }
+    
+    .col-default {
+      width: 100px;
+      text-align: center;
+    }
+    
+    .col-status {
+      width: 120px;
+    }
+    
+    .col-actions {
+      width: 140px;
+      text-align: center;
+    }
+    
+    /* Elementos de la tabla */
+    .provider-name {
+      font-weight: 600;
+      color: #111827;
+    }
+    
+    .provider-key-input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.375rem;
+      font-family: monospace;
+      font-size: 0.8rem;
+    }
+    
+    .provider-key-input:focus {
+      outline: none;
+      border-color: #4338ca;
+      box-shadow: 0 0 0 2px rgba(67, 56, 202, 0.1);
+    }
+    
+    .default-radio {
+      margin: 0;
+      transform: scale(1.2);
+    }
+    
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    
+    .status-badge.success {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    
+    .status-badge.error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    
+    .status-badge.warning {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    
+    .status-badge.neutral {
+      background: #f3f4f6;
+      color: #6b7280;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    
+    .action-btn {
+      padding: 0.375rem 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.375rem;
+      background: #fff;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .action-btn:hover {
+      background: #f9fafb;
+    }
+    
+    .action-btn.test {
+      color: #059669;
+      border-color: #059669;
+    }
+    
+    .action-btn.test:hover {
+      background: #ecfdf5;
+    }
+    
+    .action-btn.delete {
+      color: #dc2626;
+      border-color: #dc2626;
+    }
+    
+    .action-btn.delete:hover {
+      background: #fef2f2;
+    }
+    
+    /* Estado vacío */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #6b7280;
+    }
+    
+    .empty-state.hidden {
+      display: none;
+    }
+    
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+    
+    .empty-title {
+      font-weight: 600;
+      font-size: 1.125rem;
+      margin-bottom: 0.5rem;
+      color: #374151;
+    }
+    
+    .empty-subtitle {
+      font-size: 0.875rem;
+    }
+    
+    /* Modal para agregar proveedor */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    
+    .modal-overlay.hidden {
+      display: none;
+    }
+    
+    .modal-content {
+      background: #fff;
+      border-radius: 0.75rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .modal-title {
+      font-weight: 600;
+      color: #111827;
+      margin: 0;
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #6b7280;
+      padding: 0.25rem;
+      border-radius: 0.375rem;
+    }
+    
+    .modal-close:hover {
+      background: #f3f4f6;
+      color: #374151;
+    }
+    
+    .modal-body {
+      padding: 1.5rem;
+    }
+    
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      padding: 1.5rem;
+      border-top: 1px solid #e5e7eb;
+      background: #f9fafb;
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    .form-label {
+      display: block;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+    }
+    
+    .form-select,
+    .form-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+    }
+    
+    .form-select:focus,
+    .form-input:focus {
+      outline: none;
+      border-color: #4338ca;
+      box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1);
+    }
+    
+    .form-checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: #374151;
+      cursor: pointer;
+    }
+    
+    .form-checkbox {
+      margin: 0;
+      transform: scale(1.1);
+    }
+    
+    /* Modo oscuro para tabla */
+    .dark-mode .providers-table-container {
+      background: #111827;
+      border-color: #4b5563;
+    }
+    
+    .dark-mode .table-header {
+      background: #1f2937;
+      border-bottom-color: #4b5563;
+    }
+    
+    .dark-mode .table-title {
+      color: #f9fafb;
+    }
+    
+    .dark-mode .providers-table th {
+      background: #374151;
+      color: #d1d5db;
+      border-bottom-color: #4b5563;
+    }
+    
+    .dark-mode .providers-table td {
+      border-bottom-color: #374151;
+      color: #f9fafb;
+    }
+    
+    .dark-mode .providers-table tbody tr:hover {
+      background: #1f2937;
+    }
+    
+    .dark-mode .provider-name {
+      color: #f9fafb;
+    }
+    
+    .dark-mode .provider-key-input {
+      background: #374151;
+      border-color: #4b5563;
+      color: #f9fafb;
+    }
+    
+    .dark-mode .provider-key-input:focus {
+      border-color: #818cf8;
+      box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.1);
+    }
+    
+    .dark-mode .action-btn {
+      background: #374151;
+      border-color: #4b5563;
+      color: #d1d5db;
+    }
+    
+    .dark-mode .action-btn:hover {
+      background: #4b5563;
+    }
+    
+    .dark-mode .empty-state {
+      color: #9ca3af;
+    }
+    
+    .dark-mode .empty-title {
+      color: #d1d5db;
+    }
+    
+    .dark-mode .modal-content {
+      background: #111827;
+    }
+    
+    .dark-mode .modal-header {
+      border-bottom-color: #4b5563;
+    }
+    
+    .dark-mode .modal-title {
+      color: #f9fafb;
+    }
+    
+    .dark-mode .modal-footer {
+      background: #1f2937;
+      border-top-color: #4b5563;
+    }
+
+    /* Estilos para modal de resultados de prueba */
+    .test-result-icon {
+      font-size: 3rem;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .test-result-message {
+      font-size: 1.125rem;
+      font-weight: 500;
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #111827;
+    }
+
+    .test-result-details {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 0.875rem;
+      color: #374151;
+      white-space: pre-wrap;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .dark-mode .test-result-message {
+      color: #f9fafb;
+    }
+
+    .dark-mode .test-result-details {
+      background: #1f2937;
+      border-color: #4b5563;
+      color: #d1d5db;
+    }
+
+    /* Estilos para botones del modal */
+    .btn-secondary {
+      background: #6b7280;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .btn-secondary:hover {
+      background: #4b5563;
+    }
+    
+    .dark-mode .form-label {
+      color: #d1d5db;
+    }
+    
+    .dark-mode .form-select,
+    .dark-mode .form-input {
+      background: #374151;
+      border-color: #4b5563;
+      color: #f9fafb;
+    }
+    
+    .dark-mode .form-select:focus,
+    .dark-mode .form-input:focus {
+      border-color: #818cf8;
+      box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.1);
+    }
+    
+    .dark-mode .form-checkbox-label {
+      color: #d1d5db;
+    }
+    
+    /* Responsive para tabla */
+    @media (max-width: 768px) {
+      .providers-table {
+        font-size: 0.8rem;
+      }
+      
+      .providers-table th,
+      .providers-table td {
+        padding: 0.5rem;
+      }
+      
+      .col-actions {
+        width: 120px;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+      
+      .action-btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.7rem;
+      }
+    }
+    
+    @media (max-width: 640px) {
+      .table-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+      }
+      
+      .modal-content {
+        width: 95%;
+        margin: 1rem;
+      }
+      
+      .modal-header,
+      .modal-body,
+      .modal-footer {
+        padding: 1rem;
+      }
+    }
+  </style>
 </head>
 <body>
   <div id="app-header"></div>
@@ -53,232 +864,491 @@
   <script>try{ Auth.requireAuth(); }catch(e){ }</script>
   <div class="max-w-5xl mx-auto p-6 space-y-8">
 
-    <!-- CLAVES -->
-    <section class="card p-6 space-y-5">
-      <div class="flex items-center justify-between">
-        <h2 class="text-xl">Claves de proveedores</h2>
+    <!-- SISTEMA DE PESTAÑAS -->
+    <section class="card p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl">Configuración de Proveedores</h2>
         <div class="text-sm text-gray-500">Token: <span id="tok-ok" class="font-semibold">no</span></div>
       </div>
 
-      <div class="grid md:grid-cols-2 gap-5">
-        <!-- Alpha Vantage -->
-        <div class="space-y-1">
-          <div class="flex items-center justify-between">
-            <label class="label">Alpha Vantage API Key</label>
-            <span id="st-alphavantage" class="kstatus muted">sin clave</span>
-          </div>
-          <div class="flex gap-2">
-            <input id="in-alphavantage" type="password" class="input" placeholder="AV..."/>
-            <button class="btn" data-test="alphavantage" title="Prueba la clave; vacío usa la guardada">Probar</button>
-            <button class="btn r" data-del="alphavantage" title="Borra la clave guardada">Borrar</button>
-          </div>
-        </div>
-
-        <!-- Tiingo -->
-        <div class="space-y-1">
-          <div class="flex items-center justify-between">
-            <label class="label">Tiingo API Key</label>
-            <span id="st-tiingo" class="kstatus muted">sin clave</span>
-          </div>
-          <div class="flex gap-2">
-            <input id="in-tiingo" type="password" class="input" placeholder="tiingo_..."/>
-            <button class="btn" data-test="tiingo" title="Prueba la clave; vacío usa la guardada">Probar</button>
-            <button class="btn r" data-del="tiingo" title="Borra la clave guardada">Borrar</button>
-          </div>
-        </div>
-
-        <!-- Finnhub -->
-        <div class="space-y-1">
-          <div class="flex items-center justify-between">
-            <label class="label">Finnhub API Key</label>
-            <span id="st-finnhub" class="kstatus muted">sin clave</span>
-          </div>
-          <div class="flex gap-2">
-            <input id="in-finnhub" type="password" class="input" placeholder="c0xxx..."/>
-            <button class="btn" data-test="finnhub" title="Prueba la clave; vacío usa la guardada">Probar</button>
-            <button class="btn r" data-del="finnhub" title="Borra la clave guardada">Borrar</button>
-          </div>
-        </div>
-
-        <!-- Polygon -->
-        <div class="space-y-1">
-          <div class="flex items-center justify-between">
-            <label class="label">Polygon API Key</label>
-            <span id="st-polygon" class="kstatus muted">sin clave</span>
-          </div>
-          <div class="flex gap-2">
-            <input id="in-polygon" type="password" class="input" placeholder="PK..."/>
-            <button class="btn" data-test="polygon" title="Prueba la clave; vacío usa la guardada">Probar</button>
-            <button class="btn r" data-del="polygon" title="Borra la clave guardada">Borrar</button>
-          </div>
-        </div>
-
-        <!-- Gemini -->
-        <div class="space-y-1">
-          <div class="flex items-center justify-between">
-            <label class="label">Gemini API Key</label>
-            <span id="st-gemini" class="kstatus muted">sin clave</span>
-          </div>
-          <div class="flex gap-2">
-            <input id="in-gemini" type="password" class="input" placeholder="AIza..."/>
-            <button class="btn" data-test="gemini" title="Prueba la clave; vacío usa la guardada">Probar</button>
-            <button class="btn r" data-del="gemini" title="Borra la clave guardada">Borrar</button>
-          </div>
-        </div>
-
-        <!-- Claude -->
-        <div class="space-y-1">
-          <div class="flex items-center justify-between">
-            <label class="label">Claude (Anthropic) API Key</label>
-            <span id="st-claude" class="kstatus muted">sin clave</span>
-          </div>
-          <div class="flex gap-2">
-            <input id="in-claude" type="password" class="input" placeholder="sk-ant-..."/>
-            <button class="btn" data-test="claude" title="Prueba la clave; vacío usa la guardada">Probar</button>
-            <button class="btn r" data-del="claude" title="Borra la clave guardada">Borrar</button>
-          </div>
-        </div>
-
-        <!-- OpenAI -->
-        <div class="space-y-1">
-          <div class="flex items-center justify-between">
-            <label class="label">OpenAI API Key</label>
-            <span id="st-openai" class="kstatus muted">sin clave</span>
-          </div>
-          <div class="flex gap-2">
-            <input id="in-openai" type="password" class="input" placeholder="sk-..."/>
-            <button class="btn" data-test="openai" title="Prueba la clave; vacío usa la guardada">Probar</button>
-            <button class="btn r" data-del="openai" title="Borra la clave guardada">Borrar</button>
-          </div>
-        </div>
-
-        <!-- xAI (Grok) -->
-        <div class="space-y-1">
-          <div class="flex items-center justify-between">
-            <label class="label">xAI (Grok) API Key</label>
-            <span id="st-xai" class="kstatus muted">sin clave</span>
-          </div>
-          <div class="flex gap-2">
-            <input id="in-xai" type="password" class="input" placeholder="xai-..."/>
-            <button class="btn" data-test="xai" title="Prueba la clave; vacío usa la guardada">Probar</button>
-            <button class="btn r" data-del="xai" title="Borra la clave guardada">Borrar</button>
-          </div>
-        </div>
-
-        <!-- DeepSeek -->
-        <div class="space-y-1">
-          <div class="flex items-center justify-between">
-            <label class="label">DeepSeek API Key</label>
-            <span id="st-deepseek" class="kstatus muted">sin clave</span>
-          </div>
-          <div class="flex gap-2">
-            <input id="in-deepseek" type="password" class="input" placeholder="ds-..."/>
-            <button class="btn" data-test="deepseek" title="Prueba la clave; vacío usa la guardada">Probar</button>
-            <button class="btn r" data-del="deepseek" title="Borra la clave guardada">Borrar</button>
-          </div>
-        </div>
+      <!-- Navegación de Pestañas -->
+      <div class="tabs-navigation">
+        <button class="tab-button active" data-tab="data">
+          <span class="tab-icon">📊</span>
+          <span class="tab-label">Datos</span>
+          <span class="tab-desc">Datos Financieros</span>
+        </button>
+        <button class="tab-button" data-tab="ai">
+          <span class="tab-icon">🤖</span>
+          <span class="tab-label">IA</span>
+          <span class="tab-desc">Inteligencia Artificial</span>
+        </button>
+        <button class="tab-button" data-tab="news">
+          <span class="tab-icon">📰</span>
+          <span class="tab-label">Noticias</span>
+          <span class="tab-desc">Proveedores de Noticias</span>
+        </button>
+        <button class="tab-button" data-tab="trade">
+          <span class="tab-icon">⚙️</span>
+          <span class="tab-label">Trade</span>
+          <span class="tab-desc">Configuración</span>
+        </button>
       </div>
 
-      <div class="footer">
-        <button id="btn-save-keys" class="btn p">Guardar claves</button>
-        <span id="save-msg" class="text-sm muted"></span>
+      <!-- Contenido de Pestañas -->
+      <div class="tabs-content">
+        
+        <!-- PESTAÑA APIs -->
+        <div id="tab-data" class="tab-pane active">
+          <div class="tab-header">
+            <h3 class="tab-title">📊 Datos Financieros</h3>
+            <p class="tab-subtitle">Gestiona los proveedores de datos financieros y sus claves de acceso</p>
+          </div>
+          
+          <!-- Tabla Dinámica de Proveedores -->
+          <div class="providers-table-container">
+            <div class="table-header">
+              <div class="table-title">Proveedores Configurados</div>
+              <button id="btn-add-data-provider" class="btn g">
+                <span class="btn-icon">➕</span>
+                Agregar Proveedor
+              </button>
+            </div>
+            
+            <div class="table-wrapper">
+              <table id="data-providers-table" class="providers-table">
+                <thead>
+                  <tr>
+                    <th class="col-provider">Proveedor</th>
+                    <th class="col-key">API Key</th>
+                    <th class="col-environment">Ambiente</th>
+                    <th class="col-status">Estado</th>
+                    <th class="col-actions">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="data-providers-tbody">
+                  <!-- Las filas se generarán dinámicamente -->
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Mensaje cuando no hay proveedores -->
+            <div id="empty-data-providers" class="empty-state">
+              <div class="empty-icon">🔑</div>
+              <div class="empty-title">No hay proveedores configurados</div>
+              <div class="empty-subtitle">Agrega tu primer proveedor para comenzar</div>
+            </div>
+          </div>
+
+          <!-- Modal para Agregar API Key Proveedor -->
+          <div id="add-data-provider-modal" class="modal-overlay hidden">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h3 class="modal-title">Agregar Nuevo API Key</h3>
+                <button class="modal-close" data-close="add-data-provider-modal">✕</button>
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <label class="form-label">Seleccionar Proveedor</label>
+                  <select id="data-provider-select" class="form-select">
+                    <option value="">Selecciona un proveedor...</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">API Key</label>
+                  <input id="data-provider-key" type="password" class="form-input" placeholder="Ingresa tu API Key..."/>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Etiqueta (opcional)</label>
+                  <input id="data-provider-label" type="text" class="form-input" placeholder="Mi clave de desarrollo...">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Ambiente</label>
+                  <select id="data-provider-environment" class="form-select">
+                    <option value="live">Producción</option>
+                    <option value="paper">Papel</option>
+                    <option value="sandbox">Pruebas</option>
+                  </select>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn" data-close="add-data-provider-modal">Cancelar</button>
+                <button id="btn-save-data-provider" class="btn p">Agregar Proveedor</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer">
+            <button id="btn-save-apis" class="btn p">Guardar Configuración</button>
+            <span id="data-msg" class="text-sm muted"></span>
+          </div>
+        </div>
+
+        <!-- PESTAÑA IA -->
+        <div id="tab-ai" class="tab-pane">
+          <div class="tab-header">
+            <h3 class="tab-title">🤖 Inteligencia Artificial</h3>
+            <p class="tab-subtitle">Configura las claves de acceso a los proveedores de IA para análisis</p>
+          </div>
+          
+          <div class="providers-table-container">
+            <div class="table-header">
+              <div class="table-title">Proveedores de IA Configurados</div>
+              <button id="btn-add-ai-provider" class="btn g">
+                <span class="btn-icon">➕</span>
+                Agregar Proveedor
+              </button>
+            </div>
+            <div class="table-wrapper">
+              <table id="ai-providers-table" class="providers-table">
+                <thead>
+                  <tr>
+                    <th class="col-provider">Proveedor</th>
+                    <th class="col-key">API Key</th>
+                    <th class="col-environment">Ambiente</th>
+                    <th class="col-status">Estado</th>
+                    <th class="col-actions">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="ai-providers-tbody">
+                  <!-- Las filas se generarán dinámicamente -->
+                </tbody>
+              </table>
+            </div>
+            <div id="empty-ai-providers" class="empty-state">
+              <div class="empty-icon">🤖</div>
+              <div class="empty-title">No hay proveedores de IA configurados</div>
+              <div class="empty-description">Agrega un proveedor para comenzar a usar análisis de IA</div>
+            </div>
+          </div>
+
+          <!-- Modal para agregar proveedor de IA -->
+          <div id="add-ai-provider-modal" class="modal-overlay hidden">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h3 class="modal-title">Agregar Proveedor de IA</h3>
+                <button class="modal-close" data-close="add-ai-provider-modal">&times;</button>
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <label class="form-label">Proveedor</label>
+                  <select id="ai-provider-select" class="form-select">
+                    <option value="">Selecciona un proveedor...</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">API Key</label>
+                  <input id="ai-provider-key" type="password" class="form-input" placeholder="Ingresa tu API key...">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Etiqueta (opcional)</label>
+                  <input id="ai-provider-label" type="text" class="form-input" placeholder="Mi clave de desarrollo...">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Ambiente</label>
+                  <select id="ai-provider-environment" class="form-select">
+                    <option value="live">Producción</option>
+                    <option value="paper">Papel</option>
+                    <option value="sandbox">Pruebas</option>
+                  </select>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn" data-close="add-ai-provider-modal">Cancelar</button>
+                <button id="btn-save-ai-provider" class="btn g">Agregar Proveedor</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer">
+            <span id="ai-msg" class="text-sm muted"></span>
+          </div>
+        </div>
+
+        <!-- PESTAÑA NOTICIAS -->
+        <div id="tab-news" class="tab-pane">
+          <div class="tab-header">
+            <h3 class="tab-title">📰 Proveedores de Noticias</h3>
+            <p class="tab-subtitle">Gestiona proveedores de noticias financieras y sus claves de acceso</p>
+          </div>
+          
+          <div class="providers-table-container">
+            <div class="table-header">
+              <div class="table-title">Proveedores de Noticias Configurados</div>
+              <button id="btn-add-news-provider" class="btn g">
+                <span class="btn-icon">➕</span>
+                Agregar Proveedor
+              </button>
+            </div>
+            <div class="table-wrapper">
+              <table id="news-providers-table" class="providers-table">
+                <thead>
+                  <tr>
+                    <th class="col-provider">Proveedor</th>
+                    <th class="col-key">API Key</th>
+                    <th class="col-environment">Ambiente</th>
+                    <th class="col-status">Estado</th>
+                    <th class="col-actions">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="news-providers-tbody">
+                  <!-- Las filas se generarán dinámicamente -->
+                </tbody>
+              </table>
+            </div>
+            <div id="empty-news-providers" class="empty-state">
+              <div class="empty-icon">📊</div>
+              <div class="empty-title">No hay proveedores de datos configurados</div>
+              <div class="empty-description">Agrega un proveedor para comenzar a obtener datos financieros</div>
+            </div>
+          </div>
+
+          <!-- Modal para agregar proveedor de noticias -->
+          <div id="add-news-provider-modal" class="modal-overlay hidden">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h3 class="modal-title">Agregar Proveedor de Noticias</h3>
+                <button class="modal-close" data-close="add-news-provider-modal">&times;</button>
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <label class="form-label">Proveedor</label>
+                  <select id="news-provider-select" class="form-select">
+                    <option value="">Selecciona un proveedor...</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">API Key</label>
+                  <input id="news-provider-key" type="password" class="form-input" placeholder="Ingresa tu API key...">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Etiqueta (opcional)</label>
+                  <input id="news-provider-label" type="text" class="form-input" placeholder="Mi clave de desarrollo...">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Ambiente</label>
+                  <select id="news-provider-environment" class="form-select">
+                    <option value="live">Producción</option>
+                    <option value="paper">Papel</option>
+                    <option value="sandbox">Pruebas</option>
+                  </select>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn" data-close="add-news-provider-modal">Cancelar</button>
+                <button id="btn-save-news-provider" class="btn g">Agregar Proveedor</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Configuración adicional de datos -->
+          <div class="card mt-6">
+            <h3 class="card-title">⚙️ Configuración Avanzada</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div>
+                <label class="label">Proveedor de series por defecto</label>
+                <select id="series-provider" class="input" title="Proveedor por defecto para series">
+                  <option value="auto">Auto</option>
+                  <option value="tiingo">Tiingo</option>
+                  <option value="av">Alpha Vantage</option>
+                  <option value="local">Solo lista local</option>
+                </select>
+              </div>
+              <div>
+                <label class="label">Proveedor de opciones por defecto</label>
+                <select id="opt-provider" class="input" title="Proveedor por defecto para opciones">
+                  <option value="auto">Auto</option>
+                  <option value="polygon">Polygon</option>
+                  <option value="finnhub">Finnhub</option>
+                </select>
+              </div>
+              <div>
+                <label class="label">Strikes por lado</label>
+                <input id="opt-strikes" type="number" class="input" value="20" min="0" max="100" title="0 a 100"/>
+              </div>
+              <div>
+                <label class="label">Regla de expiración</label>
+                <select id="opt-exp-rule" class="input" title="Cómo elegir el vencimiento por defecto">
+                  <option value="nearest_friday">Próximo viernes</option>
+                  <option value="next_monthly">Próxima mensual</option>
+                </select>
+              </div>
+              <div>
+                <label class="label">ATM: fuente de precio</label>
+                <select id="opt-atm" class="input" title="Fuente para calcular el ATM">
+                  <option value="series_last">Series (último)</option>
+                  <option value="provider">Proveedor</option>
+                  <option value="mid">Mid (bid/ask)</option>
+                </select>
+              </div>
+              <div>
+                <label class="label">Zona horaria</label>
+                <select id="time-zone" class="input" title="Selecciona tu zona horaria (IANA)"></select>
+                <div id="tz-offset-view" class="text-xs text-gray-600 mt-1"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer">
+            <button id="btn-reset-data" class="btn r" title="Restablecer valores por defecto (no guarda)">Reset</button>
+            <div class="spacer"></div>
+            <button id="btn-save-data" class="btn p">Guardar configuración</button>
+            <span id="data-msg" class="text-sm muted"></span>
+          </div>
+        </div>
+
+        <!-- PESTAÑA TRADE -->
+        <div id="tab-trade" class="tab-pane">
+          <div class="tab-header">
+            <h3 class="tab-title">⚙️ Configuración de Trading</h3>
+            <p class="tab-subtitle">Gestiona proveedores de trading y configuración de timeouts</p>
+          </div>
+          
+          <div class="providers-table-container">
+            <div class="table-header">
+              <div class="table-title">Proveedores de Trading Configurados</div>
+              <button id="btn-add-trade-provider" class="btn g">
+                <span class="btn-icon">➕</span>
+                Agregar Proveedor
+              </button>
+            </div>
+            <div class="table-wrapper">
+              <table id="trade-providers-table" class="providers-table">
+                <thead>
+                  <tr>
+                    <th class="col-provider">Proveedor</th>
+                    <th class="col-key">API Key</th>
+                    <th class="col-environment">Ambiente</th>
+                    <th class="col-status">Estado</th>
+                    <th class="col-actions">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="trade-providers-tbody">
+                  <!-- Las filas se generarán dinámicamente -->
+                </tbody>
+              </table>
+            </div>
+            <div id="empty-trade-providers" class="empty-state">
+              <div class="empty-icon">⚙️</div>
+              <div class="empty-title">No hay proveedores de trading configurados</div>
+              <div class="empty-description">Agrega un proveedor para comenzar a ejecutar operaciones</div>
+            </div>
+          </div>
+
+          <!-- Modal para agregar proveedor de trading -->
+          <div id="add-trade-provider-modal" class="modal-overlay hidden">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h3 class="modal-title">Agregar Proveedor de Trading</h3>
+                <button class="modal-close" data-close="add-trade-provider-modal">&times;</button>
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <label class="form-label">Proveedor</label>
+                  <select id="trade-provider-select" class="form-select">
+                    <option value="">Selecciona un proveedor...</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">API Key</label>
+                  <input id="trade-provider-key" type="password" class="form-input" placeholder="Ingresa tu API key...">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Etiqueta (opcional)</label>
+                  <input id="trade-provider-label" type="text" class="form-input" placeholder="Mi clave de desarrollo...">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Ambiente</label>
+                  <select id="trade-provider-environment" class="form-select">
+                    <option value="live">Producción</option>
+                    <option value="paper">Papel</option>
+                    <option value="sandbox">Pruebas</option>
+                  </select>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn" data-close="add-trade-provider-modal">Cancelar</button>
+                <button id="btn-save-trade-provider" class="btn g">Agregar Proveedor</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal para resultados de prueba de API -->
+          <div id="test-result-modal" class="modal-overlay hidden">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h3 class="modal-title" id="test-result-title">Resultado de Prueba</h3>
+                <button class="modal-close" data-close="test-result-modal">&times;</button>
+              </div>
+              <div class="modal-body">
+                <div id="test-result-content">
+                  <div class="test-result-icon" id="test-result-icon">✅</div>
+                  <div class="test-result-message" id="test-result-message">Prueba exitosa</div>
+                  <div class="test-result-details" id="test-result-details" style="display: none;"></div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn" data-close="test-result-modal">Cerrar</button>
+                <button class="btn btn-secondary" id="btn-view-details" style="display: none;">Ver Detalles</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Configuración avanzada de trading -->
+          <div class="card mt-6">
+            <h3 class="card-title">⚙️ Configuración Avanzada de Trading</h3>
+            <div class="grid md:grid-cols-3 gap-4">
+              <div>
+                <label class="label">Timeout Polygon (ms)</label>
+                <input id="to-polygon" type="number" class="input" value="8000" min="500" max="60000" title="500–60000"/>
+              </div>
+              <div>
+                <label class="label">Reintentos Polygon (0-5)</label>
+                <input id="rt-polygon" type="number" class="input" value="2" min="0" max="5" title="Número de reintentos (0-5)"/>
+              </div>
+              <div>
+                <label class="label">Timeout Finnhub (ms)</label>
+                <input id="to-finnhub" type="number" class="input" value="8000" min="500" max="60000" title="500–60000"/>
+              </div>
+              <div>
+                <label class="label">Reintentos Finnhub (0-5)</label>
+                <input id="rt-finnhub" type="number" class="input" value="2" min="0" max="5" title="Número de reintentos (0-5)"/>
+              </div>
+              <div>
+                <label class="label">Timeout Tiingo (ms)</label>
+                <input id="to-tiingo" type="number" class="input" value="8000" min="500" max="60000" title="500–60000"/>
+              </div>
+              <div>
+                <label class="label">Reintentos Tiingo (0-5)</label>
+                <input id="rt-tiingo" type="number" class="input" value="2" min="0" max="5" title="Número de reintentos (0-5)"/>
+              </div>
+              <div>
+                <label class="label">Timeout Alpha Vantage (ms)</label>
+                <input id="to-av" type="number" class="input" value="8000" min="500" max="60000" title="500–60000"/>
+              </div>
+              <div>
+                <label class="label">Reintentos Alpha Vantage (0-5)</label>
+                <input id="rt-av" type="number" class="input" value="2" min="0" max="5" title="Número de reintentos (0-5)"/>
+              </div>
+              <div>
+                <label class="label">Zona horaria (offset)</label>
+                <input id="tz-offset" class="input" placeholder="+00:00 (ej. -03:00)" title="Formato ±HH:MM, opcional"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer">
+            <button id="btn-reset-trade" class="btn r" title="Restablecer valores por defecto (no guarda)">Reset</button>
+            <div class="spacer"></div>
+            <button id="btn-export-trade" class="btn" title="Exportar configuración como JSON">Exportar</button>
+            <button id="btn-import-trade" class="btn" title="Importar JSON de configuración">Importar</button>
+            <button id="btn-save-trade" class="btn p">Guardar configuración</button>
+            <span id="trade-msg" class="text-sm muted"></span>
+          </div>
+        </div>
+
       </div>
     </section>
-
-    <!-- PREFERENCIAS -->
-    <section class="card p-6 space-y-5">
-      <div class="flex items-center justify-between">
-        <h2 class="text-xl">Preferencias (opciones)</h2>
-        <span class="chip">opcional</span>
-      </div>
-      <div class="grid md:grid-cols-3 gap-4">
-        <div>
-          <label class="label">Proveedor de series</label>
-          <select id="series-provider" class="input" title="Proveedor por defecto para series">
-            <option value="auto">Auto</option>
-            <option value="tiingo">Tiingo</option>
-            <option value="av">Alpha Vantage</option>
-            <option value="local">Solo lista local</option>
-          </select>
-        </div>
-        <div>
-          <label class="label">Proveedor de opciones</label>
-          <select id="opt-provider" class="input" title="Proveedor por defecto para opciones">
-            <option value="auto">Auto</option>
-            <option value="polygon">Polygon</option>
-            <option value="finnhub">Finnhub</option>
-          </select>
-        </div>
-        <div>
-          <label class="label">Strikes por lado</label>
-          <input id="opt-strikes" type="number" class="input" value="20" min="0" max="100" title="0 a 100"/>
-        </div>
-        <div>
-          <label class="label">Regla de expiración</label>
-          <select id="opt-exp-rule" class="input" title="Cómo elegir el vencimiento por defecto">
-            <option value="nearest_friday">Próximo viernes</option>
-            <option value="next_monthly">Próxima mensual</option>
-          </select>
-        </div>
-        <div>
-          <label class="label">ATM: fuente de precio</label>
-          <select id="opt-atm" class="input" title="Fuente para calcular el ATM">
-            <option value="series_last">Series (último)</option>
-            <option value="provider">Proveedor</option>
-            <option value="mid">Mid (bid/ask)</option>
-          </select>
-        </div>
-        <div>
-          <label class="label">Zona horaria (offset)</label>
-          <input id="tz-offset" class="input" placeholder="+00:00 (ej. -03:00)" title="Formato ±HH:MM, opcional"/>
-        </div>
-        <div>
-          <label class="label">Zona horaria</label>
-          <select id="time-zone" class="input" title="Selecciona tu zona horaria (IANA)"></select>
-          <div id="tz-offset-view" class="text-xs text-gray-600 mt-1"></div>
-        </div>
-        <div>
-          <label class="label">Timeout Polygon (ms)</label>
-          <input id="to-polygon" type="number" class="input" value="8000" min="500" max="60000" title="500â€“60000"/>
-        </div>
-        <div>
-          <label class="label">Reintentos Polygon (0-5)</label>
-          <input id="rt-polygon" type="number" class="input" value="2" min="0" max="5" title="Número de reintentos (0-5)"/>
-        </div>
-        <div>
-          <label class="label">Timeout Finnhub (ms)</label>
-          <input id="to-finnhub" type="number" class="input" value="8000" min="500" max="60000" title="500â€“60000"/>
-        </div>
-        <div>
-          <label class="label">Reintentos Finnhub (0-5)</label>
-          <input id="rt-finnhub" type="number" class="input" value="2" min="0" max="5" title="Número de reintentos (0-5)"/>
-        </div>
-        <div>
-          <label class="label">Timeout Tiingo (ms)</label>
-          <input id="to-tiingo" type="number" class="input" value="8000" min="500" max="60000" title="500â€“60000"/>
-        </div>
-        <div>
-          <label class="label">Reintentos Tiingo (0-5)</label>
-          <input id="rt-tiingo" type="number" class="input" value="2" min="0" max="5" title="Número de reintentos (0-5)"/>
-        </div>
-        <div>
-          <label class="label">Timeout Alpha Vantage (ms)</label>
-          <input id="to-av" type="number" class="input" value="8000" min="500" max="60000" title="500â€“60000"/>
-        </div>
-        <div>
-          <label class="label">Reintentos Alpha Vantage (0-5)</label>
-          <input id="rt-av" type="number" class="input" value="2" min="0" max="5" title="Número de reintentos (0-5)"/>
-        </div>
-      </div>
-      <div class="footer">
-        <button id="btn-reset-prefs" class="btn r" title="Restablecer valores por defecto (no guarda)">Reset</button>
-        <div class="spacer"></div>
-        <button id="btn-export-prefs" class="btn" title="Exportar preferencias como JSON">Exportar</button>
-        <button id="btn-import-prefs" class="btn" title="Importar JSON de preferencias">Importar</button>
-        <button id="btn-save-prefs" class="btn p">Guardar preferencias</button>
-        <span id="prefs-msg" class="text-sm muted"></span>
-      </div>
-</section>
   </div>
 
 <script>
@@ -293,6 +1363,1617 @@ function getToken(){
   return current || '';
 }
 (function(){ $('tok-ok').textContent = getToken() ? 'sí' : 'no'; })();
+
+// =================== SISTEMA DE PESTAÑAS ===================
+class TabManager {
+  constructor() {
+    this.currentTab = 'data';
+    this.init();
+  }
+
+  init() {
+    // Event listeners para botones de pestañas
+    document.querySelectorAll('.tab-button').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const tabId = e.currentTarget.getAttribute('data-tab');
+        this.switchTab(tabId);
+      });
+    });
+
+    // Cargar pestaña activa desde localStorage
+    const savedTab = localStorage.getItem('config_active_tab');
+    if (savedTab && document.getElementById(`tab-${savedTab}`)) {
+      this.switchTab(savedTab);
+    }
+  }
+
+  switchTab(tabId) {
+    // Remover clase active de todas las pestañas y botones
+    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+
+    // Activar pestaña seleccionada
+    const button = document.querySelector(`[data-tab="${tabId}"]`);
+    const pane = document.getElementById(`tab-${tabId}`);
+
+    if (button && pane) {
+      button.classList.add('active');
+      pane.classList.add('active');
+      this.currentTab = tabId;
+      
+      // Guardar pestaña activa
+      localStorage.setItem('config_active_tab', tabId);
+      
+      // Lazy loading: cargar datos específicos de la pestaña si es necesario
+      this.loadTabData(tabId);
+    }
+  }
+
+  loadTabData(tabId) {
+    switch(tabId) {
+      case 'data':
+        // Cargar tabla de proveedores de Datos
+        if (window.providersTables?.data) {
+          window.providersTables.data.loadUserProviders().then(() => {
+            window.providersTables.data.renderTable();
+          });
+        }
+        break;
+      case 'ai':
+        // Cargar tabla de proveedores de IA
+        if (window.providersTables?.ai) {
+          window.providersTables.ai.loadUserProviders().then(() => {
+            window.providersTables.ai.renderTable();
+          });
+        }
+        break;
+      case 'news':
+        // Cargar tabla de proveedores de Noticias
+        if (window.providersTables?.news) {
+          window.providersTables.news.loadUserProviders().then(() => {
+            window.providersTables.news.renderTable();
+          });
+        }
+        break;
+      case 'trade':
+        // Cargar tabla de proveedores de trading y preferencias
+        if (window.providersTables?.trade) {
+          window.providersTables.trade.loadUserProviders().then(() => {
+            window.providersTables.trade.renderTable();
+          });
+        }
+        loadTradePrefs();
+        break;
+    }
+  }
+}
+
+// Inicializar sistema de pestañas
+const tabManager = new TabManager();
+window.tabManager = tabManager; // Hacer disponible globalmente
+
+// =================== SISTEMA DE TABLA DINÁMICA DE PROVEEDORES ===================
+class ProvidersTableManager {
+  constructor(tabType = 'data') {
+    this.tabType = tabType;
+    this.providers = [];
+    this.availableProviders = [];
+    this.defaultProvider = null;
+    // Inicializar de forma asíncrona
+    this.init().catch(error => {
+      console.error(`Error inicializando ProvidersTableManager para ${tabType}:`, error);
+    });
+  }
+
+  async init() {
+    console.log(`Inicializando ProvidersTableManager para pestaña: ${this.tabType}`);
+    await logToFile(`Inicializando ProvidersTableManager para pestaña: ${this.tabType}`);
+    this.setupEventListeners();
+    await this.loadAvailableProviders();
+    await this.loadUserProviders();
+    this.renderTable();
+    console.log(`ProvidersTableManager inicializado para pestaña: ${this.tabType}`);
+    await logToFile(`ProvidersTableManager inicializado para pestaña: ${this.tabType}`);
+  }
+
+  // Cargar proveedores disponibles desde la tabla data_providers
+  async loadAvailableProviders() {
+    try {
+      // Cargar proveedores desde la base de datos según el tipo de pestaña
+      let endpoint;
+      switch (this.tabType) {
+        case 'datos':
+          endpoint = 'get_data_providers_safe.php';
+          break;
+        case 'ai':
+          endpoint = 'get_ai_providers_safe.php';
+          break;
+        case 'data':
+          endpoint = 'get_data_providers_safe.php';
+          break;
+        case 'news':
+          endpoint = 'get_news_providers_safe.php';
+          break;
+        case 'trade':
+          endpoint = 'get_trade_providers_safe.php';
+          break;
+        default:
+          endpoint = 'get_data_providers_safe.php';
+      }
+      console.log(`🔍 Cargando proveedores para pestaña ${this.tabType} desde endpoint: ${endpoint}`);
+      const response = await api(endpoint);
+      console.log(`📡 Respuesta del endpoint ${endpoint}:`, response);
+      
+      this.availableProviders = response?.providers || [];
+      console.log(`✅ Proveedores disponibles cargados para pestaña ${this.tabType}:`, this.availableProviders);
+      
+      // Logging específico para noticias
+      if (this.tabType === 'news') {
+        console.log(`📰 PESTAÑA NOTICIAS - Proveedores encontrados: ${this.availableProviders.length}`);
+        if (this.availableProviders.length === 0) {
+          console.log(`⚠️ No se encontraron proveedores de noticias. Verificar tabla news_providers`);
+        } else {
+          console.log(`📋 Lista de proveedores de noticias:`, this.availableProviders.map(p => `${p.label} (ID: ${p.id})`));
+        }
+      }
+      
+      await logToFile(`Proveedores disponibles cargados para pestaña ${this.tabType}`, {
+        endpoint,
+        count: this.availableProviders.length,
+        providers: this.availableProviders
+      });
+      this.populateProviderSelect();
+    } catch (error) {
+      console.error('Error cargando proveedores disponibles:', error);
+      // Fallback a lista estática si falla
+      this.availableProviders = [
+        { 
+          id: 'alphavantage', 
+          slug: 'alphavantage',
+          label: 'Alpha Vantage', 
+          name: 'Alpha Vantage',
+          description: 'Datos financieros históricos',
+          db_id: 1,
+          auth_type: 'api_key'
+        },
+        { 
+          id: 'tiingo', 
+          slug: 'tiingo',
+          label: 'Tiingo', 
+          name: 'Tiingo',
+          description: 'Datos de mercado en tiempo real',
+          db_id: 2,
+          auth_type: 'api_key'
+        },
+        { 
+          id: 'finnhub', 
+          slug: 'finnhub',
+          label: 'Finnhub', 
+          name: 'Finnhub',
+          description: 'API financiera global',
+          db_id: 3,
+          auth_type: 'api_key'
+        },
+        { 
+          id: 'polygon', 
+          slug: 'polygon',
+          label: 'Polygon', 
+          name: 'Polygon',
+          description: 'Datos de mercado y opciones',
+          db_id: 4,
+          auth_type: 'api_key'
+        }
+      ];
+    }
+  }
+
+  // Cargar proveedores configurados por el usuario desde user_data_api_keys
+  async loadUserProviders() {
+    try {
+      console.log(`Cargando proveedores de usuario para pestaña: ${this.tabType}`);
+      // Cargar claves según el tipo de pestaña
+      let endpoint;
+      switch (this.tabType) {
+        case 'data':
+          endpoint = 'get_user_data_keys_safe.php';
+          break;
+        case 'ai':
+          endpoint = 'get_user_ai_keys_safe.php';
+          break;
+        case 'news':
+          endpoint = 'get_user_news_keys_safe.php';
+          break;
+        case 'trade':
+          endpoint = 'get_user_trade_keys_safe.php';
+          break;
+        default:
+          endpoint = 'get_user_data_keys_safe.php';
+      }
+      console.log(`Endpoint seleccionado: ${endpoint}`);
+      const response = await api(endpoint);
+      console.log(`Respuesta del endpoint ${endpoint}:`, response);
+      const userKeys = response?.keys || [];
+      console.log(`Claves de usuario obtenidas:`, userKeys);
+      
+      // Debug: mostrar ambientes de las claves
+      userKeys.forEach(key => {
+        console.log(`🔍 Clave ${key.name || key.label}: environment = "${key.environment}"`);
+      });
+      
+      this.providers = [];
+      
+      // Cargar SOLO los proveedores que YA TIENEN claves configuradas
+      userKeys.forEach(userKey => {
+        console.log(`Buscando proveedor con provider_id: ${userKey.provider_id}`);
+        const provider = this.availableProviders.find(p => p.id == userKey.provider_id);
+        console.log(`Proveedor encontrado:`, provider);
+        if (provider) {
+          console.log(`Agregando proveedor con clave: ${provider.label} (ID: ${provider.id})`);
+          // Cada elemento es una CLAVE API del usuario
+          this.providers.push({
+            id: userKey.id, // ID del registro en user_*_api_keys (para borrar)
+            provider_id: userKey.provider_id, // ID del proveedor
+            name: userKey.name || provider.label || provider.name,
+            last4: userKey.last4 || '',
+            status: userKey.status || 'active',
+            environment: userKey.environment || 'live'
+          });
+        } else {
+          console.log(`❌ No se encontró proveedor con ID ${userKey.provider_id}`);
+        }
+      });
+      
+      console.log('Claves API cargadas:', this.providers);
+      await logToFile(`Proveedores de usuario cargados para pestaña ${this.tabType}`, {
+        userKeysCount: userKeys.length,
+        providersCount: this.providers.length,
+        providers: this.providers
+      });
+
+      // Cargar proveedor por defecto
+      const settings = await api('settings_get_safe.php');
+      this.defaultProvider = settings?.settings?.series_provider || null;
+      
+    } catch (error) {
+      console.error('Error cargando proveedores del usuario:', error);
+    }
+  }
+
+
+  // Obtener nombre legible del proveedor
+  getProviderName(providerId) {
+    const provider = this.availableProviders.find(p => p.id === providerId);
+    return provider ? provider.name : providerId;
+  }
+
+  // Poblar el select de proveedores en el modal
+  populateProviderSelect() {
+    const selectId = `${this.tabType}-provider-select`;
+    const select = document.getElementById(selectId);
+    console.log(`🔧 Poblando select para pestaña: ${this.tabType}, selectId: ${selectId}, select encontrado:`, select);
+    
+    // Logging específico para noticias
+    if (this.tabType === 'news') {
+      console.log(`📰 PESTAÑA NOTICIAS - populateProviderSelect llamado`);
+      console.log(`📰 Select ID buscado: ${selectId}`);
+      console.log(`📰 Elemento select encontrado:`, select);
+      console.log(`📰 Proveedores disponibles: ${this.availableProviders.length}`);
+    }
+    
+    if (!select) {
+      console.log(`❌ Select no encontrado para ID: ${selectId}`);
+      return;
+    }
+
+    // Limpiar opciones existentes (excepto la primera)
+    select.innerHTML = '<option value="">Selecciona un proveedor...</option>';
+    console.log(`🔧 Proveedores disponibles para poblar:`, this.availableProviders);
+    
+    let addedCount = 0;
+    // Agregar SOLO los proveedores que NO están ya configurados
+    this.availableProviders.forEach(provider => {
+      const isConfigured = this.providers.some(p => p.provider_id == provider.id);
+      console.log(`🔧 Proveedor ${provider.label} (ID: ${provider.id}) - Ya configurado: ${isConfigured}`);
+      if (!isConfigured) {
+        const option = document.createElement('option');
+        option.value = provider.id;
+        option.textContent = provider.label || provider.name;
+        select.appendChild(option);
+        addedCount++;
+        console.log(`✅ Agregando opción al select: ${provider.label} (ID: ${provider.id})`);
+      }
+    });
+    
+    console.log(`🔧 Select poblado con ${addedCount} opciones de proveedores`);
+    
+    // Logging específico para noticias
+    if (this.tabType === 'news') {
+      console.log(`📰 PESTAÑA NOTICIAS - Opciones agregadas al select: ${addedCount}`);
+      console.log(`📰 Total de opciones en select: ${select.children.length}`);
+      if (addedCount === 0) {
+        console.log(`⚠️ No se agregaron proveedores al select de noticias`);
+      }
+    }
+  }
+
+  // Configurar event listeners
+  setupEventListeners() {
+    const addButtonId = `btn-add-${this.tabType}-provider`;
+    const saveButtonId = `btn-save-${this.tabType}-provider`;
+    const modalId = `add-${this.tabType}-provider-modal`;
+    const tbodyId = `${this.tabType}-providers-tbody`;
+
+    console.log(`Configurando event listeners para pestaña: ${this.tabType}`);
+    console.log(`IDs buscados: addButton=${addButtonId}, saveButton=${saveButtonId}, modal=${modalId}`);
+
+    // Botón agregar proveedor
+    const addButton = document.getElementById(addButtonId);
+    console.log(`Botón agregar encontrado:`, addButton);
+    addButton?.addEventListener('click', () => {
+      console.log(`Botón agregar clickeado para pestaña: ${this.tabType}`);
+      this.showAddModal();
+    });
+
+    // Modal - cerrar
+    document.querySelectorAll('[data-close]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const modalId = e.target.getAttribute('data-close');
+        if (modalId === 'test-result-modal') {
+          // Cerrar modal de resultados
+          const modal = document.getElementById('test-result-modal');
+          if (modal) modal.classList.add('hidden');
+        } else {
+          // Cerrar otros modales
+          this.hideAddModal(modalId);
+        }
+      });
+    });
+
+    // Modal - confirmar agregar
+    document.getElementById(saveButtonId)?.addEventListener('click', () => {
+      this.addProvider();
+    });
+
+    // Delegación de eventos para botones dinámicos
+    const tbody = document.getElementById(tbodyId);
+    if (tbody) {
+      tbody.addEventListener('click', (e) => {
+        const target = e.target;
+        
+        if (target.classList.contains('btn-test')) {
+          const providerId = target.getAttribute('data-provider-id');
+          this.testProvider(providerId);
+        } else if (target.classList.contains('btn-delete')) {
+          const providerId = target.getAttribute('data-provider');
+          this.deleteProvider(providerId);
+        } else if (target.classList.contains('btn-default')) {
+          const providerId = target.getAttribute('data-provider-id');
+          this.setDefaultProvider(providerId);
+        }
+      });
+    }
+
+    // Guardar configuración de APIs
+    document.addEventListener('click', async (e) => {
+      if (e.target.id === 'btn-save-apis') {
+        await this.saveProviders();
+      }
+    });
+
+    // Event delegation para botones de la tabla - DENTRO de la clase
+    this.setupTableEventListeners();
+  }
+
+  // Configurar event listeners para botones de la tabla
+  setupTableEventListeners() {
+    console.log(`🎯 Configurando event listeners para tabType: ${this.tabType}`);
+    
+    // Solo configurar el event listener una vez globalmente
+    if (!window.tableEventListenersSetup) {
+      window.tableEventListenersSetup = true;
+      document.addEventListener('click', (e) => {
+        console.log(`🖱️ Click detectado en:`, e.target, 'Classes:', e.target.className);
+        
+        if (e.target.classList.contains('test-provider')) {
+          const providerId = e.target.getAttribute('data-provider');
+          const currentTab = window.tabManager?.currentTab;
+          console.log(`🧪 Test provider clicked: ${providerId} en tab: ${currentTab}`);
+          
+          if (window.providersTables?.[currentTab]) {
+            window.providersTables[currentTab].testProvider(providerId);
+          }
+        } else if (e.target.classList.contains('delete-provider')) {
+          const providerId = e.target.getAttribute('data-provider');
+          const currentTab = window.tabManager?.currentTab;
+          console.log(`🗑️ Delete provider clicked: ${providerId} en tab: ${currentTab}`);
+          
+          if (window.providersTables?.[currentTab]) {
+            window.providersTables[currentTab].deleteProvider(providerId);
+          }
+        } else if (e.target.classList.contains('default-radio')) {
+          const providerId = e.target.getAttribute('data-provider');
+          const currentTab = window.tabManager?.currentTab;
+          
+          if (window.providersTables?.[currentTab]) {
+            window.providersTables[currentTab].setDefaultProvider(providerId);
+          }
+        }
+      });
+    }
+  }
+
+  // Mostrar modal para agregar proveedor
+  showAddModal() {
+    console.log(`Mostrando modal para pestaña: ${this.tabType}`);
+    console.log(`Proveedores disponibles antes de poblar select:`, this.availableProviders);
+    this.populateProviderSelect();
+    const modalId = `add-${this.tabType}-provider-modal`;
+    const modal = document.getElementById(modalId);
+    console.log(`Modal encontrado:`, modal);
+    modal?.classList.remove('hidden');
+    document.getElementById(`${this.tabType}-provider-key`).value = '';
+    document.getElementById(`${this.tabType}-provider-label`).value = '';
+    document.getElementById(`${this.tabType}-provider-environment`).value = 'live';
+  }
+
+  // Ocultar modal
+  hideAddModal(modalId = null) {
+    const targetModalId = modalId || `add-${this.tabType}-provider-modal`;
+    document.getElementById(targetModalId)?.classList.add('hidden');
+  }
+
+  // Agregar nuevo proveedor
+  async addProvider() {
+    console.log(`Agregando proveedor para pestaña: ${this.tabType}`);
+    const select = document.getElementById(`${this.tabType}-provider-select`);
+    const keyInput = document.getElementById(`${this.tabType}-provider-key`);
+    const labelInput = document.getElementById(`${this.tabType}-provider-label`);
+    const environmentSelect = document.getElementById(`${this.tabType}-provider-environment`);
+    
+    console.log(`Elementos encontrados:`, { select, keyInput, labelInput, environmentSelect });
+
+    const providerId = select.value;
+    const apiKey = keyInput.value.trim();
+    const label = labelInput.value.trim();
+    const environment = environmentSelect.value;
+
+    console.log(`Datos del formulario:`, { providerId, apiKey: apiKey.substring(0, 8) + '...', label, environment });
+
+    if (!providerId) {
+      this.showMessage('Selecciona un proveedor', 'error');
+      return;
+    }
+
+    if (!apiKey) {
+      this.showMessage('Ingresa la API Key', 'error');
+      return;
+    }
+
+    // Verificar si ya existe un proveedor con este ID
+    const existingProvider = this.providers.find(p => p.provider_id == providerId);
+    if (existingProvider) {
+      const providerName = this.getProviderName(providerId);
+      const confirmDelete = confirm(`Ya tienes una clave configurada para ${providerName}. ¿Quieres eliminar la clave existente y agregar la nueva?`);
+      if (!confirmDelete) {
+        return;
+      }
+      // Eliminar el proveedor existente
+      await this.deleteProvider(providerId);
+    }
+
+    try {
+      console.log(`Iniciando guardado de proveedor ${providerId} para pestaña ${this.tabType}`);
+      // Determinar el endpoint correcto según el tipo de pestaña
+      let endpoint;
+      switch (this.tabType) {
+        case 'data':
+          endpoint = 'set_user_data_key_safe.php';
+          break;
+        case 'ai':
+          endpoint = 'set_user_ai_key_safe.php';
+          break;
+        case 'news':
+          endpoint = 'set_user_news_key_safe.php';
+          break;
+        case 'trade':
+          endpoint = 'set_user_trade_key_safe.php';
+          break;
+        default:
+          endpoint = 'set_user_data_key_safe.php';
+      }
+
+      const requestData = {
+        provider_id: parseInt(providerId),
+        api_key: apiKey,
+        label: label || `Clave ${this.getProviderName(providerId)}`,
+        environment: environment
+      };
+      
+      console.log(`Enviando datos a ${endpoint}:`, requestData);
+      await logToFile(`Enviando datos a ${endpoint}`, requestData);
+
+      const response = await api(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestData)
+      });
+
+      console.log(`Respuesta de ${endpoint}:`, response);
+      await logToFile(`Respuesta de ${endpoint}`, response);
+
+      if (response.ok) {
+        // Cerrar modal inmediatamente
+        this.hideAddModal();
+        
+        // Mostrar mensaje de éxito inmediatamente
+        this.showMessage('Proveedor agregado exitosamente', 'success');
+        
+        // Recargar tabla en background (sin bloquear UI)
+        setTimeout(async () => {
+          console.log('Recargando proveedores...');
+          await this.loadUserProviders();
+          this.renderTable();
+        }, 100);
+      } else {
+        throw new Error('Error al guardar proveedor');
+      }
+    } catch (error) {
+      console.error('Error agregando proveedor:', error);
+      alert('Error al agregar proveedor: ' + error.message);
+    }
+  }
+
+  // Mostrar modal de confirmación personalizado
+  async showDeleteConfirmation(providerName, providerId) {
+    return new Promise((resolve) => {
+      // Crear modal de confirmación
+      const modal = document.createElement('div');
+      modal.className = 'modal-overlay';
+      modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        backdrop-filter: blur(2px);
+      `;
+      
+      const modalContent = document.createElement('div');
+      modalContent.style.cssText = `
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 32px;
+        max-width: 450px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        position: relative;
+      `;
+      
+      modalContent.innerHTML = `
+        <h3 style="margin: 0 0 16px 0; color: var(--text-primary);">
+          Confirmar eliminación
+        </h3>
+        <p style="margin: 0 0 24px 0; color: var(--text-secondary);">
+          ¿Estás seguro de que quieres eliminar la clave API de noticias para<br>
+          <strong>"${providerName}"</strong>?
+        </p>
+        <div style="display: flex; gap: 16px; justify-content: center; margin-top: 8px;">
+          <button id="cancel-delete" class="btn btn-secondary" style="padding: 12px 24px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary); cursor: pointer; transition: all 0.2s;">
+            Cancelar
+          </button>
+          <button id="confirm-delete" class="btn btn-danger" style="padding: 12px 24px; border-radius: 6px; border: 1px solid #dc3545; background: #dc3545; color: white; cursor: pointer; transition: all 0.2s;">
+            Eliminar
+          </button>
+        </div>
+      `;
+      
+      modal.appendChild(modalContent);
+      document.body.appendChild(modal);
+      
+      // Event listeners
+      const cancelBtn = modal.querySelector('#cancel-delete');
+      const confirmBtn = modal.querySelector('#confirm-delete');
+      
+      // Efectos hover para los botones
+      cancelBtn.onmouseenter = () => {
+        cancelBtn.style.background = 'var(--bg-tertiary)';
+        cancelBtn.style.borderColor = 'var(--text-secondary)';
+      };
+      cancelBtn.onmouseleave = () => {
+        cancelBtn.style.background = 'var(--bg-secondary)';
+        cancelBtn.style.borderColor = 'var(--border-color)';
+      };
+      
+      confirmBtn.onmouseenter = () => {
+        confirmBtn.style.background = '#c82333';
+        confirmBtn.style.transform = 'translateY(-1px)';
+      };
+      confirmBtn.onmouseleave = () => {
+        confirmBtn.style.background = '#dc3545';
+        confirmBtn.style.transform = 'translateY(0)';
+      };
+      
+      cancelBtn.onclick = () => {
+        document.body.removeChild(modal);
+        resolve(false);
+      };
+      
+      confirmBtn.onclick = () => {
+        document.body.removeChild(modal);
+        resolve(true);
+      };
+      
+      // Cerrar al hacer clic fuera del modal
+      modal.onclick = (e) => {
+        if (e.target === modal) {
+          document.body.removeChild(modal);
+          resolve(false);
+        }
+      };
+      
+      // Cerrar con Escape
+      const handleEscape = (e) => {
+        if (e.key === 'Escape') {
+          document.body.removeChild(modal);
+          document.removeEventListener('keydown', handleEscape);
+          resolve(false);
+        }
+      };
+      document.addEventListener('keydown', handleEscape);
+    });
+  }
+
+  // Renderizar la tabla
+  async renderTable() {
+    console.log(`Renderizando tabla para pestaña: ${this.tabType}`);
+    console.log(`Proveedores a renderizar:`, this.providers);
+    const tbodyId = `${this.tabType}-providers-tbody`;
+    const emptyStateId = `empty-${this.tabType}-providers`;
+    const tbody = document.getElementById(tbodyId);
+    const emptyState = document.getElementById(emptyStateId);
+    console.log(`Elementos encontrados - tbody: ${tbodyId} (${tbody ? 'ENCONTRADO' : 'NO ENCONTRADO'}), emptyState: ${emptyStateId} (${emptyState ? 'ENCONTRADO' : 'NO ENCONTRADO'})`);
+    
+    await logToFile(`Renderizando tabla para pestaña ${this.tabType}`, {
+      tbodyId,
+      emptyStateId,
+      tbodyFound: !!tbody,
+      emptyStateFound: !!emptyState,
+      providersCount: this.providers.length
+    });
+    
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+
+    if (this.providers.length === 0) {
+      emptyState?.classList.remove('hidden');
+      return;
+    }
+
+    emptyState?.classList.add('hidden');
+
+    this.providers.forEach(provider => {
+      const row = this.createProviderRow(provider);
+      tbody.appendChild(row);
+    });
+  }
+
+  // Crear fila de proveedor
+  createProviderRow(provider) {
+    console.log(`🔨 Creando fila para clave API:`, provider);
+    console.log(`🔍 Ambiente del proveedor:`, provider.environment);
+    // Función para traducir ambiente
+    const translateEnvironment = (env) => {
+      const translations = {
+        'live': 'Producción',
+        'paper': 'Papel',
+        'sandbox': 'Pruebas'
+      };
+      const result = translations[env] || env;
+      console.log(`🔤 Traducción: "${env}" → "${result}"`);
+      return result;
+    };
+
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td class="col-provider">
+        <div class="provider-name">${provider.name}</div>
+      </td>
+      <td class="col-key">
+        <input type="text" 
+               class="provider-key-input" 
+               value="${provider.last4 ? '••••' + provider.last4 : '••••••••'}" 
+               placeholder="Sin clave configurada"
+               data-provider="${provider.id}"
+               readonly>
+      </td>
+      <td class="col-environment">
+        <span class="environment-badge ${provider.environment || 'live'}">
+          ${translateEnvironment(provider.environment || 'live')}
+        </span>
+      </td>
+      <td class="col-status">
+        <span class="status-badge ${provider.status === 'active' ? 'success' : 'warning'}">
+          ${provider.status === 'active' ? 'Activa' : provider.status}
+        </span>
+      </td>
+      <td class="col-actions">
+        <div class="action-buttons">
+          <button class="action-btn test test-provider" data-provider="${provider.id}">
+            Probar
+          </button>
+          <button class="action-btn delete delete-provider" data-provider="${provider.id}">
+            Borrar
+          </button>
+        </div>
+      </td>
+    `;
+    console.log(`🔨 HTML generado para ambiente:`, row.innerHTML);
+    console.log(`🔨 Botón borrar creado con data-provider="${provider.id}" (ID de user_data_api_keys)`);
+    return row;
+  }
+
+  // Probar proveedor
+  async testProvider(providerId) {
+    try {
+      console.log(`🧪 testProvider llamado con providerId: ${providerId}`);
+      console.log(`🔍 Proveedores disponibles:`, this.providers);
+      
+      // Obtener el provider_id de la base de datos
+      const provider = this.providers.find(p => p.id == providerId);
+      console.log(`🔍 Proveedor encontrado:`, provider);
+      
+      if (!provider || !provider.provider_id) {
+        this.showTestResultModal(false, 'Error', 'Proveedor no encontrado');
+        return;
+      }
+
+      console.log(`🧪 Probando proveedor ${provider.name} (provider_id: ${provider.provider_id}) con endpoint genérico`);
+
+      // Usar el endpoint genérico que ya funciona
+      const response = await api('test_provider_key_safe.php', {
+        method: 'POST',
+        body: JSON.stringify({ 
+          provider_type: this.tabType,
+          provider_id: provider.provider_id
+        })
+      });
+
+      if (response?.ok) {
+        // Éxito
+        this.showTestResultModal(true, provider.name, 'Conexión exitosa');
+      } else {
+        // Error - obtener mensaje específico
+        const errorMessage = this.getErrorMessage(response?.reason || response?.message, response?.http_code);
+        const details = response?.body_snippet ? `HTTP ${response.http_code}: ${response.reason}` : null;
+        
+        this.showTestResultModal(false, provider.name, errorMessage, details);
+      }
+    } catch (error) {
+      console.error('Error probando proveedor:', error);
+      const errorMessage = this.getErrorMessage(error.message);
+      this.showTestResultModal(false, this.getProviderName(providerId), errorMessage);
+    }
+  }
+
+  // Eliminar proveedor
+  async deleteProvider(providerId) {
+    console.log(`🗑️ deleteProvider llamado con providerId: ${providerId}, tabType: ${this.tabType}`);
+    console.log(`Claves API actuales:`, this.providers);
+    
+    // Encontrar el proveedor por ID del registro (no provider_id)
+    const providerRecord = this.providers.find(p => p.id == providerId);
+    const providerName = providerRecord ? providerRecord.name : `ID ${providerId}`;
+    
+    console.log(`🔔 Iniciando proceso de eliminación para: "${providerName}"`);
+    
+    // Usar modal personalizado en lugar de confirm()
+    const confirmed = await this.showDeleteConfirmation(providerName, providerId);
+    
+    if (!confirmed) {
+      console.log('❌ Usuario canceló la eliminación');
+      return;
+    }
+    
+    console.log('✅ Usuario confirmó la eliminación');
+
+    try {
+      // Determinar el endpoint correcto según el tipo de pestaña
+      let endpoint;
+      switch (this.tabType) {
+        case 'data':
+          endpoint = 'delete_user_data_key_safe.php';
+          break;
+        case 'ai':
+          endpoint = 'delete_user_ai_key_safe.php';
+          break;
+        case 'news':
+          endpoint = 'delete_user_news_key_safe.php';
+          break;
+        case 'trade':
+          endpoint = 'delete_user_trade_key_safe.php';
+          break;
+        default:
+          endpoint = 'delete_user_data_key_safe.php';
+      }
+
+      // Eliminar la clave de noticias - usar el ID del registro en user_news_api_keys
+      const deleteData = {
+        id: parseInt(providerId)  // Este es el ID del registro en user_news_api_keys
+      };
+      
+      console.log(`🚀 Enviando eliminación de clave de noticias a ${endpoint}:`, deleteData);
+      console.log(`📤 Datos enviados:`, JSON.stringify(deleteData));
+      console.log(`🔍 ID del registro a eliminar: ${providerId} (tipo: ${typeof providerId})`);
+      console.log(`🔍 Tabla destino: user_news_api_keys`);
+      await logToFile(`Eliminando registro ${providerId} de noticias`, deleteData);
+      
+      const response = await api(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(deleteData)
+      });
+
+      console.log(`📥 Respuesta de eliminación:`, response);
+      await logToFile(`Respuesta de eliminación`, response);
+
+      if (response.ok) {
+        console.log(`✅ Eliminación exitosa`);
+        // Mostrar mensaje inmediatamente
+        this.showMessage('Proveedor eliminado exitosamente', 'success');
+        
+        // Recargar tabla en background (sin bloquear UI)
+        setTimeout(async () => {
+          console.log(`Recargando tabla después de eliminación...`);
+          await this.loadUserProviders();
+          this.renderTable();
+          console.log(`✅ Tabla recargada después de eliminación`);
+        }, 100);
+      } else {
+        console.error(`❌ Error en respuesta:`, response);
+        this.showMessage(response.message || 'Error al eliminar proveedor', 'error');
+      }
+    } catch (error) {
+      console.error('❌ Error eliminando proveedor:', error);
+      await logToFile(`Error eliminando proveedor`, error);
+      this.showMessage('Error de conexión al eliminar proveedor', 'error');
+    }
+  }
+
+  // Establecer proveedor por defecto
+  async setDefaultProvider(providerId) {
+    try {
+      await api('settings_set_safe.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          series_provider: providerId
+        })
+      });
+
+      this.defaultProvider = providerId;
+      this.showMessage(`${this.getProviderName(providerId)} establecido como predeterminado`, 'success');
+    } catch (error) {
+      console.error('Error estableciendo proveedor por defecto:', error);
+      this.showMessage('Error al establecer proveedor por defecto', 'error');
+    }
+  }
+
+  // Guardar configuración completa
+  async saveProviders() {
+    const msg = document.getElementById('apis-msg');
+    msg.textContent = 'Guardando configuración...';
+    msg.style.color = '#6b7280';
+
+    try {
+      // La configuración ya se guarda individualmente, solo mostramos éxito
+      msg.textContent = 'Configuración guardada exitosamente';
+      msg.style.color = '#059669';
+      
+      setTimeout(() => {
+        msg.textContent = '';
+      }, 3000);
+    } catch (error) {
+      msg.textContent = 'Error al guardar configuración';
+      msg.style.color = '#dc2626';
+    }
+  }
+
+  // Mostrar mensaje
+  showMessage(text, type = 'info') {
+    const msgId = `${this.tabType}-msg`;
+    const msg = document.getElementById(msgId);
+    if (!msg) return;
+    
+    msg.textContent = text;
+    msg.style.color = type === 'success' ? '#059669' : 
+                     type === 'error' ? '#dc2626' : '#6b7280';
+    
+    setTimeout(() => {
+      msg.textContent = '';
+    }, 3000);
+  }
+
+  // Mostrar modal de resultados de prueba
+  showTestResultModal(success, providerName, message, details = null) {
+    console.log(`🔍 showTestResultModal llamado: success=${success}, provider=${providerName}, message=${message}`);
+    
+    // Crear modal dinámico como el de confirmación de borrado
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      backdrop-filter: blur(2px);
+    `;
+    
+    const modalContent = document.createElement('div');
+    modalContent.style.cssText = `
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    `;
+    
+    // Configurar contenido
+    const icon = success ? '✅' : '❌';
+    const title = success ? 'Prueba Exitosa' : 'Prueba Fallida';
+    const titleColor = success ? '#059669' : '#dc2626';
+    const messageColor = success ? '#059669' : '#dc2626';
+    
+    let detailsHtml = '';
+    let viewDetailsBtnHtml = '';
+    
+    if (details) {
+      detailsHtml = `
+        <div id="test-details" style="display: none; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 1rem; margin-top: 1rem; font-family: monospace; font-size: 0.875rem; color: #374151; white-space: pre-wrap; max-height: 200px; overflow-y: auto;">
+          ${details}
+        </div>
+      `;
+      viewDetailsBtnHtml = `
+        <button id="view-details-btn" style="background: #6b7280; color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.375rem; cursor: pointer; font-weight: 500; margin-left: 0.5rem;">
+          Ver Detalles
+        </button>
+      `;
+    }
+    
+    modalContent.innerHTML = `
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">${icon}</div>
+        <h3 style="margin: 0 0 1rem 0; color: ${titleColor}; font-size: 1.25rem; font-weight: 600;">
+          ${title}
+        </h3>
+        <div style="font-size: 1.125rem; font-weight: 500; color: ${messageColor}; margin-bottom: 1rem;">
+          ${providerName}: ${message}
+        </div>
+        ${detailsHtml}
+      </div>
+      <div style="display: flex; justify-content: center; gap: 0.75rem;">
+        <button id="close-test-modal" style="background: #3b82f6; color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.375rem; cursor: pointer; font-weight: 500;">
+          Cerrar
+        </button>
+        ${viewDetailsBtnHtml}
+      </div>
+    `;
+    
+    modal.appendChild(modalContent);
+    document.body.appendChild(modal);
+    
+    // Event listeners
+    const closeBtn = modal.querySelector('#close-test-modal');
+    closeBtn.onclick = () => {
+      document.body.removeChild(modal);
+    };
+    
+    // Cerrar al hacer clic fuera del modal
+    modal.onclick = (e) => {
+      if (e.target === modal) {
+        document.body.removeChild(modal);
+      }
+    };
+    
+    // Manejar botón de detalles
+    if (details) {
+      const viewDetailsBtn = modal.querySelector('#view-details-btn');
+      const detailsEl = modal.querySelector('#test-details');
+      
+      viewDetailsBtn.onclick = () => {
+        const isVisible = detailsEl.style.display !== 'none';
+        detailsEl.style.display = isVisible ? 'none' : 'block';
+        viewDetailsBtn.textContent = isVisible ? 'Ver Detalles' : 'Ocultar Detalles';
+      };
+    }
+    
+    console.log(`✅ Modal dinámico creado y mostrado para ${providerName}`);
+  }
+
+  // Cerrar modal de resultados
+  closeTestResultModal() {
+    // Buscar modal dinámico en el DOM
+    const modal = document.querySelector('.modal-overlay[style*="backdrop-filter"]');
+    if (modal) {
+      document.body.removeChild(modal);
+      console.log('✅ Modal dinámico cerrado');
+    }
+  }
+
+  // Obtener mensaje de error específico
+  getErrorMessage(error, httpCode = null) {
+    const messages = {
+      // Errores de autenticación
+      '401': 'Clave API inválida o expirada',
+      '403': 'Acceso denegado - verifica permisos',
+      
+      // Errores de límites
+      '429': 'Límite de velocidad excedido - intenta más tarde',
+      
+      // Errores del servidor
+      '500': 'Error interno del servidor del proveedor',
+      '502': 'Servidor del proveedor no disponible',
+      '503': 'Servicio temporalmente no disponible',
+      
+      // Errores de conexión
+      'timeout': 'Tiempo de espera agotado',
+      'connection': 'Error de conexión con el proveedor',
+      'no-url': 'URL de prueba no configurada',
+      
+      // Errores genéricos
+      'unknown': 'Error desconocido'
+    };
+
+    // Intentar obtener mensaje específico
+    if (httpCode && messages[httpCode]) {
+      return messages[httpCode];
+    }
+
+    // Buscar en el mensaje de error
+    const errorStr = error.toString().toLowerCase();
+    if (errorStr.includes('timeout')) return messages['timeout'];
+    if (errorStr.includes('connection')) return messages['connection'];
+    if (errorStr.includes('no url')) return messages['no-url'];
+    if (errorStr.includes('401')) return messages['401'];
+    if (errorStr.includes('403')) return messages['403'];
+    if (errorStr.includes('429')) return messages['429'];
+    if (errorStr.includes('500')) return messages['500'];
+
+    return messages['unknown'];
+  }
+}
+
+// Inicializar tablas de proveedores para cada pestaña
+const providersTables = {
+  data: new ProvidersTableManager('data'),
+  ai: new ProvidersTableManager('ai'),
+  news: new ProvidersTableManager('news'),
+  trade: new ProvidersTableManager('trade')
+};
+
+window.providersTables = providersTables; // Hacer disponible globalmente
+
+// Log de inicialización para debugging
+console.log('ProvidersTables inicializadas:', providersTables);
+console.log('TabManager inicializado:', tabManager);
+
+// Función para logging a archivo
+async function logToFile(message, context = {}) {
+  try {
+    await api('debug_log_safe.php?action=write', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, context })
+    });
+  } catch (e) {
+    console.error('Error escribiendo log:', e);
+  }
+}
+
+// Función de diagnóstico para la pestaña de datos
+async function diagnoseDatosTab() {
+  try {
+    console.log('🔍 DIAGNÓSTICO DE PESTAÑA DATOS');
+    console.log('1. Verificando ProvidersTableManager...');
+    console.log('providersTables.data:', window.providersTables?.data);
+    console.log('tabType:', window.providersTables?.data?.tabType);
+    
+    console.log('2. Verificando elementos HTML...');
+    const tbody = document.getElementById('data-providers-tbody');
+    const emptyState = document.getElementById('empty-data-providers');
+    console.log('tbody encontrado:', !!tbody);
+    console.log('emptyState encontrado:', !!emptyState);
+    
+    console.log('3. Verificando proveedores...');
+    console.log('availableProviders:', window.providersTables?.data?.availableProviders);
+    console.log('providers (user keys):', window.providersTables?.data?.providers);
+    
+    console.log('4. Llamando diagnóstico del servidor...');
+    const diagnosis = await api('diagnose_datos_tab_safe.php');
+    console.log('Diagnóstico del servidor:', diagnosis);
+    
+    await logToFile('Diagnóstico completo de pestaña datos', {
+      providersTableExists: !!window.providersTables?.datos,
+      tabType: window.providersTables?.datos?.tabType,
+      tbodyFound: !!tbody,
+      emptyStateFound: !!emptyState,
+      availableProvidersCount: window.providersTables?.datos?.availableProviders?.length || 0,
+      userProvidersCount: window.providersTables?.datos?.providers?.length || 0,
+      serverDiagnosis: diagnosis
+    });
+    
+  } catch (error) {
+    console.error('Error en diagnóstico:', error);
+  }
+}
+
+// Función de diagnóstico para la pestaña de noticias
+async function diagnoseNewsTab() {
+  try {
+    console.log('🔍 DIAGNÓSTICO DE PESTAÑA NOTICIAS');
+    const response = await api('diagnose_news_tab_safe.php', {}, 'GET');
+    console.log('📊 Diagnóstico completo:', response);
+    
+    if (response.ok) {
+      const d = response.diagnosis;
+      console.log(`📊 Tabla news_providers existe: ${d.table_news_providers_exists}`);
+      console.log(`📊 Tabla user_news_api_keys existe: ${d.table_user_news_api_keys_exists}`);
+      console.log(`📊 Proveedores disponibles: ${d.providers_count}`);
+      console.log(`📊 Claves del usuario: ${d.user_keys_count}`);
+      
+      if (d.providers && d.providers.length > 0) {
+        console.log('📋 Proveedores encontrados:', d.providers);
+      } else {
+        console.log('⚠️ No hay proveedores en news_providers');
+      }
+    }
+  } catch (error) {
+    console.error('❌ Error en diagnóstico de noticias:', error);
+  }
+}
+
+// Función para probar el endpoint de proveedores de noticias
+async function testNewsProviders() {
+  try {
+    console.log('🧪 Probando endpoint get_news_providers_safe.php...');
+    const response = await api('get_news_providers_safe.php', {}, 'GET');
+    console.log('📡 Respuesta de get_news_providers_safe.php:', response);
+    
+    if (response.ok && response.providers) {
+      console.log(`✅ Proveedores encontrados: ${response.providers.length}`);
+      console.log('📋 Lista de proveedores:', response.providers);
+    } else {
+      console.log('❌ No se encontraron proveedores o error en la respuesta');
+    }
+  } catch (error) {
+    console.error('❌ Error probando proveedores de noticias:', error);
+  }
+}
+
+// Función para verificar directamente la tabla news_providers
+async function checkNewsProvidersTable() {
+  try {
+    console.log('🔍 Verificando tabla news_providers directamente...');
+    const response = await api('check_news_providers_safe.php', {}, 'GET');
+    console.log('📊 Estado de la tabla news_providers:', response);
+    
+    if (response.ok) {
+      console.log(`📊 Tabla existe: ${response.table_exists}`);
+      console.log(`📊 Total registros: ${response.total_count}`);
+      console.log(`📊 Registros habilitados: ${response.enabled_count}`);
+      console.log('📋 Todos los proveedores:', response.all_providers);
+      console.log('📋 Proveedores habilitados:', response.enabled_providers);
+    }
+  } catch (error) {
+    console.error('❌ Error verificando tabla:', error);
+  }
+}
+
+// Función para poblar la tabla news_providers con datos de ejemplo
+async function populateNewsProviders() {
+  try {
+    console.log('🔧 Poblando tabla news_providers con proveedores de ejemplo...');
+    const response = await api('populate_news_providers_safe.php', {}, 'GET');
+    console.log('📊 Resultado de poblar proveedores:', response);
+    
+    if (response.ok) {
+      console.log(`✅ ${response.message}`);
+      console.log(`📊 Insertados: ${response.inserted}, Actualizados: ${response.updated}`);
+      
+      // Recargar la pestaña de noticias
+      if (window.providersTables?.news) {
+        console.log('🔄 Recargando proveedores de noticias...');
+        await window.providersTables.news.loadAvailableProviders();
+        console.log('✅ Proveedores recargados');
+      }
+    }
+  } catch (error) {
+    console.error('❌ Error poblando proveedores:', error);
+  }
+}
+
+// Función para probar directamente el endpoint de noticias
+async function testNewsEndpoint() {
+  try {
+    console.log('🧪 Probando endpoint get_news_providers_safe.php directamente...');
+    const response = await fetch('api/get_news_providers_safe.php', {
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      }
+    });
+    const data = await response.json();
+    console.log('📡 Respuesta directa del endpoint:', data);
+    
+    if (data.ok && data.providers) {
+      console.log(`✅ Proveedores encontrados: ${data.providers.length}`);
+      console.log('📋 Lista completa:', data.providers);
+    } else {
+      console.log('❌ Error en la respuesta:', data);
+    }
+  } catch (error) {
+    console.error('❌ Error probando endpoint:', error);
+  }
+}
+
+// Función para ver logs de noticias
+async function viewNewsLogs() {
+  try {
+    console.log('🔍 Obteniendo logs de noticias...');
+    const response = await api('view_news_logs_safe.php', {}, 'GET');
+    console.log('📊 Logs de noticias:', response);
+    
+    if (response.ok && response.logs) {
+      console.log(`📋 Total logs encontrados: ${response.news_lines}`);
+      response.logs.forEach(log => console.log(log));
+    }
+  } catch (error) {
+    console.error('❌ Error obteniendo logs:', error);
+  }
+}
+
+// Función para corregir la estructura de la tabla de noticias
+async function fixNewsTableStructure() {
+  try {
+    console.log('🔧 Corrigiendo estructura de tabla user_news_api_keys...');
+    const response = await api('fix_news_table_structure_safe.php', {}, 'GET');
+    console.log('📊 Resultado de corrección:', response);
+    
+    if (response.ok) {
+      console.log('✅ Estructura corregida exitosamente');
+      response.fixes.forEach(fix => console.log('🔧 ' + fix));
+    } else {
+      console.log('❌ Error corrigiendo estructura:', response.message);
+    }
+  } catch (error) {
+    console.error('❌ Error corrigiendo estructura:', error);
+  }
+}
+
+// Función para probar el endpoint de borrar directamente
+async function testDeleteNewsKey(recordId) {
+  try {
+    console.log(`🧪 Probando borrado directo del registro ${recordId} de noticias...`);
+    const response = await api('delete_user_news_key_safe.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: parseInt(recordId) })
+    });
+    console.log('📊 Resultado del borrado de noticias:', response);
+    return response;
+  } catch (error) {
+    console.error('❌ Error probando borrado de noticias:', error);
+    return { ok: false, error: error.message };
+  }
+}
+
+// Función para verificar el estado de las claves de noticias
+async function checkNewsKeysStatus() {
+  try {
+    console.log('🔍 Verificando estado de las claves de noticias...');
+    const response = await api('test_news_flow_safe.php', {}, 'GET');
+    console.log('📊 Estado de claves de noticias:', response);
+    return response;
+  } catch (error) {
+    console.error('❌ Error verificando estado:', error);
+    return { ok: false, error: error.message };
+  }
+}
+
+// Función para diagnosticar la pestaña de datos
+async function diagnoseDataTab() {
+  try {
+    console.log('🔍 Diagnosticando pestaña de datos...');
+    const response = await api('diagnose_data_tab_safe.php', {}, 'GET');
+    console.log('📊 Diagnóstico de datos:', response);
+    
+    if (response.ok) {
+      console.log(`✅ Claves existentes: ${response.keys_count}`);
+      console.log(`✅ Proveedores disponibles: ${response.providers_count}`);
+      console.log(`✅ Estructura de tablas: ${response.diagnosis.table_structure_ok ? 'OK' : 'ERROR'}`);
+      
+      if (response.existing_keys.length > 0) {
+        console.log('📋 Claves encontradas:', response.existing_keys);
+      }
+      
+      if (response.available_providers.length > 0) {
+        console.log('📋 Proveedores disponibles:', response.available_providers);
+      }
+    }
+    
+    return response;
+  } catch (error) {
+    console.error('❌ Error diagnosticando pestaña de datos:', error);
+    return { ok: false, error: error.message };
+  }
+}
+
+// Función para diagnosticar la pestaña de IA
+async function diagnoseAiTab() {
+  try {
+    console.log('🔍 Diagnosticando pestaña de IA...');
+    const response = await api('diagnose_ai_tab_safe.php', {}, 'GET');
+    console.log('📊 Diagnóstico de IA:', response);
+    
+    if (response.ok) {
+      console.log(`✅ Claves existentes: ${response.keys_count}`);
+      console.log(`✅ Proveedores disponibles: ${response.providers_count}`);
+      console.log(`✅ Estructura de tablas: ${response.diagnosis.table_structure_ok ? 'OK' : 'ERROR'}`);
+      
+      if (response.existing_keys.length > 0) {
+        console.log('📋 Claves encontradas:', response.existing_keys);
+      }
+      
+      if (response.available_providers.length > 0) {
+        console.log('📋 Proveedores disponibles:', response.available_providers);
+      }
+    }
+    
+    return response;
+  } catch (error) {
+    console.error('❌ Error diagnosticando pestaña de IA:', error);
+    return { ok: false, error: error.message };
+  }
+}
+
+// Función para diagnosticar la pestaña de Trade
+async function diagnoseTradeTab() {
+  try {
+    console.log('🔍 Diagnosticando pestaña de Trade...');
+    const response = await api('diagnose_trade_tab_safe.php', {}, 'GET');
+    console.log('📊 Diagnóstico de Trade:', response);
+    
+    if (response.ok) {
+      console.log(`✅ Claves existentes: ${response.keys_count}`);
+      console.log(`✅ Proveedores disponibles: ${response.providers_count}`);
+      console.log(`✅ Estructura de tablas: ${response.diagnosis.table_structure_ok ? 'OK' : 'ERROR'}`);
+      
+      if (response.existing_keys.length > 0) {
+        console.log('📋 Claves encontradas:', response.existing_keys);
+      }
+      
+      if (response.available_providers.length > 0) {
+        console.log('📋 Proveedores disponibles:', response.available_providers);
+      }
+    }
+    
+    return response;
+  } catch (error) {
+    console.error('❌ Error diagnosticando pestaña de Trade:', error);
+    return { ok: false, error: error.message };
+  }
+}
+
+// Función para diagnosticar rendimiento de la pestaña de IA
+async function testAiPerformance() {
+  try {
+    console.log('⚡ Probando rendimiento de IA...');
+    const response = await api('test_ai_performance_safe.php', {}, 'GET');
+    console.log('📊 Rendimiento de IA:', response);
+    
+    if (response.ok) {
+      const tests = response.performance_tests;
+      console.log('🔍 Resultados de rendimiento:');
+      console.log(`📋 Estructura de tabla: ${tests.table_structure.time} (${tests.table_structure.columns} columnas, environment: ${tests.table_structure.has_environment})`);
+      console.log(`📋 Índices: ${tests.indexes.time} (${tests.indexes.count} índices, unique key: ${tests.indexes.has_unique_key})`);
+      console.log(`📋 Claves de usuario: ${tests.user_keys.time} (${tests.user_keys.count} claves)`);
+      console.log(`📋 Proveedores disponibles: ${tests.available_providers.time} (${tests.available_providers.count} proveedores)`);
+      console.log(`📋 Cifrado: ${tests.encryption.time} (éxito: ${tests.encryption.success})`);
+      console.log(`📋 Preparación de consulta: ${tests.query_preparation.time} (éxito: ${tests.query_preparation.success})`);
+      console.log(`⏱️ Tiempo total: ${response.total_time}`);
+    }
+    
+    return response;
+  } catch (error) {
+    console.error('❌ Error probando rendimiento de IA:', error);
+    return { ok: false, error: error.message };
+  }
+}
+
+// Función para diagnosticar carga de claves de IA
+async function debugAiKeysLoading() {
+  try {
+    console.log('🔍 Diagnosticando carga de claves de IA...');
+    const response = await api('debug_ai_keys_loading_safe.php', {}, 'GET');
+    console.log('📊 Debug de claves IA:', response);
+    
+    if (response.ok) {
+      const debug = response.debug;
+      const summary = response.summary;
+      
+      console.log('📋 Resumen:');
+      console.log(`  - Claves de usuario: ${summary.user_keys}`);
+      console.log(`  - Proveedores disponibles: ${summary.available_providers}`);
+      console.log(`  - Proveedores de claves: ${summary.key_providers}`);
+      console.log(`  - Claves finales: ${summary.final_keys}`);
+      
+      if (summary.final_keys === 0 && summary.user_keys > 0) {
+        console.log('⚠️ PROBLEMA: Hay claves de usuario pero no se generaron claves finales');
+        console.log('🔍 Claves de usuario:', debug.user_keys_raw);
+        console.log('🔍 Proveedores disponibles:', debug.available_providers_raw);
+        console.log('🔍 Proveedores de claves:', debug.key_providers_raw);
+      }
+      
+      console.log('🔍 Claves finales:', debug.final_keys);
+    }
+    
+    return response;
+  } catch (error) {
+    console.error('❌ Error diagnosticando carga de claves IA:', error);
+    return { ok: false, error: error.message };
+  }
+}
+
+// Función para diagnosticar valores de ambiente en todas las tablas
+async function debugEnvironmentValues() {
+  try {
+    console.log('🔍 Diagnosticando valores de ambiente...');
+    const response = await api('debug_environment_values_safe.php', {}, 'GET');
+    console.log('📊 Debug de ambiente:', response);
+    
+    if (response.ok) {
+      const envData = response.environment_data;
+      const summary = response.summary;
+      
+      console.log('📋 Resumen:');
+      console.log(`  - Total de claves: ${summary.total_keys}`);
+      console.log(`  - Tablas verificadas: ${summary.tables_checked}`);
+      
+      Object.keys(envData).forEach(table => {
+        const data = envData[table];
+        console.log(`\n🔍 Tabla: ${table}`);
+        console.log(`  - Claves encontradas: ${data.count}`);
+        
+        if (data.count > 0) {
+          data.keys.forEach(key => {
+            console.log(`    - ${key.label || 'Sin etiqueta'}: environment = "${key.environment}" (${key.status})`);
+          });
+        }
+      });
+    }
+    
+    return response;
+  } catch (error) {
+    console.error('❌ Error diagnosticando valores de ambiente:', error);
+    return { ok: false, error: error.message };
+  }
+}
+
+// Función para probar el renderizado de ambiente
+function testEnvironmentRendering() {
+  console.log('🧪 Probando renderizado de ambiente...');
+  
+  // Crear un elemento de prueba
+  const testDiv = document.createElement('div');
+  testDiv.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; background: white; padding: 20px; border: 2px solid red;';
+  testDiv.innerHTML = `
+    <h3>🧪 Prueba de Badges</h3>
+    <span class="environment-badge live">Producción</span>
+    <span class="environment-badge paper">Papel</span>
+    <span class="environment-badge sandbox">Pruebas</span>
+  `;
+  
+  document.body.appendChild(testDiv);
+  console.log('🔍 Badges de prueba creados en el DOM');
+  console.log('📋 HTML generado:', testDiv.innerHTML);
+  
+  // Verificar estilos
+  const badges = testDiv.querySelectorAll('.environment-badge');
+  badges.forEach((badge, index) => {
+    const computedStyle = window.getComputedStyle(badge);
+    console.log(`🔍 Badge ${index + 1}:`, {
+      text: badge.textContent,
+      backgroundColor: computedStyle.backgroundColor,
+      color: computedStyle.color,
+      display: computedStyle.display,
+      padding: computedStyle.padding,
+      borderRadius: computedStyle.borderRadius,
+      fontSize: computedStyle.fontSize,
+      fontWeight: computedStyle.fontWeight
+    });
+  });
+  
+  // Verificar si el CSS está cargado
+  const stylesheets = Array.from(document.styleSheets);
+  console.log('📋 Hojas de estilo cargadas:', stylesheets.length);
+  
+  // Buscar reglas CSS específicas
+  let foundEnvironmentBadge = false;
+  stylesheets.forEach((sheet, index) => {
+    try {
+      const rules = Array.from(sheet.cssRules || sheet.rules || []);
+      rules.forEach(rule => {
+        if (rule.selectorText && rule.selectorText.includes('.environment-badge')) {
+          foundEnvironmentBadge = true;
+          console.log(`✅ Regla CSS encontrada en hoja ${index}:`, rule.selectorText, rule.style.cssText);
+        }
+      });
+    } catch (e) {
+      console.log(`⚠️ No se pudo acceder a la hoja de estilo ${index}:`, e.message);
+    }
+  });
+  
+  if (!foundEnvironmentBadge) {
+    console.error('❌ NO se encontraron reglas CSS para .environment-badge');
+  }
+  
+  // Limpiar después de 10 segundos
+  setTimeout(() => {
+    if (document.body.contains(testDiv)) {
+      document.body.removeChild(testDiv);
+      console.log('🧹 Badges de prueba eliminados');
+    }
+  }, 10000);
+}
+
+// Función para probar el guardado de claves
+async function testSaveDatosKey() {
+  try {
+    console.log('🧪 PROBANDO GUARDADO DE CLAVE');
+    const result = await api('test_save_datos_key_safe.php');
+    console.log('Resultado del test de guardado:', result);
+    
+    if (result.ok) {
+      console.log('✅ Test de guardado exitoso');
+      // Recargar la tabla
+      if (window.providersTables?.data) {
+        await window.providersTables.data.loadUserProviders();
+        window.providersTables.data.renderTable();
+        console.log('✅ Tabla recargada');
+      }
+    } else {
+      console.error('❌ Test de guardado falló:', result);
+    }
+    
+    await logToFile('Test de guardado de clave', { result });
+    
+  } catch (error) {
+    console.error('❌ Error en test de guardado:', error);
+  }
+}
+
+// Ejecutar diagnóstico y test automáticamente
+setTimeout(() => {
+  diagnoseDatosTab();
+  testSaveDatosKey();
+}, 2000);
 
 async function api(path, opts={}){
   const headers = opts.headers ? {...opts.headers} : {};
@@ -340,23 +3021,25 @@ async function loadKeys(){
   }
 }
 
-// Guardar claves ingresadas (no borra si el campo está vacío)
-$('btn-save-keys').addEventListener('click', async ()=>{
-  const saveMsg = $('save-msg');
-  saveMsg.textContent = 'Guardando...'; saveMsg.style.color = '#6b7280';
-  const entries = providerKeys()
-    .map(p => [ toSecretKey(p), ($('in-'+p)?.value || '').trim() ])
-    .filter(([k,v]) => v !== '');
-  const secrets = Object.fromEntries(entries);
-  try {
-    const res = await api('secrets_set_safe.php', {
-      method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ secrets })
-    });
-    if (!res || res.ok !== true) throw new Error('falló guardado');
-    saveMsg.textContent = 'Claves guardadas.'; saveMsg.style.color = '#059669';
-    await loadKeys();
-  } catch (e) {
-    saveMsg.textContent = 'Error al guardar claves.'; saveMsg.style.color = '#dc2626';
+// Guardar claves ingresadas (no borra si el campo está vacío) - Funciona para APIs e IA
+document.addEventListener('click', async (e) => {
+  if (e.target.id === 'btn-save-keys') {
+    const saveMsg = $('save-msg');
+    saveMsg.textContent = 'Guardando...'; saveMsg.style.color = '#6b7280';
+    const entries = providerKeys()
+      .map(p => [ toSecretKey(p), ($('in-'+p)?.value || '').trim() ])
+      .filter(([k,v]) => v !== '');
+    const secrets = Object.fromEntries(entries);
+    try {
+      const res = await api('secrets_set_safe.php', {
+        method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ secrets })
+      });
+      if (!res || res.ok !== true) throw new Error('falló guardado');
+      saveMsg.textContent = 'Claves guardadas.'; saveMsg.style.color = '#059669';
+      await loadKeys();
+    } catch (e) {
+      saveMsg.textContent = 'Error al guardar claves.'; saveMsg.style.color = '#dc2626';
+    }
   }
 });
 
@@ -399,6 +3082,210 @@ document.querySelectorAll('[data-test]').forEach(btn=>{
       btn.disabled = false; btn.textContent = old;
     }
   });
+});
+
+// =================== FUNCIONES ESPECÍFICAS POR PESTAÑA ===================
+
+// Función para cargar preferencias de datos
+async function loadDataPrefs() {
+  try {
+    const s = await api('settings_get_safe.php');
+    const set = s?.settings || {};
+    
+    if (set.series_provider) {
+      const map = { 'alphavantage':'av', 'auto':'auto', 'tiingo':'tiingo', 'finnhub':'finnhub', 'polygon':'polygon' };
+      const v = map[set.series_provider] ?? 'auto';
+      const el = $('series-provider'); if (el) el.value = v;
+    }
+    if (set.options_provider) { const el=$('opt-provider'); if (el) el.value = set.options_provider; }
+    if (set.options_expiry_rule) { const el=$('opt-exp-rule'); if (el) el.value = set.options_expiry_rule; }
+    if (typeof set.options_strike_count === 'number') { const el=$('opt-strikes'); if (el) el.value = String(set.options_strike_count); }
+    if (set.atm_price_source) { const el=$('opt-atm'); if (el) el.value = set.atm_price_source; }
+    if (set.time_zone) { const el=$('time-zone'); if (el) el.value = set.time_zone; }
+    updateTzOffsetView();
+  } catch(e) {
+    console.log('Error cargando preferencias de datos:', e);
+  }
+}
+
+// Función para cargar preferencias de trading
+async function loadTradePrefs() {
+  try {
+    const s = await api('settings_get_safe.php');
+    const set = s?.settings || {};
+    
+    if (set.net && typeof set.net==='object') {
+      if (set.net.polygon?.timeout_ms) { const el=$('to-polygon'); if (el) el.value = String(set.net.polygon.timeout_ms); }
+      if (set.net.polygon?.retries != null) { const el=$('rt-polygon'); if (el) el.value = String(set.net.polygon.retries); }
+      if (set.net.finnhub?.timeout_ms) { const el=$('to-finnhub'); if (el) el.value = String(set.net.finnhub.timeout_ms); }
+      if (set.net.finnhub?.retries != null) { const el=$('rt-finnhub'); if (el) el.value = String(set.net.finnhub.retries); }
+      if (set.net.tiingo?.timeout_ms)  { const el=$('to-tiingo');  if (el) el.value = String(set.net.tiingo.timeout_ms); }
+      if (set.net.tiingo?.retries != null) { const el=$('rt-tiingo'); if (el) el.value = String(set.net.tiingo.retries); }
+      if (set.net.alphavantage?.timeout_ms) { const el=$('to-av'); if (el) el.value = String(set.net.alphavantage.timeout_ms); }
+      if (set.net.alphavantage?.retries != null) { const el=$('rt-av'); if (el) el.value = String(set.net.alphavantage.retries); }
+    }
+  } catch(e) {
+    console.log('Error cargando preferencias de trading:', e);
+  }
+}
+
+// Event listeners para botones específicos de pestañas
+document.addEventListener('click', async (e) => {
+  // Guardar configuración de datos
+  if (e.target.id === 'btn-save-data') {
+    const msg = $('data-msg');
+    msg.textContent = 'Guardando...'; msg.style.color = '#6b7280';
+    
+    const payload = {
+      series_provider: (() => {
+        const v = $('series-provider').value;
+        if (v==='av') return 'alphavantage';
+        if (v==='local') return 'auto';
+        return v;
+      })(),
+      options_provider: $('opt-provider').value,
+      options_expiry_rule: $('opt-exp-rule').value,
+      options_strike_count: parseInt($('opt-strikes').value || '20', 10),
+      atm_price_source: $('opt-atm').value,
+      time_zone: $('time-zone')?.value || '',
+      tz_offset: (() => {
+        const tz = $('time-zone')?.value || '';
+        return tz ? computeTzOffset(tz) : '';
+      })()
+    };
+    
+    try {
+      const r = await api('settings_set_safe.php', { 
+        method:'POST', 
+        headers:{'Content-Type':'application/json'}, 
+        body: JSON.stringify(payload) 
+      });
+      if (r && (r.ok === true || r.saved === true || r.prefs_saved === true)) {
+        msg.textContent = 'Configuración guardada.'; msg.style.color = '#059669';
+      } else {
+        msg.textContent = 'Guardado parcial.'; msg.style.color = '#f59e0b';
+      }
+    } catch(e) {
+      msg.textContent = 'Error al guardar.'; msg.style.color = '#dc2626';
+    }
+  }
+  
+  // Guardar configuración de trading
+  if (e.target.id === 'btn-save-trade') {
+    const msg = $('trade-msg');
+    msg.textContent = 'Guardando...'; msg.style.color = '#6b7280';
+    
+    const payload = {
+      net: {
+        polygon: { 
+          timeout_ms: parseInt($('to-polygon').value||'8000',10), 
+          retries: parseInt($('rt-polygon').value||'2',10) 
+        },
+        finnhub: { 
+          timeout_ms: parseInt($('to-finnhub').value||'8000',10), 
+          retries: parseInt($('rt-finnhub').value||'2',10) 
+        },
+        tiingo: { 
+          timeout_ms: parseInt($('to-tiingo').value||'8000',10), 
+          retries: parseInt($('rt-tiingo').value||'2',10) 
+        },
+        alphavantage: { 
+          timeout_ms: parseInt($('to-av').value||'8000',10), 
+          retries: parseInt($('rt-av').value||'2',10) 
+        }
+      }
+    };
+    
+    try {
+      const r = await api('settings_set_safe.php', { 
+        method:'POST', 
+        headers:{'Content-Type':'application/json'}, 
+        body: JSON.stringify(payload) 
+      });
+      if (r && (r.ok === true || r.saved === true || r.prefs_saved === true)) {
+        msg.textContent = 'Configuración guardada.'; msg.style.color = '#059669';
+      } else {
+        msg.textContent = 'Guardado parcial.'; msg.style.color = '#f59e0b';
+      }
+    } catch(e) {
+      msg.textContent = 'Error al guardar.'; msg.style.color = '#dc2626';
+    }
+  }
+  
+  // Reset de datos
+  if (e.target.id === 'btn-reset-data') {
+    $('series-provider').value = 'auto';
+    $('opt-provider').value = 'auto';
+    $('opt-exp-rule').value = 'nearest_friday';
+    $('opt-strikes').value = '20';
+    $('opt-atm').value = 'series_last';
+    const tzNow = (Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC');
+    const tzSel = $('time-zone'); if (tzSel){ tzSel.value = tzNow; }
+    updateTzOffsetView();
+    const msg = $('data-msg'); 
+    msg.textContent = 'Valores por defecto restablecidos (recuerda Guardar).'; 
+    msg.style.color = '#6b7280';
+  }
+  
+  // Reset de trading
+  if (e.target.id === 'btn-reset-trade') {
+    $('to-polygon').value = '8000';
+    $('to-finnhub').value = '8000';
+    $('to-tiingo').value = '8000';
+    $('rt-polygon').value = '2';
+    $('rt-finnhub').value = '2';
+    $('rt-tiingo').value = '2';
+    $('to-av').value = '8000';
+    $('rt-av').value = '2';
+    const msg = $('trade-msg'); 
+    msg.textContent = 'Valores por defecto restablecidos (recuerda Guardar).'; 
+    msg.style.color = '#6b7280';
+  }
+  
+  // Exportar configuración de trading
+  if (e.target.id === 'btn-export-trade') {
+    const obj = {
+      net: {
+        polygon: { timeout_ms: parseInt($('to-polygon').value||'8000',10), retries: parseInt($('rt-polygon').value||'2',10) },
+        finnhub: { timeout_ms: parseInt($('to-finnhub').value||'8000',10), retries: parseInt($('rt-finnhub').value||'2',10) },
+        tiingo:  { timeout_ms: parseInt($('to-tiingo').value||'8000',10),  retries: parseInt($('rt-tiingo').value||'2',10) },
+        alphavantage: { timeout_ms: parseInt($('to-av').value||'8000',10), retries: parseInt($('rt-av').value||'2',10) },
+      }
+    };
+    const dataStr = 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(obj, null, 2));
+    const a = document.createElement('a'); 
+    a.setAttribute('href', dataStr); 
+    a.setAttribute('download', 'catai_trade_config.json'); 
+    document.body.appendChild(a); 
+    a.click(); 
+    a.remove();
+  }
+  
+  // Importar configuración de trading
+  if (e.target.id === 'btn-import-trade') {
+    const txt = window.prompt('Pega JSON de configuración de trading');
+    if (!txt) return;
+    try {
+      const o = JSON.parse(txt);
+      if (o.net){
+        if (o.net.polygon?.timeout_ms) $('to-polygon').value = String(o.net.polygon.timeout_ms);
+        if (o.net.polygon?.retries != null) $('rt-polygon').value = String(o.net.polygon.retries);
+        if (o.net.finnhub?.timeout_ms) $('to-finnhub').value = String(o.net.finnhub.timeout_ms);
+        if (o.net.finnhub?.retries != null) $('rt-finnhub').value = String(o.net.finnhub.retries);
+        if (o.net.tiingo?.timeout_ms)  $('to-tiingo').value  = String(o.net.tiingo.timeout_ms);
+        if (o.net.tiingo?.retries != null)  $('rt-tiingo').value  = String(o.net.tiingo.retries);
+        if (o.net.alphavantage?.timeout_ms) $('to-av').value = String(o.net.alphavantage.timeout_ms);
+        if (o.net.alphavantage?.retries != null) $('rt-av').value = String(o.net.alphavantage.retries);
+      }
+      const msg = $('trade-msg'); 
+      msg.textContent = 'Configuración importada (revisa y Guarda).'; 
+      msg.style.color = '#059669';
+    } catch(e){
+      const msg = $('trade-msg'); 
+      msg.textContent = 'JSON inválido. No se aplicó.'; 
+      msg.style.color = '#dc2626';
+    }
+  }
 });
 
 // =================== Preferencias ===================
@@ -634,9 +3521,15 @@ async function loadPrefs(){
 
 $('btn-back').addEventListener('click', ()=>{ window.location.href = 'index.html'; });
 
+// =================== INICIALIZACIÓN ===================
 try{ initTimeZoneUI(); }catch{}
 loadKeys().catch(()=>{});
 loadPrefs().catch(()=>{});
+
+// Cargar datos específicos de la pestaña activa al inicializar
+setTimeout(() => {
+  tabManager.loadTabData(tabManager.currentTab);
+}, 100);
 
 // ====== Feedback modal (simplified) ======
 const FB = {

@@ -219,8 +219,20 @@ if (!function_exists('request_header')) {
 if (!function_exists('bearer_token')) {
   function bearer_token(): ?string {
     $h = request_header('Authorization') ?? ($_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? null);
-    if ($h && preg_match('/Bearer\s+(.+)/i', $h, $m)) return trim($m[1]);
+    
+    // Logging para debug
+    error_log("🔍 bearer_token() - Header Authorization: " . ($h ?? 'NULL'));
+    error_log("🔍 bearer_token() - HTTP_AUTHORIZATION: " . ($_SERVER['HTTP_AUTHORIZATION'] ?? 'NULL'));
+    error_log("🔍 bearer_token() - REDIRECT_HTTP_AUTHORIZATION: " . ($_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? 'NULL'));
+    
+    if ($h && preg_match('/Bearer\s+(.+)/i', $h, $m)) {
+      $token = trim($m[1]);
+      error_log("🔍 bearer_token() - Token extraído: " . substr($token, 0, 20) . "...");
+      return $token;
+    }
     if (isset($_GET['token']) && is_string($_GET['token'])) return trim($_GET['token']);
+    
+    error_log("🔍 bearer_token() - No se encontró token válido");
     return null;
   }
 }
@@ -356,6 +368,36 @@ if (!function_exists('normalize_email')) {
   }
 }
 
+if (!function_exists('dot_path_get')) {
+  /**
+   * Acceso a valores anidados usando notación de punto (dot notation).
+   * Ejemplo: dot_path_get($data, 'user.profile.name', 'default')
+   * 
+   * @param array|object $data Datos a acceder
+   * @param string $path Ruta con notación de punto
+   * @param mixed $default Valor por defecto si no se encuentra
+   * @return mixed
+   */
+  function dot_path_get($data, string $path, $default = null) {
+    if (empty($path)) return $default;
+    
+    $keys = explode('.', $path);
+    $current = $data;
+    
+    foreach ($keys as $key) {
+      if (is_array($current) && array_key_exists($key, $current)) {
+        $current = $current[$key];
+      } elseif (is_object($current) && property_exists($current, $key)) {
+        $current = $current->$key;
+      } else {
+        return $default;
+      }
+    }
+    
+    return $current;
+  }
+}
+
 if (!function_exists('ok')) {
   function ok($data = null): void {
     json_out(['ok' => true, 'data' => $data]);
@@ -415,30 +457,30 @@ if (!function_exists('get_api_key_for')) {
     try {
       if (!function_exists('db')) require_once __DIR__ . '/db.php';
       $pdo = db();
-      $st = $pdo->prepare("SELECT api_key_enc FROM user_api_keys WHERE user_id = ? AND provider = ? ORDER BY id DESC LIMIT 1");
+      $st = $pdo->prepare("
+        SELECT uak.api_key_enc 
+        FROM user_ai_api_keys uak
+        JOIN ai_providers ap ON uak.provider_id = ap.id
+        WHERE uak.user_id = ? AND ap.slug = ? AND uak.status = 'active'
+        ORDER BY uak.created_at DESC LIMIT 1
+      ");
       $st->execute([$userId, $provider]);
       $row = $st->fetch();
       if ($row && is_string($row['api_key_enc'])) {
         $stored = trim((string)$row['api_key_enc']);
         if ($stored !== '') {
-          // a) Intentar descifrar si es Base64 de encrypt_text(); si falla, usar tal cual (compat legado)
-          $maybeBin = base64_decode($stored, true);
-          if ($maybeBin !== false && strlen($maybeBin) >= 28) {
-            if (!function_exists('decrypt_text')) require_once __DIR__ . '/crypto.php';
-            try {
-              $dec = decrypt_text($stored);
-              if (is_string($dec) && $dec !== '') {
-                $keyPlain = $dec;
-              } else {
-                // No parece cifrado válido, asumir claro
-                $keyPlain = $stored;
-              }
-            } catch (\Throwable $e) {
-              // En caso de error de cifrado, usar valor tal cual por compatibilidad
+          // a) Intentar descifrar con nuevo sistema primero, luego sistema anterior
+          try {
+            if (!function_exists('catai_decrypt')) require_once __DIR__ . '/Crypto_safe.php';
+            $dec = catai_decrypt($stored);
+            if (is_string($dec) && $dec !== '') {
+              $keyPlain = $dec;
+            } else {
+              // No parece cifrado válido, asumir claro
               $keyPlain = $stored;
             }
-          } else {
-            // No es Base64 con formato esperado: tratar como texto plano legado
+          } catch (\Throwable $e) {
+            // En caso de error de cifrado, usar valor tal cual por compatibilidad
             $keyPlain = $stored;
           }
         }

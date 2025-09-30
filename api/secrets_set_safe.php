@@ -6,6 +6,7 @@
 
 require_once __DIR__ . '/helpers.php';
 require_once __DIR__ . '/crypto.php'; // encrypt_text()
+require_once __DIR__ . '/Crypto_safe.php'; // catai_encrypt() - nuevo sistema
 require_once __DIR__ . '/db.php';     // db() o db_connect() según tu implementación
 
 header('Content-Type: application/json; charset=utf-8');
@@ -30,9 +31,15 @@ try {
     user_id INT NOT NULL,
     provider VARCHAR(32) NOT NULL,
     api_key_enc LONGTEXT NOT NULL,
+    key_ciphertext LONGTEXT NULL,
+    key_fingerprint VARCHAR(64) NULL,
+    last4 VARCHAR(4) NULL,
+    status ENUM('active', 'inactive', 'revoked') DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY uniq_user_provider (user_id, provider),
-    INDEX idx_user (user_id)
+    INDEX idx_user (user_id),
+    INDEX idx_status (status)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
   $body = read_json_body();
@@ -50,18 +57,29 @@ try {
     'xai_api_key'          => ['xai','api_key'], // Grok (xAI)
   ];
 
-  // UPSERT de claves (cifradas)
+  // UPSERT de claves (cifradas) con campos de auditoría
   if (!empty($secrets)) {
-    $up = $pdo->prepare("INSERT INTO user_api_keys (user_id, provider, api_key_enc)
-                         VALUES (?, ?, ?)
-                         ON DUPLICATE KEY UPDATE api_key_enc=VALUES(api_key_enc), updated_at=CURRENT_TIMESTAMP");
+    $up = $pdo->prepare("INSERT INTO user_api_keys (user_id, provider, api_key_enc, key_ciphertext, key_fingerprint, last4, status, created_at, updated_at)
+                         VALUES (?, ?, ?, ?, ?, ?, 'active', NOW(), NOW())
+                         ON DUPLICATE KEY UPDATE 
+                           api_key_enc=VALUES(api_key_enc), 
+                           key_ciphertext=VALUES(key_ciphertext),
+                           key_fingerprint=VALUES(key_fingerprint),
+                           last4=VALUES(last4),
+                           status='active',
+                           updated_at=NOW()");
     foreach ($fieldMap as $field => [$provider, $keyName]) {
       if (!isset($secrets[$field])) continue;
       $val = trim((string)$secrets[$field]);
       if ($val === '') continue;
-      $enc = encrypt_text($val); // usa ENCRYPTION_KEY_BASE64 de config.php
+      $enc = catai_encrypt($val); // usa sistema de cifrado externo
       if (!$enc) throw new Exception('Encrypt error for provider '.$provider);
-      $up->execute([$userId, $provider, $enc]);
+      
+      // Calcular campos de auditoría
+      $keyFingerprint = hash('sha256', $val);
+      $last4 = substr($val, -4);
+      
+      $up->execute([$userId, $provider, $enc, $enc, $keyFingerprint, $last4]);
     }
   }
 

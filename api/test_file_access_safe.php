@@ -80,9 +80,21 @@ try {
     
     $keyStatus = [];
     foreach ($apiKeys as $key) {
+        // Probar descifrado con nuevo sistema
+        $decryptedKey = null;
+        try {
+            $decryptedKey = get_api_key_for($userId, $key['provider']);
+        } catch (Exception $e) {
+            // Si falla el descifrado, marcar como no disponible
+            $decryptedKey = null;
+        }
+        
         $keyStatus[$key['provider']] = [
-            'has_key' => !empty($key['api_key_enc']),
-            'key_length' => strlen($key['api_key_enc'] ?? '')
+            'has_key' => !empty($decryptedKey),
+            'key_length' => strlen($key['api_key_enc'] ?? ''),
+            'encrypted' => !empty($key['api_key_enc']),
+            'decryption_working' => !empty($decryptedKey),
+            'last4' => !empty($decryptedKey) ? substr($decryptedKey, -4) : null
         ];
     }
     

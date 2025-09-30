@@ -1,0 +1,167 @@
+[2025-09-28 19:01:40] === INICIO EXTRACCIÓN CORRECTA ===
+[2025-09-28 19:01:40] Usuario autenticado: 4
+[2025-09-28 19:01:40] File ID: 47
+[2025-09-28 19:01:40] Archivo encontrado: Análisis Estructurado – Scalping en Trading de Opciones.pdf
+[2025-09-28 19:01:40] Provider ID: 1, Model ID: 2
+[2025-09-28 19:01:40] IDs existentes - File: file-LT8Cmc5bjCbPDC43aGqoVT, VS: vs_68d97f4eb65c81919fb7c2c5e80e499a, Assistant: asst_ImXPNOCnGaLYWuSb4VmwIp0S, Thread: thread_Gh8G13xtIwV63VfmWYPq94No
+[2025-09-28 19:01:40] IDs después de validación de consistencia - File: file-LT8Cmc5bjCbPDC43aGqoVT, VS: vs_68d97f4eb65c81919fb7c2c5e80e499a, Assistant: asst_ImXPNOCnGaLYWuSb4VmwIp0S, Thread: thread_Gh8G13xtIwV63VfmWYPq94No
+[2025-09-28 19:01:40] FILE_ID existente: file-LT8Cmc5bjCbPDC43aGqoVT
+[2025-09-28 19:01:40] FILE_ID verificado en OpenAI: {"id":"file-LT8Cmc5bjCbPDC43aGqoVT","object":"vector_store.file","usage_bytes":11773,"created_at":1759084367,"vector_store_id":"vs_68d97f4eb65c81919fb7c2c5e80e499a","status":"completed","last_error":null,"chunking_strategy":{"type":"static","static":{"max_chunk_size_tokens":800,"chunk_overlap_tokens":400}},"attributes":[]}
+[2025-09-28 19:01:40] FILE_ID válido, continuando con el proceso...
+[2025-09-28 19:01:40] VS_ID existente: vs_68d97f4eb65c81919fb7c2c5e80e499a
+[2025-09-28 19:01:40] VS_ID verificado en OpenAI: {"id":"vs_68d97f4eb65c81919fb7c2c5e80e499a","object":"vector_store","created_at":1759084366,"name":"CATAI_VS_User_4_20250928183246","description":null,"usage_bytes":11773,"file_counts":{"in_progress":0,"completed":1,"failed":0,"cancelled":0,"total":1},"status":"completed","expires_after":null,"expires_at":null,"last_active_at":1759085657,"metadata":[]}
+[2025-09-28 19:01:40] VS actualizado - Bytes: 0, Doc Count: 1
+[2025-09-28 19:01:40] Verificando si el archivo ya está adjunto al Vector Store...
+[2025-09-28 19:01:40] Archivo ya está adjunto al Vector Store
+[2025-09-28 19:01:40] ASSISTANT_ID existente: asst_ImXPNOCnGaLYWuSb4VmwIp0S
+[2025-09-28 19:01:40] ASSISTANT_ID existe en BD - usando existente
+[2025-09-28 19:01:40] Si no existe en OpenAI, se detectará al crear el run y se recreará automáticamente
+[2025-09-28 19:01:40] THREAD_ID existente: thread_Gh8G13xtIwV63VfmWYPq94No
+[2025-09-28 19:01:40] THREAD_ID existe en BD - usando existente
+[2025-09-28 19:01:40] Verificando estado del último run: run_88rDGDYL6pUTWVvn6qfMi5aw
+[2025-09-28 19:01:41] Estado del run run_88rDGDYL6pUTWVvn6qfMi5aw: completed
+[2025-09-28 19:01:41] Verificando mensajes del asistente en el thread...
+[2025-09-28 19:01:41] Total mensajes en thread: 1
+[2025-09-28 19:01:41] Mensaje 0: role=user, content_count=1
+[2025-09-28 19:01:41]   Contenido 0: type=text, text=[ARRAY: {"value":"Eres un analista de trading experto con m\u00e1s de 20 a\u00f1os de experiencia en mercados financieros. Analiza este documento y proporciona un an\u00e1lisis estructurado en formato JSON con: resumen (2-3 l\u00edneas del contenido principal), puntos_clave (5-8 conceptos fundamentales extra\u00eddos), estrategias (3-5 estrategias de trading espec\u00edficas), gestion_riesgo (2-3 puntos cr\u00edticos de gesti\u00f3n de riesgo), recomendaciones (2-3 recomendaciones pr\u00e1cticas para implementar).","annotations":[]}]
+[2025-09-28 19:01:41] Verificación de mensajes - hasAssistantMessage: false, hasToolUse: false
+[2025-09-28 19:01:41] Assistant no ha respondido después de 3 intentos, recreando...
+[2025-09-28 19:03:01] === INICIO EXTRACCIÓN CORRECTA ===
+[2025-09-28 19:03:01] Usuario autenticado: 4
+[2025-09-28 19:03:01] File ID: 47
+[2025-09-28 19:03:09] Archivo encontrado: Análisis Estructurado – Scalping en Trading de Opciones.pdf
+[2025-09-28 19:03:10] Provider ID: 1, Model ID: 2
+[2025-09-28 19:03:10] IDs existentes - File: file-LT8Cmc5bjCbPDC43aGqoVT, VS: vs_68d97f4eb65c81919fb7c2c5e80e499a, Assistant: , Thread: thread_Gh8G13xtIwV63VfmWYPq94No
+[2025-09-28 19:03:10] ASSISTANT_ID faltante - Buscando Assistant existente del usuario...
+[2025-09-28 19:03:10] No hay Assistant existente del usuario - Se creará uno nuevo
+[2025-09-28 19:03:10] IDs después de validación de consistencia - File: file-LT8Cmc5bjCbPDC43aGqoVT, VS: vs_68d97f4eb65c81919fb7c2c5e80e499a, Assistant: , Thread: thread_Gh8G13xtIwV63VfmWYPq94No
+[2025-09-28 19:03:10] FILE_ID existente: file-LT8Cmc5bjCbPDC43aGqoVT
+[2025-09-28 19:03:10] FILE_ID verificado en OpenAI: {"id":"file-LT8Cmc5bjCbPDC43aGqoVT","object":"vector_store.file","usage_bytes":11773,"created_at":1759084367,"vector_store_id":"vs_68d97f4eb65c81919fb7c2c5e80e499a","status":"completed","last_error":null,"chunking_strategy":{"type":"static","static":{"max_chunk_size_tokens":800,"chunk_overlap_tokens":400}},"attributes":[]}
+[2025-09-28 19:03:10] FILE_ID válido, continuando con el proceso...
+[2025-09-28 19:03:10] VS_ID existente: vs_68d97f4eb65c81919fb7c2c5e80e499a
+[2025-09-28 19:03:11] VS_ID verificado en OpenAI: {"id":"vs_68d97f4eb65c81919fb7c2c5e80e499a","object":"vector_store","created_at":1759084366,"name":"CATAI_VS_User_4_20250928183246","description":null,"usage_bytes":11773,"file_counts":{"in_progress":0,"completed":1,"failed":0,"cancelled":0,"total":1},"status":"completed","expires_after":null,"expires_at":null,"last_active_at":1759085657,"metadata":[]}
+[2025-09-28 19:03:11] VS actualizado - Bytes: 0, Doc Count: 1
+[2025-09-28 19:03:11] Verificando si el archivo ya está adjunto al Vector Store...
+[2025-09-28 19:03:11] Archivo ya está adjunto al Vector Store
+[2025-09-28 19:03:11] ASSISTANT_ID faltante, creando Assistant...
+[2025-09-28 19:03:11] Prompt usado: config_default - Eres un analista de trading experto con más de 20 años de experiencia en mercados financieros. Ana...
+[2025-09-28 19:03:12] Assistant Result completo: {"id":"asst_FeFUoNUfjSOV5iR9B3mAum7W","object":"assistant","created_at":1759086191,"name":"CATAI_Extractor_User_4_20250928190311","description":"Extractor de conocimiento para el VS del usuario 4","model":"gpt-4o-mini","instructions":"Eres un analista de trading experto con m\u00e1s de 20 a\u00f1os de experiencia en mercados financieros. Analiza este documento y proporciona un an\u00e1lisis estructurado en formato JSON con: resumen (2-3 l\u00edneas del contenido principal), puntos_clave (5-8 conceptos fundamentales extra\u00eddos), estrategias (3-5 estrategias de trading espec\u00edficas), gestion_riesgo (2-3 puntos cr\u00edticos de gesti\u00f3n de riesgo), recomendaciones (2-3 recomendaciones pr\u00e1cticas para implementar).","tools":[{"type":"file_search","file_search":{"ranking_options":{"ranker":"default_2024_08_21","score_threshold":0,"hybrid_search":null}}}],"top_p":1,"temperature":1,"reasoning_effort":null,"tool_resources":{"file_search":{"vector_store_ids":["vs_68d97f4eb65c81919fb7c2c5e80e499a"]}},"metadata":[],"response_format":{"type":"json_schema","json_schema":{"name":"ResumenEstructurado","description":null,"schema":{"type":"object","properties":{"resumen":{"type":"string"},"puntos_clave":{"type":"array","items":{"type":"string"}},"estrategias":{"type":"array","items":{"type":"string"}},"gestion_riesgo":{"type":"array","items":{"type":"string"}},"recomendaciones":{"type":"array","items":{"type":"string"}}},"required":["resumen","puntos_clave","estrategias","gestion_riesgo","recomendaciones"],"additionalProperties":false},"strict":false}}}
+[2025-09-28 19:03:12] Assistant Model: gpt-4o-mini, Created: 1759086191, Name: CATAI_Extractor_User_4_20250928190311
+[2025-09-28 19:03:12] ASSISTANT_ID creado y guardado: asst_FeFUoNUfjSOV5iR9B3mAum7W
+[2025-09-28 19:03:12] THREAD_ID existente: thread_Gh8G13xtIwV63VfmWYPq94No
+[2025-09-28 19:03:12] THREAD_ID existe en BD - usando existente
+[2025-09-28 19:03:12] Verificando estado del último run: run_88rDGDYL6pUTWVvn6qfMi5aw
+[2025-09-28 19:03:13] Estado del run run_88rDGDYL6pUTWVvn6qfMi5aw: completed
+[2025-09-28 19:03:13] Verificando mensajes del asistente en el thread...
+[2025-09-28 19:03:13] Total mensajes en thread: 1
+[2025-09-28 19:03:13] Mensaje 0: role=user, content_count=1
+[2025-09-28 19:03:13]   Contenido 0: type=text, text=[ARRAY: {"value":"Eres un analista de trading experto con m\u00e1s de 20 a\u00f1os de experiencia en mercados financieros. Analiza este documento y proporciona un an\u00e1lisis estructurado en formato JSON con: resumen (2-3 l\u00edneas del contenido principal), puntos_clave (5-8 conceptos fundamentales extra\u00eddos), estrategias (3-5 estrategias de trading espec\u00edficas), gestion_riesgo (2-3 puntos cr\u00edticos de gesti\u00f3n de riesgo), recomendaciones (2-3 recomendaciones pr\u00e1cticas para implementar).","annotations":[]}]
+[2025-09-28 19:03:13] Verificación de mensajes - hasAssistantMessage: false, hasToolUse: false
+[2025-09-28 19:03:13] No hay respuesta del asistente, creando nuevo run...
+[2025-09-28 19:03:13] Prompt a usar: Devuelve SOLO JSON con esta forma exacta:
+{
+ "resumen": string,
+ "puntos_clave": string[],
+ "estrategias": string[],
+ "gestion_riesgo": string[],
+ "recomendaciones": string[]
+}
+Usa exclusivamente la e...
+[2025-09-28 19:03:13] Prompt source: improved_default
+[2025-09-28 19:03:14] Run creado: run_flZsOg8XMnfkiNQbtRYqEtqh
+[2025-09-28 19:04:06] === INICIO EXTRACCIÓN CORRECTA ===
+[2025-09-28 19:04:06] Usuario autenticado: 4
+[2025-09-28 19:04:06] File ID: 47
+[2025-09-28 19:04:06] Archivo encontrado: Análisis Estructurado – Scalping en Trading de Opciones.pdf
+[2025-09-28 19:04:06] Provider ID: 1, Model ID: 2
+[2025-09-28 19:04:06] IDs existentes - File: file-LT8Cmc5bjCbPDC43aGqoVT, VS: vs_68d97f4eb65c81919fb7c2c5e80e499a, Assistant: asst_FeFUoNUfjSOV5iR9B3mAum7W, Thread: thread_Gh8G13xtIwV63VfmWYPq94No
+[2025-09-28 19:04:06] IDs después de validación de consistencia - File: file-LT8Cmc5bjCbPDC43aGqoVT, VS: vs_68d97f4eb65c81919fb7c2c5e80e499a, Assistant: asst_FeFUoNUfjSOV5iR9B3mAum7W, Thread: thread_Gh8G13xtIwV63VfmWYPq94No
+[2025-09-28 19:04:06] FILE_ID existente: file-LT8Cmc5bjCbPDC43aGqoVT
+[2025-09-28 19:04:06] FILE_ID verificado en OpenAI: {"id":"file-LT8Cmc5bjCbPDC43aGqoVT","object":"vector_store.file","usage_bytes":11773,"created_at":1759084367,"vector_store_id":"vs_68d97f4eb65c81919fb7c2c5e80e499a","status":"completed","last_error":null,"chunking_strategy":{"type":"static","static":{"max_chunk_size_tokens":800,"chunk_overlap_tokens":400}},"attributes":[]}
+[2025-09-28 19:04:06] FILE_ID válido, continuando con el proceso...
+[2025-09-28 19:04:06] VS_ID existente: vs_68d97f4eb65c81919fb7c2c5e80e499a
+[2025-09-28 19:04:07] VS_ID verificado en OpenAI: {"id":"vs_68d97f4eb65c81919fb7c2c5e80e499a","object":"vector_store","created_at":1759084366,"name":"CATAI_VS_User_4_20250928183246","description":null,"usage_bytes":11773,"file_counts":{"in_progress":0,"completed":1,"failed":0,"cancelled":0,"total":1},"status":"completed","expires_after":null,"expires_at":null,"last_active_at":1759086195,"metadata":[]}
+[2025-09-28 19:04:07] VS actualizado - Bytes: 0, Doc Count: 1
+[2025-09-28 19:04:07] Verificando si el archivo ya está adjunto al Vector Store...
+[2025-09-28 19:04:07] Archivo ya está adjunto al Vector Store
+[2025-09-28 19:04:07] ASSISTANT_ID existente: asst_FeFUoNUfjSOV5iR9B3mAum7W
+[2025-09-28 19:04:07] ASSISTANT_ID existe en BD - usando existente
+[2025-09-28 19:04:07] Si no existe en OpenAI, se detectará al crear el run y se recreará automáticamente
+[2025-09-28 19:04:07] THREAD_ID existente: thread_Gh8G13xtIwV63VfmWYPq94No
+[2025-09-28 19:04:07] THREAD_ID existe en BD - usando existente
+[2025-09-28 19:04:07] Verificando estado del último run: run_flZsOg8XMnfkiNQbtRYqEtqh
+[2025-09-28 19:04:07] Estado del run run_flZsOg8XMnfkiNQbtRYqEtqh: completed
+[2025-09-28 19:04:07] Verificando mensajes del asistente en el thread...
+[2025-09-28 19:04:07] Total mensajes en thread: 2
+[2025-09-28 19:04:07] Mensaje 0: role=assistant, content_count=1
+[2025-09-28 19:04:07]   Contenido 0: type=text, text=[ARRAY: {"value":"{\"resumen\":\"Este documento aborda un an\u00e1lisis estructurado para el scalping en trading de opciones, centr\u00e1ndose en el uso de t\u00e9cnicas gr\u00e1ficas avanzadas y an\u00e1lisis t\u00e9cnico para identificar oportunidades de alta probabilidad. Incluye una secuencia de trabajo detallada y un checklist para la validaci\u00f3n de entradas.\",\"puntos_clave\":[\"An\u00e1lisis preliminar del mercado\",\"T\u00e9cnicas gr\u00e1ficas avanzadas\",\"Selecci\u00f3n del sector tecnol\u00f3gico\",\"An\u00e1lisis t\u00e9cnico multiframe\",\"Confirmaciones de entrada mediante checklist\"],\"estrategias\":[\"Scalping basado en an\u00e1lisis de rebotes y rupturas\",\"An\u00e1lisis de vol\u00famenes y patrones de velas\",\"Uso de medias m\u00f3viles para validar tendencias\",\"Identificaci\u00f3n de niveles cr\u00edticos de soporte y resistencia\",\"Selecci\u00f3n de opciones con mejores condiciones de mercado\"],\"gestion_riesgo\":[\"Definici\u00f3n clara de la relaci\u00f3n riesgo\/recompensa (m\u00ednimo 1:2)\",\"Considerar la posibilidad de perder hasta el 100% del capital invertido\",\"Revisi\u00f3n constante de condiciones del contrato y volatilidad impl\u00edcita\"],\"recomendaciones\":[\"Realizar an\u00e1lisis diario del comportamiento de fondos clave\",\"Utilizar herramientas como ThinkOrSwim y TC2000 para an\u00e1lisis t\u00e9cnico\",\"Mantenerse actualizado sobre noticias econ\u00f3micas y eventos que pueden afectar el mercado\"]}","annotations":[]}]
+[2025-09-28 19:04:07] Mensaje 1: role=user, content_count=1
+[2025-09-28 19:04:07]   Contenido 0: type=text, text=[ARRAY: {"value":"Eres un analista de trading experto con m\u00e1s de 20 a\u00f1os de experiencia en mercados financieros. Analiza este documento y proporciona un an\u00e1lisis estructurado en formato JSON con: resumen (2-3 l\u00edneas del contenido principal), puntos_clave (5-8 conceptos fundamentales extra\u00eddos), estrategias (3-5 estrategias de trading espec\u00edficas), gestion_riesgo (2-3 puntos cr\u00edticos de gesti\u00f3n de riesgo), recomendaciones (2-3 recomendaciones pr\u00e1cticas para implementar).","annotations":[]}]
+[2025-09-28 19:04:07] Verificación de mensajes - hasAssistantMessage: true, hasToolUse: false
+[2025-09-28 19:04:07] Ya hay respuesta del asistente, extrayendo resumen...
+[2025-09-28 19:04:07] Texto del asistente encontrado: {"resumen":"Este documento aborda un análisis estructurado para el scalping en trading de opciones, centrándose en el uso de técnicas gráficas avanzadas y análisis técnico para identificar oport...
+[2025-09-28 19:04:07] Creando nuevo registro en knowledge_base para file_id: 47
+[2025-09-28 19:04:07] Nuevo registro creado en knowledge_base
+[2025-09-28 19:04:07] Resumen guardado exitosamente
+[2025-09-28 19:08:28] === INICIO EXTRACCIÓN CORRECTA ===
+[2025-09-28 19:08:28] Usuario autenticado: 4
+[2025-09-28 19:08:28] File ID: 48
+[2025-09-28 19:08:28] Archivo encontrado: Patrones_de_Velas.pdf
+[2025-09-28 19:08:28] Provider ID: 1, Model ID: 2
+[2025-09-28 19:08:28] IDs existentes - File: , VS: , Assistant: , Thread: 
+[2025-09-28 19:08:28] VS_ID faltante - Buscando VS existente del usuario...
+[2025-09-28 19:08:28] VS existente encontrado del usuario: vs_68d465c6c95081919ea9b6a6fb9339d2
+[2025-09-28 19:08:29] VS existente no válido en OpenAI: HTTP 404: {
+  "error": {
+    "message": "No vector store found with id 'vs_68d465c6c95081919ea9b6a6fb9339d2'.",
+    "type": "invalid_request_error",
+    "param": "vector_store_id",
+    "code": null
+  }
+}
+[2025-09-28 19:08:29] Creando nuevo VS...
+[2025-09-28 19:08:29] ASSISTANT_ID faltante - Buscando Assistant existente del usuario...
+[2025-09-28 19:08:29] Assistant existente encontrado del usuario: asst_FeFUoNUfjSOV5iR9B3mAum7W
+[2025-09-28 19:08:29] Verificando si el Assistant existe en OpenAI...
+[2025-09-28 19:08:29] Error verificando Assistant (no es 404): HTTP 400: {
+  "error": {
+    "message": "Invalid 'tool_resources.file_search.vector_store_ids[0]': empty string. Expected a string with minimum length 1, but got an empty string instead.",
+    "type": "invalid_request_error",
+    "param": "tool_resources.file_search.vector_store_ids[0]",
+    "code": "empty_string"
+  }
+}
+[2025-09-28 19:08:29] Usando Assistant existente asumiendo que es válido
+[2025-09-28 19:08:29] IDs después de validación de consistencia - File: , VS: , Assistant: asst_FeFUoNUfjSOV5iR9B3mAum7W, Thread: 
+[2025-09-28 19:08:29] FILE_ID faltante, subiendo archivo a OpenAI...
+[2025-09-28 19:08:30] FILE_ID creado y guardado: file-Kbb7KckEuuzjk3Tc4qtZAq
+[2025-09-28 19:08:30] VS_ID faltante, creando Vector Store...
+[2025-09-28 19:08:30] Creando Vector Store: CATAI_VS_User_4_20250928190830
+[2025-09-28 19:08:31] VS Result completo: {"id":"vs_68d987aecfc88191aa8bfa0094bb3962","object":"vector_store","created_at":1759086510,"name":"CATAI_VS_User_4_20250928190830","description":null,"usage_bytes":0,"file_counts":{"in_progress":0,"completed":0,"failed":0,"cancelled":0,"total":0},"status":"completed","expires_after":null,"expires_at":null,"last_active_at":1759086510,"metadata":[]}
+[2025-09-28 19:08:31] VS Name: CATAI_VS_User_4_20250928190831, Bytes: 0, Doc Count: 0
+[2025-09-28 19:08:31] VS_ID creado y guardado: vs_68d987aecfc88191aa8bfa0094bb3962
+[2025-09-28 19:08:31] Verificando si el archivo ya está adjunto al Vector Store...
+[2025-09-28 19:08:31] Adjuntando archivo al Vector Store...
+[2025-09-28 19:08:31] Archivo adjuntado al Vector Store
+[2025-09-28 19:08:31] ASSISTANT_ID existente: asst_FeFUoNUfjSOV5iR9B3mAum7W
+[2025-09-28 19:08:31] ASSISTANT_ID existe en BD - usando existente
+[2025-09-28 19:08:31] Si no existe en OpenAI, se detectará al crear el run y se recreará automáticamente
+[2025-09-28 19:08:31] THREAD_ID faltante, creando Thread...
+[2025-09-28 19:08:32] THREAD_ID creado y guardado: thread_KCLz51ccPZEVPl8NXTGIhLy7
+[2025-09-28 19:08:32] Verificando mensajes del asistente en el thread...
+[2025-09-28 19:08:32] Total mensajes en thread: 1
+[2025-09-28 19:08:32] Mensaje 0: role=user, content_count=1
+[2025-09-28 19:08:32]   Contenido 0: type=text, text=[ARRAY: {"value":"Eres un analista de trading experto con m\u00e1s de 20 a\u00f1os de experiencia en mercados financieros. Analiza este documento y proporciona un an\u00e1lisis estructurado en formato JSON con: resumen (2-3 l\u00edneas del contenido principal), puntos_clave (5-8 conceptos fundamentales extra\u00eddos), estrategias (3-5 estrategias de trading espec\u00edficas), gestion_riesgo (2-3 puntos cr\u00edticos de gesti\u00f3n de riesgo), recomendaciones (2-3 recomendaciones pr\u00e1cticas para implementar).","annotations":[]}]
+[2025-09-28 19:08:32] Verificación de mensajes - hasAssistantMessage: false, hasToolUse: false
+[2025-09-28 19:08:32] No hay respuesta del asistente, creando nuevo run...
+[2025-09-28 19:08:32] Prompt a usar: Devuelve SOLO JSON con esta forma exacta:
+{
+ "resumen": string,
+ "puntos_clave": string[],
+ "estrategias": string[],
+ "gestion_riesgo": string[],
+ "recomendaciones": string[]
+}
+Usa exclusivamente la e...
+[2025-09-28 19:08:32] Prompt source: improved_default
+[2025-09-28 19:08:33] Run creado: run_qqtpWbIcEbEEjypOFYeEP3b1

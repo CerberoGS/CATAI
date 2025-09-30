@@ -142,7 +142,7 @@
                         </div>
                         <div class="form-group">
                             <label>File ID (knowledge_files.id):</label>
-                            <input type="number" id="fileId" placeholder="Ej: 20" value="20">
+                            <input type="number" id="fileId" placeholder="Ej: 27" value="27">
                         </div>
                     </div>
                     <div>
@@ -174,6 +174,33 @@
                         <button class="btn" onclick="testApiKey()">🔑 Test API Key</button>
                         <button class="btn" onclick="testAiProvider()">🤖 Test Proveedor IA</button>
                         <button class="btn" onclick="testFileContent()">📄 Test Contenido Archivo</button>
+                        <button class="btn" id="test-runop-btn">⚡ Test runOp()</button>
+                        <button class="btn" id="list-ai-resources-btn">📋 Listar IA Resources</button>
+                        <button class="btn" id="upload-to-ai-btn">⬆️ Subir a IA</button>
+                        <button class="btn" id="test-extract-btn">🧪 Test Extracción IA</button>
+                        <button class="btn" id="test-provider-debug-btn">🔍 Test Provider Debug</button>
+                        <button class="btn" id="test-runop-direct-btn">⚡ Test runOp Directo</button>
+                        <button class="btn" id="debug-ops-json-btn">🔧 Debug ops_json</button>
+                        <button class="btn" id="add-vs-get-btn">➕ Añadir vs.get</button>
+                        <button class="btn" id="restore-vs-get-btn">🔧 Restaurar vs.get</button>
+                        <button class="btn" id="fix-vs-get-btn">🔧 Fix vs.get</button>
+                        <button class="btn" id="test-api-key-btn">🔑 Test API Key</button>
+                        <button class="btn" id="debug-api-key-btn">🐛 Debug API Key</button>
+                        <button class="btn" id="debug-vs-store-btn">🔍 Debug vs.store.get</button>
+                        <button class="btn" id="check-ops-btn">📋 Check Available Ops</button>
+                        <button class="btn" id="test-var-replacement-btn">🔧 Test Variable Replacement</button>
+                        <button class="btn" id="debug-header-replacement-btn">🔍 Debug Header Replacement</button>
+                        <button class="btn" onclick="syncOpenAIFiles()">🔄 Sincronizar con OpenAI</button>
+                        <button class="btn" onclick="testAuthSimple()">🔐 Test Auth Simple</button>
+                        <button class="btn" onclick="viewLogs()">📋 Ver Logs</button>
+                        <button class="btn" onclick="testVSConnectivity()">🔗 Test VS Conectividad</button>
+                        <button class="btn" onclick="checkVSFiles()">🔍 Verificar VS Files</button>
+                        <button class="btn" onclick="cleanDuplicateFiles()">🧹 Limpiar Duplicados</button>
+                        <button class="btn" onclick="listAIResourcesNoVS()">📋 Archivos del Vector Store</button>
+                        <input type="text" id="fileIdToDelete" placeholder="File ID a borrar (ej: file-abc123)" style="width: 300px; padding: 8px; margin: 5px;">
+                        <button class="btn" onclick="deleteFileFromAI()">🗑️ Borrar File de IA</button>
+                        <button class="btn" onclick="extractSummaryFromVS()">📝 Extraer Resumen del VS</button>
+                        <button class="btn" onclick="cleanOrphanedFiles()">🗑️ Limpiar Archivos Huérfanos</button>
                         <button class="btn" onclick="runFullDiagnostic()">🚀 Diagnóstico Completo</button>
                     </div>
                 </div>
@@ -195,8 +222,16 @@
                     <input type="text" id="aiModel" placeholder="Se detectará automáticamente" readonly>
                 </div>
                 <button class="btn btn-success" onclick="extractWithAI()">🚀 Extraer Contenido con IA</button>
+                <button class="btn btn-success" onclick="extractWithAIVSNew()">🧪 Probar ai_extract_file_vs</button>
+                <button class="btn btn-info" onclick="extractWithAIVSClean()">🧹 Probar ai_extract_clean</button>
+                <button class="btn btn-success" onclick="extractWithAIVSSimple()">✨ Probar ai_extract_simple</button>
+                <button class="btn btn-warning" onclick="testSimpleDebug()">🔍 Test Simple Debug</button>
+                <button class="btn btn-primary" onclick="extractWithAIVSCorrect()">✅ Probar ai_extract_correct</button>
+                <button class="btn btn-success" onclick="extractWithAIFinal()">🎯 Extraer con IA Final</button>
                 <button class="btn btn-primary" onclick="simulateRealButton()">🎯 Simulación Botón Real</button>
                 <button class="btn btn-info" onclick="testDataStructures()">🔍 Test Estructuras</button>
+                <button class="btn btn-secondary" onclick="testSimpleEndpoint()">🧪 Probar Endpoint Simple</button>
+                <button class="btn btn-secondary" onclick="testDebugEndpoint()">🔍 Probar Endpoint Debug</button>
                 <button class="btn btn-secondary" onclick="testFileInfo()">📁 Test Info Archivo</button>
                 <button class="btn btn-dark" onclick="checkUserPrompt()">📝 Verificar Prompt</button>
                 <button class="btn btn-warning" onclick="testAiConnection()">🔗 Test Conexión IA</button>
@@ -207,6 +242,74 @@
                 <h2>📊 4. Resultados del Diagnóstico</h2>
                 <div id="results"></div>
             </div>
+        </div>
+
+        <!-- Nueva Sección: Pruebas de API Keys -->
+        <div class="section">
+            <h2>🧪 Pruebas de API Keys - Sistema Genérico</h2>
+            <p>Esta sección permite probar el sistema genérico de prueba de API keys usando configuración declarativa desde la base de datos.</p>
+            
+            <div class="form-group">
+                <label for="api-provider-type">Tipo de Proveedor:</label>
+                <select id="api-provider-type" class="form-input">
+                    <option value="data">Datos Financieros</option>
+                    <option value="ai">IA</option>
+                    <option value="news">Noticias</option>
+                    <option value="trade">Trade</option>
+                </select>
+            </div>
+            
+            <div class="button-group">
+                <button id="test-auth" class="btn btn-warning">🔐 Probar Autenticación</button>
+                <button id="load-api-providers" class="btn btn-primary">📋 Cargar Proveedores con Claves</button>
+                <button id="debug-load-providers" class="btn btn-warning">🐛 Debug Cargar Proveedores</button>
+                <button id="setup-openai" class="btn btn-info">⚙️ Configurar OpenAI</button>
+                <button id="setup-data-providers" class="btn btn-info">📊 Configurar Datos Financieros</button>
+                <button id="setup-news-providers" class="btn btn-info">📰 Configurar Noticias</button>
+                <button id="setup-trade-providers" class="btn btn-info">💰 Configurar Trade</button>
+                <button id="debug-full-test" class="btn btn-danger">🔥 Debug Completo</button>
+                <button id="clear-api-logs" class="btn btn-secondary">🗑️ Limpiar Logs</button>
+            </div>
+
+            <!-- Contenedor de proveedores -->
+            <div id="api-providers-container" style="margin-top: 20px;">
+                <p>Carga los proveedores seleccionando un tipo y haciendo clic en "Cargar Proveedores con Claves".</p>
+            </div>
+
+            <!-- Logs de API -->
+            <div style="margin-top: 20px;">
+                <h3>📊 Logs de Debug</h3>
+                <div id="api-logs-container" style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 5px; padding: 15px; max-height: 300px; overflow-y: auto; font-family: monospace; font-size: 0.9em;">
+                    <div class="log-entry">
+                        <span style="color: #6c757d;">[Sistema]</span>
+                        <span style="color: #007bff;">Sección de pruebas de API keys lista.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Subida de Archivos a IA -->
+        <div class="section">
+            <h2>📁 Sistema de Subida de Archivos a IA</h2>
+            <p>Sube archivos para procesamiento con IA, obtención de file_id y creación de vector stores.</p>
+            
+            <div class="form-group">
+                <label for="file-input">Seleccionar Archivo:</label>
+                <input type="file" id="file-input" accept=".pdf,.txt,.doc,.docx,.csv" class="form-control">
+                <small class="text-muted">Tipos permitidos: PDF, TXT, DOC, DOCX, CSV (máx. 10MB)</small>
+            </div>
+            
+            <div class="form-group">
+                <button id="upload-file-btn" class="btn btn-success">🚀 Subir Archivo</button>
+                <button id="list-files-btn" class="btn btn-primary">📋 Listar Archivos</button>
+            </div>
+            
+            <!-- Lista de archivos subidos -->
+            <div id="file-list" class="mt-4">
+                <p class="text-gray-500">No hay archivos subidos</p>
+            </div>
+            
+            <div id="file-result" class="result" style="display: none;"></div>
         </div>
     </div>
 
@@ -236,6 +339,7 @@
             document.getElementById('results').innerHTML = '';
         }
 
+
         // Función para validar configuración
         function validateConfig() {
             const jwtToken = document.getElementById('jwtToken').value.trim();
@@ -263,6 +367,7 @@
                 showResult('✅ Configuración Válida', 
                     `Usuario ID: ${currentConfig.userId}\nFile ID: ${currentConfig.fileId}\nToken válido hasta: ${new Date(payload.exp * 1000).toLocaleString()}`, 
                     'success');
+                
                 return true;
             } catch (e) {
                 showResult('❌ Error de Configuración', 'JWT Token inválido: ' + e.message, 'error');
@@ -404,23 +509,41 @@
             }
         }
 
-        // Test de API Key
+        // Test de API Key con nuevo sistema de cifrado externo
         async function testApiKey() {
-            showResult('🔑 Test API Key', 'Iniciando...', 'info');
+            showResult('🔑 Test API Key', 'Iniciando test de descifrado con sistema externo...', 'info');
             
-            const result = await makeRequest('user_keys_get_safe.php');
-            
-            if (result.ok) {
-                const keys = result.data.keys;
-                let keyStatus = '';
-                for (const [provider, info] of Object.entries(keys)) {
-                    keyStatus += `${provider}: ${info.has ? '✅ Configurada' : '❌ No configurada'}\n`;
-                }
+            try {
+                const result = await makeRequest('test_api_key_decryption_safe.php', 'POST', {});
                 
-                showResult('✅ Estado API Keys', keyStatus, 'success');
-            } else {
-                showResult('❌ Error API Keys', 
-                    `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 
+                if (result.ok) {
+                    const data = result.data;
+                    let output = `🔑 RESULTADO TEST DE DESCIFRADO:\n\n`;
+                    output += `👤 USUARIO: ${data.user_info.email} (ID: ${data.user_info.id})\n`;
+                    output += `🤖 IA CONFIGURADA: ${data.ai_configuration.provider} (${data.ai_configuration.model})\n\n`;
+                    
+                    output += `🔑 API KEY PRINCIPAL:\n`;
+                    output += `  • Disponible: ${data.api_key_test.api_key_available ? '✅ SÍ' : '❌ NO'}\n`;
+                    output += `  • Longitud: ${data.api_key_test.api_key_length} caracteres\n`;
+                    output += `  • Preview: ${data.api_key_test.api_key_preview || 'N/A'}\n`;
+                    output += `  • Inicia con: ${data.api_key_test.api_key_starts_with || 'N/A'}\n\n`;
+                    
+                    output += `🔍 TODOS LOS PROVEEDORES:\n`;
+                    for (const [provider, info] of Object.entries(data.all_providers_test)) {
+                        output += `  • ${provider}: ${info.available ? '✅' : '❌'} (${info.length} chars) ${info.preview || ''}\n`;
+                    }
+                    
+                    output += `\n📊 RESUMEN: ${data.message}`;
+                    
+                    showResult('✅ Descifrado API Keys Exitoso', output, 'success');
+                } else {
+                    showResult('❌ Error en Descifrado API Keys', 
+                        `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 
+                        'error');
+                }
+            } catch (error) {
+                showResult('❌ Error de Conexión', 
+                    `Error: ${error.message}`, 
                     'error');
             }
         }
@@ -445,7 +568,7 @@
             }
         }
 
-        // Test de contenido del archivo
+        // Test de contenido del archivo y subida automática a IA
         async function testFileContent() {
             showResult('📄 Test Contenido Archivo', 'Iniciando...', 'info');
             
@@ -456,12 +579,834 @@
             if (result.ok) {
                 const data = result.data;
                 showResult('✅ Contenido Archivo', 
-                    `File ID: ${data.file.id}\nArchivo: ${data.file.original_filename}\nTamaño: ${data.file_physical.size_mb} MB\nContenido (primeros 200 chars): ${data.file_physical.content_preview.substring(0, 200)}...`, 
+                    `File ID: ${data.file.id}\nArchivo: ${data.file.original_filename}\nTamaño: ${data.file_physical.size_mb} MB\nContenido (primeros 200 chars): ${data.file_physical.content_preview.substring(0, 200)}...\n\nEstado en IA: ${data.file.openai_file_id ? '✅ Ya subido' : '❌ No subido'}`, 
                     'success');
+                
+                // Si no está en la IA, proceder a subirlo automáticamente
+                if (!data.file.openai_file_id) {
+                    showResult('📄 Test Contenido Archivo', 'Archivo no está en la IA. Procediendo a subirlo...', 'info');
+                    await uploadFileToAIFromTest(data);
+                } else {
+                    showResult('📄 Test Contenido Archivo', 'Archivo ya está en la IA. No es necesario subirlo.', 'success');
+                }
             } else {
                 showResult('❌ Error Contenido Archivo', 
                     `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 
                     'error');
+            }
+        }
+
+        // Función auxiliar para subir archivo a IA desde el test
+        async function uploadFileToAIFromTest(fileData) {
+            try {
+                showResult('⬆️ Subiendo a IA', 'Procesando archivo...', 'info');
+                
+                const uploadResult = await makeRequest('run_op_safe.php', 'POST', {
+                    provider_id: 1, // OpenAI por defecto
+                    op: 'vs.upload',
+                    params: {
+                        file_id: currentConfig.fileId
+                    }
+                });
+
+                if (!uploadResult.ok) {
+                    const errorMsg = uploadResult.data?.error || uploadResult.data?.detail || 'Error desconocido';
+                    showResult('❌ Error Subida IA', `Error: ${errorMsg}`, 'error');
+                    return;
+                }
+
+                const result = uploadResult.data.result;
+                showResult('✅ Archivo Subido a IA', 
+                    `📄 File ID: ${result.file_id}\n📊 Estado: ${result.status}\n💾 Tamaño: ${result.bytes ? Math.round(result.bytes / 1024 / 1024 * 100) / 100 + ' MB' : 'N/A'}\n⏱️ Latencia: ${uploadResult.data.latency_ms}ms\n\nEl archivo ahora está disponible en OpenAI para análisis.`, 
+                    'success');
+
+                // Actualizar la lista de recursos después del upload
+                setTimeout(() => {
+                    listAIResources();
+                }, 1000);
+
+            } catch (error) {
+                showResult('❌ Error Subida IA', `Error inesperado: ${error.message}`, 'error');
+                console.error('Error en uploadFileToAIFromTest:', error);
+            }
+        }
+
+        // Test de función runOp()
+        async function testRunOpFunction() {
+            showResult('⚡ Test runOp()', 'Iniciando prueba de runOp()...', 'info');
+            
+            try {
+                // Paso 1: vs.upload (si el archivo no tiene file_id)
+                showResult('⚡ Test runOp()', 'Paso 1: Verificando file_id...', 'info');
+                
+                const fileResult = await makeRequest('test_file_access_safe.php', 'POST', {
+                    file_id: currentConfig.fileId
+                });
+
+                if (!fileResult.ok) {
+                    showResult('⚡ Test runOp()', `❌ Error obteniendo archivo: ${fileResult.error}`, 'error');
+                    return;
+                }
+
+                const file = fileResult.data.file;
+                let externalFileId = file.openai_file_id;
+
+                // Si no tiene file_id, hacer upload
+                if (!externalFileId) {
+                    showResult('⚡ Test runOp()', 'Paso 1: Subiendo archivo a IA...', 'info');
+                    
+                    const uploadResult = await makeRequest('run_op_safe.php', 'POST', {
+                        provider_id: 1, // OpenAI por defecto
+                        op: 'vs.upload',
+                        params: {
+                            file_id: currentConfig.fileId
+                        }
+                    });
+
+                    if (!uploadResult.ok) {
+                        showResult('⚡ Test runOp()', `❌ Error en upload: ${uploadResult.error}`, 'error');
+                        return;
+                    }
+
+                    externalFileId = uploadResult.result.file_id;
+                    showResult('⚡ Test runOp()', `✅ Upload exitoso. File ID: ${externalFileId}`, 'success');
+                } else {
+                    showResult('⚡ Test runOp()', `✅ Archivo ya tiene file_id: ${externalFileId}`, 'success');
+                }
+
+                // Paso 2: vs.create_or_get (vector store)
+                showResult('⚡ Test runOp()', 'Paso 2: Creando/obteniendo vector store...', 'info');
+                
+                const vsResult = await makeRequest('run_op_safe.php', 'POST', {
+                    provider_id: 1,
+                    op: 'vs.create_or_get',
+                    params: {}
+                });
+
+                if (!vsResult.ok) {
+                    showResult('⚡ Test runOp()', `❌ Error en vector store: ${vsResult.error}`, 'error');
+                    return;
+                }
+
+                const vsId = vsResult.result.vector_store_id;
+                showResult('⚡ Test runOp()', `✅ Vector Store: ${vsId} (${vsResult.result.status})`, 'success');
+
+                // Paso 3: vs.analyze (análisis de contenido)
+                showResult('⚡ Test runOp()', 'Paso 3: Analizando contenido...', 'info');
+                
+                const analyzeResult = await makeRequest('run_op_safe.php', 'POST', {
+                    provider_id: 1,
+                    op: 'vs.analyze',
+                    params: {
+                        file_id: currentConfig.fileId,
+                        vector_store_id: vsId,
+                        prompt: 'Extrae y analiza el contenido de este archivo, identificando los puntos más importantes y proporcionando un resumen estructurado.'
+                    }
+                });
+
+                if (!analyzeResult.ok) {
+                    showResult('⚡ Test runOp()', `❌ Error en análisis: ${analyzeResult.error}`, 'error');
+                    return;
+                }
+
+                const analysis = analyzeResult.result;
+                showResult('⚡ Test runOp()', 
+                    `✅ Análisis completado exitosamente!\n\n` +
+                    `📊 Métricas:\n` +
+                    `• Tokens entrada: ${analysis.input_tokens}\n` +
+                    `• Tokens salida: ${analysis.output_tokens}\n` +
+                    `• Total tokens: ${analysis.total_tokens}\n` +
+                    `• Costo: $${analysis.cost_usd.toFixed(6)}\n` +
+                    `• Latencia: ${analyzeResult.latency_ms}ms\n\n` +
+                    `📝 Contenido extraído:\n${analysis.content.substring(0, 500)}${analysis.content.length > 500 ? '...' : ''}`, 
+                    'success');
+
+            } catch (error) {
+                showResult('⚡ Test runOp()', `❌ Error inesperado: ${error.message}`, 'error');
+                console.error('Error en testRunOpFunction:', error);
+            }
+        }
+
+        // Limpiar archivos duplicados
+        async function cleanDuplicateFiles() {
+            showResult('🧹 Limpiar Duplicados', 'Limpiando archivos duplicados...', 'info');
+            
+            try {
+                const result = await makeRequest('clean_duplicate_files_safe.php', 'POST');
+                
+                if (result.ok && result.cleanup_result) {
+                    const cleanup = result.cleanup_result;
+                    showResult('✅ Limpieza Completada', 
+                        `🧹 RESULTADOS DE LIMPIEZA:\n\n` +
+                        `• Grupos duplicados encontrados: ${cleanup.total_duplicate_groups}\n` +
+                        `• Archivos eliminados: ${cleanup.files_removed}\n\n` +
+                        `${result.message}`, 
+                        'success');
+                    
+                    // Recargar recursos después de limpiar
+                    setTimeout(() => {
+                        listAIResources();
+                    }, 2000);
+                } else {
+                    showResult('❌ Error Limpieza', 'No se pudieron limpiar los duplicados', 'error');
+                }
+            } catch (error) {
+                showResult('❌ Error Limpieza', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Listar archivos del Vector Store del usuario
+        async function listAIResourcesNoVS() {
+            showResult('📋 Archivos del Vector Store', 'Obteniendo archivos del VS...', 'info');
+            try {
+                const result = await makeRequest('list_ai_resources_safe.php', 'GET');
+                if (result.ok) {
+                    let message = `📋 ARCHIVOS DEL VECTOR STORE DEL USUARIO:\n\n`;
+                    
+                    if (result.vector_stores && result.vector_stores.length > 0) {
+                        result.vector_stores.forEach((vs, vsIndex) => {
+                            message += `🗂️ VECTOR STORE ${vsIndex + 1}: ${vs.name || 'Sin nombre'}\n`;
+                            message += `   • ID: ${vs.external_id}\n`;
+                            message += `   • Proveedor: ${vs.provider}\n`;
+                            message += `   • Estado: ${vs.status}\n`;
+                            message += `   • Tamaño: ${vs.bytes_used_mb} MB\n`;
+                            message += `   • Documentos: ${vs.doc_count}\n\n`;
+                            
+                            if (vs.vs_files && vs.vs_files.length > 0) {
+                                message += `   📄 ARCHIVOS EN ESTE VS (${vs.vs_files.length}):\n`;
+                                vs.vs_files.forEach((file, fileIndex) => {
+                                    message += `   ${fileIndex + 1}. File ID: ${file.file_id}\n`;
+                                    message += `      Nombre: ${file.filename}\n\n`;
+                                });
+                            } else {
+                                message += `   📄 ARCHIVOS EN ESTE VS: 0\n\n`;
+                            }
+                        });
+                    } else {
+                        message += `🗂️ VECTOR STORES: 0\n• No hay vector stores creados para este usuario\n\n`;
+                    }
+                    
+                    showResult('✅ Lista Completada', message, 'success');
+                } else {
+                    showResult('❌ Error', result.message || 'Error al obtener recursos', 'error');
+                }
+            } catch (error) {
+                showResult('❌ Error', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Extraer resumen del Vector Store
+        async function extractSummaryFromVS() {
+            showResult('📝 Extraer Resumen del VS', 'Extrayendo resumen del Vector Store...', 'info');
+            
+            try {
+                const result = await makeRequest('extract_summary_from_vs_safe.php', 'POST');
+                
+                if (result.ok) {
+                    let message = `📝 RESUMEN EXTRAÍDO DEL VECTOR STORE:\n\n`;
+                    message += `🗂️ Vector Store: ${result.vector_store_name}\n`;
+                    message += `• ID: ${result.vector_store_id}\n`;
+                    message += `• Knowledge Base ID: ${result.knowledge_base_id}\n`;
+                    message += `• Assistant ID: ${result.assistant_id}\n\n`;
+                    
+                    if (result.debug_info) {
+                        message += `🔍 DEBUG INFO:\n`;
+                        message += `• VS ID: ${result.debug_info.vs_id}\n`;
+                        message += `• Thread ID: ${result.debug_info.thread_id}\n`;
+                        message += `• Run ID: ${result.debug_info.run_id}\n`;
+                        message += `• Mensajes recibidos: ${result.debug_info.messages_count}\n`;
+                        message += `• Prompt usado: ${result.debug_info.prompt_used}\n\n`;
+                        
+                        if (result.debug_info.extract_config_used) {
+                            message += `⚙️ CONFIGURACIÓN JSON USADA:\n`;
+                            message += JSON.stringify(result.debug_info.extract_config_used, null, 2) + '\n\n';
+                        }
+                        
+                        if (result.debug_info.parameters_sent) {
+                            message += `📤 PARÁMETROS ENVIADOS:\n`;
+                            message += JSON.stringify(result.debug_info.parameters_sent, null, 2) + '\n\n';
+                        }
+                    }
+                    
+                    message += `📄 RESUMEN:\n${result.summary}\n\n`;
+                    message += `${result.message}`;
+                    
+                    showResult('✅ Resumen Extraído', message, 'success');
+                    
+                    setTimeout(() => {
+                        listAIResources();
+                    }, 2000);
+                } else {
+                    let errorMessage = result.message || 'No se pudo extraer el resumen';
+                    
+                    // Si hay información de debug, mostrarla
+                    if (result.full_response) {
+                        errorMessage += '\n\n🔍 INFORMACIÓN DE DEBUG:\n';
+                        errorMessage += JSON.stringify(result.full_response, null, 2);
+                    }
+                    
+                    showResult('❌ Error Extracción', errorMessage, 'error');
+                }
+            } catch (error) {
+                showResult('❌ Error Extracción', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Borrar file de la IA
+        async function deleteFileFromAI() {
+            const fileId = document.getElementById('fileIdToDelete').value.trim();
+            
+            if (!fileId) {
+                showResult('❌ Error', 'Debes ingresar un File ID', 'error');
+                return;
+            }
+            
+            if (!confirm(`¿Estás seguro de que quieres borrar el archivo ${fileId} de la IA?`)) {
+                return;
+            }
+            
+            showResult('🗑️ Borrar File de IA', `Borrando archivo ${fileId} de la IA...`, 'info');
+            
+            try {
+                const result = await makeRequest('delete_file_from_ai_safe.php', 'POST', {
+                    file_id: fileId
+                });
+                
+                if (result.ok) {
+                    showResult('✅ Archivo Borrado', 
+                        `🗑️ ARCHIVO BORRADO EXITOSAMENTE:\n\n` +
+                        `• File ID: ${result.file_id}\n` +
+                        `• Nombre: ${result.filename}\n` +
+                        `• Borrado de IA: ✅ Sí\n` +
+                        `• Actualizado en DB: ${result.deleted_from_db ? '✅ Sí' : '❌ No'}\n\n` +
+                        `${result.message}`, 
+                        'success');
+                    
+                    // Limpiar input
+                    document.getElementById('fileIdToDelete').value = '';
+                    
+                    setTimeout(() => {
+                        listAIResources();
+                    }, 2000);
+                } else {
+                    showResult('❌ Error Borrado', result.message || 'No se pudo borrar el archivo', 'error');
+                }
+            } catch (error) {
+                showResult('❌ Error Borrado', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function cleanOrphanedFiles() {
+            showResult('🗑️ Limpiar Archivos Huérfanos', 'Limpiando archivos huérfanos...', 'info');
+            try {
+                const result = await makeRequest('clean_orphaned_files_safe.php', 'POST');
+                if (result.ok) {
+                    showResult('✅ Limpieza Completada', 
+                        `🗑️ RESULTADOS DE LIMPIEZA DE ARCHIVOS HUÉRFANOS:\n\n` +
+                        `• Archivos huérfanos encontrados: ${result.orphaned_files_found}\n` +
+                        `• Archivos eliminados: ${result.deleted_count}\n\n` +
+                        `📄 ARCHIVOS ELIMINADOS:\n` +
+                        (result.deleted_files && result.deleted_files.length > 0 
+                            ? result.deleted_files.map(file => 
+                                `• ${file.filename} (${file.file_id}) - ${file.upload_status}`
+                              ).join('\n')
+                            : '• Ninguno\n') + 
+                        `\n${result.message}`, 
+                        'success');
+                    setTimeout(() => {
+                        listAIResources();
+                    }, 2000);
+                } else {
+                    showResult('❌ Error Limpieza', 'No se pudieron limpiar los archivos huérfanos', 'error');
+                }
+            } catch (error) {
+                showResult('❌ Error Limpieza', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Probar autenticación simple
+        async function testAuthSimple() {
+            showResult('🔐 Test Auth Simple', 'Probando autenticación...', 'info');
+            
+            try {
+                const result = await makeRequest('test_auth_simple_safe.php', 'POST');
+                
+                if (result.ok) {
+                    showResult('✅ Autenticación Exitosa', 
+                        `🔐 TEST DE AUTENTICACIÓN:\n\n` +
+                        `• Usuario: ${result.user?.email || 'N/A'}\n` +
+                        `• ID: ${result.user_id}\n` +
+                        `• Rol: ${result.user?.role || 'N/A'}\n\n` +
+                        `${result.message}`, 
+                        'success');
+                } else {
+                    let errorMsg = 'Error en autenticación';
+                    if (result.error) {
+                        errorMsg += `\nError: ${result.error}`;
+                    }
+                    if (result.detail) {
+                        errorMsg += `\nDetalle: ${result.detail}`;
+                    }
+                    showResult('❌ Error Autenticación', errorMsg, 'error');
+                }
+            } catch (error) {
+                showResult('❌ Error Autenticación', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Ver logs del servidor
+        async function viewLogs() {
+            showResult('📋 Ver Logs', 'Obteniendo logs del servidor...', 'info');
+            try {
+                const result = await makeRequest('view_logs_safe.php', 'POST');
+                if (result.ok) {
+                    let message = `📋 LOGS DEL SERVIDOR:\n\n`;
+                    
+                    if (!result.log_files || Object.keys(result.log_files).length === 0) {
+                        message += `• No se encontraron archivos de log\n\n`;
+                    } else {
+                        Object.entries(result.log_files).forEach(([filename, logInfo]) => {
+                            message += `📄 ${filename}:\n`;
+                            message += `• Ruta: ${logInfo.path}\n`;
+                            message += `• Tamaño: ${(logInfo.size / 1024).toFixed(2)} KB\n`;
+                            message += `• Modificado: ${logInfo.modified}\n`;
+                            message += `• Líneas: ${logInfo.lines}\n\n`;
+                            
+                            if (logInfo.last_50_lines && logInfo.last_50_lines.length > 0) {
+                                message += `📝 ÚLTIMAS 50 LÍNEAS:\n`;
+                                logInfo.last_50_lines.forEach(line => {
+                                    if (line.trim()) {
+                                        message += `• ${line}\n`;
+                                    }
+                                });
+                                message += `\n`;
+                            }
+                        });
+                    }
+                    
+                    message += `${result.message}`;
+                    showResult('✅ Logs Obtenidos', message, 'success');
+                } else {
+                    showResult('❌ Error Obteniendo Logs', result.message || 'Error desconocido', 'error');
+                }
+            } catch (error) {
+                showResult('❌ Error Obteniendo Logs', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Probar conectividad básica con Vector Store
+        async function testVSConnectivity() {
+            showResult('🔗 Test VS Conectividad', 'Probando conectividad con Vector Store...', 'info');
+            
+            try {
+                const result = await makeRequest('test_vs_connectivity_safe.php', 'POST');
+                
+                if (result.ok && result.vs_info) {
+                    const vs = result.vs_info;
+                    showResult('✅ Conectividad VS Exitosa', 
+                        `🔗 CONECTIVIDAD CON VECTOR STORE:\n\n` +
+                        `• VS ID: ${vs.vs_id}\n` +
+                        `• Nombre: ${vs.vs_name}\n` +
+                        `• ID Local: ${vs.local_id}\n` +
+                        `• Estado: ${vs.status}\n` +
+                        `• Bytes usados: ${vs.bytes_used || 'N/A'}\n` +
+                        `• Conteo archivos: ${vs.file_counts ? JSON.stringify(vs.file_counts) : 'N/A'}\n\n` +
+                        `${result.message}`, 
+                        'success');
+                } else {
+                    let errorMsg = 'No se pudo conectar con el Vector Store';
+                    if (result.error) {
+                        errorMsg += `\nError: ${result.error}`;
+                    }
+                    if (result.detail) {
+                        errorMsg += `\nDetalle: ${result.detail}`;
+                    }
+                    showResult('❌ Error Conectividad', errorMsg, 'error');
+                }
+            } catch (error) {
+                showResult('❌ Error Conectividad', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Verificar archivos en Vector Store
+        async function checkVSFiles() {
+            showResult('🔍 Verificar VS Files', 'Verificando archivos en Vector Stores...', 'info');
+            
+            try {
+                const result = await makeRequest('check_vs_files_safe.php', 'POST');
+                
+                if (result.ok && result.vs_check_result) {
+                    const check = result.vs_check_result;
+                    let message = `🔍 VERIFICACIÓN DE VECTOR STORES:\n\n`;
+                    
+                    check.vector_stores.forEach((vs, index) => {
+                        message += `🗂️ VECTOR STORE ${index + 1}:\n` +
+                            `• ID: ${vs.vs_id}\n` +
+                            `• Nombre: ${vs.vs_name}\n` +
+                            `• Archivos en VS: ${vs.vs_files_count}\n` +
+                            `• Archivos en DB: ${vs.db_files_count}\n`;
+                        
+                        if (vs.error) {
+                            message += `• ❌ Error: ${vs.error}\n`;
+                        } else {
+                            message += `• ✅ Estado: Sincronizado\n`;
+                            
+                            if (vs.vs_files && vs.vs_files.length > 0) {
+                                message += `• 📄 Archivos en VS:\n`;
+                                vs.vs_files.forEach(file => {
+                                    message += `  - ${file.filename} (${file.file_id})\n`;
+                                });
+                            }
+                        }
+                        message += `\n`;
+                    });
+                    
+                    message += `${result.message}`;
+                    showResult('✅ Verificación Completada', message, 'success');
+                } else {
+                    let errorMsg = 'No se pudieron verificar los Vector Stores';
+                    if (result.error) {
+                        errorMsg += `\nError: ${result.error}`;
+                    }
+                    if (result.detail) {
+                        errorMsg += `\nDetalle: ${result.detail}`;
+                    }
+                    showResult('❌ Error Verificación', errorMsg, 'error');
+                }
+            } catch (error) {
+                showResult('❌ Error Verificación', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Sincronizar archivos con OpenAI
+        async function syncOpenAIFiles() {
+            showResult('🔄 Sincronizar con OpenAI', 'Sincronizando archivos con OpenAI...', 'info');
+            
+            try {
+                const result = await makeRequest('sync_openai_files_safe.php', 'POST');
+                
+                if (result.ok && result.sync_result) {
+                    const sync = result.sync_result;
+                    showResult('✅ Sincronización Completada', 
+                        `📊 RESULTADOS DE SINCRONIZACIÓN:\n\n` +
+                        `• Total archivos en OpenAI: ${sync.total_openai_files}\n` +
+                        `• Archivos sincronizados: ${sync.synced_files}\n` +
+                        `• Nuevos archivos: ${sync.new_files}\n` +
+                        `• Archivos actualizados: ${sync.updated_files}\n\n` +
+                        `${result.message}`, 
+                        'success');
+                    
+                    // Recargar recursos después de sincronizar
+                    setTimeout(() => {
+                        listAIResources();
+                    }, 2000);
+                } else {
+                    showResult('❌ Error Sincronización', 'No se pudieron sincronizar los archivos', 'error');
+                }
+            } catch (error) {
+                showResult('❌ Error Sincronización', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Listar recursos de IA (archivos, vector stores, knowledge base)
+        async function listAIResources() {
+            showResult('📋 Listar IA Resources', 'Obteniendo recursos de IA...', 'info');
+            
+            try {
+                const result = await makeRequest('list_ai_resources_safe.php', 'GET');
+                
+                if (!result.ok) {
+                    showResult('📋 Listar IA Resources', `❌ Error: ${result.error}`, 'error');
+                    return;
+                }
+
+                const data = result.data;
+                let output = `📊 ESTADÍSTICAS GENERALES:\n`;
+                output += `• Total archivos: ${data.stats.total_files}\n`;
+                output += `• Archivos en IA: ${data.stats.files_in_ai}\n`;
+                output += `• Archivos extraídos: ${data.stats.files_extracted}\n`;
+                output += `• Costo total: $${data.stats.total_cost_usd}\n`;
+                output += `• Total tokens: ${data.stats.total_tokens}\n\n`;
+
+                // Archivos
+                output += `📁 ARCHIVOS (${data.files.length}):\n`;
+                if (data.files.length === 0) {
+                    output += `• No hay archivos subidos\n\n`;
+                } else {
+                    data.files.forEach((file, index) => {
+                        output += `${index + 1}. ${file.filename}\n`;
+                        output += `   • Tipo: ${file.file_type} (${file.file_size_mb} MB)\n`;
+                        output += `   • Estado upload: ${file.upload_status}\n`;
+                        output += `   • Estado extracción: ${file.extraction_status}\n`;
+                        output += `   • En IA: ${file.in_ai ? '✅ Sí' : '❌ No'}\n`;
+                        if (file.openai_file_id) {
+                            output += `   • File ID: ${file.openai_file_id}\n`;
+                        }
+                        if (file.vector_store_external_id) {
+                            output += `   • Vector Store: ${file.vector_store_external_id}\n`;
+                        }
+                        if (file.last_extraction_cost) {
+                            output += `   • Último costo: $${file.last_extraction_cost}\n`;
+                        }
+                        if (file.last_extraction_tokens) {
+                            output += `   • Últimos tokens: ${file.last_extraction_tokens}\n`;
+                        }
+                        output += `   • Proveedor: ${file.provider}\n\n`;
+                    });
+                }
+
+                // Vector Stores
+                output += `🗂️ VECTOR STORES (${data.vector_stores.length}):\n`;
+                if (data.vector_stores.length === 0) {
+                    output += `• No hay vector stores creados\n\n`;
+                } else {
+                    data.vector_stores.forEach((vs, index) => {
+                        output += `${index + 1}. ${vs.name || 'Sin nombre'}\n`;
+                        output += `   • ID: ${vs.external_id}\n`;
+                        output += `   • Proveedor: ${vs.provider}\n`;
+                        output += `   • Estado: ${vs.status}\n`;
+                        output += `   • Tamaño: ${vs.bytes_used_mb} MB\n`;
+                        output += `   • Documentos: ${vs.doc_count}\n`;
+                        output += `   • Archivos en VS: ${vs.vs_files_count || 0}\n`;
+                        
+                        if (vs.vs_files_error) {
+                            output += `   • ❌ Error consultando VS: ${vs.vs_files_error}\n`;
+                        } else if (vs.vs_files && vs.vs_files.length > 0) {
+                            output += `   • 📄 Archivos en VS:\n`;
+                            vs.vs_files.forEach(file => {
+                                output += `     - ${file.filename} (${file.file_id})\n`;
+                            });
+                        }
+                        
+                        output += `   • Operaciones disponibles: ${vs.ops_available.join(', ')}\n`;
+                        output += `   • Creado: ${vs.created_at}\n\n`;
+                    });
+                }
+
+                // Knowledge Base
+                output += `🧠 KNOWLEDGE BASE (${data.knowledge_base.length}):\n`;
+                if (data.knowledge_base.length === 0) {
+                    output += `• No hay contenido extraído\n\n`;
+                } else {
+                    data.knowledge_base.forEach((kb, index) => {
+                        output += `${index + 1}. ${kb.title}\n`;
+                        output += `   • Tipo: ${kb.type}\n`;
+                        output += `   • Archivo fuente: ${kb.source_file}\n`;
+                        output += `   • Confianza: ${kb.confidence}\n`;
+                        output += `   • Tamaño contenido: ${kb.content_length} chars\n`;
+                        output += `   • Resumen: ${kb.summary ? kb.summary.substring(0, 100) + '...' : 'N/A'}\n`;
+                        output += `   • Creado: ${kb.created_at}\n\n`;
+                    });
+                }
+
+                // Agregar sección de nombres de archivos del VS
+                output += `\n📄 NOMBRES DE ARCHIVOS EN VECTOR STORES:\n`;
+                let totalVSFiles = 0;
+                data.vector_stores.forEach((vs, vsIndex) => {
+                    if (vs.vs_files && vs.vs_files.length > 0) {
+                        output += `\nVector Store ${vsIndex + 1} (${vs.name}):\n`;
+                        vs.vs_files.forEach((file, fileIndex) => {
+                            totalVSFiles++;
+                            output += `  ${fileIndex + 1}. File ID: ${file.file_id}\n`;
+                            output += `     Nombre mostrado: ${file.filename}\n`;
+                            output += `     Nombre real: ${file.real_filename || 'N/A'}\n`;
+                        });
+                    }
+                });
+                
+                if (totalVSFiles === 0) {
+                    output += `• No hay archivos en Vector Stores\n`;
+                } else {
+                    output += `\n• Total archivos en VS: ${totalVSFiles}\n`;
+                }
+
+                showResult('📋 Listar IA Resources', output, 'success');
+
+            } catch (error) {
+                showResult('📋 Listar IA Resources', `❌ Error inesperado: ${error.message}`, 'error');
+                console.error('Error en listAIResources:', error);
+            }
+        }
+
+        // Subir archivo específico a IA (solo upload)
+        async function uploadFileToAIOnly() {
+            showResult('⬆️ Subir a IA', 'Iniciando subida a IA...', 'info');
+            
+            try {
+                const result = await makeRequest('run_op_safe.php', 'POST', {
+                    provider_id: 1, // OpenAI por defecto
+                    op: 'vs.upload',
+                    params: {
+                        file_id: currentConfig.fileId
+                    }
+                });
+
+                if (!result.ok) {
+                    const errorMsg = result.data?.error || result.data?.detail || 'Error desconocido';
+                    showResult('⬆️ Subir a IA', `❌ Error: ${errorMsg}`, 'error');
+                    return;
+                }
+
+                const uploadResult = result.data.result;
+                showResult('⬆️ Subir a IA', 
+                    `✅ Archivo subido exitosamente a la IA!\n\n` +
+                    `📄 Archivo ID: ${uploadResult.file_id}\n` +
+                    `📊 Estado: ${uploadResult.status}\n` +
+                    `💾 Tamaño: ${uploadResult.bytes ? Math.round(uploadResult.bytes / 1024 / 1024 * 100) / 100 + ' MB' : 'N/A'}\n` +
+                    `⏱️ Latencia: ${result.data.latency_ms}ms\n\n` +
+                    `El archivo ahora está disponible en OpenAI para análisis.`, 
+                    'success');
+
+                // Actualizar la lista de archivos después del upload
+                setTimeout(() => {
+                    listAIResources();
+                }, 1000);
+
+            } catch (error) {
+                showResult('⬆️ Subir a IA', `❌ Error inesperado: ${error.message}`, 'error');
+                console.error('Error en uploadFileToAIOnly:', error);
+            }
+        }
+
+        // Test de extracción IA usando el sistema existente
+        async function testAIExtraction() {
+            showResult('🧪 Test Extracción IA', 'Probando configuración de extracción...', 'info');
+            
+            // Obtener file_id directamente del input
+            const fileId = document.getElementById('fileId').value;
+            if (!fileId) {
+                showResult('❌ Error Test Extracción', 'File ID es requerido. Configure el File ID en el input.', 'error');
+                return;
+            }
+            
+            try {
+                const result = await makeRequest('test_ai_extract_simple_safe.php', 'POST', {
+                    file_id: parseInt(fileId)
+                });
+
+                if (!result.ok) {
+                    const errorMsg = result.data?.error || result.data?.detail || 'Error desconocido';
+                    showResult('❌ Error Test Extracción', `Error: ${errorMsg}`, 'error');
+                    return;
+                }
+
+                const data = result.data;
+                let message = `🧪 FLUJO COMPLETO DE EXTRACCIÓN:\n\n` +
+                    `👤 Usuario: ${data.user.email} (ID: ${data.user.id})\n` +
+                    `📄 File ID: ${data.file?.id || fileId}\n\n` +
+                    `⚙️ CONFIGURACIÓN IA:\n` +
+                    `• Proveedor: ${data.settings.ai_provider}\n` +
+                    `• Modelo: ${data.settings.ai_model}\n` +
+                    `• Prompt personalizado: ${data.settings.has_custom_prompt ? '✅ Sí' : '❌ No'}\n\n` +
+                    `📊 ESTADO DE SINCRONIZACIÓN:\n` +
+                    `• Tiene file_id: ${data.sync_status?.has_file_id ? '✅ Sí' : '❌ No'}\n` +
+                    `• Necesita upload: ${data.sync_status?.needs_upload ? '✅ Sí' : '❌ No'}\n` +
+                    `• Problema de sync: ${data.sync_status?.sync_issue ? '⚠️ Sí' : '✅ No'}\n\n`;
+                
+                if (data.upload_result) {
+                    message += `⬆️ RESULTADO UPLOAD:\n` +
+                        `• Estado: ${data.upload_result.success ? '✅ Exitoso' : '❌ Fallido'}\n` +
+                        `• File ID OpenAI: ${data.upload_result.openai_file_id || 'N/A'}\n` +
+                        `• Costo: $${data.upload_result.cost_usd || '0.000000'}\n\n`;
+                }
+                
+                if (data.vector_store_result) {
+                    message += `🗂️ RESULTADO VECTOR STORE:\n` +
+                        `• Estado: ${data.vector_store_result.success ? '✅ Exitoso' : '❌ Fallido'}\n` +
+                        `• VS ID: ${data.vector_store_result.vector_store_id || 'N/A'}\n` +
+                        `• Acción: ${data.vector_store_result.status || 'N/A'}\n` +
+                        `• Mensaje: ${data.vector_store_result.message || 'N/A'}\n\n`;
+                }
+                
+                if (data.attach_result) {
+                    message += `📎 RESULTADO ADJUNTAR:\n` +
+                        `• Estado: ${data.attach_result.success ? '✅ Exitoso' : '❌ Fallido'}\n` +
+                        `• Mensaje: ${data.attach_result.message || 'N/A'}\n\n`;
+                }
+                
+                message += `🎯 PRÓXIMOS PASOS: ${data.next_steps?.description || 'N/A'}\n\n` +
+                    `📊 Estado Final: ${data.message}`;
+                
+                showResult('✅ Test Extracción IA', message, 'success');
+
+                // Si se creó un Vector Store, recargar recursos para mostrarlo
+                if (data.vector_store_result?.success) {
+                    setTimeout(() => {
+                        showResult('🔄 Recargando recursos...', 'Actualizando lista de Vector Stores...', 'info');
+                        listAIResources();
+                    }, 2000);
+                }
+
+            } catch (error) {
+                showResult('❌ Error Test Extracción', `Error inesperado: ${error.message}`, 'error');
+                console.error('Error en testAIExtraction:', error);
+            }
+        }
+
+        // Test de debug del provider
+        async function testProviderDebug() {
+            showResult('🔍 Test Provider Debug', 'Verificando configuración del proveedor...', 'info');
+            
+            try {
+                const result = await makeRequest('test_provider_debug_safe.php', 'GET');
+                
+                if (result.ok) {
+                    const debug = result.debug;
+                    let output = `✅ Provider Debug Exitoso\n\n`;
+                    output += `👤 Usuario ID: ${debug.user_id}\n`;
+                    output += `🤖 AI Provider: ${debug.ai_provider}\n`;
+                    output += `🧠 AI Model: ${debug.ai_model}\n`;
+                    output += `🆔 Default Provider ID: ${debug.default_provider_id || 'NULL'}\n`;
+                    output += `🆔 Default Model ID: ${debug.default_model_id || 'NULL'}\n\n`;
+                    output += `📊 Provider Info:\n`;
+                    output += `• ID: ${debug.provider.id}\n`;
+                    output += `• Slug: ${debug.provider.slug}\n`;
+                    output += `• Has ops_json: ${debug.provider.has_ops_json ? '✅' : '❌'}\n`;
+                    output += `• ops_json size: ${debug.provider.ops_json_size} chars\n\n`;
+                    output += `⚙️ Operación '${debug.operation.name}':\n`;
+                    output += `• Existe: ${debug.operation.exists ? '✅' : '❌'}\n`;
+                    
+                    if (debug.operation.exists) {
+                        output += `• Config: ${JSON.stringify(debug.operation.config, null, 2)}`;
+                    }
+                    
+                    showResult('✅ Provider Debug', output, 'success');
+                } else {
+                    showResult('❌ Error Provider Debug', result.error || 'Error desconocido', 'error');
+                }
+            } catch (error) {
+                showResult('❌ Error Provider Debug', `Error inesperado: ${error.message}`, 'error');
+                console.error('Error en testProviderDebug:', error);
+            }
+        }
+
+        // Test directo de runOp
+        async function testRunOpDirect() {
+            showResult('⚡ Test runOp Directo', 'Probando llamada directa a runOp...', 'info');
+            
+            try {
+                const result = await makeRequest('test_runop_direct_safe.php', 'GET');
+                
+                if (result.ok) {
+                    const debug = result.debug;
+                    let output = `✅ Test runOp Directo Exitoso\n\n`;
+                    output += `👤 Usuario ID: ${debug.user_id}\n`;
+                    output += `🤖 AI Provider: ${debug.ai_provider}\n`;
+                    output += `🆔 Default Provider ID: ${debug.default_provider_id || 'NULL'}\n`;
+                    output += `🆔 Final Provider ID: ${debug.final_provider_id}\n`;
+                    output += `⚙️ Operación: ${debug.operation}\n`;
+                    output += `📡 URL: ${debug.url}\n`;
+                    output += `📊 HTTP Code: ${debug.http_code}\n\n`;
+                    output += `📤 Payload enviado:\n${JSON.stringify(debug.payload, null, 2)}\n\n`;
+                    output += `📥 Respuesta recibida:\n${debug.response}`;
+                    
+                    showResult('✅ Test runOp Directo', output, 'success');
+                } else {
+                    showResult('❌ Error Test runOp Directo', result.error || 'Error desconocido', 'error');
+                }
+            } catch (error) {
+                showResult('❌ Error Test runOp Directo', `Error inesperado: ${error.message}`, 'error');
+                console.error('Error en testRunOpDirect:', error);
             }
         }
 
@@ -485,6 +1430,194 @@
                 showResult('❌ Error Conexión IA', 
                     `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 
                     'error');
+            }
+        }
+
+        async function testSimpleEndpoint() {
+            showResult('🧪 Test Endpoint Simple', 'Iniciando...', 'info');
+            
+            try {
+                const result = await makeRequest('test_endpoint_simple.php', 'POST', {
+                    test: 'data',
+                    timestamp: new Date().toISOString()
+                });
+                
+                if (result.ok) {
+                    showResult('✅ Endpoint Simple Funcionando', JSON.stringify(result.data, null, 2), 'success');
+                } else {
+                    showResult('❌ Error Endpoint Simple', `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                showResult('❌ Error Endpoint Simple', error.message, 'error');
+            }
+        }
+
+        // Test de endpoint debug
+        async function testDebugEndpoint() {
+            showResult('🔍 Test Endpoint Debug', 'Probando endpoint debug...', 'info');
+            
+            try {
+                const result = await makeRequest('test_endpoint_debug.php', 'POST', {
+                    test: 'debug_data',
+                    file_id: document.getElementById('fileId').value || 46,
+                    timestamp: new Date().toISOString()
+                });
+                
+                if (result.ok) {
+                    showResult('✅ Test Endpoint Debug', 
+                        `Status: ${result.status}\nRespuesta: ${JSON.stringify(result.data, null, 2)}`, 
+                        'success');
+                } else {
+                    showResult('❌ Test Endpoint Debug', 
+                        `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 
+                        'error');
+                }
+            } catch (error) {
+                showResult('❌ Test Endpoint Debug', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Extracción con IA Final (solo ai_extract_final_safe.php)
+        async function extractWithAIFinal() {
+            showResult('🎯 Extracción con IA Final', 'Iniciando extracción directa...', 'info');
+            
+            try {
+                const result = await makeRequest('ai_extract_final_safe.php', 'POST', {
+                    file_id: currentConfig.fileId,
+                    use_generic: true
+                });
+                
+                if (result.ok) {
+                    showResult('✅ Extracción Exitosa', 
+                        `Status: ${result.status}\nRespuesta: ${JSON.stringify(result.data, null, 2)}`, 
+                        'success');
+                } else {
+                    showResult('❌ Error Extracción', 
+                        `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 
+                        'error');
+                }
+            } catch (error) {
+                showResult('❌ Error Extracción', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Nuevo: probar endpoint base ai_extract_file_vs.php
+        async function extractWithAIVSNew() {
+            showResult('🧪 Probar ai_extract_file_vs', 'Llamando endpoint base...', 'info');
+            try {
+                const result = await makeRequest('ai_extract_file_vs.php', 'POST', {
+                    file_id: currentConfig.fileId
+                });
+                if (result.ok) {
+                    showResult('✅ ai_extract_file_vs OK', JSON.stringify(result.data, null, 2), 'success');
+                } else {
+                    showResult('❌ ai_extract_file_vs Error', `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 'error');
+                }
+            } catch (e) {
+                showResult('❌ ai_extract_file_vs Error', e.message, 'error');
+            }
+        }
+
+        async function extractWithAIVSClean() {
+            showResult('🧹 Probar ai_extract_clean', 'Llamando endpoint limpio...', 'info');
+            
+            // Mostrar indicador de progreso
+            let progressInterval;
+            let dots = 0;
+            const progressMsg = () => {
+                dots = (dots + 1) % 4;
+                const dotStr = '.'.repeat(dots);
+                showResult('⏳ ai_extract_clean Procesando', `Procesando extracción${dotStr}`, 'info');
+            };
+            
+            try {
+                // Iniciar indicador de progreso
+                progressInterval = setInterval(progressMsg, 1000);
+                
+                const result = await makeRequest('ai_extract_file_vs_clean.php', 'POST', {
+                    file_id: currentConfig.fileId
+                });
+                
+                // Detener indicador de progreso
+                clearInterval(progressInterval);
+                
+                if (result.ok) {
+                    showResult('✅ ai_extract_clean OK', JSON.stringify(result.data, null, 2), 'success');
+                } else {
+                    showResult('❌ ai_extract_clean Error', `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 'error');
+                }
+            } catch (e) {
+                // Detener indicador de progreso
+                clearInterval(progressInterval);
+                showResult('❌ ai_extract_clean Error', e.message, 'error');
+            }
+        }
+
+        async function extractWithAIVSSimple() {
+            showResult('✨ Probar ai_extract_simple', 'Llamando endpoint simple...', 'info');
+            
+            try {
+                const result = await makeRequest('ai_extract_file_vs_simple.php', 'POST', {
+                    file_id: currentConfig.fileId
+                });
+                
+                if (result.ok) {
+                    if (result.data.status === 'completed') {
+                        showResult('✅ ai_extract_simple Completado', `Resumen extraído:\n\n${result.data.summary}`, 'success');
+                    } else if (result.data.status === 'started') {
+                        showResult('⏳ ai_extract_simple Iniciado', `Proceso iniciado. ${result.data.message}\n\nRun ID: ${result.data.run_id}`, 'info');
+                    } else if (result.data.status === 'existing') {
+                        showResult('📋 ai_extract_simple Existente', `Resumen ya existe:\n\n${result.data.summary}`, 'info');
+                    } else {
+                        showResult('✅ ai_extract_simple OK', JSON.stringify(result.data, null, 2), 'success');
+                    }
+                } else {
+                    showResult('❌ ai_extract_simple Error', `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 'error');
+                }
+            } catch (e) {
+                showResult('❌ ai_extract_simple Error', e.message, 'error');
+            }
+        }
+
+        async function testSimpleDebug() {
+            showResult('🔍 Test Simple Debug', 'Probando endpoint de debug...', 'info');
+            
+            try {
+                const result = await makeRequest('test_simple_debug.php', 'POST', {
+                    file_id: currentConfig.fileId
+                });
+                
+                if (result.ok) {
+                    showResult('✅ Test Simple Debug OK', JSON.stringify(result.data, null, 2), 'success');
+                } else {
+                    showResult('❌ Test Simple Debug Error', `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 'error');
+                }
+            } catch (e) {
+                showResult('❌ Test Simple Debug Error', e.message, 'error');
+            }
+        }
+
+        async function extractWithAIVSCorrect() {
+            showResult('✅ Probar ai_extract_correct', 'Llamando endpoint correcto...', 'info');
+            
+            try {
+                const result = await makeRequest('ai_extract_file_vs_correct.php', 'POST', {
+                    file_id: currentConfig.fileId
+                });
+                
+                if (result.ok) {
+                    if (result.data.status === 'completed') {
+                        showResult('✅ ai_extract_correct Completado', `Resumen extraído:\n\n${result.data.summary}`, 'success');
+                    } else if (result.data.status === 'started') {
+                        showResult('⏳ ai_extract_correct Iniciado', `Proceso iniciado. ${result.data.message}\n\nRun ID: ${result.data.run_id}`, 'info');
+                    } else {
+                        showResult('✅ ai_extract_correct OK', JSON.stringify(result.data, null, 2), 'success');
+                    }
+                } else {
+                    showResult('❌ ai_extract_correct Error', `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 'error');
+                }
+            } catch (e) {
+                showResult('❌ ai_extract_correct Error', e.message, 'error');
             }
         }
 
@@ -535,14 +1668,31 @@
             // Ahora hacer extracción completa
             showResult('🤖 Extracción Completa', 'Ejecutando extracción completa...', 'info');
             const result = await makeRequest('ai_extract_final_safe.php', 'POST', {
-                file_id: currentConfig.fileId
+                file_id: currentConfig.fileId,
+                use_generic: true  // Activar modo genérico
             });
             
             if (result.ok) {
                 const data = result.data;
-                showResult('✅ Extracción Exitosa',
-                    `Usuario: ${data.usuario.email}\nArchivo: ${data.archivo.nombre}\nTipo: ${data.archivo.tipo}\nIA: ${data.ia.provider} (${data.ia.modelo})\nLatencia: ${data.consulta.latencia_ms}ms\n\nOPENAI FILE ID: ${data.archivo.openai_file_id || 'N/A'}\nFILE ACTION: ${data.archivo.file_action || 'N/A'}\n\nPROMPT USADO: ${data.prompt_used ? 'Personalizado' : 'Predeterminado'}\n\nRESUMEN:\n${data.resultado.resumen}\n\nGUARDADO:\nKnowledge ID: ${data.guardado.knowledge_id}\nStatus: ${data.guardado.status}`,
-                    'success');
+                let message = `Usuario: ${data.usuario.email}\nArchivo: ${data.archivo.nombre}\nIA: ${data.ia.provider} (${data.ia.modelo})\n\n`;
+                
+                if (data.mode === 'generic') {
+                    message += `🔧 MODO GENÉRICO ACTIVADO\n`;
+                    message += `Operación: ${data.operacion}\n`;
+                    message += `Método: runOp + ops_json\n\n`;
+                } else {
+                    message += `🔧 MODO TRADICIONAL\n`;
+                    message += `Tipo: ${data.archivo.tipo}\n`;
+                    message += `Latencia: ${data.consulta.latencia_ms}ms\n`;
+                    message += `FILE ID: ${data.archivo.openai_file_id || 'N/A'}\n`;
+                    message += `ACTION: ${data.archivo.file_action || 'N/A'}\n`;
+                    message += `Prompt: ${data.prompt_used ? 'Personalizado' : 'Predeterminado'}\n\n`;
+                }
+                
+                message += `RESUMEN:\n${data.resultado.resumen}\n\n`;
+                message += `GUARDADO:\nKnowledge ID: ${data.guardado.knowledge_id}\nStatus: ${data.guardado.status}`;
+                
+                showResult('✅ Extracción Exitosa', message, 'success');
             } else {
                 showResult('❌ Error Extracción', 
                     `Status: ${result.status}\nError: ${JSON.stringify(result.data, null, 2)}`, 
@@ -834,9 +1984,1020 @@
             }
         }
 
+        // ========================================
+        // FUNCIONES PARA PRUEBAS DE API KEYS
+        // ========================================
+        
+        // Variables globales para API keys
+        let currentApiProviders = [];
+        let apiLogs = [];
+
+        // Función para agregar logs de API
+        function addApiLog(level, message, data = null) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = { timestamp, level, message, data };
+            apiLogs.push(logEntry);
+            
+            const logsContainer = document.getElementById('api-logs-container');
+            const logDiv = document.createElement('div');
+            logDiv.className = `log-entry`;
+            logDiv.innerHTML = `
+                <span style="color: #6c757d;">[${timestamp}]</span>
+                <span style="color: ${level === 'error' ? '#dc3545' : level === 'success' ? '#28a745' : '#007bff'};">${message}</span>
+            `;
+            
+            if (data) {
+                const dataDiv = document.createElement('div');
+                dataDiv.className = 'log-entry';
+                dataDiv.style.marginLeft = '20px';
+                dataDiv.style.color = '#6c757d';
+                dataDiv.textContent = JSON.stringify(data, null, 2);
+                logDiv.appendChild(dataDiv);
+            }
+            
+            logsContainer.appendChild(logDiv);
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+        }
+
+        // Función para limpiar logs de API
+        function clearApiLogs() {
+            apiLogs = [];
+            const logsContainer = document.getElementById('api-logs-container');
+            logsContainer.innerHTML = `
+                <div class="log-entry">
+                    <span style="color: #6c757d;">[Sistema]</span>
+                    <span style="color: #007bff;">Logs limpiados.</span>
+                </div>
+            `;
+        }
+
+        // Función para obtener token de autenticación
+        function getApiAuthToken() {
+            let token = localStorage.getItem('token') || 
+                       localStorage.getItem('auth_token') ||
+                       sessionStorage.getItem('token') ||
+                       sessionStorage.getItem('auth_token');
+            
+            if (!token && currentConfig.jwtToken) {
+                token = currentConfig.jwtToken;
+            }
+            
+            addApiLog('info', `Token obtenido: ${token ? 'SÍ' : 'NO'}`);
+            return token;
+        }
+
+        // Función API helper para pruebas de API keys
+        async function apiRequest(endpoint, options = {}) {
+            const url = `${currentConfig.apiBase}/${endpoint}`;
+            const token = getApiAuthToken();
+            
+            if (!token) {
+                addApiLog('error', 'No se encontró token de autenticación. Configura el JWT token arriba.');
+                throw new Error('No hay token de autenticación');
+            }
+            
+            const config = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                ...options
+            };
+            
+            if (config.body && typeof config.body === 'object') {
+                config.body = JSON.stringify(config.body);
+            }
+            
+            addApiLog('info', `Realizando petición a: ${endpoint}`);
+            
+            try {
+                const response = await fetch(url, config);
+                const data = await response.json();
+                
+                addApiLog('info', `Respuesta recibida (${response.status}):`, data);
+                return data;
+            } catch (error) {
+                addApiLog('error', 'Error en petición de red', error);
+                throw error;
+            }
+        }
+
+        // Función para probar autenticación
+        async function testAuth() {
+            addApiLog('info', 'Probando autenticación...');
+            
+            try {
+                const response = await apiRequest('test_auth_simple_safe.php', {
+                    method: 'GET'
+                });
+                
+                if (response.ok) {
+                    addApiLog('success', `Autenticación exitosa para: ${response.user?.email || 'usuario'}`);
+                    addApiLog('info', `Token: ${response.token_preview}`);
+                } else {
+                    addApiLog('error', `Error de autenticación: ${response.message || response.error}`);
+                }
+            } catch (error) {
+                addApiLog('error', 'Error probando autenticación', error);
+            }
+        }
+
+        // Función para configurar OpenAI
+        async function setupOpenAI() {
+            addApiLog('info', 'Configurando OpenAI con configuración de prueba...');
+            
+            try {
+                const response = await apiRequest('setup_openai_test_config_safe.php', {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    addApiLog('success', `✅ ${response.message}`);
+                    addApiLog('info', `Proveedor: ${response.provider_name} (ID: ${response.provider_id})`);
+                    addApiLog('info', 'Configuración agregada: GET https://api.openai.com/v1/models');
+                } else {
+                    addApiLog('error', `Error configurando OpenAI: ${response.message}`);
+                }
+            } catch (error) {
+                addApiLog('error', 'Error configurando OpenAI', error);
+            }
+        }
+
+        // Función para debug completo de testProviderKey
+        async function debugFullTest() {
+            addApiLog('info', 'Ejecutando debug completo de testProviderKey...');
+            
+            try {
+                const response = await apiRequest('debug_test_provider_key_safe.php', {
+                    method: 'POST',
+                    body: {
+                        provider_type: 'ai',
+                        provider_id: 1,
+                        project_fields: {}
+                    }
+                });
+                
+                if (response.ok) {
+                    addApiLog('success', `Debug completo de testProviderKey:`);
+                    addApiLog('info', `• Provider: ${response.debug.provider_row.name}`);
+                    addApiLog('info', `• Config JSON: ${JSON.stringify(response.debug.config_json_parsed)}`);
+                    addApiLog('info', `• API Key Length: ${response.debug.api_key_length}`);
+                    addApiLog('info', `• Test Result: ${JSON.stringify(response.debug.test_result)}`);
+                    
+                    if (response.debug.test_result && !response.debug.test_result.ok) {
+                        addApiLog('error', `❌ ERROR ENCONTRADO: ${response.debug.test_result.reason}`);
+                        addApiLog('info', `Debug info: ${response.debug.test_result.debug}`);
+                    }
+                } else {
+                    addApiLog('error', `Error en debug completo: ${response.message}`);
+                }
+            } catch (error) {
+                addApiLog('error', 'Error en debug completo', error);
+            }
+        }
+
+        // Función para cargar proveedores con claves
+        async function loadApiProviders() {
+            const providerType = document.getElementById('api-provider-type').value;
+            addApiLog('info', `Cargando proveedores CON CLAVES de tipo: ${providerType}`);
+            
+            try {
+                const response = await apiRequest('get_user_providers_with_keys_safe.php', {
+                    method: 'POST',
+                    body: {
+                        provider_type: providerType
+                    }
+                });
+                
+                addApiLog('info', `Respuesta de proveedores con claves recibida`, response);
+                
+                if (response.ok && response.providers) {
+                    currentApiProviders = response.providers;
+                    renderApiProviders();
+                    addApiLog('success', `Cargados ${currentApiProviders.length} proveedores CON CLAVES`);
+                } else {
+                    addApiLog('error', 'Error cargando proveedores con claves', response);
+                }
+            } catch (error) {
+                addApiLog('error', 'Error cargando proveedores con claves', error);
+            }
+        }
+
+        // Función para debug de carga de proveedores
+        async function debugLoadProviders() {
+            const providerType = document.getElementById('api-provider-type').value;
+            addApiLog('info', `🐛 Debug cargando proveedores de tipo: ${providerType}`);
+            
+            try {
+                const response = await apiRequest('debug_get_user_providers_with_keys_safe.php', {
+                    method: 'POST',
+                    body: {
+                        provider_type: providerType
+                    }
+                });
+                
+                addApiLog('info', `🐛 Debug respuesta recibida`, response);
+                
+                if (response.ok) {
+                    addApiLog('success', `✅ Debug exitoso para ${providerType}`);
+                    addApiLog('info', `• Tabla proveedores: ${response.debug.provider_table} (existe: ${response.debug.provider_table_exists ? 'SÍ' : 'NO'})`);
+                    addApiLog('info', `• Tabla claves: ${response.debug.user_table} (existe: ${response.debug.user_table_exists ? 'SÍ' : 'NO'})`);
+                    addApiLog('info', `• Proveedores disponibles: ${response.debug.provider_count}`);
+                    addApiLog('info', `• Claves del usuario: ${response.debug.user_key_count}`);
+                    addApiLog('info', `• Proveedores con claves: ${response.count}`);
+                    
+                    if (response.debug.provider_table_structure) {
+                        addApiLog('info', `• Campos tabla proveedores: ${response.debug.provider_table_structure.join(', ')}`);
+                    }
+                    if (response.debug.user_table_structure) {
+                        addApiLog('info', `• Campos tabla claves: ${response.debug.user_table_structure.join(', ')}`);
+                    }
+                } else {
+                    addApiLog('error', `❌ Debug fallido: ${response.message}`, response);
+                }
+            } catch (error) {
+                addApiLog('error', '❌ Error en debug de carga de proveedores', error);
+            }
+        }
+
+        // Función para renderizar proveedores
+        function renderApiProviders() {
+            const container = document.getElementById('api-providers-container');
+            
+            if (currentApiProviders.length === 0) {
+                container.innerHTML = `
+                    <div style="background: #fff3cd; border: 1px solid #ffeaa7; color: #856404; padding: 15px; border-radius: 8px;">
+                        <h4>🔑 Sin Claves Configuradas</h4>
+                        <p>No tienes claves API configuradas para este tipo de proveedor.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">';
+            
+            currentApiProviders.forEach(provider => {
+                const config = JSON.parse(provider.config_json || '{}');
+                const hasTestConfig = config.test && Object.keys(config.test).length > 0;
+                
+                html += `
+                    <div style="border: 1px solid #dee2e6; border-radius: 8px; padding: 15px; background: white;">
+                        <div style="font-weight: 600; margin-bottom: 10px;">${provider.name}</div>
+                        <div style="background: #d4edda; padding: 8px; border-radius: 4px; margin-bottom: 10px;">
+                            <strong>🔑 Clave:</strong> ••••${provider.last4}<br>
+                            <strong>Ambiente:</strong> ${provider.environment || 'live'}
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: end;">
+                            <div style="flex: 1;">
+                                <textarea id="api-fields-${provider.id}" style="width: 100%; padding: 8px; border: 1px solid #dee2e6; border-radius: 4px;" rows="2" placeholder='{"resource": "mi-recurso"}'></textarea>
+                            </div>
+                            <div style="display: flex; gap: 5px;">
+                                <button onclick="checkProviderConfig(${provider.id}, '${provider.name}')" 
+                                        style="background: #17a2b8; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">
+                                    🔍 Config
+                                </button>
+                                <button onclick="debugProviderTest(${provider.id}, '${provider.name}')" 
+                                        style="background: #6f42c1; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">
+                                    🐛 Debug
+                                </button>
+                                <button onclick="testApiProvider(${provider.id}, '${provider.name}')" 
+                                        style="background: #28a745; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;"
+                                        ${!hasTestConfig ? 'disabled' : ''}>
+                                    🧪 Probar
+                                </button>
+                            </div>
+                        </div>
+                        <div id="api-result-${provider.id}" style="margin-top: 15px; display: none;"></div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // Función para verificar configuración del proveedor
+        async function checkProviderConfig(providerId, providerName) {
+            const providerType = document.getElementById('api-provider-type').value;
+            addApiLog('info', `Verificando configuración de: ${providerName} (ID: ${providerId})`);
+            
+            try {
+                const response = await apiRequest('check_provider_config_safe.php', {
+                    method: 'POST',
+                    body: {
+                        provider_type: providerType,
+                        provider_id: providerId
+                    }
+                });
+                
+                if (response.ok) {
+                    addApiLog('success', `Configuración de ${providerName}:`);
+                    addApiLog('info', `• URL Request: ${response.provider.url_request || 'NO CONFIGURADA'}`);
+                    addApiLog('info', `• Base URL: ${response.provider.base_url || 'NO CONFIGURADA'}`);
+                    addApiLog('info', `• Auth Type: ${response.provider.auth_type || 'NO CONFIGURADA'}`);
+                    addApiLog('info', `• Has Test Config: ${response.has_test_config ? 'SÍ' : 'NO'}`);
+                    addApiLog('info', `• Test Config Keys: ${response.debug.test_config_keys.join(', ') || 'NINGUNA'}`);
+                    
+                    if (!response.has_test_config) {
+                        addApiLog('warning', `❌ ${providerName} NO tiene configuración de prueba (config_json.test)`);
+                        addApiLog('info', 'Esto explica el error "No URL set!"');
+                    }
+                } else {
+                    addApiLog('error', `Error verificando configuración de ${providerName}: ${response.message}`);
+                }
+            } catch (error) {
+                addApiLog('error', `Error verificando configuración de ${providerName}`, error);
+            }
+        }
+
+        // Función para debug de prueba de proveedor
+        async function debugProviderTest(providerId, providerName) {
+            const providerType = document.getElementById('api-provider-type').value;
+            addApiLog('info', `Debug de prueba para: ${providerName} (ID: ${providerId})`);
+            
+            try {
+                const response = await apiRequest('debug_provider_test_safe.php', {
+                    method: 'POST',
+                    body: {
+                        provider_type: providerType,
+                        provider_id: providerId
+                    }
+                });
+                
+                if (response.ok) {
+                    addApiLog('success', `Debug de ${providerName}:`);
+                    addApiLog('info', `• URL Request: ${response.debug.provider_row.url_request || 'NO CONFIGURADA'}`);
+                    addApiLog('info', `• URL Override: ${response.debug.url_construction.url_override}`);
+                    addApiLog('info', `• Final URL: ${response.debug.url_construction.final_url || 'VACÍA'}`);
+                    addApiLog('info', `• URL Empty: ${response.debug.url_construction.url_empty ? 'SÍ' : 'NO'}`);
+                    addApiLog('info', `• Has URL Override: ${response.debug.has_url_override ? 'SÍ' : 'NO'}`);
+                    addApiLog('info', `• Test Config Keys: ${response.debug.test_config_keys.join(', ') || 'NINGUNA'}`);
+                    
+                    if (response.debug.url_construction.url_empty) {
+                        addApiLog('warning', `❌ PROBLEMA: La URL final está vacía - esto causa "No URL set!"`);
+                    }
+                } else {
+                    addApiLog('error', `Error en debug de ${providerName}: ${response.message}`);
+                }
+            } catch (error) {
+                addApiLog('error', `Error en debug de ${providerName}`, error);
+            }
+        }
+
+        // Función para probar proveedor
+        async function testApiProvider(providerId, providerName) {
+            const providerType = document.getElementById('api-provider-type').value;
+            const fieldsText = document.getElementById(`api-fields-${providerId}`).value;
+            
+            addApiLog('info', `Probando: ${providerName} (ID: ${providerId})`);
+            
+            let projectFields = {};
+            if (fieldsText.trim()) {
+                try {
+                    projectFields = JSON.parse(fieldsText);
+                } catch (error) {
+                    addApiLog('error', 'Error parseando JSON', error);
+                    return;
+                }
+            }
+            
+            const resultDiv = document.getElementById(`api-result-${providerId}`);
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<div>🔄 Probando...</div>';
+            
+            try {
+                const response = await apiRequest('test_provider_key_safe.php', {
+                    method: 'POST',
+                    body: {
+                        provider_type: providerType,
+                        provider_id: providerId,
+                        project_fields: projectFields
+                    }
+                });
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<div style="color: green;">✅ ${providerName}: Conexión exitosa</div>`;
+                    addApiLog('success', `Prueba exitosa: ${providerName}`);
+                } else {
+                    resultDiv.innerHTML = `<div style="color: red;">❌ ${providerName}: ${response.reason || 'Error'}</div>`;
+                    addApiLog('error', `Prueba fallida: ${providerName}`);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div style="color: red;">❌ ${providerName}: Error de conexión</div>`;
+                addApiLog('error', `Error probando: ${providerName}`, error);
+            }
+        }
+
+        // Función para configurar proveedores de datos financieros
+        async function setupDataProviders() {
+            addApiLog('info', 'Configurando proveedores de datos financieros...');
+            
+            try {
+                const response = await apiRequest('setup_data_providers_test_configs_safe.php', {
+                    method: 'POST',
+                    body: {}
+                });
+                
+                if (response.ok) {
+                    addApiLog('success', `✅ ${response.message}`);
+                    addApiLog('info', `• Proveedores configurados: ${response.updated_count}/${response.total_configs}`);
+                    
+                    if (response.results && response.results.length > 0) {
+                        addApiLog('info', 'Proveedores configurados:');
+                        response.results.forEach(result => {
+                            if (result.updated) {
+                                addApiLog('info', `• ${result.provider_name} (${result.provider_slug}): ${result.test_config.method} ${result.test_config.url_override}`);
+                            }
+                        });
+                    }
+                    
+                    if (response.errors && response.errors.length > 0) {
+                        addApiLog('warning', 'Errores encontrados:');
+                        response.errors.forEach(error => {
+                            addApiLog('warning', `• ${error}`);
+                        });
+                    }
+                } else {
+                    addApiLog('error', `Error configurando proveedores: ${response.message || 'Error desconocido'}`);
+                }
+            } catch (error) {
+                addApiLog('error', 'Error configurando proveedores de datos', error);
+            }
+        }
+
+        // Función para configurar proveedores de noticias
+        async function setupNewsProviders() {
+            addApiLog('info', 'Configurando proveedores de noticias...');
+            
+            try {
+                const response = await apiRequest('setup_news_providers_test_configs_safe.php', {
+                    method: 'POST',
+                    body: {}
+                });
+                
+                if (response.ok) {
+                    addApiLog('success', `✅ ${response.message}`);
+                    addApiLog('info', `• Proveedores configurados: ${response.updated_count}/${response.total_configs}`);
+                    
+                    if (response.results && response.results.length > 0) {
+                        addApiLog('info', 'Proveedores configurados:');
+                        response.results.forEach(result => {
+                            if (result.updated) {
+                                addApiLog('info', `• ${result.provider_name} (${result.provider_slug}): ${result.test_config.method} ${result.test_config.url_override}`);
+                            }
+                        });
+                    }
+                    
+                    if (response.errors && response.errors.length > 0) {
+                        addApiLog('warning', 'Errores encontrados:');
+                        response.errors.forEach(error => {
+                            addApiLog('warning', `• ${error}`);
+                        });
+                    }
+                } else {
+                    addApiLog('error', `Error configurando proveedores de noticias: ${response.message || 'Error desconocido'}`);
+                }
+            } catch (error) {
+                addApiLog('error', 'Error configurando proveedores de noticias', error);
+            }
+        }
+
+        // Función para configurar proveedores de trading
+        async function setupTradeProviders() {
+            addApiLog('info', 'Configurando proveedores de trading...');
+            
+            try {
+                const response = await apiRequest('setup_trade_providers_test_configs_safe.php', {
+                    method: 'POST',
+                    body: {}
+                });
+                
+                if (response.ok) {
+                    addApiLog('success', `✅ ${response.message}`);
+                    addApiLog('info', `• Proveedores configurados: ${response.updated_count}/${response.total_configs}`);
+                    
+                    if (response.results && response.results.length > 0) {
+                        addApiLog('info', 'Proveedores configurados:');
+                        response.results.forEach(result => {
+                            if (result.updated) {
+                                addApiLog('info', `• ${result.provider_name} (${result.provider_slug}): ${result.test_config.method} ${result.test_config.url_override}`);
+                            }
+                        });
+                    }
+                    
+                    if (response.errors && response.errors.length > 0) {
+                        addApiLog('warning', 'Errores encontrados:');
+                        response.errors.forEach(error => {
+                            addApiLog('warning', `• ${error}`);
+                        });
+                    }
+                } else {
+                    addApiLog('error', `Error configurando proveedores de trading: ${response.message || 'Error desconocido'}`);
+                }
+            } catch (error) {
+                addApiLog('error', 'Error configurando proveedores de trading', error);
+            }
+        }
+
+        // ==================== FUNCIONALIDAD DE SUBIDA DE ARCHIVOS ====================
+        
+        let uploadedFiles = [];
+        
+        // Subir archivo usando el sistema existente
+        async function uploadFileToAI() {
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showResult('Error', 'Selecciona un archivo para subir', 'error');
+                return;
+            }
+            
+            addApiLog('info', `Iniciando subida de archivo: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+            
+            const formData = new FormData();
+            formData.append('files', file);
+            
+            try {
+                const response = await fetch(apiBase + '/ai_upload_knowledge_safe.php', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + getApiAuthToken()
+                    },
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.ok) {
+                    addApiLog('success', `Archivo subido exitosamente: ${result.original_filename}`);
+                    addApiLog('info', `File ID: ${result.file_id}`);
+                    addApiLog('info', `Archivo almacenado: ${result.stored_filename}`);
+                    
+                    showResult('✅ Archivo Subido', `Archivo ${result.original_filename} subido exitosamente. File ID: ${result.file_id}`, 'success');
+                    
+                    // Actualizar la lista de archivos
+                    await listUploadedFiles();
+                    
+                } else {
+                    addApiLog('error', `Error subiendo archivo: ${result.message}`);
+                    showResult('Error', `Error subiendo archivo: ${result.message}`, 'error');
+                }
+                
+            } catch (error) {
+                addApiLog('error', 'Error en subida de archivo', error);
+                showResult('Error', 'Error de conexión durante la subida', 'error');
+            }
+        }
+        
+        
+        // Listar archivos subidos usando el sistema existente
+        async function listUploadedFiles() {
+            addApiLog('info', 'Obteniendo lista de archivos subidos...');
+            
+            try {
+                const response = await fetch(apiBase + '/ai_knowledge_list_safe.php', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + getApiAuthToken()
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.ok) {
+                    addApiLog('success', `Encontrados ${result.files ? result.files.length : 0} archivos`);
+                    
+                    uploadedFiles = result.files || [];
+                    updateFileList();
+                    
+                    showResult('📁 Archivos Listados', 
+                        `Total: ${result.files ? result.files.length : 0} archivos encontrados`, 'info');
+                        
+                } else {
+                    addApiLog('error', `Error obteniendo archivos: ${result.message}`);
+                    showResult('Error', `Error obteniendo archivos: ${result.message}`, 'error');
+                }
+                
+            } catch (error) {
+                addApiLog('error', 'Error obteniendo lista de archivos', error);
+                showResult('Error', 'Error de conexión obteniendo archivos', 'error');
+            }
+        }
+        
+        // Actualizar lista de archivos en la UI
+        function updateFileList() {
+            const fileList = document.getElementById('file-list');
+            if (!fileList) return;
+            
+            fileList.innerHTML = '';
+            
+            if (uploadedFiles.length === 0) {
+                fileList.innerHTML = '<p class="text-gray-500">No hay archivos subidos</p>';
+                return;
+            }
+            
+            uploadedFiles.forEach(file => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item p-3 border rounded mb-2';
+                fileItem.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="font-semibold">${file.filename || file.original_filename}</h4>
+                            <p class="text-sm text-gray-600">
+                                Tipo: ${file.file_type || 'N/A'} | 
+                                Tamaño: ${file.file_size_mb || (file.file_size / 1024 / 1024).toFixed(2)} MB | 
+                                Estado: ${file.upload_status || 'N/A'}
+                            </p>
+                            ${file.ai_file_id ? `<p class="text-sm text-blue-600">AI File ID: ${file.ai_file_id}</p>` : ''}
+                            ${file.vector_store_id ? `<p class="text-sm text-green-600">Vector Store: ${file.vector_store_id}</p>` : ''}
+                        </div>
+                        <div class="text-right">
+                            <span class="badge ${file.is_processed ? 'success' : 'warning'}">
+                                ${file.is_processed ? 'Procesado' : 'Pendiente'}
+                            </span>
+                            ${file.has_extraction ? '<span class="badge info">Extraído</span>' : ''}
+                        </div>
+                    </div>
+                `;
+                fileList.appendChild(fileItem);
+            });
+        }
+        
+        
+
+
+
+        // Función para debug header replacement
+        async function debugHeaderReplacement() {
+            showResult('🔍 Debug Header Replacement', 'Analizando reemplazo de headers...', 'info');
+            
+            try {
+                const response = await makeRequest('debug_header_replacement_safe.php', 'GET');
+                
+                if (response.ok) {
+                    let result = '✅ Debug Header Replacement OK\n\n';
+                    
+                    if (response.debug) {
+                        result += `API Key Info:\n`;
+                        result += `• Length: ${response.debug.api_key_length}\n`;
+                        result += `• Prefix: ${response.debug.api_key_prefix}\n`;
+                        result += `• Suffix: ${response.debug.api_key_suffix}\n\n`;
+                        
+                        result += `Headers Original:\n`;
+                        response.debug.headers_original.forEach(header => {
+                            result += `• ${header.name}: ${header.value}\n`;
+                        });
+                        
+                        result += `\nHeaders Processed:\n`;
+                        response.debug.headers_processed.forEach(header => {
+                            result += `• ${header}\n`;
+                        });
+                        
+                        result += `\nAvailable Params: ${response.debug.params.join(', ')}`;
+                    }
+                    
+                    showResult('🔍 Debug Header Replacement', result, 'success');
+                } else {
+                    let errorMsg = `Error: ${response.error || 'unknown'}`;
+                    if (response.detail) errorMsg += `\nDetail: ${response.detail}`;
+                    showResult('❌ Debug Header Replacement Error', errorMsg, 'error');
+                }
+            } catch (error) {
+                showResult('❌ Debug Header Replacement Error', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Función para test variable replacement
+        async function testVariableReplacement() {
+            showResult('🔧 Test Variable Replacement', 'Probando reemplazo de variables...', 'info');
+            
+            try {
+                const response = await makeRequest('test_variable_replacement_safe.php', 'GET');
+                
+                if (response.ok) {
+                    let result = '✅ Test Variable Replacement OK\n\n';
+                    
+                    if (response.test_results) {
+                        result += `Simple Template Test:\n`;
+                        result += `• Original: ${response.test_results.simple_template.original}\n`;
+                        result += `• Replaced: ${response.test_results.simple_template.replaced}\n`;
+                        result += `• API Key Length: ${response.test_results.simple_template.api_key_length}\n`;
+                        result += `• API Key Prefix: ${response.test_results.simple_template.api_key_prefix}\n`;
+                        result += `• API Key Suffix: ${response.test_results.simple_template.api_key_suffix}\n\n`;
+                        
+                        result += `Header Template Test:\n`;
+                        result += `• Original: ${response.test_results.header_template.original}\n`;
+                        result += `• Replaced: ${response.test_results.header_template.replaced}\n`;
+                        result += `• Contains {{API_KEY}}: ${response.test_results.header_template.contains_api_key_placeholder}\n`;
+                        result += `• Contains API Key Value: ${response.test_results.header_template.contains_api_key_value}\n\n`;
+                        
+                        result += `Available Params: ${response.test_results.params.join(', ')}`;
+                    }
+                    
+                    showResult('🔧 Test Variable Replacement', result, 'success');
+                } else {
+                    let errorMsg = `Error: ${response.error || 'unknown'}`;
+                    if (response.detail) errorMsg += `\nDetail: ${response.detail}`;
+                    showResult('❌ Test Variable Replacement Error', errorMsg, 'error');
+                }
+            } catch (error) {
+                showResult('❌ Test Variable Replacement Error', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Función para check available ops
+        async function checkAvailableOps() {
+            showResult('📋 Check Available Ops', 'Verificando operaciones disponibles...', 'info');
+            
+            try {
+                const response = await makeRequest('check_available_ops_safe.php', 'GET');
+                
+                if (response.ok) {
+                    let result = '✅ Check Available Ops OK\n\n';
+                    result += `Provider: ${response.provider.name} (${response.provider.slug})\n\n`;
+                    result += `Critical Operations Status:\n`;
+                    result += `• vs.store.get: ${response.critical_ops_status['vs.store.get']}\n`;
+                    result += `• vs.files: ${response.critical_ops_status['vs.files']}\n`;
+                    result += `• vs.summarize_from_vs: ${response.critical_ops_status['vs.summarize_from_vs']}\n\n`;
+                    result += `Available Operations (${response.operations.total_count}):\n`;
+                    result += response.operations.available.join(', ');
+                    
+                    showResult('📋 Check Available Ops', result, 'success');
+                } else {
+                    let errorMsg = `Error: ${response.error || 'unknown'}`;
+                    if (response.detail) errorMsg += `\nDetail: ${response.detail}`;
+                    showResult('❌ Check Available Ops Error', errorMsg, 'error');
+                }
+            } catch (error) {
+                showResult('❌ Check Available Ops Error', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Función para debug vs.store.get
+        async function debugVsStore() {
+            showResult('🔍 Debug vs.store.get', 'Analizando configuración vs.store.get...', 'info');
+            
+            try {
+                const response = await makeRequest('debug_vs_store_get_safe.php', 'GET');
+                
+                if (response.ok) {
+                    let result = '✅ Debug vs.store.get OK\n\n';
+                    result += `Provider: ${response.provider.name} (${response.provider.slug})\n`;
+                    result += `vs.store.get exists: ${response.vs_store_get_exists}\n\n`;
+                    
+                    if (response.vs_store_get_config) {
+                        result += `vs.store.get Config:\n`;
+                        result += `• Method: ${response.vs_store_get_config.method}\n`;
+                        result += `• URL: ${response.vs_store_get_config.url_override}\n`;
+                        result += `• Headers:\n`;
+                        if (response.vs_store_get_config.headers) {
+                            response.vs_store_get_config.headers.forEach(header => {
+                                result += `  - ${header.name}: ${header.value}\n`;
+                            });
+                        }
+                        result += `\nAvailable operations: ${response.available_operations.join(', ')}`;
+                    } else {
+                        result += `❌ vs.store.get config not found!`;
+                    }
+                    
+                    showResult('🔍 Debug vs.store.get', result, 'success');
+                } else {
+                    let errorMsg = `Error: ${response.error || 'unknown'}`;
+                    if (response.message) errorMsg += `\nMessage: ${response.message}`;
+                    if (response.detail) errorMsg += `\nDetail: ${response.detail}`;
+                    if (response.debug) errorMsg += `\nDebug: ${JSON.stringify(response.debug, null, 2)}`;
+                    showResult('❌ Debug vs.store.get Error', errorMsg, 'error');
+                }
+            } catch (error) {
+                showResult('❌ Debug vs.store.get Error', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Función para debug API key
+        async function debugApiKey() {
+            showResult('🐛 Debug API Key', 'Analizando API key...', 'info');
+            
+            try {
+                const response = await makeRequest('debug_api_key_simple_safe.php', 'GET');
+                
+                if (response.ok) {
+                    let result = '✅ Debug API Key OK\n\n';
+                    if (response.debug) {
+                        result += `Debug Info:\n`;
+                        result += `• User ID: ${response.debug.user_id}\n`;
+                        result += `• Provider ID: ${response.debug.provider_id}\n`;
+                        result += `• Last 4: ${response.debug.last4}\n`;
+                        result += `• Length: ${response.debug.api_key_length}\n`;
+                        result += `• Prefix: ${response.debug.api_key_prefix}\n`;
+                        result += `• Suffix: ${response.debug.api_key_suffix}\n`;
+                        result += `• Valid Format: ${response.debug.is_valid_format}\n`;
+                        result += `• Starts with sk-: ${response.debug.starts_with_sk}`;
+                    }
+                    
+                    showResult('🐛 Debug API Key', result, 'success');
+                } else {
+                    let errorMsg = `Error: ${response.error || 'unknown'}`;
+                    if (response.message) errorMsg += `\nMessage: ${response.message}`;
+                    if (response.detail) errorMsg += `\nDetail: ${response.detail}`;
+                    if (response.debug) errorMsg += `\nDebug: ${JSON.stringify(response.debug, null, 2)}`;
+                    showResult('❌ Debug API Key Error', errorMsg, 'error');
+                }
+            } catch (error) {
+                showResult('❌ Debug API Key Error', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Función para test API key
+        async function testApiKey() {
+            showResult('🔑 Test API Key', 'Probando API key...', 'info');
+            
+            try {
+                const response = await makeRequest('test_api_key_safe.php', 'GET');
+                
+                if (response.ok) {
+                    let result = '✅ Test API Key OK\n\n';
+                    if (response.api_key_info) {
+                        result += `API Key Info:\n`;
+                        result += `• Last 4: ${response.api_key_info.last4}\n`;
+                        result += `• Length: ${response.api_key_info.length}\n`;
+                        result += `• Prefix: ${response.api_key_info.prefix}\n`;
+                        result += `• Suffix: ${response.api_key_info.suffix}\n\n`;
+                    }
+                    if (response.test_result) {
+                        result += `Test Result:\n`;
+                        result += `• HTTP Code: ${response.test_result.http_code}\n`;
+                        result += `• Curl Error: ${response.test_result.curl_error || 'None'}\n`;
+                        result += `• Response: ${response.test_result.response_preview}`;
+                    }
+                    
+                    showResult('🔑 Test API Key', result, 'success');
+                } else {
+                    let errorMsg = `Error: ${response.error || 'unknown'}`;
+                    if (response.message) errorMsg += `\nMessage: ${response.message}`;
+                    if (response.detail) errorMsg += `\nDetail: ${response.detail}`;
+                    showResult('❌ Test API Key Error', errorMsg, 'error');
+                }
+            } catch (error) {
+                showResult('❌ Test API Key Error', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Función para fix operación vs.get
+        async function fixVsGetOperation() {
+            showResult('🔧 Fix vs.get', 'Añadiendo operación vs.get para Vector Stores...', 'info');
+            
+            try {
+                const response = await makeRequest('fix_vs_get_operation_safe.php', 'GET');
+                
+                if (response.ok) {
+                    showResult('✅ Fix vs.get', `Operación añadida correctamente:\n\n${JSON.stringify(response.added_operation, null, 2)}\n\nNota: ${response.note}`, 'success');
+                } else {
+                    showResult('❌ Fix vs.get Error', `Error: ${response.error || 'unknown'}`, 'error');
+                }
+            } catch (error) {
+                showResult('❌ Fix vs.get Error', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Función para restaurar operación vs.get
+        async function restoreVsGetOperation() {
+            showResult('🔧 Restaurar vs.get', 'Restaurando operación vs.get para Vector Stores...', 'info');
+            
+            try {
+                const response = await makeRequest('restore_vs_get_operation_safe.php', 'GET');
+                
+                if (response.ok) {
+                    showResult('✅ Restaurar vs.get', `Operación restaurada correctamente:\n\n${JSON.stringify(response.added_operation, null, 2)}\n\nNota: ${response.note}`, 'success');
+                } else {
+                    showResult('❌ Restaurar vs.get Error', `Error: ${response.error || 'unknown'}`, 'error');
+                }
+            } catch (error) {
+                showResult('❌ Restaurar vs.get Error', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Función para añadir operación vs.get
+        async function addVsGetOperation() {
+            showResult('➕ Añadir vs.get', 'Añadiendo operación vs.get...', 'info');
+            
+            try {
+                const response = await makeRequest('add_vs_get_operation_safe.php', 'GET');
+                
+                if (response.ok) {
+                    showResult('✅ Añadir vs.get', `Operación añadida correctamente:\n\n${JSON.stringify(response.added_operation, null, 2)}`, 'success');
+                } else {
+                    showResult('❌ Añadir vs.get Error', `Error: ${response.error || 'unknown'}`, 'error');
+                }
+            } catch (error) {
+                showResult('❌ Añadir vs.get Error', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Función para debug de ops_json
+        async function debugOpsJson() {
+            showResult('🔧 Debug ops_json', 'Iniciando...', 'info');
+            
+            try {
+                const response = await makeRequest('debug_ops_json_safe.php', 'GET');
+                
+                if (response.ok) {
+                    let result = '✅ Debug ops_json OK\n\n';
+                    result += `Proveedor: ${response.provider.name} (${response.provider.slug})\n\n`;
+                    
+                    if (response.vs_get_config) {
+                        result += '📋 vs.get config:\n';
+                        result += JSON.stringify(response.vs_get_config, null, 2) + '\n\n';
+                    }
+                    
+                    if (response.vs_files_config) {
+                        result += '📋 vs.files config:\n';
+                        result += JSON.stringify(response.vs_files_config, null, 2) + '\n\n';
+                    }
+                    
+                    result += '📋 ops_json completo:\n';
+                    result += JSON.stringify(response.ops_json, null, 2);
+                    
+                    showResult('🔧 Debug ops_json', result, 'success');
+                } else {
+                    showResult('❌ Debug ops_json Error', `Error: ${response.error || 'unknown'}`, 'error');
+                }
+            } catch (error) {
+                showResult('❌ Debug ops_json Error', `Error: ${error.message}`, 'error');
+            }
+        }
+
         // Inicialización
         document.addEventListener('DOMContentLoaded', function() {
-            showResult('🔬 AI Diagnostic Tool', 'Herramienta de diagnóstico iniciada. Configura tu JWT token y File ID para comenzar.', 'info');
+            showResult('🔬 AI Diagnostic Tool', 'Herramienta de diagnóstico iniciada. Configura tu JWT token para comenzar.', 'info');
+            
+            // Event listeners para API keys
+            document.getElementById('test-auth').addEventListener('click', testAuth);
+            document.getElementById('load-api-providers').addEventListener('click', loadApiProviders);
+            document.getElementById('debug-load-providers').addEventListener('click', debugLoadProviders);
+            document.getElementById('setup-openai').addEventListener('click', setupOpenAI);
+            document.getElementById('setup-data-providers').addEventListener('click', setupDataProviders);
+            document.getElementById('setup-news-providers').addEventListener('click', setupNewsProviders);
+            document.getElementById('setup-trade-providers').addEventListener('click', setupTradeProviders);
+            document.getElementById('debug-full-test').addEventListener('click', debugFullTest);
+            document.getElementById('clear-api-logs').addEventListener('click', clearApiLogs);
+            
+            // Event listeners para funcionalidad de archivos
+            if (document.getElementById('upload-file-btn')) {
+                document.getElementById('upload-file-btn').addEventListener('click', uploadFileToAI);
+            }
+            if (document.getElementById('list-files-btn')) {
+                document.getElementById('list-files-btn').addEventListener('click', listUploadedFiles);
+            }
+            if (document.getElementById('test-runop-btn')) {
+                document.getElementById('test-runop-btn').addEventListener('click', testRunOpFunction);
+            }
+            if (document.getElementById('list-ai-resources-btn')) {
+                document.getElementById('list-ai-resources-btn').addEventListener('click', listAIResources);
+            }
+            if (document.getElementById('upload-to-ai-btn')) {
+                document.getElementById('upload-to-ai-btn').addEventListener('click', uploadFileToAIOnly);
+            }
+            if (document.getElementById('test-extract-btn')) {
+                document.getElementById('test-extract-btn').addEventListener('click', testAIExtraction);
+            }
+            if (document.getElementById('test-provider-debug-btn')) {
+                document.getElementById('test-provider-debug-btn').addEventListener('click', testProviderDebug);
+            }
+            if (document.getElementById('test-runop-direct-btn')) {
+                document.getElementById('test-runop-direct-btn').addEventListener('click', testRunOpDirect);
+            }
+            if (document.getElementById('debug-ops-json-btn')) {
+                document.getElementById('debug-ops-json-btn').addEventListener('click', debugOpsJson);
+            }
+            if (document.getElementById('add-vs-get-btn')) {
+                document.getElementById('add-vs-get-btn').addEventListener('click', addVsGetOperation);
+            }
+            if (document.getElementById('restore-vs-get-btn')) {
+                document.getElementById('restore-vs-get-btn').addEventListener('click', restoreVsGetOperation);
+            }
+            if (document.getElementById('fix-vs-get-btn')) {
+                document.getElementById('fix-vs-get-btn').addEventListener('click', fixVsGetOperation);
+            }
+            if (document.getElementById('test-api-key-btn')) {
+                document.getElementById('test-api-key-btn').addEventListener('click', testApiKey);
+            }
+            if (document.getElementById('debug-api-key-btn')) {
+                document.getElementById('debug-api-key-btn').addEventListener('click', debugApiKey);
+            }
+            if (document.getElementById('debug-vs-store-btn')) {
+                document.getElementById('debug-vs-store-btn').addEventListener('click', debugVsStore);
+            }
+            if (document.getElementById('check-ops-btn')) {
+                document.getElementById('check-ops-btn').addEventListener('click', checkAvailableOps);
+            }
+            if (document.getElementById('test-var-replacement-btn')) {
+                document.getElementById('test-var-replacement-btn').addEventListener('click', testVariableReplacement);
+            }
+            if (document.getElementById('debug-header-replacement-btn')) {
+                document.getElementById('debug-header-replacement-btn').addEventListener('click', debugHeaderReplacement);
+            }
         });
     </script>
 </body>

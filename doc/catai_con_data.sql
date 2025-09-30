@@ -1,6 +1,6 @@
 -- --------------------------------------------------------
 -- Host:                         82.197.82.184
--- Versión del servidor:         10.11.10-MariaDB-log - MariaDB Server
+-- Versión del servidor:         11.8.3-MariaDB-log - MariaDB Server
 -- SO del servidor:              Linux
 -- HeidiSQL Versión:             12.11.0.7065
 -- --------------------------------------------------------
@@ -14,35 +14,500 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+-- Volcando estructura para tabla u522228883_bolsa_app.ai_analysis_history
+CREATE TABLE IF NOT EXISTS `ai_analysis_history` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `symbol` varchar(20) NOT NULL,
+  `analysis_type` varchar(50) DEFAULT 'comprehensive',
+  `timeframe` varchar(20) DEFAULT '15min',
+  `content` longtext DEFAULT NULL,
+  `ai_provider` varchar(50) DEFAULT 'behavioral_ai',
+  `confidence_score` decimal(3,2) DEFAULT 0.50,
+  `success_outcome` tinyint(1) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `provider_id` bigint(20) DEFAULT NULL,
+  `model_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_user_symbol` (`user_id`,`symbol`),
+  KEY `idx_user_created` (`user_id`,`created_at` DESC),
+  KEY `idx_symbol_created` (`symbol`,`created_at` DESC),
+  KEY `idx_analysis_type` (`analysis_type`),
+  KEY `idx_analysis_history_outcome` (`user_id`,`success_outcome`,`created_at` DESC),
+  KEY `idx_provider_model` (`provider_id`,`model_id`),
+  CONSTRAINT `ai_analysis_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Volcando datos para la tabla u522228883_bolsa_app.ai_analysis_history: ~0 rows (aproximadamente)
+
+-- Volcando estructura para tabla u522228883_bolsa_app.ai_behavioral_patterns
+CREATE TABLE IF NOT EXISTS `ai_behavioral_patterns` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `pattern_type` varchar(100) DEFAULT 'general',
+  `confidence` decimal(3,2) DEFAULT 0.50,
+  `frequency` int(11) DEFAULT 1,
+  `last_seen` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_user_pattern` (`user_id`,`name`),
+  KEY `idx_user_confidence` (`user_id`,`confidence` DESC),
+  KEY `idx_pattern_type` (`pattern_type`),
+  KEY `idx_behavioral_patterns_frequency` (`user_id`,`frequency` DESC),
+  CONSTRAINT `ai_behavioral_patterns_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Volcando datos para la tabla u522228883_bolsa_app.ai_behavioral_patterns: ~0 rows (aproximadamente)
 
+-- Volcando estructura para tabla u522228883_bolsa_app.ai_behavior_profiles
+CREATE TABLE IF NOT EXISTS `ai_behavior_profiles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `profile_name` varchar(100) NOT NULL DEFAULT 'default',
+  `symbol` varchar(20) DEFAULT NULL,
+  `behavior_config` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`behavior_config`)),
+  `success_rate` decimal(5,2) DEFAULT 0.00,
+  `total_analyses` int(11) DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_user_profile_symbol` (`user_id`,`profile_name`,`symbol`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_symbol` (`symbol`),
+  KEY `idx_success_rate` (`success_rate`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Volcando datos para la tabla u522228883_bolsa_app.ai_behavior_profiles: ~0 rows (aproximadamente)
 
+-- Volcando estructura para tabla u522228883_bolsa_app.ai_learning_events
+CREATE TABLE IF NOT EXISTS `ai_learning_events` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `analysis_id` int(11) DEFAULT NULL,
+  `symbol` varchar(20) DEFAULT NULL,
+  `outcome` enum('success','failure','neutral') DEFAULT NULL,
+  `traded` tinyint(1) DEFAULT 0,
+  `effectiveness_score` decimal(3,2) DEFAULT NULL,
+  `learning_type` enum('analysis_result','user_feedback','pattern_discovery') DEFAULT 'analysis_result',
+  `context_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`context_data`)),
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user_symbol` (`user_id`,`symbol`),
+  KEY `idx_outcome` (`outcome`),
+  KEY `idx_created_at` (`created_at`),
+  KEY `idx_learning_events_impact` (`user_id`,`created_at` DESC)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Volcando datos para la tabla u522228883_bolsa_app.ai_learning_events: ~0 rows (aproximadamente)
+
+-- Volcando estructura para tabla u522228883_bolsa_app.ai_learning_metrics
+CREATE TABLE IF NOT EXISTS `ai_learning_metrics` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `total_analyses` int(11) DEFAULT 0,
+  `success_rate` decimal(5,2) DEFAULT 0.00,
+  `patterns_learned` int(11) DEFAULT 0,
+  `accuracy_score` decimal(5,2) DEFAULT 0.00,
+  `last_updated` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_user_metrics` (`user_id`),
+  KEY `idx_learning_metrics_success` (`user_id`,`success_rate` DESC),
+  CONSTRAINT `ai_learning_metrics_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Volcando datos para la tabla u522228883_bolsa_app.ai_learning_metrics: ~5 rows (aproximadamente)
 REPLACE INTO `ai_learning_metrics` (`id`, `user_id`, `total_analyses`, `success_rate`, `patterns_learned`, `accuracy_score`, `last_updated`, `created_at`) VALUES
 	(1, 1, 0, 0.00, 0, 0.00, '2025-09-09 11:32:54', '2025-09-09 11:32:54'),
 	(2, 7, 0, 0.00, 0, 0.00, '2025-09-09 11:32:54', '2025-09-09 11:32:54'),
 	(3, 5, 0, 0.00, 0, 0.00, '2025-09-09 11:32:54', '2025-09-09 11:32:54'),
-	(4, 6, 0, 0.00, 0, 0.00, '2025-09-09 11:32:54', '2025-09-09 11:32:54'),
 	(5, 4, 0, 0.00, 0, 0.00, '2025-09-09 11:32:54', '2025-09-09 11:32:54');
+
+-- Volcando estructura para tabla u522228883_bolsa_app.ai_models
+CREATE TABLE IF NOT EXISTS `ai_models` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `provider_id` bigint(20) NOT NULL,
+  `slug` varchar(64) NOT NULL,
+  `label` varchar(100) NOT NULL,
+  `api_name` varchar(100) NOT NULL,
+  `modality` varchar(32) NOT NULL,
+  `api_style` enum('responses','chat_completions','anthropic_messages','google_gemini','xai_chat','custom') NOT NULL DEFAULT 'responses',
+  `supports_file_search` tinyint(1) NOT NULL DEFAULT 0,
+  `supports_input_file` tinyint(1) NOT NULL DEFAULT 0,
+  `supports_json_schema` tinyint(1) NOT NULL DEFAULT 1,
+  `supports_tools` tinyint(1) NOT NULL DEFAULT 1,
+  `context_window` int(11) DEFAULT NULL,
+  `max_output_tokens` int(11) DEFAULT NULL,
+  `pricing_input_usd` decimal(8,6) DEFAULT NULL,
+  `pricing_output_usd` decimal(8,6) DEFAULT NULL,
+  `is_enabled` tinyint(1) NOT NULL DEFAULT 1,
+  `status` enum('active','preview','deprecated','disabled') NOT NULL DEFAULT 'active',
+  `notes` text DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_provider_model` (`provider_id`,`slug`),
+  KEY `idx_ai_models_provider_slug` (`provider_id`,`slug`),
+  CONSTRAINT `fk_ai_models_provider` FOREIGN KEY (`provider_id`) REFERENCES `ai_providers` (`id`),
+  CONSTRAINT `fk_models_provider` FOREIGN KEY (`provider_id`) REFERENCES `ai_providers` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla u522228883_bolsa_app.ai_models: ~3 rows (aproximadamente)
+REPLACE INTO `ai_models` (`id`, `provider_id`, `slug`, `label`, `api_name`, `modality`, `api_style`, `supports_file_search`, `supports_input_file`, `supports_json_schema`, `supports_tools`, `context_window`, `max_output_tokens`, `pricing_input_usd`, `pricing_output_usd`, `is_enabled`, `status`, `notes`, `created_at`, `updated_at`) VALUES
+	(1, 1, 'gpt-4o', 'GPT-4o', 'gpt-4o', 'chat', 'responses', 1, 1, 1, 1, 128000, 4096, NULL, NULL, 1, 'active', 'Multimodal (texto+visión). Úsalo con Responses API; soporta input_file y File Search.', '2025-09-14 17:23:27', '2025-09-14 17:51:06'),
+	(2, 1, 'gpt-4o-mini', 'GPT-4o mini', 'gpt-4o-mini', 'chat', 'responses', 1, 1, 1, 1, 128000, 4096, NULL, NULL, 1, 'active', 'Modelo económico; bueno para resúmenes/ETL de PDFs con schema JSON.', '2025-09-14 17:23:27', '2025-09-14 17:23:27'),
+	(3, 1, 'text-embedding-3-large', 'Text Embedding 3 Large', 'text-embedding-3-large', 'embedding', 'responses', 0, 0, 0, 0, NULL, NULL, NULL, NULL, 1, 'active', 'Embeddings de alta calidad para indexación / vectores.', '2025-09-14 17:23:27', '2025-09-14 17:23:27');
+
+-- Volcando estructura para tabla u522228883_bolsa_app.ai_projects
+CREATE TABLE IF NOT EXISTS `ai_projects` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `provider_id` bigint(20) NOT NULL,
+  `external_id` varchar(128) NOT NULL,
+  `name` varchar(120) NOT NULL,
+  `plan` enum('trial_shared','customer_dedicated','internal') NOT NULL,
+  `monthly_budget_usd` decimal(10,2) DEFAULT NULL,
+  `status` enum('active','suspended','archived') DEFAULT 'active',
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_provider_external` (`provider_id`,`external_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla u522228883_bolsa_app.ai_projects: ~0 rows (aproximadamente)
+
+-- Volcando estructura para tabla u522228883_bolsa_app.ai_project_members
+CREATE TABLE IF NOT EXISTS `ai_project_members` (
+  `project_id` bigint(20) NOT NULL,
+  `user_id` bigint(20) NOT NULL,
+  `role` enum('owner','admin','member') DEFAULT 'member',
+  PRIMARY KEY (`project_id`,`user_id`),
+  KEY `idx_user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla u522228883_bolsa_app.ai_project_members: ~0 rows (aproximadamente)
+
+-- Volcando estructura para tabla u522228883_bolsa_app.ai_providers
+CREATE TABLE IF NOT EXISTS `ai_providers` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `slug` varchar(64) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `label` varchar(100) NOT NULL,
+  `type` enum('ai','data','news','trade') NOT NULL DEFAULT 'ai',
+  `category` varchar(50) DEFAULT NULL,
+  `status` enum('active','disabled','enabled') NOT NULL DEFAULT 'active',
+  `auth_type` enum('api_key','basic','oauth2','hmac','none') NOT NULL DEFAULT 'api_key',
+  `base_url` varchar(255) DEFAULT NULL,
+  `docs_url` varchar(255) DEFAULT NULL,
+  `rate_limit_per_min` int(11) DEFAULT NULL,
+  `is_enabled` tinyint(1) NOT NULL DEFAULT 1,
+  `config_json` longtext DEFAULT NULL CHECK (json_valid(`config_json`)),
+  `icon_url` varchar(512) DEFAULT NULL,
+  `icon_svg` mediumtext DEFAULT NULL,
+  `brand_color` varchar(9) DEFAULT NULL,
+  `display_order` int(11) DEFAULT 0,
+  `url_request` varchar(255) DEFAULT NULL,
+  `coverage` enum('global','regional','local','specialized') DEFAULT 'global',
+  `language` varchar(10) DEFAULT 'en',
+  `pricing_tier` enum('free','freemium','paid','enterprise') DEFAULT 'freemium',
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `request_method` enum('GET','POST','PUT','PATCH','DELETE') DEFAULT 'GET',
+  `auth_header_name` varchar(128) DEFAULT NULL,
+  `auth_query_name` varchar(128) DEFAULT NULL,
+  `headers_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`headers_json`)),
+  `query_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`query_json`)),
+  `body_template` mediumtext DEFAULT NULL,
+  `body_type` enum('json','form','text') DEFAULT 'json',
+  `expected_status_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`expected_status_json`)),
+  `ok_json_path` varchar(256) DEFAULT NULL,
+  `ok_json_expected` varchar(256) DEFAULT NULL,
+  `success_regex` varchar(512) DEFAULT NULL,
+  `url_override_template` varchar(512) DEFAULT NULL,
+  `required_fields_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`required_fields_json`)),
+  `default_fields_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`default_fields_json`)),
+  `extract_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`extract_json`)),
+  `ops_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`ops_json`)),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_ai_providers_slug` (`slug`)
+) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla u522228883_bolsa_app.ai_providers: ~36 rows (aproximadamente)
+REPLACE INTO `ai_providers` (`id`, `slug`, `name`, `label`, `type`, `category`, `status`, `auth_type`, `base_url`, `docs_url`, `rate_limit_per_min`, `is_enabled`, `config_json`, `icon_url`, `icon_svg`, `brand_color`, `display_order`, `url_request`, `coverage`, `language`, `pricing_tier`, `created_at`, `updated_at`, `request_method`, `auth_header_name`, `auth_query_name`, `headers_json`, `query_json`, `body_template`, `body_type`, `expected_status_json`, `ok_json_path`, `ok_json_expected`, `success_regex`, `url_override_template`, `required_fields_json`, `default_fields_json`, `extract_json`, `ops_json`) VALUES
+	(1, 'openai', 'OpenAI', 'OpenAI', 'ai', 'llm', 'active', 'api_key', 'https://api.openai.com', 'https://platform.openai.com/docs', NULL, 1, '{"test":{"method":"GET","headers":[{"name":"Authorization","value":"Bearer {{API_KEY}}"}],"url_override":"https:\\/\\/api.openai.com\\/v1\\/models","expected_status":200,"ok_json_path":"object","ok_json_expected":"list"}}', NULL, NULL, '#74AA9C', 10, 'https://api.openai.com/v1/models', 'global', 'en', 'paid', '2025-09-17 09:44:51', '2025-09-25 16:32:21', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '{\r\n  "provider_profile": {\r\n    "vs": "provider"\r\n  },\r\n  "multi": {\r\n    "vs.upload": {\r\n      "method": "POST",\r\n      "url_override": "https://api.openai.com/v1/files",\r\n      "headers": [\r\n        { "name": "Authorization", "value": "Bearer {{API_KEY}}" }\r\n      ],\r\n      "body_type": "multipart",\r\n      "multipart": [\r\n        { "name": "file", "type": "file", "value": "{{FILE_PATH}}" },\r\n        { "name": "purpose", "type": "text", "value": "assistants" }\r\n      ],\r\n      "expected_status": 200,\r\n      "ok_json_path": "id",\r\n      "ok_json_expected": "exists"\r\n    },\r\n\r\n    "vs.attach": {\r\n      "method": "POST",\r\n      "url_override": "https://api.openai.com/v1/vector_stores/{{VS_ID}}/files",\r\n      "headers": [\r\n        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },\r\n        { "name": "Content-Type", "value": "application/json" }\r\n      ],\r\n      "body": "{\\"file_id\\":\\"{{FILE_ID}}\\"}",\r\n      "required_fields": ["VS_ID", "FILE_ID"],\r\n      "expected_status": 200\r\n    },\r\n\r\n    "vs.attach_batch": {\r\n      "method": "POST",\r\n      "url_override": "https://api.openai.com/v1/vector_stores/{{VS_ID}}/file_batches",\r\n      "headers": [\r\n        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },\r\n        { "name": "Content-Type", "value": "application/json" }\r\n      ],\r\n      "body": "{\\"file_ids\\":{{FILE_IDS_JSON}}}",\r\n      "required_fields": ["VS_ID", "FILE_IDS_JSON"],\r\n      "expected_status": 200\r\n    },\r\n\r\n    "vs.files": {\r\n      "method": "GET",\r\n      "url_override": "https://api.openai.com/v1/vector_stores/{{VS_ID}}/files?limit={{limit}}{{after_qs}}",\r\n      "headers": [\r\n        { "name": "Authorization", "value": "Bearer {{API_KEY}}" }\r\n      ],\r\n      "defaults": { "limit": 50, "after_qs": "" },\r\n      "required_fields": ["VS_ID"],\r\n      "expected_status": 200,\r\n      "ok_json_path": "data",\r\n      "ok_json_expected": "array"\r\n    },\r\n\r\n    "vs.delete_from_vs": {\r\n      "method": "DELETE",\r\n      "url_override": "https://api.openai.com/v1/vector_stores/{{VS_ID}}/files/{{FILE_ID}}",\r\n      "headers": [\r\n        { "name": "Authorization", "value": "Bearer {{API_KEY}}" }\r\n      ],\r\n      "required_fields": ["VS_ID", "FILE_ID"],\r\n      "expected_status": 200\r\n    },\r\n\r\n    "vs.delete": {\r\n      "method": "DELETE",\r\n      "url_override": "https://api.openai.com/v1/files/{{FILE_ID}}",\r\n      "headers": [\r\n        { "name": "Authorization", "value": "Bearer {{API_KEY}}" }\r\n      ],\r\n      "required_fields": ["FILE_ID"],\r\n      "expected_status": 200\r\n    },\r\n\r\n    "vs.list": {\r\n      "method": "GET",\r\n      "url_override": "https://api.openai.com/v1/files?limit={{limit}}&order={{order}}{{after_qs}}",\r\n      "headers": [\r\n        { "name": "Authorization", "value": "Bearer {{API_KEY}}" }\r\n      ],\r\n      "defaults": { "limit": 1000, "order": "desc", "after_qs": "" },\r\n      "expected_status": 200,\r\n      "ok_json_path": "data",\r\n      "ok_json_expected": "array"\r\n    },\r\n\r\n    "vs.get": {\r\n      "method": "GET",\r\n      "url_override": "https://api.openai.com/v1/files/{{FILE_ID}}",\r\n      "headers": [\r\n        { "name": "Authorization", "value": "Bearer {{API_KEY}}" }\r\n      ],\r\n      "required_fields": ["FILE_ID"],\r\n      "expected_status": 200\r\n    },\r\n\r\n    "vs.download": {\r\n      "method": "GET",\r\n      "url_override": "https://api.openai.com/v1/files/{{FILE_ID}}/content",\r\n      "headers": [\r\n        { "name": "Authorization", "value": "Bearer {{API_KEY}}" }\r\n      ],\r\n      "required_fields": ["FILE_ID"],\r\n      "expected_status": 200\r\n    },\r\n\r\n    "assistant.create": {\r\n      "method": "POST",\r\n      "url_override": "https://api.openai.com/v1/assistants",\r\n      "headers": [\r\n        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },\r\n        { "name": "Content-Type", "value": "application/json" }\r\n      ],\r\n      "body": "{\\"model\\":\\"gpt-4o-mini\\",\\"instructions\\":\\"Eres un analista. Usa File Search y limita tus respuestas SOLO a lo que hay en el Vector Store adjunto.\\",\\"tools\\":[{\\"type\\":\\"file_search\\"}],\\"tool_resources\\":{\\"file_search\\":{\\"vector_store_ids\\":[\\"{{VS_ID}}\\"]}}}",\r\n      "required_fields": ["VS_ID"],\r\n      "expected_status": 200,\r\n      "ok_json_path": "id",\r\n      "ok_json_expected": "exists"\r\n    },\r\n\r\n    "assistant.update_vs": {\r\n      "method": "POST",\r\n      "url_override": "https://api.openai.com/v1/assistants/{{ASSISTANT_ID}}",\r\n      "headers": [\r\n        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },\r\n        { "name": "Content-Type", "value": "application/json" }\r\n      ],\r\n      "body": "{\\"tool_resources\\":{\\"file_search\\":{\\"vector_store_ids\\":[\\"{{VS_ID}}\\"]}}}",\r\n      "required_fields": ["ASSISTANT_ID", "VS_ID"],\r\n      "expected_status": 200\r\n    },\r\n\r\n    "thread.create": {\r\n      "method": "POST",\r\n      "url_override": "https://api.openai.com/v1/threads",\r\n      "headers": [\r\n        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },\r\n        { "name": "Content-Type", "value": "application/json" }\r\n      ],\r\n      "body": "{\\"messages\\":[{\\"role\\":\\"user\\",\\"content\\":\\"{{USER_PROMPT}}\\"}],\\"tool_resources\\":{\\"file_search\\":{\\"vector_store_ids\\":[\\"{{VS_ID}}\\"]}}}",\r\n      "required_fields": ["USER_PROMPT", "VS_ID"],\r\n      "expected_status": 200,\r\n      "ok_json_path": "id",\r\n      "ok_json_expected": "exists"\r\n    },\r\n\r\n    "run.create": {\r\n      "method": "POST",\r\n      "url_override": "https://api.openai.com/v1/threads/{{THREAD_ID}}/runs",\r\n      "headers": [\r\n        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },\r\n        { "name": "Content-Type", "value": "application/json" }\r\n      ],\r\n      "body": "{\\"assistant_id\\":\\"{{ASSISTANT_ID}}\\"}",\r\n      "required_fields": ["THREAD_ID", "ASSISTANT_ID"],\r\n      "expected_status": 200,\r\n      "ok_json_path": "id",\r\n      "ok_json_expected": "exists"\r\n    },\r\n\r\n    "run.get": {\r\n      "method": "GET",\r\n      "url_override": "https://api.openai.com/v1/threads/{{THREAD_ID}}/runs/{{RUN_ID}}",\r\n      "headers": [\r\n        { "name": "Authorization", "value": "Bearer {{API_KEY}}" }\r\n      ],\r\n      "required_fields": ["THREAD_ID", "RUN_ID"],\r\n      "expected_status": 200\r\n    },\r\n\r\n    "messages.list": {\r\n      "method": "GET",\r\n      "url_override": "https://api.openai.com/v1/threads/{{THREAD_ID}}/messages?limit={{limit}}",\r\n      "headers": [\r\n        { "name": "Authorization", "value": "Bearer {{API_KEY}}" }\r\n      ],\r\n      "defaults": { "limit": 50 },\r\n      "required_fields": ["THREAD_ID"],\r\n      "expected_status": 200,\r\n      "ok_json_path": "data",\r\n      "ok_json_expected": "array"\r\n    },\r\n\r\n    "chat": {\r\n      "method": "POST",\r\n      "url_override": "https://api.openai.com/v1/chat/completions",\r\n      "headers": [\r\n        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },\r\n        { "name": "Content-Type", "value": "application/json" }\r\n      ],\r\n      "body": "{\\"model\\":\\"gpt-4o-mini\\",\\"messages\\":[{\\"role\\":\\"user\\",\\"content\\":\\"{{PROMPT}}\\"}]}",\r\n      "expected_status": 200,\r\n      "ok_json_path": "choices",\r\n      "ok_json_expected": "array"\r\n    },\r\n\r\n    "analyze": {\r\n      "pipeline": [\r\n        { "use": "vs.query", "save_as": "ctx" },\r\n        {\r\n          "use": "chat",\r\n          "override": {\r\n            "body": "{\\"model\\":\\"gpt-4o-mini\\",\\"messages\\":[{\\"role\\":\\"system\\",\\"content\\":\\"Eres un analista. Objetivo: {{objective}}\\"},{\\"role\\":\\"user\\",\\"content\\":\\"Pregunta: {{q}}\\\\n\\\\nContexto:\\\\n{{ctx_text}}\\"}]}"\r\n          }\r\n        }\r\n      ],\r\n      "defaults": { "CHAT_MODEL": "gpt-4o-mini" }\r\n    },\r\n\r\n    "vs.summary": {\r\n      "method": "POST",\r\n      "url_override": "https://api.openai.com/v1/chat/completions",\r\n      "headers": [\r\n        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },\r\n        { "name": "Content-Type", "value": "application/json" }\r\n      ],\r\n      "body": "{\\"model\\":\\"gpt-4o-mini\\",\\"messages\\":[{\\"role\\":\\"system\\",\\"content\\":\\"Resume el archivo adjunto en 5 bullets.\\"},{\\"role\\":\\"user\\",\\"content\\":\\"FILE_ID={{FILE_ID}}\\"}]}",\r\n      "required_fields": ["FILE_ID"],\r\n      "expected_status": 200,\r\n      "ok_json_path": "choices",\r\n      "ok_json_expected": "array"\r\n    },\r\n\r\n    "vs.summarize_from_vs": {\r\n      "pipeline": [\r\n        {\r\n          "use": "thread.create",\r\n          "save_as": "thread",\r\n          "vars": {\r\n            "USER_PROMPT": "{{PROMPT}}",\r\n            "VS_ID": "{{VS_ID}}"\r\n          }\r\n        },\r\n        {\r\n          "use": "run.create",\r\n          "save_as": "run",\r\n          "vars": {\r\n            "THREAD_ID": "{{thread.id}}",\r\n            "ASSISTANT_ID": "{{ASSISTANT_ID}}"\r\n          }\r\n        },\r\n        {\r\n          "use": "messages.list",\r\n          "save_as": "msgs",\r\n          "vars": {\r\n            "THREAD_ID": "{{thread.id}}",\r\n            "limit": 50\r\n          }\r\n        }\r\n      ],\r\n      "defaults": {\r\n        "PROMPT": "Resume en 5 bullets la información más relevante de los archivos del vector store del usuario.",\r\n        "ASSISTANT_ID": "",\r\n        "VS_ID": ""\r\n      }\r\n    },\r\n\r\n    "vs.query": {\r\n      "method": "POST",\r\n      "url_override": "https://your-vs.example.com/v1/query",\r\n      "headers": [\r\n        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },\r\n        { "name": "Content-Type", "value": "application/json" }\r\n      ],\r\n      "body": "{\\"q\\":\\"{{q}}\\",\\"file_ids\\":{{FILE_IDS_JSON}},\\"top_k\\":{{top_k}}}",\r\n      "defaults": { "top_k": 5, "FILE_IDS_JSON": "[]" },\r\n      "expected_status": 200,\r\n      "ok_json_path": "answers",\r\n      "ok_json_expected": "array"\r\n    },\r\n\r\n    "thread.create.extract": {\r\n      "method": "POST",\r\n      "url_override": "https://api.openai.com/v1/threads",\r\n      "headers": [\r\n        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },\r\n        { "name": "Content-Type", "value": "application/json" }\r\n      ],\r\n      "body": "{\\"messages\\":[{\\"role\\":\\"user\\",\\"content\\":\\"{{EXTRACT_PROMPT}}\\"}],\\"tool_resources\\":{\\"file_search\\":{\\"vector_store_ids\\":[\\"{{VS_ID}}\\"]}}}",\r\n      "required_fields": ["EXTRACT_PROMPT", "VS_ID"],\r\n      "expected_status": 200,\r\n      "ok_json_path": "id",\r\n      "ok_json_expected": "exists"\r\n    },\r\n\r\n    "extract.knowledge_from_vs": {\r\n      "pipeline": [\r\n        {\r\n          "use": "thread.create.extract",\r\n          "save_as": "thread",\r\n          "vars": {\r\n            "EXTRACT_PROMPT": "{{EXTRACT_PROMPT}}",\r\n            "VS_ID": "{{VS_ID}}"\r\n          }\r\n        },\r\n        {\r\n          "use": "run.create",\r\n          "save_as": "run",\r\n          "vars": {\r\n            "THREAD_ID": "{{thread.id}}",\r\n            "ASSISTANT_ID": "{{ASSISTANT_ID}}"\r\n          }\r\n        },\r\n        {\r\n          "use": "messages.list",\r\n          "save_as": "msgs",\r\n          "vars": {\r\n            "THREAD_ID": "{{thread.id}}",\r\n            "limit": 50\r\n          }\r\n        }\r\n      ],\r\n      "defaults": {\r\n        "ASSISTANT_ID": "",\r\n        "VS_ID": "",\r\n        "EXTRACT_PROMPT": "Extrae un JSON compacto con los campos: {\\"title\\": string, \\"summary\\": string, \\"entities\\": [{\\"name\\": string, \\"type\\": string}], \\"tickers\\": [string], \\"dates\\": [string]}. Usa SOLO la evidencia en el Vector Store. Responde SOLO el JSON."\r\n      }\r\n    }\r\n  }\r\n}'),
+	(2, 'anthropic', 'Anthropic', 'Claude', 'ai', 'llm', 'active', 'api_key', 'https://api.anthropic.com', 'https://docs.anthropic.com/en/api', NULL, 1, '{"test": {"method": "GET", "headers": [{"name": "x-api-key", "value": "{{API_KEY}}"}, {"name": "anthropic-version", "value": "2023-06-01"}], "expected_status": 200}}', NULL, NULL, '#15A3FF', 20, 'https://api.anthropic.com/v1/models', 'global', 'en', 'paid', '2025-09-17 09:44:51', '2025-09-24 18:06:58', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '{"provider_profile": {"vs": "internal"}, "multi": {"vs.upload": {"method": "POST", "url_override": "https://your-vs.example.com/v1/files", "headers": [{"name": "Authorization", "value": "Bearer {{API_KEY}}"}], "body_type": "multipart", "multipart": [{"name": "file", "type": "file", "value": "{{FILE_PATH}}"}], "expected_status": 200}, "vs.summary": {"method": "POST", "url_override": "https://your-vs.example.com/v1/summarize", "headers": [{"name": "Authorization", "value": "Bearer {{API_KEY}}"}, {"name": "Content-Type", "value": "application/json"}], "body": "{\\"file_id\\":\\"{{FILE_ID}}\\"}", "expected_status": 200}, "vs.query": {"method": "POST", "url_override": "https://your-vs.example.com/v1/query", "headers": [{"name": "Authorization", "value": "Bearer {{API_KEY}}"}, {"name": "Content-Type", "value": "application/json"}], "body": "{\\"q\\":\\"{{q}}\\",\\"file_ids\\":{{FILE_IDS_JSON}},\\"top_k\\":{{top_k}}}", "defaults": {"top_k": 5, "FILE_IDS_JSON": "[]"}, "expected_status": 200}, "chat": {"method": "POST", "url_override": "https://api.anthropic.com/v1/messages", "headers": [{"name": "x-api-key", "value": "{{API_KEY}}"}, {"name": "anthropic-version", "value": "2023-06-01"}, {"name": "Content-Type", "value": "application/json"}], "body": "{\\"model\\":\\"claude-3-haiku-20240307\\",\\"max_tokens\\":1024,\\"messages\\":[{\\"role\\":\\"user\\",\\"content\\":\\"{{PROMPT}}\\"}]}", "expected_status": 200}, "analyze": {"pipeline": [{"use": "vs.query", "save_as": "ctx"}, {"use": "chat", "override": {"body": "{\\"model\\":\\"claude-3-haiku-20240307\\",\\"max_tokens\\":1024,\\"messages\\":[{\\"role\\":\\"user\\",\\"content\\":\\"Objetivo: {{objective}}\\\\n\\\\nPregunta: {{q}}\\\\n\\\\nContexto:\\\\n{{ctx_text}}\\"}]}"}}]}}}'),
+	(3, 'google-ai', 'Google AI Gemini', 'Google AI Gemini', 'ai', 'llm', 'active', 'api_key', 'https://generativelanguage.googleapis.com/v1', 'https://ai.google.dev/', 1500, 1, '{\r\n  "test": {\r\n    "method": "GET",\r\n    "query": [\r\n      { "name": "key", "value": "{{API_KEY}}" }\r\n    ],\r\n    "expected_status": 200\r\n  }\r\n}\r\n', 'https://www.google.com/favicon.ico', NULL, '#4285F4', 0, 'https://generativelanguage.googleapis.com/v1/models', 'global', 'en', 'freemium', '2025-09-17 09:44:51', '2025-09-20 16:23:04', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(4, 'huggingface', 'Hugging Face', 'HuggingFace', 'ai', 'platform', 'active', 'api_key', 'https://huggingface.co', 'https://huggingface.co/docs', NULL, 1, '{"test": {"method": "GET", "headers": [{"name": "Authorization", "value": "Bearer {{API_KEY}}"}], "expected_status": 200}}', NULL, NULL, '#FFAE33', 70, 'https://huggingface.co/api/whoami-v2', 'global', 'en', 'freemium', '2025-09-17 09:44:51', '2025-09-18 00:41:28', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(5, 'cohere', 'Cohere', 'Cohere', 'ai', 'llm', 'active', 'api_key', 'https://api.cohere.com', 'https://docs.cohere.com/reference', NULL, 1, '{"test": {"method": "GET", "headers": [{"name": "Authorization", "value": "Bearer {{API_KEY}}"}, {"name": "Content-Type", "value": "application/json"}], "expected_status": 200}}', NULL, NULL, '#FF6F3D', 50, 'https://api.cohere.com/v1/models', 'global', 'en', 'paid', '2025-09-17 09:44:51', '2025-09-18 00:41:28', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(6, 'groq', 'Groq', 'Groq', 'ai', 'llm', 'active', 'api_key', 'https://api.groq.com/openai', 'https://console.groq.com/docs', NULL, 1, '{"test": {"method": "GET", "headers": [{"name": "Authorization", "value": "Bearer {{API_KEY}}"}, {"name": "Content-Type", "value": "application/json"}], "expected_status": 200, "ok_json_path": "object", "ok_json_expected": "list"}}', NULL, NULL, '#00E5FF', 60, 'https://api.groq.com/openai/v1/models', 'global', 'en', 'paid', '2025-09-17 09:44:51', '2025-09-18 00:41:28', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(93, 'azure-ai', 'Microsoft Azure AI', 'Microsoft Azure AI', 'ai', NULL, 'active', 'api_key', 'https://{resource-name}.openai.azure.com', NULL, NULL, 1, '{"model": "gpt-4", "max_tokens": 4096, "temperature": 0.7}', 'https://azure.microsoft.com/svghandler/ai-platform/', NULL, '#0078D4', 4, 'https://portal.azure.com/#create/Microsoft.CognitiveServicesTextAnalytics', 'global', 'en', 'freemium', '2025-09-17 09:47:06', '2025-09-17 18:29:37', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(94, 'aws-bedrock', 'AWS Bedrock', 'AWS Bedrock', 'ai', NULL, 'active', 'api_key', 'https://bedrock-runtime.{region}.amazonaws.com', NULL, NULL, 1, '{"model": "anthropic.claude-3-sonnet", "max_tokens": 4096, "temperature": 0.7}', 'https://a0.awsstatic.com/libra-css/images/logos/aws_smile-header-desktop-en-white_59x35.png', NULL, '#FF9900', 5, 'https://console.aws.amazon.com/bedrock', 'global', 'en', 'freemium', '2025-09-17 09:47:06', '2025-09-17 18:29:41', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(95, 'replicate', 'Replicate', 'Replicate', 'ai', 'platform', 'active', 'api_key', 'https://api.replicate.com', 'https://replicate.com/docs/reference/http', NULL, 1, '{"test": {"method": "GET", "headers": [{"name": "Authorization", "value": "Bearer {{API_KEY}}"}], "expected_status": 200}}', NULL, NULL, '#00AEEF', 130, 'https://api.replicate.com/v1/models', 'global', 'en', 'paid', '2025-09-17 09:47:06', '2025-09-18 00:41:28', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(96, 'perplexity', 'Perplexity', 'Perplexity', 'ai', 'llm', 'active', 'api_key', 'https://api.perplexity.ai', 'https://docs.perplexity.ai/', NULL, 1, '{"test": {"method": "GET", "headers": [{"name": "Authorization", "value": "Bearer {{API_KEY}}"}, {"name": "Content-Type", "value": "application/json"}], "expected_status": 200}}', NULL, NULL, '#8F7FFF', 90, 'https://api.perplexity.ai/models', 'global', 'en', 'paid', '2025-09-17 09:47:06', '2025-09-18 00:41:28', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(97, 'together-ai', 'Together AI', 'Together AI', 'ai', NULL, 'active', 'api_key', 'https://api.together.xyz/v1', NULL, NULL, 1, '{"model": "togethercomputer/LLaMA-2-7B-32K", "max_tokens": 4096, "temperature": 0.7}', 'https://together.ai/images/logo.svg', NULL, '#7C3AED', 10, 'https://api.together.xyz/settings/api-keys', 'global', 'en', 'freemium', '2025-09-17 09:47:06', '2025-09-17 18:29:51', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(98, 'aleph-alpha', 'Aleph Alpha', 'Aleph Alpha', 'ai', NULL, 'active', 'api_key', 'https://api.aleph-alpha.com', NULL, NULL, 1, '{"model": "luminous-base", "max_tokens": 2048, "temperature": 0.7}', 'https://aleph-alpha.com/logo.svg', NULL, '#0066CC', 12, 'https://app.aleph-alpha.com/api-keys', 'global', 'en', 'freemium', '2025-09-17 09:47:06', '2025-09-17 18:29:54', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(99, 'mistral-ai', 'Mistral AI', 'Mistral AI', 'ai', NULL, 'active', 'api_key', 'https://api.mistral.ai/v1', NULL, NULL, 1, '{"model": "mistral-large", "max_tokens": 4096, "temperature": 0.7}', 'https://mistral.ai/images/logo.png', NULL, '#FF6B00', 13, 'https://console.mistral.ai/api-keys', 'global', 'en', 'freemium', '2025-09-17 09:47:06', '2025-09-17 18:29:58', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(100, 'stability-ai', 'Stability AI', 'Stability AI', 'ai', NULL, 'active', 'api_key', 'https://api.stability.ai', NULL, NULL, 1, '{"model": "stable-diffusion-xl", "steps": 50, "cfg_scale": 7}', 'https://stability.ai/logo.svg', NULL, '#000000', 14, 'https://platform.stability.ai/account/keys', 'global', 'en', 'freemium', '2025-09-17 09:47:06', '2025-09-17 18:30:02', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(101, 'openrouter', 'OpenRouter', 'OpenRouter', 'ai', 'router', 'active', 'api_key', 'https://openrouter.ai', 'https://openrouter.ai/docs', NULL, 1, '{"test": {"method": "GET", "headers": [{"name": "Authorization", "value": "Bearer {{API_KEY}}"}], "expected_status": 200}}', NULL, NULL, '#111827', 150, 'https://openrouter.ai/api/v1/models', 'global', 'en', 'freemium', '2025-09-17 09:47:06', '2025-09-18 00:41:28', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(102, 'deepseek', 'DeepSeek', 'DeepSeek', 'ai', 'llm', 'active', 'api_key', 'https://api.deepseek.com', 'https://api-docs.deepseek.com/', NULL, 1, '{"test": {"method": "GET", "headers": [{"name": "Authorization", "value": "Bearer {{API_KEY}}"}, {"name": "Content-Type", "value": "application/json"}], "expected_status": 200, "ok_json_path": "object", "ok_json_expected": "list"}}', NULL, NULL, '#222222', 140, 'https://api.deepseek.com/v1/models', 'global', 'en', 'paid', '2025-09-17 09:47:06', '2025-09-18 00:41:28', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(103, 'fireworks-ai', 'Fireworks AI', 'Fireworks AI', 'ai', NULL, 'active', 'api_key', 'https://api.fireworks.ai/inference/v1', NULL, NULL, 1, '{"model": "accounts/fireworks/models/llama-v2-7b", "max_tokens": 4096, "temperature": 0.7}', 'https://fireworks.ai/logo.svg', NULL, '#FF6B35', 17, 'https://fireworks.ai/account/api-keys', 'global', 'en', 'freemium', '2025-09-17 09:47:06', '2025-09-17 18:30:12', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(104, 'novita-ai', 'Novita AI', 'Novita AI', 'ai', NULL, 'active', 'api_key', 'https://api.novita.ai/v3', NULL, NULL, 1, '{"model": "novita-llama-3", "max_tokens": 4096, "temperature": 0.7}', 'https://novita.ai/logo.png', NULL, '#8B5CF6', 18, 'https://novita.ai/api-keys', 'global', 'en', 'freemium', '2025-09-17 09:47:06', '2025-09-17 18:30:15', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(105, 'jina-ai', 'Jina AI', 'Jina AI', 'ai', NULL, 'active', 'api_key', 'https://api.jina.ai/v1', NULL, NULL, 1, '{"model": "jina-embeddings-v2", "dimensions": 768}', 'https://jina.ai/logo.svg', NULL, '#0066FF', 19, 'https://jina.ai/account/api-keys', 'global', 'en', 'freemium', '2025-09-17 09:47:06', '2025-09-17 18:30:17', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(106, 'voyage-ai', 'Voyage AI', 'Voyage AI', 'ai', NULL, 'active', 'api_key', 'https://api.voyageai.com/v1', NULL, NULL, 1, '{"model": "voyage-2", "dimensions": 1024}', 'https://voyageai.com/logo.svg', NULL, '#10B981', 20, 'https://voyageai.com/account/api-keys', 'global', 'en', 'freemium', '2025-09-17 09:47:06', '2025-09-17 18:30:20', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(107, 'gemini', 'Google Gemini', 'Gemini', 'ai', 'llm', 'active', 'api_key', 'https://generativelanguage.googleapis.com', 'https://ai.google.dev/api', NULL, 1, '{"test": {"method": "GET", "query": [{"name": "key", "value": "{{API_KEY}}"}], "expected_status": 200}}', NULL, NULL, '#4285F4', 30, 'https://generativelanguage.googleapis.com/v1/models', 'global', 'en', 'freemium', '2025-09-18 00:21:40', '2025-09-24 18:06:46', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '{"provider_profile": {"vs": "provider"}, "multi": {"vs.upload": {"method": "POST", "url_override": "https://generativelanguage.googleapis.com/upload/v1/files?key={{API_KEY}}", "headers": [], "body_type": "multipart", "multipart": [{"name": "file", "type": "file", "value": "{{FILE_PATH}}"}], "expected_status": 200, "ok_json_path": "file.id", "ok_json_expected": "exists"}, "vs.summary": {"method": "POST", "url_override": "https://your-vs.example.com/v1/summarize", "headers": [{"name": "Content-Type", "value": "application/json"}], "body": "{\\"file_id\\":\\"{{FILE_ID}}\\"}", "required_fields": ["FILE_ID"], "expected_status": 200, "ok_json_path": "summary", "ok_json_expected": "exists"}, "vs.query": {"method": "POST", "url_override": "https://your-vs.example.com/v1/query", "headers": [{"name": "Content-Type", "value": "application/json"}], "body": "{\\"q\\":\\"{{q}}\\",\\"file_ids\\":{{FILE_IDS_JSON}},\\"top_k\\":{{top_k}}}", "defaults": {"top_k": 5, "FILE_IDS_JSON": "[]"}, "expected_status": 200, "ok_json_path": "answers", "ok_json_expected": "array"}, "chat": {"method": "POST", "url_override": "https://generativelanguage.googleapis.com/v1beta/models/{{MODEL}}:generateContent?key={{API_KEY}}", "headers": [{"name": "Content-Type", "value": "application/json"}], "body": "{\\"contents\\":[{\\"parts\\":[{\\"text\\":\\"{{PROMPT}}\\"}]}]}", "defaults": {"MODEL": "gemini-1.5-flash"}, "expected_status": 200}, "analyze": {"pipeline": [{"use": "vs.query", "save_as": "ctx"}, {"use": "chat", "override": {"body": "{\\"model\\":\\"{{MODEL}}\\",\\"contents\\":[{\\"parts\\":[{\\"text\\":\\"Objetivo: {{objective}}\\\\n\\\\nPregunta: {{q}}\\\\n\\\\nContexto:\\\\n{{ctx_text}}\\"}]}]}"}}], "defaults": {"MODEL": "gemini-1.5-flash"}}}}'),
+	(108, 'mistral', 'Mistral AI', 'Mistral', 'ai', 'llm', 'active', 'api_key', 'https://api.mistral.ai', 'https://docs.mistral.ai/api/', NULL, 1, '{"test": {"method": "GET", "headers": [{"name": "Authorization", "value": "Bearer {{API_KEY}}"}], "expected_status": 200}}', NULL, NULL, '#000000', 40, 'https://api.mistral.ai/v1/models', 'global', 'en', 'paid', '2025-09-18 00:21:40', '2025-09-18 00:41:28', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(109, 'azure_openai', 'Azure OpenAI', 'Azure OpenAI', 'ai', 'llm', 'active', 'api_key', 'https://{resource}.openai.azure.com', 'https://learn.microsoft.com/azure/ai-services/openai/', NULL, 1, '{"test": {"method": "GET", "headers": [{"name": "api-key", "value": "{{API_KEY}}"}], "expected_status": 200, "url_override": "https://{{resource}}.openai.azure.com/openai/models?api-version={{api_version}}", "required_fields": ["resource", "api_version"], "defaults": {"api_version": "2024-10-21"}}}', NULL, NULL, '#0078D4', 80, 'https://{resource}.openai.azure.com/openai/models?api-version=2024-10-21', 'global', 'en', 'enterprise', '2025-09-18 00:21:40', '2025-09-18 00:41:28', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(110, 'xai', 'xAI', 'Grok', 'ai', 'llm', 'active', 'api_key', 'https://api.x.ai', 'https://docs.x.ai/docs/api-reference', NULL, 1, '{"test": {"method": "GET", "headers": [{"name": "Authorization", "value": "Bearer {{API_KEY}}"}], "expected_status": 200}}', NULL, NULL, '#111111', 100, 'https://api.x.ai/v1/models', 'global', 'en', 'paid', '2025-09-18 00:21:40', '2025-09-18 00:41:28', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(111, 'together', 'Together AI', 'Together', 'ai', 'llm', 'active', 'api_key', 'https://api.together.xyz', 'https://docs.together.ai/reference', NULL, 1, '{"test": {"method": "GET", "headers": [{"name": "Authorization", "value": "Bearer {{API_KEY}}"}], "expected_status": 200}}', NULL, NULL, '#4C8BF5', 110, 'https://api.together.xyz/v1/models', 'global', 'en', 'paid', '2025-09-18 00:21:40', '2025-09-18 00:41:28', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(112, 'fireworks', 'Fireworks AI', 'Fireworks', 'ai', 'llm', 'active', 'api_key', 'https://api.fireworks.ai', 'https://fireworks.ai/docs', NULL, 1, '{"test": {"method": "GET", "headers": [{"name": "Authorization", "value": "Bearer {{API_KEY}}"}], "expected_status": 200}}', NULL, NULL, '#7F56D9', 120, 'https://api.fireworks.ai/inference/v1/models', 'global', 'en', 'paid', '2025-09-18 00:21:40', '2025-09-18 00:41:28', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(122, 'polygon', 'Polygon.io', 'Polygon', 'data', 'market', 'active', 'api_key', 'https://api.polygon.io', 'https://polygon.io/docs/stocks/getting-started', NULL, 1, '{"test": {"method": "GET", "query": [{"name": "limit", "value": "1"}, {"name": "apiKey", "value": "{{API_KEY}}"}], "expected_status": 200, "ok_json_path": "results", "ok_array_or_object": true}}', NULL, NULL, '#0B5FFF', 200, 'https://api.polygon.io/v3/reference/tickers', 'global', 'en', 'paid', '2025-09-18 00:41:28', '2025-09-20 16:23:04', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(123, 'finnhub', 'Finnhub', 'Finnhub', 'data', 'market', 'active', 'api_key', 'https://finnhub.io', 'https://finnhub.io/docs/api', NULL, 1, '{"test": {"method": "GET", "query": [{"name": "token", "value": "{{API_KEY}}"}], "expected_status": 200}}', NULL, NULL, '#00BFA6', 210, 'https://finnhub.io/api/v1/stock/symbol?exchange=US&mic=XNAS', 'global', 'en', 'freemium', '2025-09-18 00:41:28', '2025-09-20 16:23:04', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(124, 'tiingo', 'Tiingo', 'Tiingo', 'data', 'market', 'active', 'api_key', 'https://api.tiingo.com', 'https://api.tiingo.com/', NULL, 1, '{"test": {"method": "GET", "headers": [{"name": "Authorization", "value": "Token {{API_KEY}}"}], "expected_status": 200}}', NULL, NULL, '#E94E1B', 220, 'https://api.tiingo.com/tiingo/daily/aapl', 'global', 'en', 'paid', '2025-09-18 00:41:28', '2025-09-18 00:41:28', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(125, 'alpha_vantage', 'Alpha Vantage', 'AlphaVantage', 'data', 'market', 'active', 'api_key', 'https://www.alphavantage.co', 'https://www.alphavantage.co/documentation/', NULL, 1, '{"test": {"method": "GET", "query": [{"name": "function", "value": "SYMBOL_SEARCH"}, {"name": "keywords", "value": "tesla"}, {"name": "apikey", "value": "{{API_KEY}}"}], "expected_status": 200, "ok_json_path": "bestMatches", "ok_array_or_object": true}}', NULL, NULL, '#2E86C1', 230, 'https://www.alphavantage.co/query', 'global', 'en', 'freemium', '2025-09-18 00:41:28', '2025-09-18 00:41:28', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(126, 'iex_cloud', 'IEX Cloud', 'IEX Cloud', 'data', 'market', 'active', 'api_key', 'https://cloud.iexapis.com', 'https://iexcloud.io/docs/api/', NULL, 1, '{"test": {"method": "GET", "query": [{"name": "token", "value": "{{API_KEY}}"}], "expected_status": 200}}', NULL, NULL, '#1F3B4D', 240, 'https://cloud.iexapis.com/stable/ref-data/symbols', 'global', 'en', 'paid', '2025-09-18 00:41:28', '2025-09-18 00:41:28', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(127, 'twelve_data', 'Twelve Data', 'TwelveData', 'data', 'market', 'active', 'api_key', 'https://api.twelvedata.com', 'https://twelvedata.com/documentation', NULL, 1, '{"test": {"method": "GET", "query": [{"name": "symbol", "value": "AAPL"}, {"name": "interval", "value": "1min"}, {"name": "apikey", "value": "{{API_KEY}}"}], "expected_status": 200}}', NULL, NULL, '#4A90E2', 250, 'https://api.twelvedata.com/time_series', 'global', 'en', 'freemium', '2025-09-18 00:41:28', '2025-09-18 00:41:28', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(128, 'yahoo_finance_rapid', 'Yahoo Finance (RapidAPI)', 'Yahoo Finance', 'data', 'market', 'active', 'api_key', 'https://yh-finance.p.rapidapi.com', 'https://rapidapi.com/apidojo/api/yh-finance/', NULL, 1, '{"test": {"method": "GET", "headers": [{"name": "x-rapidapi-key", "value": "{{API_KEY}}"}, {"name": "x-rapidapi-host", "value": "yh-finance.p.rapidapi.com"}], "expected_status": 200}}', NULL, NULL, '#7209B7', 260, 'https://yh-finance.p.rapidapi.com/auto-complete?q=tesla', 'global', 'en', 'paid', '2025-09-18 00:41:28', '2025-09-18 00:41:28', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(129, 'newsapi', 'NewsAPI', 'NewsAPI', 'news', 'general', 'active', 'api_key', 'https://newsapi.org', 'https://newsapi.org/docs', NULL, 1, '{"test": {"method": "GET", "headers": [{"name": "X-Api-Key", "value": "{{API_KEY}}"}], "query": [{"name": "q", "value": "tesla"}, {"name": "pageSize", "value": "1"}], "expected_status": 200, "ok_json_path": "status", "ok_json_expected": "ok"}}', NULL, NULL, '#F39C12', 300, 'https://newsapi.org/v2/everything', 'global', 'en', 'freemium', '2025-09-18 00:41:28', '2025-09-18 00:41:28', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(130, 'nyt', 'NYTimes API', 'NYTimes', 'news', 'general', 'active', 'api_key', 'https://api.nytimes.com', 'https://developer.nytimes.com/apis', NULL, 1, '{"test": {"method": "GET", "query": [{"name": "api-key", "value": "{{API_KEY}}"}], "expected_status": 200}}', NULL, NULL, '#000000', 310, 'https://api.nytimes.com/svc/topstories/v2/world.json', 'global', 'en', 'paid', '2025-09-18 00:41:28', '2025-09-18 00:41:28', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(131, 'gnews', 'GNews', 'GNews', 'news', 'general', 'active', 'api_key', 'https://gnews.io', 'https://gnews.io/docs/v4', NULL, 1, '{"test": {"method": "GET", "query": [{"name": "q", "value": "tesla"}, {"name": "apikey", "value": "{{API_KEY}}"}, {"name": "max", "value": "1"}], "expected_status": 200}}', NULL, NULL, '#1B998B', 320, 'https://gnews.io/api/v4/search', 'global', 'en', 'freemium', '2025-09-18 00:41:28', '2025-09-18 00:41:28', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+-- Volcando estructura para tabla u522228883_bolsa_app.ai_usage_events
+CREATE TABLE IF NOT EXISTS `ai_usage_events` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `occurred_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `user_id` bigint(20) NOT NULL,
+  `provider_id` bigint(20) NOT NULL,
+  `model_id` bigint(20) DEFAULT NULL,
+  `project_id` varchar(128) DEFAULT NULL,
+  `api_key_id` bigint(20) DEFAULT NULL,
+  `request_kind` enum('responses','chat','embeddings','file_search','upload','vector') NOT NULL,
+  `request_id` varchar(128) DEFAULT NULL,
+  `latency_ms` int(11) DEFAULT NULL,
+  `input_tokens` int(11) DEFAULT NULL,
+  `output_tokens` int(11) DEFAULT NULL,
+  `billed_input_usd` decimal(8,6) DEFAULT NULL,
+  `billed_output_usd` decimal(8,6) DEFAULT NULL,
+  `http_status` int(11) DEFAULT NULL,
+  `error_code` varchar(64) DEFAULT NULL,
+  `error_message` text DEFAULT NULL,
+  `meta` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`meta`)),
+  PRIMARY KEY (`id`),
+  KEY `idx_user_time` (`user_id`,`occurred_at`),
+  KEY `idx_provider_time` (`provider_id`,`occurred_at`),
+  KEY `idx_key_time` (`api_key_id`,`occurred_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla u522228883_bolsa_app.ai_usage_events: ~1 rows (aproximadamente)
+REPLACE INTO `ai_usage_events` (`id`, `occurred_at`, `user_id`, `provider_id`, `model_id`, `project_id`, `api_key_id`, `request_kind`, `request_id`, `latency_ms`, `input_tokens`, `output_tokens`, `billed_input_usd`, `billed_output_usd`, `http_status`, `error_code`, `error_message`, `meta`) VALUES
+	(9, '2025-09-25 16:13:53', 4, 1, NULL, NULL, NULL, '', 'file-7RahFEJDHc4fnLrjrbiarw', 0, 0, 0, 0.000000, 0.000000, 200, NULL, NULL, '{"operation":"vs.upload","result_status":"already_uploaded","provider_response":{"file_id":"file-7RahFEJDHc4fnLrjrbiarw","status":"already_uploaded","message":"Archivo ya est\\u00e1 en la IA"}}');
+
+-- Volcando estructura para tabla u522228883_bolsa_app.ai_vector_documents
+CREATE TABLE IF NOT EXISTS `ai_vector_documents` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `vector_store_id` bigint(20) NOT NULL,
+  `knowledge_file_id` bigint(20) NOT NULL,
+  `external_doc_id` varchar(128) NOT NULL,
+  `bytes` bigint(20) DEFAULT 0,
+  `status` enum('indexing','ready','error','deleting','deleted') DEFAULT 'indexing',
+  `last_indexed_at` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_vs_doc` (`vector_store_id`,`external_doc_id`),
+  KEY `idx_kf` (`knowledge_file_id`),
+  KEY `idx_vs` (`vector_store_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla u522228883_bolsa_app.ai_vector_documents: ~0 rows (aproximadamente)
+
+-- Volcando estructura para tabla u522228883_bolsa_app.ai_vector_stores
+CREATE TABLE IF NOT EXISTS `ai_vector_stores` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `provider_id` bigint(20) NOT NULL,
+  `project_id` varchar(128) DEFAULT NULL,
+  `external_id` varchar(128) NOT NULL,
+  `owner_user_id` bigint(20) NOT NULL,
+  `name` varchar(120) DEFAULT NULL,
+  `bytes_used` bigint(20) DEFAULT 0,
+  `doc_count` int(11) DEFAULT 0,
+  `status` enum('creating','ready','error','deleting','deleted') DEFAULT 'creating',
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `assistant_id` varchar(64) DEFAULT NULL,
+  `assistant_model` varchar(64) DEFAULT NULL,
+  `assistant_created_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_provider_external` (`provider_id`,`external_id`),
+  KEY `idx_owner` (`owner_user_id`),
+  KEY `idx_provider` (`provider_id`),
+  KEY `idx_assistant_id` (`assistant_id`),
+  KEY `idx_vs_assistant` (`assistant_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla u522228883_bolsa_app.ai_vector_stores: ~1 rows (aproximadamente)
+REPLACE INTO `ai_vector_stores` (`id`, `provider_id`, `project_id`, `external_id`, `owner_user_id`, `name`, `bytes_used`, `doc_count`, `status`, `created_at`, `updated_at`, `assistant_id`, `assistant_model`, `assistant_created_at`) VALUES
+	(1, 1, NULL, 'vs_68d465c6c95081919ea9b6a6fb9339d2', 4, 'CATAI_VS_User_4_20250924214230', 0, 39, 'ready', '2025-09-24 21:42:30', '2025-09-26 06:49:02', NULL, NULL, NULL);
+
+-- Volcando estructura para tabla u522228883_bolsa_app.analysis_context
+CREATE TABLE IF NOT EXISTS `analysis_context` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `symbol` varchar(20) DEFAULT NULL,
+  `analysis_id` int(11) DEFAULT NULL,
+  `context_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`context_data`)),
+  `knowledge_items_used` int(11) DEFAULT 0,
+  `patterns_applied` int(11) DEFAULT 0,
+  `effectiveness_score` decimal(3,2) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user_symbol` (`user_id`,`symbol`),
+  KEY `idx_analysis` (`analysis_id`),
+  KEY `idx_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Volcando datos para la tabla u522228883_bolsa_app.analysis_context: ~0 rows (aproximadamente)
 
+-- Volcando estructura para tabla u522228883_bolsa_app.context_patterns
+CREATE TABLE IF NOT EXISTS `context_patterns` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `symbol` varchar(20) DEFAULT NULL,
+  `pattern_type` varchar(100) NOT NULL,
+  `pattern_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`pattern_data`)),
+  `confidence_score` decimal(3,2) DEFAULT 0.50,
+  `usage_count` int(11) DEFAULT 0,
+  `last_used` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user_symbol` (`user_id`,`symbol`),
+  KEY `idx_pattern_type` (`pattern_type`),
+  KEY `idx_confidence` (`confidence_score`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Volcando datos para la tabla u522228883_bolsa_app.context_patterns: ~0 rows (aproximadamente)
 
--- Volcando datos para la tabla u522228883_bolsa_app.knowledge_base: ~7 rows (aproximadamente)
+-- Volcando estructura para tabla u522228883_bolsa_app.data_providers
+CREATE TABLE IF NOT EXISTS `data_providers` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `slug` varchar(64) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `label` varchar(100) NOT NULL,
+  `type` enum('ai','data','news','trade') NOT NULL DEFAULT 'data',
+  `category` varchar(50) DEFAULT NULL,
+  `status` enum('active','disabled','enabled') NOT NULL DEFAULT 'active',
+  `auth_type` enum('api_key','basic','oauth2','hmac','none') NOT NULL DEFAULT 'api_key',
+  `base_url` varchar(255) DEFAULT NULL,
+  `docs_url` varchar(255) DEFAULT NULL,
+  `rate_limit_per_min` int(11) DEFAULT NULL,
+  `is_enabled` tinyint(1) NOT NULL DEFAULT 1,
+  `config_json` longtext DEFAULT NULL CHECK (json_valid(`config_json`)),
+  `icon_url` varchar(512) DEFAULT NULL,
+  `icon_svg` mediumtext DEFAULT NULL,
+  `brand_color` varchar(9) DEFAULT NULL,
+  `display_order` int(11) DEFAULT 0,
+  `url_request` varchar(255) DEFAULT NULL,
+  `coverage` enum('global','regional','local','specialized') DEFAULT 'global',
+  `language` varchar(10) DEFAULT 'en',
+  `pricing_tier` enum('free','freemium','paid','enterprise') DEFAULT 'freemium',
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `request_method` enum('GET','POST','PUT','PATCH','DELETE') DEFAULT 'GET',
+  `auth_header_name` varchar(128) DEFAULT NULL,
+  `auth_query_name` varchar(128) DEFAULT NULL,
+  `headers_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`headers_json`)),
+  `query_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`query_json`)),
+  `body_template` mediumtext DEFAULT NULL,
+  `body_type` enum('json','form','text') DEFAULT 'json',
+  `expected_status_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`expected_status_json`)),
+  `ok_json_path` varchar(256) DEFAULT NULL,
+  `ok_json_expected` varchar(256) DEFAULT NULL,
+  `success_regex` varchar(512) DEFAULT NULL,
+  `url_override_template` varchar(512) DEFAULT NULL,
+  `required_fields_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`required_fields_json`)),
+  `default_fields_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`default_fields_json`)),
+  `extract_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`extract_json`)),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_data_providers_slug` (`slug`)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla u522228883_bolsa_app.data_providers: ~26 rows (aproximadamente)
+REPLACE INTO `data_providers` (`id`, `slug`, `name`, `label`, `type`, `category`, `status`, `auth_type`, `base_url`, `docs_url`, `rate_limit_per_min`, `is_enabled`, `config_json`, `icon_url`, `icon_svg`, `brand_color`, `display_order`, `url_request`, `coverage`, `language`, `pricing_tier`, `created_at`, `updated_at`, `request_method`, `auth_header_name`, `auth_query_name`, `headers_json`, `query_json`, `body_template`, `body_type`, `expected_status_json`, `ok_json_path`, `ok_json_expected`, `success_regex`, `url_override_template`, `required_fields_json`, `default_fields_json`, `extract_json`) VALUES
+	(1, 'alpha-vantage', '', 'Alpha Vantage', 'data', 'market_data', 'active', 'api_key', 'https://www.alphavantage.co/query', 'https://www.alphavantage.co/documentation/', 5, 1, '{\r\n  "test": {\r\n    "method": "GET",\r\n    "query": [\r\n      { "name": "function", "value": "SYMBOL_SEARCH" },\r\n      { "name": "keywords", "value": "tesla" },\r\n      { "name": "apikey", "value": "{{API_KEY}}" }\r\n    ],\r\n    "expected_status": 200\r\n  }\r\n}\r\n\r\n', NULL, NULL, NULL, 0, 'https://www.alphavantage.co/query', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-20 15:53:19', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(2, 'finnhub', '', 'Finnhub', 'data', 'market_data', 'active', 'api_key', 'https://finnhub.io/api/v1', 'https://finnhub.io/docs/api', 60, 1, '{\r\n  "test": {\r\n    "method": "GET",\r\n    "query": [\r\n      { "name": "exchange", "value": "US" },\r\n      { "name": "mic", "value": "XNAS" },\r\n      { "name": "token", "value": "{{API_KEY}}" }\r\n    ],\r\n    "expected_status": 200\r\n  }\r\n}', NULL, NULL, NULL, 0, 'https://finnhub.io/api/v1/stock/symbol', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-20 15:52:22', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(3, 'polygon-io', '', 'Polygon.io', 'data', 'market_data', 'active', 'api_key', 'https://api.polygon.io/v2', 'https://polygon.io/docs/stocks/getting-started', 5, 1, '{"test": {"method": "GET", "query": [{"name": "limit", "value": "1"}, {"name": "apiKey", "value": "{{API_KEY}}"}], "expected_status": 200, "ok_json_path": "results", "ok_array_or_object": true}}', NULL, NULL, NULL, 0, 'https://api.polygon.io/v3/reference/tickers', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-20 16:23:04', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(4, 'twelvedata', '', 'Twelve Data', 'data', 'market_data', 'active', 'api_key', 'https://api.twelvedata.com', 'https://twelvedata.com/docs', 8, 1, NULL, NULL, NULL, NULL, 0, 'https://twelvedata.com/account/api-keys', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-17 18:08:31', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(5, 'eodhistorical', '', 'EOD Historical Data', 'data', 'market_data', 'active', 'api_key', 'https://eodhistoricaldata.com/api', 'https://eodhistoricaldata.com/financial-apis/', 20, 1, NULL, NULL, NULL, NULL, 0, 'https://eodhistoricaldata.com/cp/settings', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-17 18:08:31', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(6, 'iexcloud', '', 'IEX Cloud', 'data', 'market_data', 'active', 'api_key', 'https://cloud.iexapis.com/stable', 'https://iexcloud.io/docs/api/', 100, 1, NULL, NULL, NULL, NULL, 0, 'https://iexcloud.io/console/tokens', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-17 18:08:31', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(7, 'fmp', '', 'Financial Modeling Prep', 'data', 'market_data', 'active', 'api_key', 'https://financialmodelingprep.com/api/v3', 'https://site.financialmodelingprep.com/developer/docs/', 250, 1, NULL, NULL, NULL, NULL, 0, 'https://financialmodelingprep.com/developer/docs/dashboard', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-17 18:08:31', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(8, 'marketstack', '', 'MarketStack', 'data', 'market_data', 'active', 'api_key', 'http://api.marketstack.com/v1', 'https://marketstack.com/documentation', 1000, 1, NULL, NULL, NULL, NULL, 0, 'https://marketstack.com/account/dashboard', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-17 18:08:31', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(9, 'yahoofinance', 'Yahoo Finance (Apidojo v1)', 'Yahoo Finance', 'data', 'market_data', 'active', 'api_key', 'https://apidojo-yahoo-finance-v1.p.rapidapi.com', 'https://www.yahoofinanceapi.com/', 100, 1, '{"test": {"method": "GET", "url_override": "https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-timeseries?symbol={{symbol}}&region={{region}}", "headers": [{"name": "x-rapidapi-host", "value": "apidojo-yahoo-finance-v1.p.rapidapi.com"}, {"name": "x-rapidapi-key", "value": "{{API_KEY}}"}], "required_fields": ["symbol"], "defaults": {"symbol": "IBM", "region": "US"}, "expected_status": 200}}', NULL, NULL, NULL, 0, 'https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-timeseries', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-22 05:55:15', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(10, 'tiingo', '', 'Tiingo', 'data', 'market_data', 'active', 'api_key', 'https://api.tiingo.com', 'https://api.tiingo.com/tiingo/daily/aapl', 5, 1, '{\r\n  "test": {\r\n    "method": "GET",\r\n    "headers": [\r\n      { "name": "Authorization", "value": "Token {{API_KEY}}" }\r\n    ],\r\n    "expected_status": 200\r\n  }\r\n}\r\n', NULL, NULL, NULL, 0, 'https://api.tiingo.com/account/api/token', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-20 15:54:51', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(11, 'interactive-brokers', '', 'Interactive Brokers', 'data', 'broker', 'active', 'api_key', 'https://api.ibkr.com/v1/api', 'https://www.interactivebrokers.com/api/doc.html', 50, 1, NULL, NULL, NULL, NULL, 0, 'https://www.interactivebrokers.com/index.php?f=5041', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-17 18:08:31', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(12, 'alpaca-markets', '', 'Alpaca Markets', 'data', 'broker', 'active', 'api_key', 'https://api.alpaca.markets/v2', 'https://alpaca.markets/docs/api-documentation/', 200, 1, NULL, NULL, NULL, NULL, 0, 'https://alpaca.markets/docs/api-documentation/how-to/account/', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-17 18:08:31', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(13, 'td-ameritrade', '', 'TD Ameritrade', 'data', 'broker', 'active', 'oauth2', 'https://api.tdameritrade.com/v1', 'https://developer.tdameritrade.com/apis', 120, 1, NULL, NULL, NULL, NULL, 0, 'https://developer.tdameritrade.com/user/me/apps', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-17 18:08:31', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(14, 'newsapi', '', 'News API', 'data', 'news', 'active', 'api_key', 'https://newsapi.org/v2', 'https://newsapi.org/docs', 100, 1, NULL, NULL, NULL, NULL, 0, 'https://newsapi.org/register', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-17 18:08:31', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(15, 'benzinga', '', 'Benzinga', 'data', 'news', 'active', 'api_key', 'https://api.benzinga.com/api/v2', 'https://docs.benzinga.io/benzinga/', 60, 1, NULL, NULL, NULL, NULL, 0, 'https://www.benzinga.com/apis', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-17 18:08:31', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(16, 'finnhub-news', '', 'Finnhub News', 'data', 'news', 'active', 'api_key', 'https://finnhub.io/api/v1/news', 'https://finnhub.io/docs/api/news', 60, 1, NULL, NULL, NULL, NULL, 0, 'https://finnhub.io/dashboard', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-17 18:08:31', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(17, 'quandl', '', 'Quandl', 'data', 'other', 'active', 'api_key', 'https://www.quandl.com/api/v3', 'https://docs.quandl.com/', 50, 1, NULL, NULL, NULL, NULL, 0, 'https://www.quandl.com/account/api', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-17 18:08:31', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(18, 'bloomberg', '', 'Bloomberg API', 'data', 'other', 'active', 'oauth2', 'https://api.bloomberg.com', 'https://www.bloomberg.com/professional/support/api-library/', 500, 1, NULL, NULL, NULL, NULL, 0, 'https://www.bloomberg.com/professional/support/api-request-form/', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-17 18:08:31', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(19, 'refinitiv', '', 'Refinitiv', 'data', 'other', 'active', 'oauth2', 'https://api.refinitiv.com', 'https://developers.refinitiv.com/', 100, 1, NULL, NULL, NULL, NULL, 0, 'https://developers.refinitiv.com/en/api-services', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-17 18:08:31', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(20, 'xignite', '', 'Xignite', 'data', 'other', 'active', 'api_key', 'https://globalrealtime.xignite.com/v3/xGlobalRealTime.json', 'https://www.xignite.com/xGlobalRealTime.json', 60, 1, NULL, NULL, NULL, NULL, 0, 'https://www.xignite.com/xignite-api/', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-17 18:08:31', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(21, 'coinbase', '', 'Coinbase', 'data', 'market_data', 'active', 'api_key', 'https://api.coinbase.com/v2', 'https://developers.coinbase.com/', 300, 1, NULL, NULL, NULL, NULL, 0, 'https://www.coinbase.com/settings/api', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-17 18:08:31', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(22, 'binance', '', 'Binance', 'data', 'market_data', 'active', 'hmac', 'https://api.binance.com/api/v3', 'https://binance-docs.github.io/apidocs/', 1200, 1, NULL, NULL, NULL, NULL, 0, 'https://www.binance.com/en/my/settings/api-management', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-17 18:08:31', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(23, 'kraken', '', 'Kraken', 'data', 'market_data', 'active', 'hmac', 'https://api.kraken.com/0', 'https://docs.kraken.com/rest/', 60, 1, NULL, NULL, NULL, NULL, 0, 'https://www.kraken.com/u/security/api', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-17 18:08:31', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(24, 'coinmarketcap', '', 'CoinMarketCap', 'data', 'market_data', 'active', 'api_key', 'https://pro-api.coinmarketcap.com/v1', 'https://coinmarketcap.com/api/documentation/', 333, 1, NULL, NULL, NULL, NULL, 0, 'https://pro.coinmarketcap.com/account', 'global', 'en', 'freemium', '2025-09-17 18:08:31', '2025-09-17 18:08:31', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(25, 'yahoofinance-timeseries', 'Yahoo Finance (Apidojo v1)', '', 'data', 'financial', 'active', 'api_key', 'https://apidojo-yahoo-finance-v1.p.rapidapi.com', 'https://rapidapi.com/apidojo/api/yahoo-finance1/', 100, 1, '{\r\n  "test": {\r\n    "method": "GET",\r\n    "url_override": "https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-timeseries?symbol={{symbol}}&region={{region}}",\r\n    "headers": [\r\n      { "name": "x-rapidapi-host", "value": "apidojo-yahoo-finance-v1.p.rapidapi.com" },\r\n      { "name": "x-rapidapi-key",  "value": "{{API_KEY}}" }\r\n    ],\r\n    "required_fields": ["symbol"],\r\n    "defaults": { "symbol": "IBM", "region": "US" },\r\n    "expected_status": 200\r\n  }\r\n}', NULL, NULL, NULL, 0, 'https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-timeseries', 'global', 'en', 'freemium', '2025-09-22 05:44:56', '2025-09-22 05:44:56', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(27, 'tradingview-rapidapi', 'TradingView (RapidAPI API2)', '', 'data', 'financial', 'active', 'api_key', 'https://tradingview-api2.p.rapidapi.com', 'https://rapidapi.com/financetrading/api/tradingview-api2', 60, 1, '{"test": {"method": "GET", "url_override": "https://tradingview-api2.p.rapidapi.com/get_intervals", "headers": [{"name": "x-rapidapi-host", "value": "tradingview-api2.p.rapidapi.com"}, {"name": "x-rapidapi-key", "value": "{{API_KEY}}"}], "expected_status": 200}}', NULL, NULL, NULL, 0, 'https://tradingview-api2.p.rapidapi.com/get_intervals', 'global', 'en', 'freemium', '2025-09-22 06:24:35', '2025-09-22 06:24:35', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '{"method": "GET", "url_override": "https://tradingview-api2.p.rapidapi.com/get_intervals", "headers": [{"name": "x-rapidapi-host", "value": "tradingview-api2.p.rapidapi.com"}, {"name": "x-rapidapi-key", "value": "{{API_KEY}}"}], "required_fields": [], "defaults": {}, "expected_status": 200, "format": "json"}');
+
+-- Volcando estructura para tabla u522228883_bolsa_app.knowledge_base
+CREATE TABLE IF NOT EXISTS `knowledge_base` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `knowledge_type` enum('market_pattern','indicator_rule','strategy','user_insight','symbol_specific','risk_management','trading_psychology') NOT NULL,
+  `title` varchar(200) NOT NULL,
+  `content` longtext NOT NULL,
+  `summary` text DEFAULT NULL,
+  `tags` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`tags`)),
+  `confidence_score` decimal(3,2) DEFAULT 0.50,
+  `usage_count` int(11) DEFAULT 0,
+  `success_rate` decimal(5,2) DEFAULT 0.00,
+  `created_by` int(11) DEFAULT NULL,
+  `symbol` varchar(20) DEFAULT NULL,
+  `sector` varchar(50) DEFAULT NULL,
+  `source_type` enum('manual','file_upload','ai_extraction','analysis_learning') DEFAULT 'manual',
+  `source_file` varchar(255) DEFAULT NULL,
+  `is_public` tinyint(1) DEFAULT 0,
+  `is_active` tinyint(1) DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_type_symbol` (`knowledge_type`,`symbol`),
+  KEY `idx_created_by` (`created_by`),
+  KEY `idx_tags` (`tags`(768)),
+  KEY `idx_confidence` (`confidence_score`),
+  KEY `idx_usage` (`usage_count`),
+  KEY `idx_active` (`is_active`)
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla u522228883_bolsa_app.knowledge_base: ~2 rows (aproximadamente)
 REPLACE INTO `knowledge_base` (`id`, `knowledge_type`, `title`, `content`, `summary`, `tags`, `confidence_score`, `usage_count`, `success_rate`, `created_by`, `symbol`, `sector`, `source_type`, `source_file`, `is_public`, `is_active`, `created_at`, `updated_at`) VALUES
-	(35, 'user_insight', 'Conocimiento extraído del archivo', 'Contenido extraído automáticamente del archivo subido.', 'Resumen del conocimiento extraído', '["extra\\u00eddo","archivo"]', 0.70, 0, 0.00, 8, NULL, NULL, 'ai_extraction', 'Manual_Básico_Opciones_MEFF_30MY.pdf', 0, 1, '2025-09-09 23:02:02', '2025-09-09 23:02:02'),
-	(36, 'user_insight', 'Conocimiento extraído del archivo', 'Contenido extraído automáticamente del archivo subido.', 'Resumen del conocimiento extraído', '["extra\\u00eddo","archivo"]', 0.70, 0, 0.00, 8, NULL, NULL, 'ai_extraction', 'TC-NIO15m.txt', 0, 1, '2025-09-09 23:03:49', '2025-09-09 23:03:49'),
-	(38, 'user_insight', 'Conocimiento extraído del archivo', 'Contenido extraído automáticamente del archivo subido.', 'Resumen del conocimiento extraído', '["extra\\u00eddo","archivo"]', 0.70, 0, 0.00, 7, NULL, NULL, 'ai_extraction', 'Patrones_de_Velas.pdf', 0, 1, '2025-09-09 23:15:10', '2025-09-09 23:15:10'),
-	(40, 'user_insight', 'Conocimiento extraído del archivo', 'Contenido PDF extraído de: Plantilla_Scalping_Trading_Opciones.pdf\n\nEste archivo contiene información sobre trading y análisis técnico.\nTamaño: 2.3 KB\n', 'Archivo PDF de trading: Plantilla_Scalping_Trading_Opciones.pdf', '["extra\\u00eddo","archivo"]', 0.70, 0, 0.00, 8, NULL, NULL, 'ai_extraction', 'Plantilla_Scalping_Trading_Opciones.pdf', 0, 1, '2025-09-09 23:49:10', '2025-09-10 03:32:12'),
-	(42, 'user_insight', 'Conocimiento extraído del archivo', 'Contenido PDF extraído de: Manual de trading avanzado.pdf\n\nEste archivo contiene información sobre trading y análisis técnico.\nTamaño: 2298.72 KB\n', 'Archivo PDF de trading: Manual de trading avanzado.pdf', '["extra\\u00eddo","archivo"]', 0.70, 0, 0.00, 8, NULL, NULL, 'ai_extraction', 'Manual de trading avanzado.pdf', 0, 1, '2025-09-10 04:03:44', '2025-09-10 04:03:53'),
-	(43, 'user_insight', 'Documento de Trading: Patrones_de_Velas.pdf', '=== ARCHIVO PDF PROCESADO ===\nArchivo: Patrones_de_Velas.pdf\nTamaño: 5644.57 KB\nTipo: Documento PDF de trading\nContenido: Información sobre trading, análisis técnico y estrategias\nPalabras clave: trading, opciones, análisis, técnico, estrategias\n', 'PDF de trading: Patrones_de_Velas.pdf - Contiene estrategias y análisis técnico', '["extra\\u00eddo","archivo"]', 0.70, 0, 0.00, 8, NULL, NULL, 'ai_extraction', 'Patrones_de_Velas.pdf', 0, 1, '2025-09-10 04:04:10', '2025-09-10 04:04:10'),
-	(44, 'user_insight', 'Conocimiento extraído del archivo', 'Contenido extraído automáticamente del archivo subido.', 'Resumen del conocimiento extraído', '["extra\\u00eddo","archivo"]', 0.70, 0, 0.00, 4, NULL, NULL, 'ai_extraction', 'Manual_Básico_Opciones_MEFF_30MY.pdf', 0, 1, '2025-09-10 16:45:25', '2025-09-10 16:45:25');
+	(75, 'user_insight', 'Conocimiento extraído del archivo', 'Contenido extraído automáticamente del archivo subido.', 'Resumen del conocimiento extraído', '["extra\\u00eddo","archivo"]', 0.70, 0, 0.00, 4, NULL, NULL, 'ai_extraction', 'Manual_Básico_Opciones_MEFF_30MY.pdf', 0, 1, '2025-09-25 03:44:20', '2025-09-25 03:44:20'),
+	(76, 'user_insight', 'Manual_Básico_Opciones_MEFF_30MY.pdf - Análisis IA (OPENAI)', '```json\n{\n  "resumen": "El documento presenta 21 estrategias de trading en opciones, describiendo cómo implementarlas adecuadamente y ajustarlas a medida que cambian los precios y la volatilidad del mercado.",\n  "puntos_clave": [\n    "Las opciones pueden ser utilizadas tanto en acciones individuales como en índices como el IBEX 35.",\n    "Cada estrategia tiene un perfil específico de beneficios y pérdidas que varían según la dirección del mercado y la volatilidad.",\n    "Existen estrategias específicas para condiciones de mercado alcista, bajista e indeciso.",\n    "La gestión de la volatilidad es crucial para maximizar las ganancias o minimizar las pérdidas.",\n    "Es recomendable utilizar tablas que ayudan a determinar estrategias iniciales basadas en expectativas de mercado."\n  ],\n  "estrategias": [\n    "Spread Alcista: Comprando y vendiendo simultáneamente opciones para aprovechar un aumento moderado en el precio.",\n    "Put Comprada: Para beneficiarse de caídas en el precio de acciones con ganancias potenciales ilimitadas y pérdida limitada a la prima pagada.",\n    "Strangle Vendido: Vender opciones Call y Put para beneficiarse de un mercado tranquilo, maximizando ingresos en intervalos de precios específicos.",\n    "Ratio Put Spread: Posicionar ventas de Put con uno o más contratos de Put comprados, ideal para movimientos moderados en precios.",\n    "Call Vendida: Generar ingresos ante un mercado estable o ligeramente alcista, con pérdidas limitadas por el ingreso de la prima."\n  ],\n  "gestion_riesgo": [\n    "Siempre tener en cuenta las garantías y comisiones al implementar estrategias.",\n    "Evaluar continuamente la posición en función de cambios de precios, volatilidad y tiempo hasta el vencimiento.",\n    "Limitar las posiciones a aquellas con pérdidas máximas predeterminadas, como las opciones compradas."\n  ],\n  "recomendaciones": [\n    "Utilizar tablas de estrategias para seleccionar rápidamente las oportunidades de trading más adecuadas según las condiciones del mercado.",\n    "Considerar la volatilidad implícita y su impacto en las opciones al tomar decisiones de trading.",\n    "Transformar estrategias en tiempo real según la evolución del mercado para maximizar beneficios y minimizar pérdidas."\n  ]\n}\n```', '```json\n{\n  "resumen": "El documento presenta 21 estrategias de trading en opciones, describiendo cómo implementarlas adecuadamente y ajustarlas a medida que cambian los precios y la volatilidad del mercado.",\n  "puntos_clave": [\n    "Las opciones pueden ser utilizadas tanto en acciones individuales', '["extra\\u00eddo","archivo"]', 0.70, 0, 0.00, 4, NULL, NULL, 'ai_extraction', 'Manual_Básico_Opciones_MEFF_30MY.pdf', 0, 1, '2025-09-26 08:18:23', '2025-09-26 08:18:23');
+
+-- Volcando estructura para tabla u522228883_bolsa_app.knowledge_categories
+CREATE TABLE IF NOT EXISTS `knowledge_categories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `category_name` varchar(100) NOT NULL,
+  `description` text DEFAULT NULL,
+  `parent_category_id` int(11) DEFAULT NULL,
+  `color_code` varchar(7) DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `category_name` (`category_name`),
+  KEY `idx_parent` (`parent_category_id`),
+  KEY `idx_active` (`is_active`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Volcando datos para la tabla u522228883_bolsa_app.knowledge_categories: ~8 rows (aproximadamente)
 REPLACE INTO `knowledge_categories` (`id`, `category_name`, `description`, `parent_category_id`, `color_code`, `is_active`, `created_at`) VALUES
@@ -55,23 +520,290 @@ REPLACE INTO `knowledge_categories` (`id`, `category_name`, `description`, `pare
 	(7, 'Criptomonedas', 'Conocimiento específico de crypto', NULL, '#F97316', 1, '2025-09-08 23:18:39'),
 	(8, 'Opciones', 'Estrategias y análisis de opciones', NULL, '#84CC16', 1, '2025-09-08 23:18:39');
 
--- Volcando datos para la tabla u522228883_bolsa_app.knowledge_files: ~7 rows (aproximadamente)
-REPLACE INTO `knowledge_files` (`id`, `user_id`, `original_filename`, `stored_filename`, `file_type`, `file_size`, `mime_type`, `upload_status`, `extraction_status`, `extracted_items`, `error_message`, `created_at`, `updated_at`) VALUES
-	(11, 7, 'Manual_Básico_Opciones_MEFF_30MY.pdf', '7_1757459662_68c0b4cee4d57.pdf', 'pdf', 2690831, 'application/pdf', 'uploaded', 'pending', 0, NULL, '2025-09-09 23:14:22', '2025-09-09 23:14:22'),
-	(12, 7, 'Patrones_de_Velas.pdf', '7_1757459710_68c0b4fedeb75.pdf', 'pdf', 5780038, 'application/pdf', 'uploaded', 'pending', 0, NULL, '2025-09-09 23:15:10', '2025-09-09 23:15:10'),
-	(14, 8, 'Plantilla_Scalping_Trading_Opciones.pdf', '8_1757461750_68c0bcf6a521e.pdf', 'pdf', 2352, 'application/pdf', 'uploaded', 'completed', 1, NULL, '2025-09-09 23:49:10', '2025-09-10 03:32:12'),
-	(15, 7, 'Cómo usar Finviz para encontrar acciones_ guía para principiantes.PDF', '7_1757464492_68c0c7accc7dc.pdf', 'pdf', 4055000, 'application/pdf', 'uploaded', 'pending', 0, NULL, '2025-09-10 00:34:52', '2025-09-10 00:34:52'),
-	(16, 8, 'Manual de trading avanzado.pdf', '8_1757477024_68c0f8a0a007a.pdf', 'pdf', 2353887, 'application/pdf', 'uploaded', 'completed', 1, NULL, '2025-09-10 04:03:44', '2025-09-10 04:03:53'),
-	(17, 8, 'Patrones_de_Velas.pdf', '8_1757477050_68c0f8ba40d4a.pdf', 'pdf', 5780038, 'application/pdf', 'uploaded', 'completed', 1, NULL, '2025-09-10 04:04:10', '2025-09-10 04:04:10'),
-	(18, 4, 'Manual_Básico_Opciones_MEFF_30MY.pdf', '4_1757522725_68c1ab25a86d0.pdf', 'pdf', 2690831, 'application/pdf', 'uploaded', 'pending', 0, NULL, '2025-09-10 16:45:25', '2025-09-10 16:45:25');
+-- Volcando estructura para tabla u522228883_bolsa_app.knowledge_files
+CREATE TABLE IF NOT EXISTS `knowledge_files` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `original_filename` varchar(255) NOT NULL,
+  `stored_filename` varchar(255) NOT NULL,
+  `openai_file_id` varchar(255) DEFAULT NULL COMMENT 'ID del archivo en OpenAI Files API',
+  `file_type` varchar(50) NOT NULL,
+  `file_size` int(11) NOT NULL,
+  `mime_type` varchar(100) DEFAULT NULL,
+  `upload_status` enum('uploaded','processing','processed','failed') DEFAULT 'uploaded',
+  `extraction_status` enum('pending','in_progress','completed','failed') DEFAULT 'pending',
+  `extracted_items` int(11) DEFAULT 0,
+  `error_message` text DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `openai_file_verified_at` datetime DEFAULT NULL COMMENT 'Última verificación del archivo en OpenAI',
+  `last_extraction_started_at` datetime DEFAULT NULL COMMENT 'Inicio del último proceso de extracción',
+  `last_extraction_finished_at` datetime DEFAULT NULL COMMENT 'Fin del último proceso de extracción',
+  `last_extraction_model` varchar(64) DEFAULT NULL COMMENT 'Modelo usado en la última extracción',
+  `last_extraction_response_id` varchar(128) DEFAULT NULL COMMENT 'ID de respuesta de OpenAI',
+  `last_extraction_input_tokens` int(11) DEFAULT NULL COMMENT 'Tokens de entrada de la última extracción',
+  `last_extraction_output_tokens` int(11) DEFAULT NULL COMMENT 'Tokens de salida de la última extracción',
+  `last_extraction_total_tokens` int(11) DEFAULT NULL COMMENT 'Total de tokens de la última extracción',
+  `last_extraction_cost_usd` decimal(10,6) DEFAULT NULL COMMENT 'Costo en USD de la última extracción',
+  `extraction_attempts` int(11) DEFAULT 0 COMMENT 'Número de intentos de extracción',
+  `last_error` text DEFAULT NULL COMMENT 'Último error en extracción',
+  `vector_provider` varchar(32) DEFAULT NULL,
+  `vector_store_id` varchar(128) DEFAULT NULL,
+  `vector_store_local_id` bigint(20) DEFAULT NULL,
+  `vector_external_doc_id` varchar(128) DEFAULT NULL,
+  `vector_status` varchar(32) DEFAULT NULL,
+  `vector_last_indexed_at` datetime DEFAULT NULL,
+  `assistant_id` varchar(64) DEFAULT NULL COMMENT 'Assistant usado al resumir',
+  `thread_id` varchar(64) DEFAULT NULL COMMENT 'Thread por archivo (resumen)',
+  `last_summary_at` datetime DEFAULT NULL COMMENT 'Último resumen/ingesta en VS',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ux_openai_file_id` (`openai_file_id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_status` (`upload_status`,`extraction_status`),
+  KEY `idx_created_at` (`created_at`),
+  KEY `idx_knowledge_files_openai_file_id` (`openai_file_id`),
+  KEY `idx_extraction_status` (`extraction_status`),
+  KEY `idx_last_extraction` (`last_extraction_finished_at`),
+  KEY `idx_user_extraction` (`user_id`,`last_extraction_finished_at`),
+  KEY `idx_kf_user` (`user_id`),
+  KEY `idx_kf_vector` (`vector_store_id`),
+  KEY `idx_kf_vector_local` (`vector_store_local_id`),
+  KEY `idx_file_thread` (`thread_id`),
+  CONSTRAINT `fk_kf_vector_local` FOREIGN KEY (`vector_store_local_id`) REFERENCES `ai_vector_stores` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla u522228883_bolsa_app.knowledge_files: ~1 rows (aproximadamente)
+REPLACE INTO `knowledge_files` (`id`, `user_id`, `original_filename`, `stored_filename`, `openai_file_id`, `file_type`, `file_size`, `mime_type`, `upload_status`, `extraction_status`, `extracted_items`, `error_message`, `created_at`, `updated_at`, `openai_file_verified_at`, `last_extraction_started_at`, `last_extraction_finished_at`, `last_extraction_model`, `last_extraction_response_id`, `last_extraction_input_tokens`, `last_extraction_output_tokens`, `last_extraction_total_tokens`, `last_extraction_cost_usd`, `extraction_attempts`, `last_error`, `vector_provider`, `vector_store_id`, `vector_store_local_id`, `vector_external_doc_id`, `vector_status`, `vector_last_indexed_at`, `assistant_id`, `thread_id`, `last_summary_at`) VALUES
+	(46, 4, 'Manual_Básico_Opciones_MEFF_30MY.pdf', '4_1758771860_68d4ba940d90a.pdf', 'file-7RahFEJDHc4fnLrjrbiarw', 'pdf', 2690831, 'application/pdf', 'processed', 'completed', 0, NULL, '2025-09-25 03:44:20', '2025-09-26 08:18:23', '2025-09-25 15:16:29', NULL, '2025-09-26 08:18:23', 'openai', 'run_gA6Oycxdhz4hDUYAhVjKN3rg', 17192, 503, 17695, 0.000000, 0, NULL, 'openai', 'vs_68d465c6c95081919ea9b6a6fb9339d2', 1, NULL, 'indexed', '2025-09-26 06:49:02', NULL, NULL, NULL);
+
+-- Volcando estructura para tabla u522228883_bolsa_app.knowledge_metrics
+CREATE TABLE IF NOT EXISTS `knowledge_metrics` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `knowledge_id` int(11) NOT NULL,
+  `metric_type` enum('accuracy','relevance','completeness','clarity','usefulness') NOT NULL,
+  `metric_value` decimal(3,2) NOT NULL,
+  `evaluation_source` enum('user_feedback','ai_assessment','usage_analysis','expert_review') NOT NULL,
+  `evaluator_id` int(11) DEFAULT NULL,
+  `evaluation_date` timestamp NULL DEFAULT current_timestamp(),
+  `notes` text DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_knowledge_metric` (`knowledge_id`,`metric_type`),
+  KEY `idx_evaluation_source` (`evaluation_source`),
+  KEY `idx_evaluation_date` (`evaluation_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Volcando datos para la tabla u522228883_bolsa_app.knowledge_metrics: ~0 rows (aproximadamente)
 
+-- Volcando estructura para tabla u522228883_bolsa_app.knowledge_relations
+CREATE TABLE IF NOT EXISTS `knowledge_relations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `source_knowledge_id` int(11) NOT NULL,
+  `target_knowledge_id` int(11) NOT NULL,
+  `relation_type` enum('similar','complementary','contradictory','prerequisite','follow_up') NOT NULL,
+  `strength` decimal(3,2) DEFAULT 0.50,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_relation` (`source_knowledge_id`,`target_knowledge_id`,`relation_type`),
+  KEY `idx_source` (`source_knowledge_id`),
+  KEY `idx_target` (`target_knowledge_id`),
+  KEY `idx_type` (`relation_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Volcando datos para la tabla u522228883_bolsa_app.knowledge_relations: ~0 rows (aproximadamente)
+
+-- Volcando estructura para tabla u522228883_bolsa_app.knowledge_usage
+CREATE TABLE IF NOT EXISTS `knowledge_usage` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `knowledge_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `analysis_id` int(11) DEFAULT NULL,
+  `usage_type` enum('analysis_reference','pattern_match','strategy_application','risk_assessment') NOT NULL,
+  `relevance_score` decimal(3,2) NOT NULL,
+  `effectiveness_score` decimal(3,2) DEFAULT NULL,
+  `applied_at` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_knowledge_user` (`knowledge_id`,`user_id`),
+  KEY `idx_analysis` (`analysis_id`),
+  KEY `idx_usage_type` (`usage_type`),
+  KEY `idx_applied_at` (`applied_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Volcando datos para la tabla u522228883_bolsa_app.knowledge_usage: ~0 rows (aproximadamente)
 
--- Volcando datos para la tabla u522228883_bolsa_app.usage_log: ~349 rows (aproximadamente)
+-- Volcando estructura para tabla u522228883_bolsa_app.news_providers
+CREATE TABLE IF NOT EXISTS `news_providers` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `slug` varchar(64) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `label` varchar(100) NOT NULL,
+  `type` enum('ai','data','news','trade') NOT NULL DEFAULT 'news',
+  `category` varchar(50) DEFAULT NULL,
+  `status` enum('active','disabled','enabled') NOT NULL DEFAULT 'active',
+  `auth_type` enum('api_key','basic','oauth2','hmac','none') NOT NULL DEFAULT 'api_key',
+  `base_url` varchar(255) DEFAULT NULL,
+  `docs_url` varchar(255) DEFAULT NULL,
+  `rate_limit_per_min` int(11) DEFAULT NULL,
+  `is_enabled` tinyint(1) NOT NULL DEFAULT 1,
+  `config_json` longtext DEFAULT NULL CHECK (json_valid(`config_json`)),
+  `icon_url` varchar(512) DEFAULT NULL,
+  `icon_svg` mediumtext DEFAULT NULL,
+  `brand_color` varchar(9) DEFAULT NULL,
+  `display_order` int(11) DEFAULT 0,
+  `url_request` varchar(255) DEFAULT NULL,
+  `coverage` enum('global','regional','local','specialized') DEFAULT 'global',
+  `language` varchar(10) DEFAULT 'en',
+  `pricing_tier` enum('free','freemium','paid','enterprise') DEFAULT 'freemium',
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `request_method` enum('GET','POST','PUT','PATCH','DELETE') DEFAULT 'GET',
+  `auth_header_name` varchar(128) DEFAULT NULL,
+  `auth_query_name` varchar(128) DEFAULT NULL,
+  `headers_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`headers_json`)),
+  `query_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`query_json`)),
+  `body_template` mediumtext DEFAULT NULL,
+  `body_type` enum('json','form','text') DEFAULT 'json',
+  `expected_status_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`expected_status_json`)),
+  `ok_json_path` varchar(256) DEFAULT NULL,
+  `ok_json_expected` varchar(256) DEFAULT NULL,
+  `success_regex` varchar(512) DEFAULT NULL,
+  `url_override_template` varchar(512) DEFAULT NULL,
+  `required_fields_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`required_fields_json`)),
+  `default_fields_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`default_fields_json`)),
+  `extract_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`extract_json`)),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_news_providers_slug` (`slug`)
+) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla u522228883_bolsa_app.news_providers: ~21 rows (aproximadamente)
+REPLACE INTO `news_providers` (`id`, `slug`, `name`, `label`, `type`, `category`, `status`, `auth_type`, `base_url`, `docs_url`, `rate_limit_per_min`, `is_enabled`, `config_json`, `icon_url`, `icon_svg`, `brand_color`, `display_order`, `url_request`, `coverage`, `language`, `pricing_tier`, `created_at`, `updated_at`, `request_method`, `auth_header_name`, `auth_query_name`, `headers_json`, `query_json`, `body_template`, `body_type`, `expected_status_json`, `ok_json_path`, `ok_json_expected`, `success_regex`, `url_override_template`, `required_fields_json`, `default_fields_json`, `extract_json`) VALUES
+	(37, 'newsapi', 'News API', '', 'news', 'general', 'active', 'api_key', 'https://newsapi.org/v2', 'https://newsapi.org/docs', 100, 1, '{"test":{"method":"GET","url_override":"https://newsapi.org/v2/top-headlines?country=us&pageSize=1&apiKey={{API_KEY}}","expected_status":200,"ok_json_path":"status","ok_json_expected":"ok"}}', 'https://newsapi.org/images/logo.png', NULL, NULL, 0, 'https://newsapi.org/register', 'global', 'multi', 'freemium', '2025-09-17 18:31:23', '2025-09-20 16:35:04', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(38, 'gnews', 'GNews', '', 'news', 'general', 'active', 'api_key', 'https://gnews.io/api/v4', 'https://gnews.io/docs/v4', 100, 1, '{"test":{"method":"GET","url_override":"https://gnews.io/api/v4/top-headlines?token={{API_KEY}}&lang=en&max=1","expected_status":200,"ok_json_path":"totalArticles","ok_json_expected":"number"}}', 'https://gnews.io/favicon.ico', NULL, NULL, 0, 'https://gnews.io/register', 'global', 'multi', 'freemium', '2025-09-17 18:31:23', '2025-09-20 16:35:04', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(39, 'currentsapi', 'Currents API', '', 'news', 'general', 'active', 'api_key', 'https://api.currentsapi.services/v1', 'https://currentsapi.services/en/docs', 60, 1, NULL, 'https://currentsapi.services/images/logo.png', NULL, NULL, 0, 'https://currentsapi.services/en/register', 'global', 'multi', 'freemium', '2025-09-17 18:31:23', '2025-09-17 18:31:23', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(40, 'benzinga', 'Benzinga', '', 'news', 'financial', 'active', 'api_key', 'https://api.benzinga.com/api/v2', 'https://docs.benzinga.io/benzinga/', 60, 1, '{"test":{"method":"GET","headers":[{"name":"Authorization","value":"Bearer {{API_KEY}}"}],"url_override":"https://api.benzinga.com/api/v2.1/news?token={{API_KEY}}&pageSize=1","expected_status":200,"ok_json_path":"news","ok_json_expected":"array"}}', 'https://www.benzinga.com/favicon.ico', NULL, NULL, 0, 'https://www.benzinga.com/apis', 'global', 'en', 'paid', '2025-09-17 18:31:23', '2025-09-20 16:35:04', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(41, 'finnhub-news', 'Finnhub News', '', 'news', 'financial', 'active', 'api_key', 'https://finnhub.io/api/v1/news', 'https://finnhub.io/docs/api/news', 60, 1, NULL, 'https://finnhub.io/favicon.ico', NULL, NULL, 0, 'https://finnhub.io/dashboard', 'global', 'en', 'freemium', '2025-09-17 18:31:23', '2025-09-17 18:31:23', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(42, 'marketaux', 'Marketaux', '', 'news', 'financial', 'active', 'api_key', 'https://api.marketaux.com/v1', 'https://www.marketaux.com/documentation', 100, 1, NULL, 'https://www.marketaux.com/favicon.ico', NULL, NULL, 0, 'https://www.marketaux.com/account/api', 'global', 'en', 'freemium', '2025-09-17 18:31:23', '2025-09-17 18:31:23', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(43, 'alphavantage-news', 'Alpha Vantage News', '', 'news', 'financial', 'active', 'api_key', 'https://www.alphavantage.co/query', 'https://www.alphavantage.co/documentation/', 5, 1, NULL, 'https://www.alphavantage.co/favicon.ico', NULL, NULL, 0, 'https://www.alphavantage.co/support/#api-key', 'global', 'en', 'freemium', '2025-09-17 18:31:23', '2025-09-17 18:31:23', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(44, 'technews', 'TechNews API', '', 'news', 'tech', 'active', 'api_key', 'https://technews-api.p.rapidapi.com', 'https://rapidapi.com/letscrape-6bRZa3EguV/api/technews', 50, 1, NULL, NULL, NULL, NULL, 0, 'https://rapidapi.com/letscrape-6bRZa3EguV/api/technews', 'global', 'en', 'paid', '2025-09-17 18:31:23', '2025-09-17 18:31:23', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(45, 'hackernews', 'Hacker News API', '', 'news', 'tech', 'active', 'none', 'https://hacker-news.firebaseio.com/v0', 'https://github.com/HackerNews/API', 1000, 1, NULL, 'https://news.ycombinator.com/favicon.ico', NULL, NULL, 0, NULL, 'global', 'en', 'free', '2025-09-17 18:31:23', '2025-09-17 18:31:23', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(46, 'cryptopanic', 'CryptoPanic', '', 'news', 'crypto', 'active', 'api_key', 'https://cryptopanic.com/api/v1', 'https://cryptopanic.com/developers/api/', 5, 1, '{"test":{"method":"GET","url_override":"https://cryptopanic.com/api/v1/posts/?auth_token={{API_KEY}}&public=true&currencies=BTC&page=1","expected_status":200,"ok_json_path":"results","ok_json_expected":"array"}}', 'https://cryptopanic.com/favicon.ico', NULL, NULL, 0, 'https://cryptopanic.com/account/api', 'global', 'en', 'freemium', '2025-09-17 18:31:23', '2025-09-20 16:35:04', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(47, 'coinnewsapi', 'CoinNews API', '', 'news', 'crypto', 'active', 'api_key', 'https://coinnewsapi.com/v1', 'https://coinnewsapi.com/docs', 60, 1, NULL, 'https://coinnewsapi.com/favicon.ico', NULL, NULL, 0, 'https://coinnewsapi.com/register', 'global', 'en', 'freemium', '2025-09-17 18:31:23', '2025-09-17 18:31:23', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(48, 'newsdata', 'NewsData.io', '', 'news', 'political', 'active', 'api_key', 'https://newsdata.io/api/1', 'https://newsdata.io/documentation', 10, 1, NULL, 'https://newsdata.io/favicon.ico', NULL, NULL, 0, 'https://newsdata.io/pricing', 'global', 'multi', 'freemium', '2025-09-17 18:31:23', '2025-09-17 18:31:23', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(49, 'mediastack', 'MediaStack', '', 'news', 'political', 'active', 'api_key', 'http://api.mediastack.com/v1', 'https://mediastack.com/documentation', 500, 1, NULL, 'https://mediastack.com/favicon.ico', NULL, NULL, 0, 'https://mediastack.com/signup', 'global', 'multi', 'freemium', '2025-09-17 18:31:23', '2025-09-17 18:31:23', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(50, 'reuters', 'Reuters API', '', 'news', 'general', 'active', 'oauth2', 'https://api.reuters.com', 'https://developer.thomsonreuters.com/', 100, 1, NULL, 'https://www.reuters.com/favicon.ico', NULL, NULL, 0, 'https://developer.thomsonreuters.com/signup', 'global', 'en', 'enterprise', '2025-09-17 18:31:23', '2025-09-17 18:31:23', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(51, 'bloomberg-news', 'Bloomberg News API', '', 'news', 'financial', 'active', 'oauth2', 'https://api.bloomberg.com/news', 'https://www.bloomberg.com/professional/support/api-library/', 200, 1, NULL, 'https://www.bloomberg.com/favicon.ico', NULL, NULL, 0, 'https://www.bloomberg.com/professional/support/api-request-form/', 'global', 'en', 'enterprise', '2025-09-17 18:31:23', '2025-09-17 18:31:23', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(52, 'associated-press', 'Associated Press API', '', 'news', 'general', 'active', 'oauth2', 'https://api.ap.org', 'https://developer.ap.org/ap-api', 50, 1, NULL, 'https://ap.org/favicon.ico', NULL, NULL, 0, 'https://developer.ap.org/ap-api-signup', 'global', 'en', 'enterprise', '2025-09-17 18:31:23', '2025-09-17 18:31:23', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(53, 'newsapi-es', 'News API Español', '', 'news', 'general', 'active', 'api_key', 'https://newsapi.org/v2', 'https://newsapi.org/docs', 100, 1, NULL, 'https://newsapi.org/images/logo.png', NULL, NULL, 0, 'https://newsapi.org/register', 'regional', 'es', 'freemium', '2025-09-17 18:31:23', '2025-09-17 18:31:23', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(54, 'elpaís', 'El País API', '', 'news', 'general', 'active', 'oauth2', 'https://api.elpais.com', 'https://developer.elpais.com', 30, 1, NULL, 'https://elpais.com/favicon.ico', NULL, NULL, 0, 'https://developer.elpais.com/signup', 'regional', 'es', 'enterprise', '2025-09-17 18:31:23', '2025-09-17 18:31:23', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(75, 'finviz', 'Finviz', 'Finviz', 'news', 'financial', 'active', 'api_key', 'https://finviz.com/api', 'https://finviz.com/screener.ashx', 30, 1, '{"test": {"method": "GET", "url_override": "https://elite.finviz.com/export.ashx?v={{v}}&f={{filters}}&auth={{API_KEY}}", "required_fields": ["v", "filters"], "defaults": {"v": "111", "filters": "fa_div_pos,sec_technology"}, "expected_status": 200, "success_regex": "^.*\\\\,"}}', 'https://finviz.com/favicon.ico', NULL, NULL, 0, 'https://elite.finviz.com/export.ashx', 'global', 'en', 'paid', '2025-09-17 18:43:08', '2025-09-20 18:09:49', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(76, 'yahoofinance-news', 'Yahoo Finance (Apidojo v1)', 'Yahoo Finance News', 'news', 'financial', 'active', 'api_key', 'https://apidojo-yahoo-finance-v1.p.rapidapi.com', 'apidojo-yahoo-finance-v1.p.rapidapi.com', 100, 1, '{\r\n  "test": {\r\n    "method": "GET",\r\n    "url_override": "https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-timeseries?symbol={{symbol}}&region={{region}}",\r\n    "headers": [\r\n      { "name": "x-rapidapi-host", "value": "apidojo-yahoo-finance-v1.p.rapidapi.com" },\r\n      { "name": "x-rapidapi-key",  "value": "{{API_KEY}}" }\r\n    ],\r\n    "required_fields": ["symbol"],\r\n    "defaults": { "symbol": "IBM", "region": "US" },\r\n    "expected_status": 200\r\n  }\r\n}', 'https://finance.yahoo.com/favicon.ico', NULL, NULL, 0, 'https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-timeseries', 'global', 'en', 'freemium', '2025-09-21 18:09:26', '2025-09-22 05:39:46', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(77, 'yahoofinance-unofficial', 'yahoofinance', 'Yahoo Finance Unofficial', 'news', 'financial', 'active', 'none', 'https://query1.finance.yahoo.com', 'https://www.yahoofinanceapi.com/', 100, 1, '{\r\n    "realtime_news": false,\r\n    "market_data": true,\r\n    "historical_data": true,\r\n    "company_info": true,\r\n    "free_api": true,\r\n    "unofficial": true,\r\n    "rate_limit_note": "No official limits but be respectful"\r\n  }', 'https://finance.yahoo.com/favicon.ico', NULL, NULL, 0, NULL, 'global', 'en', 'free', '2025-09-21 18:10:15', '2025-09-21 18:10:15', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+-- Volcando estructura para tabla u522228883_bolsa_app.plans
+CREATE TABLE IF NOT EXISTS `plans` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `code` varchar(32) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `tier` enum('trial','starter','pro','enterprise') NOT NULL DEFAULT 'starter',
+  `project_mode` enum('shared','dedicated','byok') NOT NULL DEFAULT 'byok',
+  `monthly_quota_tokens` bigint(20) DEFAULT NULL,
+  `monthly_quota_files` int(11) DEFAULT NULL,
+  `monthly_quota_vs_bytes` bigint(20) DEFAULT NULL,
+  `max_models` int(11) DEFAULT NULL,
+  `price_usd` decimal(10,2) DEFAULT NULL,
+  `features` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`features`)),
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_plan_code` (`code`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Volcando datos para la tabla u522228883_bolsa_app.plans: ~3 rows (aproximadamente)
+REPLACE INTO `plans` (`id`, `code`, `name`, `tier`, `project_mode`, `monthly_quota_tokens`, `monthly_quota_files`, `monthly_quota_vs_bytes`, `max_models`, `price_usd`, `features`, `created_at`, `updated_at`) VALUES
+	(1, 'trial', 'Trial', 'trial', 'shared', 250000, 5, 1073741824, 2, 0.00, '{"notes": "Espacio compartido; VS por usuario"}', '2025-09-16 04:29:29', '2025-09-16 04:29:29'),
+	(2, 'starter', 'Starter', 'starter', 'byok', 2000000, 50, 5368709120, 4, 19.00, '{"notes": "BYOK; VS por usuario"}', '2025-09-16 04:29:29', '2025-09-16 04:29:29'),
+	(3, 'pro', 'Pro', 'pro', 'dedicated', 10000000, 200, 21474836480, 8, 79.00, '{"notes": "Proyecto dedicado + aislamiento"}', '2025-09-16 04:29:29', '2025-09-16 04:29:29');
+
+-- Volcando estructura para tabla u522228883_bolsa_app.trade_providers
+CREATE TABLE IF NOT EXISTS `trade_providers` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `slug` varchar(64) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `label` varchar(100) DEFAULT NULL,
+  `type` enum('ai','data','news','trade') NOT NULL DEFAULT 'trade',
+  `category` varchar(50) DEFAULT NULL,
+  `status` enum('active','disabled','enabled') NOT NULL DEFAULT 'active',
+  `auth_type` enum('api_key','basic','oauth2','hmac','none') NOT NULL DEFAULT 'api_key',
+  `base_url` varchar(255) DEFAULT NULL,
+  `docs_url` varchar(255) DEFAULT NULL,
+  `rate_limit_per_min` int(11) DEFAULT NULL,
+  `is_enabled` tinyint(1) NOT NULL DEFAULT 1,
+  `config_json` longtext DEFAULT NULL CHECK (json_valid(`config_json`)),
+  `icon_url` varchar(512) DEFAULT NULL,
+  `icon_svg` mediumtext DEFAULT NULL,
+  `brand_color` varchar(9) DEFAULT NULL,
+  `display_order` int(11) DEFAULT 0,
+  `url_request` varchar(255) DEFAULT NULL,
+  `coverage` enum('global','regional','local','specialized') DEFAULT 'global',
+  `language` varchar(10) DEFAULT 'en',
+  `pricing_tier` enum('free','freemium','paid','enterprise') DEFAULT 'freemium',
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `request_method` enum('GET','POST','PUT','PATCH','DELETE') DEFAULT 'GET',
+  `auth_header_name` varchar(128) DEFAULT NULL,
+  `auth_query_name` varchar(128) DEFAULT NULL,
+  `headers_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`headers_json`)),
+  `query_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`query_json`)),
+  `body_template` mediumtext DEFAULT NULL,
+  `body_type` enum('json','form','text') DEFAULT 'json',
+  `expected_status_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`expected_status_json`)),
+  `ok_json_path` varchar(256) DEFAULT NULL,
+  `ok_json_expected` varchar(256) DEFAULT NULL,
+  `success_regex` varchar(512) DEFAULT NULL,
+  `url_override_template` varchar(512) DEFAULT NULL,
+  `required_fields_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`required_fields_json`)),
+  `default_fields_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`default_fields_json`)),
+  `extract_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`extract_json`)),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_trade_providers_slug` (`slug`)
+) ENGINE=InnoDB AUTO_INCREMENT=141 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla u522228883_bolsa_app.trade_providers: ~21 rows (aproximadamente)
+REPLACE INTO `trade_providers` (`id`, `slug`, `name`, `label`, `type`, `category`, `status`, `auth_type`, `base_url`, `docs_url`, `rate_limit_per_min`, `is_enabled`, `config_json`, `icon_url`, `icon_svg`, `brand_color`, `display_order`, `url_request`, `coverage`, `language`, `pricing_tier`, `created_at`, `updated_at`, `request_method`, `auth_header_name`, `auth_query_name`, `headers_json`, `query_json`, `body_template`, `body_type`, `expected_status_json`, `ok_json_path`, `ok_json_expected`, `success_regex`, `url_override_template`, `required_fields_json`, `default_fields_json`, `extract_json`) VALUES
+	(1, 'interactive-brokers', 'Interactive Brokers', 'IBKR', 'trade', 'broker', 'active', 'api_key', 'https://api.ibkr.com/v1/api', 'https://www.interactivebrokers.com/api/doc.html', 50, 1, '{"supports_stocks": true, "supports_options": true, "supports_futures": true, "min_order_amount": 1.00, "test": {"method": "GET", "url_override": "https://api.ibkr.com/v1/api/iserver/auth/status", "expected_status": [401, 403]}}', 'https://www.interactivebrokers.com/favicon.ico', NULL, '#003366', 0, 'https://www.interactivebrokers.com/index.php?f=5041', 'global', 'en', 'paid', '2025-09-17 09:15:14', '2025-09-22 06:50:03', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(2, 'alpaca-markets', 'Alpaca Markets', 'Alpaca', 'trade', 'broker', 'active', 'api_key', 'https://api.alpaca.markets/v2', 'https://alpaca.markets/docs/api-documentation/', 200, 1, '{"supports_stocks": true, "supports_crypto": false, "min_order_amount": 1.00, "test": {"method": "GET", "url_override": "https://api.alpaca.markets/v2/account", "headers": [{"name": "APCA-API-KEY-ID", "value": "{{API_KEY}}"}, {"name": "APCA-API-SECRET-KEY", "value": "{{API_SECRET}}"}], "expected_status": 200, "ok_json_path": "status", "ok_json_expected": "ACTIVE"}}', 'https://alpaca.markets/favicon.ico', NULL, '#00C805', 0, 'https://alpaca.markets/docs/api-documentation/how-to/account/', 'global', 'en', 'freemium', '2025-09-17 09:15:14', '2025-09-22 06:50:03', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(3, 'schwab-trader-api', 'Schwab Trader API', 'TD Ameritrade', 'trade', 'broker', 'active', 'oauth2', 'https://api.schwabapi.com/trader/v1', 'https://developer.tdameritrade.com/apis', 120, 1, '{"test": {"method": "GET", "url_override": "https://api.schwabapi.com/trader/v1/accounts/accountNumbers", "headers": [{"name": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}"}], "expected_status": [200, 401, 403]}}', 'https://www.tdameritrade.com/favicon.ico', NULL, '#40A4DF', 0, 'https://api.schwabapi.com/trader/v1/accounts', 'global', 'en', 'paid', '2025-09-17 09:15:14', '2025-09-24 05:29:53', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(4, 'coinbase', 'Coinbase Pro', 'Coinbase', 'trade', 'crypto', 'active', 'api_key', 'https://api.pro.coinbase.com', 'https://docs.pro.coinbase.com/', 300, 1, '{"supports_crypto": true, "min_order_amount": 10.00, "test": {"method": "GET", "url_override": "https://api.pro.coinbase.com/time", "expected_status": 200}}', 'https://www.coinbase.com/favicon.ico', NULL, '#0052FF', 0, 'https://pro.coinbase.com/profile/api', 'global', 'en', 'paid', '2025-09-17 09:15:14', '2025-09-22 06:50:03', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(5, 'binance', 'Binance', 'Binance', 'trade', 'crypto', 'active', 'hmac', 'https://api.binance.com/api/v3', 'https://binance-docs.github.io/apidocs/', 1200, 1, '{"supports_crypto": true, "supports_futures": true, "min_order_amount": 10.00, "test": {"method": "GET", "url_override": "https://api.binance.com/api/v3/ping", "expected_status": 200}}', 'https://binance.com/favicon.ico', NULL, '#F0B90B', 0, 'https://www.binance.com/en/my/settings/api-management', 'global', 'en', 'paid', '2025-09-17 09:15:14', '2025-09-22 06:50:03', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(6, 'kraken', 'Kraken', 'Kraken', 'trade', 'crypto', 'active', 'hmac', 'https://api.kraken.com/0', 'https://docs.kraken.com/rest/', 60, 1, '{"supports_crypto": true, "min_order_amount": 1.00, "test": {"method": "GET", "url_override": "https://api.kraken.com/0/public/Time", "expected_status": 200}}', 'https://kraken.com/favicon.ico', NULL, '#593A91', 0, 'https://www.kraken.com/u/security/api', 'global', 'en', 'paid', '2025-09-17 09:15:14', '2025-09-22 06:50:03', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(7, 'etrade', 'E*TRADE', 'E*TRADE', 'trade', 'broker', 'active', 'oauth2', 'https://api.etrade.com/v1', 'https://developer.etrade.com/home', 100, 1, '{"supports_stocks": true, "supports_options": true, "test": {"method": "GET", "url_override": "https://api.etrade.com/v1/user/alerts", "headers": [{"name": "Authorization", "value": "OAuth {{ACCESS_TOKEN}}"}], "expected_status": [200, 401, 403]}}', 'https://www.etrade.com/favicon.ico', NULL, '#6EAC2C', 0, 'https://us.etrade.com/etx/ris/apikey', 'regional', 'en', 'paid', '2025-09-17 09:15:14', '2025-09-22 06:50:04', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(8, 'oanda', 'OANDA', 'OANDA', 'trade', 'forex', 'active', 'api_key', 'https://api-fxtrade.oanda.com/v3', 'https://developer.oanda.com/', 100, 1, '{"supports_forex": true, "min_order_amount": 1.00, "test": {"method": "GET", "url_override": "https://api-fxtrade.oanda.com/v3/accounts", "headers": [{"name": "Authorization", "value": "Bearer {{API_KEY}}"}], "expected_status": 200}}', 'https://www.oanda.com/favicon.ico', NULL, '#003366', 0, 'https://www.oanda.com/account/tpa/personal-access-token', 'global', 'en', 'paid', '2025-09-17 09:15:14', '2025-09-22 06:50:04', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(9, 'tradestation', 'TradeStation', NULL, 'trade', NULL, 'enabled', 'api_key', 'https://api.tradestation.com/v3', NULL, NULL, 1, '{"test": {"method": "GET", "url_override": "https://api.tradestation.com/v3/marketdata/symbols/AAPL/quote", "headers": [{"name": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}"}], "expected_status": [200, 401]}}', NULL, NULL, NULL, 0, 'https://developer.tradestation.com/user/signin', 'global', 'en', 'freemium', '2025-09-17 09:48:48', '2025-09-22 06:50:26', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(10, 'robinhood', 'Robinhood', NULL, 'trade', NULL, 'enabled', 'api_key', 'https://api.robinhood.com', NULL, NULL, 1, '{"test": {"method": "GET", "url_override": "https://api.robinhood.com/accounts/", "headers": [{"name": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}"}], "expected_status": [200, 401]}}', NULL, NULL, NULL, 0, 'https://robinhood.com/us/en/support/articles/advanced-apis/', 'global', 'en', 'freemium', '2025-09-17 09:48:48', '2025-09-22 06:50:29', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(11, 'coinbase-pro', 'Coinbase Pro', NULL, 'trade', NULL, 'enabled', 'api_key', 'https://api.pro.coinbase.com', NULL, NULL, 1, '{"test": {"method": "GET", "url_override": "https://api.pro.coinbase.com/time", "expected_status": 200}}', NULL, NULL, NULL, 0, 'https://pro.coinbase.com/profile/api', 'global', 'en', 'freemium', '2025-09-17 09:48:48', '2025-09-22 06:50:32', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(12, 'ig-markets', 'IG Markets', NULL, 'trade', NULL, 'enabled', 'api_key', 'https://api.ig.com/gateway/deal', NULL, NULL, 1, '{"test": {"method": "GET", "url_override": "https://api.ig.com/gateway/deal/session", "expected_status": [200, 401, 403]}}', NULL, NULL, NULL, 0, 'https://www.ig.com/uk/api-keys', 'global', 'en', 'freemium', '2025-09-17 09:48:48', '2025-09-22 06:50:35', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(13, 'saxo-bank', 'Saxo Bank', NULL, 'trade', NULL, 'enabled', 'api_key', 'https://api.developer.saxo/openapi', NULL, NULL, 1, '{"test": {"method": "GET", "url_override": "https://gateway.saxobank.com/openapi/port/v1/users/me", "headers": [{"name": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}"}], "expected_status": [200, 401]}}', NULL, NULL, NULL, 0, 'https://www.developer.saxo/openapi/appmanagement', 'global', 'en', 'freemium', '2025-09-17 09:48:48', '2025-09-22 06:50:38', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(14, 'metatrader', 'MetaTrader', NULL, 'trade', NULL, 'enabled', 'api_key', NULL, NULL, NULL, 1, '{"test": {"method": "GET", "url_override": "https://www.metatrader5.com/", "expected_status": [200, 301, 302]}}', NULL, NULL, NULL, 0, 'https://www.metatrader5.com/en/terminal/help/start_advanced/api', 'global', 'en', 'freemium', '2025-09-17 09:48:48', '2025-09-22 06:50:42', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(15, 'quantconnect', 'QuantConnect', NULL, 'trade', NULL, 'enabled', 'api_key', 'https://www.quantconnect.com/api/v2', NULL, NULL, 1, '{"test": {"method": "GET", "url_override": "https://www.quantconnect.com/api/v2/projects/read", "headers": [{"name": "Authorization", "value": "Bearer {{API_KEY}}"}], "expected_status": [200, 401, 400]}}', NULL, NULL, NULL, 0, 'https://www.quantconnect.com/account/security', 'global', 'en', 'freemium', '2025-09-17 09:48:48', '2025-09-22 06:50:48', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(16, 'tradingview', 'TradingView', NULL, 'trade', NULL, 'enabled', 'api_key', 'https://www.tradingview.com/api/v1', NULL, NULL, 1, '{"test": {"method": "GET", "url_override": "https://www.tradingview.com/", "expected_status": [200, 301, 302]}}', NULL, NULL, NULL, 0, 'https://www.tradingview.com/accounts/api/', 'global', 'en', 'freemium', '2025-09-17 09:48:48', '2025-09-22 06:50:51', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(17, 'binance-futures', 'Binance Futures', NULL, 'trade', NULL, 'enabled', 'api_key', 'https://fapi.binance.com', NULL, NULL, 1, '{"test": {"method": "GET", "url_override": "https://fapi.binance.com/fapi/v1/ping", "expected_status": 200}}', NULL, NULL, NULL, 0, 'https://www.binance.com/en/my/settings/api-management', 'global', 'en', 'freemium', '2025-09-17 09:48:48', '2025-09-22 06:50:54', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(18, 'bybit', 'Bybit', NULL, 'trade', NULL, 'enabled', 'api_key', 'https://api.bybit.com', NULL, NULL, 1, '{"test": {"method": "GET", "url_override": "https://api.bybit.com/v5/market/time", "expected_status": 200}}', NULL, NULL, NULL, 0, 'https://www.bybit.com/app/user/api-management', 'global', 'en', 'freemium', '2025-09-17 09:48:48', '2025-09-22 06:50:57', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(19, 'ftx', 'FTX', NULL, 'trade', NULL, 'disabled', 'api_key', 'https://ftx.com/api', NULL, NULL, 1, '{"test": {"method": "GET", "url_override": "https://ftx.com/api", "expected_status": [200, 301, 302, 403, 404, 410]}}', NULL, NULL, NULL, 0, 'https://ftx.com/profile', 'global', 'en', 'freemium', '2025-09-17 09:48:48', '2025-09-22 06:51:00', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(20, 'bitmex', 'BitMEX', NULL, 'trade', NULL, 'enabled', 'api_key', 'https://www.bitmex.com/api/v1', NULL, NULL, 1, '{"test": {"method": "GET", "url_override": "https://www.bitmex.com/api/v1/instrument?symbol=XBTUSD&count=1", "expected_status": 200}}', NULL, NULL, NULL, 0, 'https://www.bitmex.com/app/apiKeys', 'global', 'en', 'freemium', '2025-09-17 09:48:48', '2025-09-22 06:51:03', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(21, 'deribit', 'Deribit', NULL, 'trade', NULL, 'enabled', 'api_key', 'https://www.deribit.com/api/v2', NULL, NULL, 1, '{"test": {"method": "GET", "url_override": "https://www.deribit.com/api/v2/public/ping", "expected_status": 200}}', NULL, NULL, NULL, 0, 'https://www.deribit.com/main#/account?scrollTo=api', 'global', 'en', 'freemium', '2025-09-17 09:48:48', '2025-09-22 06:51:06', 'GET', NULL, NULL, NULL, NULL, NULL, 'json', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+-- Volcando estructura para tabla u522228883_bolsa_app.usage_log
+CREATE TABLE IF NOT EXISTS `usage_log` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `endpoint` enum('time_series','options','ai') NOT NULL,
+  `cost_units` int(11) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user_day` (`user_id`,`created_at`),
+  CONSTRAINT `fk_usage_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=553 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Volcando datos para la tabla u522228883_bolsa_app.usage_log: ~452 rows (aproximadamente)
 REPLACE INTO `usage_log` (`id`, `user_id`, `endpoint`, `cost_units`, `created_at`) VALUES
 	(75, 4, 'ai', 1, '2025-09-03 06:12:19'),
 	(76, 4, 'ai', 1, '2025-09-03 06:13:38'),
@@ -421,18 +1153,215 @@ REPLACE INTO `usage_log` (`id`, `user_id`, `endpoint`, `cost_units`, `created_at
 	(420, 4, 'time_series', 1, '2025-09-10 16:54:00'),
 	(421, 4, 'options', 1, '2025-09-10 16:54:01'),
 	(422, 4, 'time_series', 1, '2025-09-10 16:54:21'),
-	(423, 4, 'options', 1, '2025-09-10 16:54:22');
+	(423, 4, 'options', 1, '2025-09-10 16:54:22'),
+	(424, 4, 'ai', 1, '2025-09-10 21:44:50'),
+	(425, 4, 'ai', 1, '2025-09-10 21:53:00'),
+	(426, 4, 'ai', 1, '2025-09-10 21:54:32'),
+	(427, 4, 'time_series', 1, '2025-09-10 22:25:50'),
+	(428, 4, 'time_series', 1, '2025-09-10 22:26:41'),
+	(429, 4, 'options', 1, '2025-09-10 22:26:42'),
+	(430, 4, 'ai', 1, '2025-09-10 22:26:44'),
+	(431, 7, 'ai', 1, '2025-09-10 23:57:51'),
+	(432, 7, 'ai', 1, '2025-09-10 23:57:54'),
+	(433, 7, 'time_series', 1, '2025-09-10 23:58:12'),
+	(434, 7, 'options', 1, '2025-09-10 23:58:12'),
+	(435, 7, 'ai', 1, '2025-09-10 23:58:12'),
+	(436, 4, 'ai', 1, '2025-09-11 08:32:28'),
+	(437, 4, 'ai', 1, '2025-09-11 08:32:51'),
+	(438, 4, 'ai', 1, '2025-09-11 08:40:27'),
+	(439, 4, 'ai', 1, '2025-09-11 08:48:14'),
+	(440, 4, 'ai', 1, '2025-09-11 08:48:36'),
+	(441, 4, 'ai', 1, '2025-09-11 08:58:19'),
+	(442, 4, 'ai', 1, '2025-09-11 08:59:12'),
+	(443, 4, 'ai', 1, '2025-09-11 09:00:58'),
+	(444, 4, 'ai', 1, '2025-09-11 09:01:07'),
+	(445, 4, 'ai', 1, '2025-09-11 09:02:01'),
+	(446, 4, 'ai', 1, '2025-09-11 09:02:35'),
+	(447, 4, 'ai', 1, '2025-09-11 09:02:47'),
+	(448, 4, 'ai', 1, '2025-09-11 09:03:26'),
+	(449, 4, 'ai', 1, '2025-09-11 09:03:46'),
+	(450, 4, 'ai', 1, '2025-09-11 09:03:50'),
+	(451, 4, 'ai', 1, '2025-09-11 09:04:21'),
+	(452, 4, 'ai', 1, '2025-09-11 09:05:08'),
+	(453, 4, 'ai', 1, '2025-09-11 09:06:17'),
+	(454, 4, 'ai', 1, '2025-09-11 09:11:39'),
+	(455, 4, 'ai', 1, '2025-09-11 09:44:51'),
+	(456, 4, 'ai', 1, '2025-09-11 09:45:02'),
+	(457, 4, 'ai', 1, '2025-09-11 09:45:08'),
+	(458, 4, 'ai', 1, '2025-09-11 09:45:30'),
+	(459, 4, 'ai', 1, '2025-09-11 09:45:40'),
+	(460, 4, 'ai', 1, '2025-09-11 09:47:11'),
+	(461, 4, 'ai', 1, '2025-09-11 10:04:10'),
+	(462, 4, 'ai', 1, '2025-09-11 10:04:21'),
+	(463, 4, 'ai', 1, '2025-09-11 10:15:10'),
+	(464, 4, 'ai', 1, '2025-09-11 10:15:13'),
+	(465, 4, 'ai', 1, '2025-09-11 10:19:39'),
+	(466, 4, 'ai', 1, '2025-09-11 10:26:20'),
+	(467, 4, 'ai', 1, '2025-09-11 10:29:46'),
+	(468, 4, 'ai', 1, '2025-09-11 10:29:52'),
+	(469, 4, 'ai', 1, '2025-09-11 10:30:30'),
+	(470, 4, 'ai', 1, '2025-09-11 18:32:24'),
+	(471, 4, 'ai', 1, '2025-09-11 18:56:17'),
+	(472, 4, 'ai', 1, '2025-09-11 19:35:58'),
+	(473, 4, 'ai', 1, '2025-09-11 19:53:40'),
+	(474, 4, 'ai', 1, '2025-09-11 20:49:20'),
+	(475, 4, 'ai', 1, '2025-09-11 20:56:03'),
+	(476, 4, 'ai', 1, '2025-09-11 20:59:25'),
+	(477, 4, 'ai', 1, '2025-09-11 21:05:37'),
+	(478, 4, 'ai', 1, '2025-09-11 21:12:42'),
+	(479, 4, 'ai', 1, '2025-09-11 21:35:29'),
+	(480, 4, 'ai', 1, '2025-09-11 21:49:26'),
+	(481, 4, 'ai', 1, '2025-09-11 22:05:09'),
+	(482, 4, 'ai', 1, '2025-09-11 22:08:40'),
+	(483, 4, 'ai', 1, '2025-09-11 22:13:12'),
+	(484, 4, 'ai', 1, '2025-09-11 22:13:26'),
+	(485, 4, 'ai', 1, '2025-09-11 22:20:07'),
+	(486, 4, 'ai', 1, '2025-09-11 22:24:31'),
+	(487, 4, 'ai', 1, '2025-09-11 22:29:12'),
+	(488, 4, 'ai', 1, '2025-09-11 22:34:55'),
+	(489, 4, 'ai', 1, '2025-09-11 22:38:53'),
+	(490, 4, 'ai', 1, '2025-09-11 22:44:21'),
+	(491, 4, 'ai', 1, '2025-09-11 23:18:36'),
+	(492, 4, 'ai', 1, '2025-09-11 23:24:53'),
+	(493, 4, 'ai', 1, '2025-09-11 23:27:25'),
+	(494, 4, 'ai', 1, '2025-09-11 23:30:54'),
+	(495, 4, 'ai', 1, '2025-09-11 23:33:32'),
+	(496, 4, 'ai', 1, '2025-09-11 23:43:50'),
+	(497, 4, 'ai', 1, '2025-09-11 23:55:10'),
+	(498, 4, 'ai', 1, '2025-09-12 00:09:27'),
+	(499, 4, 'ai', 1, '2025-09-12 00:54:03'),
+	(500, 4, 'ai', 1, '2025-09-12 01:04:47'),
+	(501, 4, 'ai', 1, '2025-09-12 01:09:34'),
+	(502, 4, 'ai', 1, '2025-09-12 01:16:41'),
+	(503, 4, 'ai', 1, '2025-09-12 01:20:59'),
+	(504, 4, 'ai', 1, '2025-09-12 01:21:50'),
+	(505, 4, 'ai', 1, '2025-09-12 01:24:42'),
+	(506, 4, 'ai', 1, '2025-09-12 01:27:53'),
+	(507, 4, 'ai', 1, '2025-09-12 01:29:13'),
+	(508, 4, 'ai', 1, '2025-09-12 01:31:10'),
+	(509, 4, 'ai', 1, '2025-09-12 01:36:29'),
+	(510, 4, 'ai', 1, '2025-09-12 01:38:32'),
+	(511, 4, 'ai', 1, '2025-09-12 01:45:13'),
+	(512, 4, 'ai', 1, '2025-09-12 01:49:13'),
+	(513, 4, 'ai', 1, '2025-09-12 01:54:19'),
+	(514, 4, 'ai', 1, '2025-09-12 02:06:13'),
+	(515, 4, 'ai', 1, '2025-09-12 02:08:27'),
+	(516, 4, 'ai', 1, '2025-09-12 03:01:57'),
+	(517, 4, 'ai', 1, '2025-09-12 03:02:49'),
+	(518, 4, 'ai', 1, '2025-09-12 03:06:06'),
+	(519, 4, 'ai', 1, '2025-09-12 03:11:34'),
+	(520, 4, 'ai', 1, '2025-09-12 03:13:44'),
+	(521, 4, 'ai', 1, '2025-09-12 03:36:12'),
+	(522, 4, 'ai', 1, '2025-09-12 03:52:59'),
+	(523, 4, 'ai', 1, '2025-09-12 03:53:37'),
+	(524, 4, 'ai', 1, '2025-09-12 03:57:57'),
+	(525, 4, 'ai', 1, '2025-09-12 03:59:53'),
+	(526, 4, 'ai', 1, '2025-09-12 04:04:18'),
+	(527, 4, 'ai', 1, '2025-09-12 04:05:23'),
+	(528, 4, 'ai', 1, '2025-09-12 04:07:41'),
+	(529, 4, 'ai', 1, '2025-09-12 04:09:41'),
+	(530, 4, 'ai', 1, '2025-09-12 04:39:48'),
+	(531, 4, 'ai', 1, '2025-09-12 04:43:41'),
+	(532, 4, 'ai', 1, '2025-09-12 04:52:59'),
+	(533, 4, 'ai', 1, '2025-09-12 04:58:08'),
+	(534, 4, 'ai', 1, '2025-09-12 04:59:30'),
+	(535, 4, 'ai', 1, '2025-09-12 05:00:07'),
+	(536, 4, 'ai', 1, '2025-09-12 05:05:11'),
+	(537, 4, 'ai', 1, '2025-09-12 05:09:27'),
+	(538, 4, 'ai', 1, '2025-09-12 05:11:59'),
+	(539, 4, 'ai', 1, '2025-09-12 05:13:38'),
+	(540, 4, 'ai', 1, '2025-09-12 05:18:05'),
+	(541, 4, 'ai', 1, '2025-09-12 05:19:18'),
+	(542, 4, 'ai', 1, '2025-09-12 05:21:27'),
+	(543, 4, 'ai', 1, '2025-09-12 06:46:06'),
+	(544, 4, 'ai', 1, '2025-09-12 06:58:10'),
+	(545, 4, 'ai', 1, '2025-09-12 07:11:31'),
+	(546, 4, 'ai', 1, '2025-09-12 07:13:25'),
+	(547, 4, 'ai', 1, '2025-09-12 07:19:02'),
+	(548, 4, 'ai', 1, '2025-09-12 07:41:05'),
+	(549, 4, 'ai', 1, '2025-09-12 07:41:06'),
+	(550, 4, 'ai', 1, '2025-09-12 17:34:20'),
+	(551, 4, 'ai', 1, '2025-09-13 00:16:17'),
+	(552, 4, 'ai', 1, '2025-09-13 00:22:17');
 
--- Volcando datos para la tabla u522228883_bolsa_app.users: ~6 rows (aproximadamente)
+-- Volcando estructura para tabla u522228883_bolsa_app.users
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `email` varchar(190) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `name` varchar(120) DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `is_admin` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Volcando datos para la tabla u522228883_bolsa_app.users: ~5 rows (aproximadamente)
 REPLACE INTO `users` (`id`, `email`, `password_hash`, `name`, `is_active`, `is_admin`, `created_at`, `updated_at`) VALUES
 	(1, 'admin@cerberogrowthsolutions.com', '$2y$12$k1tZoXVpmYqZ7eHo2u9L.eV4q4cUId0EUUj0hD7eP1w4FZbWwQ7fO', 'Admin', 1, 0, '2025-09-02 03:57:00', '2025-09-02 03:57:00'),
 	(4, 'tester@t.t', '$2y$10$XCY9KphUcnMNTLaETubbsePWKynWWUqBllOvcjk05hUlGDOxv0G8q', 'admin', 1, 1, '2025-09-03 06:04:20', '2025-09-06 03:19:05'),
 	(5, 'cerbero@cerberogrowthsolutions.com', '$2y$10$JTRtbLR7gUScf0G8OTJY/u5Vwm1Yz3D8ZN085hiMPEGhgHO.nDzya', NULL, 1, 0, '2025-09-03 09:02:09', '2025-09-03 09:02:09'),
-	(6, 'cristofecarocorderocc@gmail.com', '$2y$10$/bjas2ZYqpPH35ozL0h/h.Cyyyyh8jGFqlesNOXQPTlI5UV.hRZeS', NULL, 1, 0, '2025-09-06 03:25:54', '2025-09-06 03:25:54'),
 	(7, 'alexis@a.a', '$2y$10$Vg4VyRje4Id85aFIqMVnL.cjTyldQRRpkU7E6hRorsW9zqIPx6hp6', 'Arb3811/+', 1, 0, '2025-09-07 05:31:11', '2025-09-07 05:31:11'),
-	(8, 'test@example.com', '$2y$10$zgZXI6Ud0hflk.wyorWkp.j2i0UyO2Fc.2CD95NFr4XfhNlda4JrO', 'Usuario de Prueba', 1, 0, '2025-09-09 15:27:22', '2025-09-09 15:27:22');
+	(8, 'test@example.com', '$2y$10$CGoaB1.y3Fi7PWf1glh.HehtYxgRLJy2r2s7IWuOPD0CzX9Addtxy', 'Usuario de Prueba', 1, 0, '2025-09-09 15:27:22', '2025-09-11 01:00:49');
 
--- Volcando datos para la tabla u522228883_bolsa_app.user_analysis: ~27 rows (aproximadamente)
+-- Volcando estructura para tabla u522228883_bolsa_app.user_ai_api_keys
+CREATE TABLE IF NOT EXISTS `user_ai_api_keys` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `provider_id` bigint(20) NOT NULL,
+  `project_id` varchar(128) NOT NULL,
+  `label` varchar(100) NOT NULL,
+  `origin` enum('byok','managed') NOT NULL DEFAULT 'byok',
+  `api_key_enc` text NOT NULL,
+  `key_ciphertext` varbinary(4096) DEFAULT NULL,
+  `key_fingerprint` char(64) DEFAULT NULL,
+  `last4` char(4) DEFAULT NULL,
+  `scopes` longtext DEFAULT NULL CHECK (json_valid(`scopes`)),
+  `status` enum('active','disabled','rotating') NOT NULL DEFAULT 'active',
+  `disabled_reason` text DEFAULT NULL,
+  `error_count` int(11) NOT NULL DEFAULT 0,
+  `last_used_at` datetime DEFAULT NULL,
+  `expires_at` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `environment` enum('live','paper','sandbox') DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_user_ai_api_keys_users` (`user_id`),
+  KEY `FK_user_ai_api_keys_ai_providers` (`provider_id`),
+  CONSTRAINT `FK_user_ai_api_keys_ai_providers` FOREIGN KEY (`provider_id`) REFERENCES `ai_providers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_user_ai_api_keys_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla u522228883_bolsa_app.user_ai_api_keys: ~2 rows (aproximadamente)
+REPLACE INTO `user_ai_api_keys` (`id`, `user_id`, `provider_id`, `project_id`, `label`, `origin`, `api_key_enc`, `key_ciphertext`, `key_fingerprint`, `last4`, `scopes`, `status`, `disabled_reason`, `error_count`, `last_used_at`, `expires_at`, `created_at`, `updated_at`, `environment`) VALUES
+	(6, 4, 3, '', 'Clave 3', 'byok', '{"v":1,"kid":"k2025_09_16_cc26","s":"SU38XAVzAqfsUb5q8lIChw==","n":"BCkwDacIBVt18YkfZXtUmHXxoidXjbM4","ct":"jx/+IHqsAcPu0NOfVGgpgoL3A3Mwce/zKl9ktgwLrC9UsjtAF9U0LFopUQ7tfO07fdh7ujX5Cg=="}', _binary 0x7b2276223a312c226b6964223a226b323032355f30395f31365f63633236222c2273223a22535533385841567a4171667355623571386c494368773d3d222c226e223a2242436b77446163494256743138596b665a5874556d4858786f6964586a624d34222c226374223a226a782f2b4948717341635075304e4f6656476770676f4c3341334d7763652f7a4b6c396b7467774c72433955736a7441463955304c466f7055513774664f303766646837756a583543673d3d227d, '1853d84b5caaf5be397434cf89fa3fd3e45ef66e9f8a6709c6b1ed8aa8b274f2', '9QMY', NULL, 'active', NULL, 0, '2025-09-22 06:40:50', NULL, '2025-09-17 21:20:13', '2025-09-22 06:40:50', NULL),
+	(7, 4, 1, '', 'Clave 1', 'byok', '{"v":1,"kid":"k2025_09_16_cc26","s":"twfwKX/NFlpvZtS1WaR0XQ==","n":"rhe6WsEnp85a/m8fcSJTioARmW0ZLAU3","ct":"FQorw9DapssBR/pvolMgxTmF+SEQr/2W2AtfCp1iRAI2/uSjxqtIqv33r4oN8fVvhTG+BC9KxjCaYR/IfHt1ZIBqDdmqYzwJI5VzK/DdGejtVroj2HXUjTLeC3X+0jdeRBzVoBVJJsNLgqrihZGzXU74Sv5yU9jKqZyV5p/QKP8g75dqL57INrxSEqVCFo71lxkUY90lhgkrSvtxtBEJcJuqni/gN1xRbsOaZGPobsK5BEB7"}', _binary 0x7b2276223a312c226b6964223a226b323032355f30395f31365f63633236222c2273223a22747766774b582f4e466c70765a7453315761523058513d3d222c226e223a22726865365773456e703835612f6d386663534a54696f41526d57305a4c415533222c226374223a2246516f727739446170737342522f70766f6c4d6778546d462b534551722f32573241746643703169524149322f75536a787174497176333372346f4e386656766854472b4243394b786a436159522f49664874315a49427144646d71597a774a4935567a4b2f446447656a7456726f6a324858556a544c654333582b306a646552427a566f42564a4a734e4c67717269685a477a585537345376357955396a4b715a795635702f514b503867373564714c3537494e72785345715643466f37316c786b555939306c68676b72537674787442454a634a75716e692f674e31785262734f615a47506f62734b3542454237227d, '18aa42ab440df9777835cd633fb1a67d22214fe96bb1dd36a5ac56c24b3f4964', 'S-oA', NULL, 'active', NULL, 0, '2025-09-24 18:36:33', NULL, '2025-09-17 21:20:36', '2025-09-24 18:36:33', NULL);
+
+-- Volcando estructura para tabla u522228883_bolsa_app.user_analysis
+CREATE TABLE IF NOT EXISTS `user_analysis` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `symbol` varchar(32) NOT NULL,
+  `timeframe` varchar(32) DEFAULT NULL,
+  `title` varchar(200) DEFAULT NULL,
+  `analysis_text` longtext DEFAULT NULL,
+  `analysis_json` longtext DEFAULT NULL,
+  `snapshot_json` longtext DEFAULT NULL,
+  `user_notes` longtext DEFAULT NULL,
+  `traded` tinyint(1) NOT NULL DEFAULT 0,
+  `outcome` varchar(8) DEFAULT NULL,
+  `pnl` decimal(14,2) DEFAULT NULL,
+  `currency` varchar(8) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_user_created` (`user_id`,`created_at`),
+  KEY `idx_user_symbol` (`user_id`,`symbol`)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Volcando datos para la tabla u522228883_bolsa_app.user_analysis: ~25 rows (aproximadamente)
 REPLACE INTO `user_analysis` (`id`, `user_id`, `created_at`, `updated_at`, `symbol`, `timeframe`, `title`, `analysis_text`, `analysis_json`, `snapshot_json`, `user_notes`, `traded`, `outcome`, `pnl`, `currency`) VALUES
 	(1, 4, '2025-09-05 23:47:20', '2025-09-05 23:47:20', 'JPM', 'daily', NULL, 'RESUMEN\n• Símbolo: JPM\n• Último precio: 294.43\n• Señales → BUY: 1 | SELL: 2\n• Recomendación: VENDER\n\nDETALLE POR RESOLUCIÓN\n- daily [tiingo]  P=294.38  RSI14=50.79  SMA20=295.06  EMA20=296.22  EMA40=292.14  EMA100=278.49  EMA200=260.76\n- 60min [tiingo]  P=294.43  RSI14=62.78  SMA20=298.87  EMA20=298.37  EMA40=298.63  EMA100=296.26  EMA200=—\n- 15min [tiingo]  P=294.43  RSI14=69.74  SMA20=295.64  EMA20=296.19  EMA40=297.52  EMA100=298.76  EMA200=298.61\n\nOPCIONES (prox expiración)\n• CALL ATM aprox  O:JPM250905C00295000  strike 295.00  bid —  ask —  IV —  Δ —\n• PUT  ATM aprox  O:JPM250905P00295000  strike 295.00  bid —  ask —  IV —  Δ —\n\nPLAN SUBYACENTE\n• TP 50%: 441.64  • SL 5%: 279.71  • Capital: $1000\n\nIA (openai: gpt-4.1-mini)\nAnálisis intradía del activo JPM:\n\n1. Contexto técnico:\n- Último precio: 294.43 USD.\n- Resolución diaria muestra un RSI14 neutro (50.79), con el precio ligeramente por debajo de la SMA20 (295.06) y EMA20 (296.22), lo que indica una resistencia cercana.\n- En resolución 60min, RSI14 está en 62.78, cercano a zona de sobrecompra, y el precio está por debajo de las medias móviles (SMA20, EMA20, EMA40) que rondan 298-299, indicando presión bajista a corto plazo.\n- En 15min, RSI14 es 69.74, muy cerca de sobrecompra, y el precio está por debajo de las medias móviles (295.64 a 298.76), confirmando resistencia intradía.\n\n2. Recomendación:\n- BUY=1, SELL=2 y recomendación final VENDER coincide con la presión bajista y resistencia técnica.\n- El precio está estancado o ligeramente por debajo de medias clave, con indicadores RSI que sugieren posible corrección o consolidación bajista.\n\n3. Opciones:\n- No hay datos de bid/ask ni volatilidad implícita para las calls con strikes desde 270 a 292.5 con vencimiento en 2025-09-05.\n- Dado que la recomendación es vender y el precio actual está cerca de 294, las calls con strikes por debajo del precio actual (270-292.5) estarían ITM o cerca, pero sin datos no se puede evaluar su valor o estrategia óptima.\n- Para estrategias intradía, se recomienda evitar posiciones largas en calls sin datos claros y con tendencia bajista.\n\n4. Riesgos:\n- El mercado puede revertir y superar las medias móviles, invalidando la recomendación de venta.\n- Falta de datos de opciones limita la precisión en estrategias con derivados.\n- Movimientos bruscos por noticias o eventos pueden impactar el precio.\n\n**Conclusión y recomendación clara:**\n\n- Mantener una postura de venta intradía en JPM, aprovechando la resistencia técnica y señales de sobrecompra en plazos cortos.\n- Evitar compras de calls hasta que el precio confirme ruptura por encima de medias móviles y RSI se normalice.\n- Para traders con acceso a opciones, considerar estrategias de venta de calls cerca del precio actual para capturar primas, pero con precaución por falta de datos.\n- Controlar riesgo con stops ajustados cerca de 296-298 para limitar pérdidas en caso de ruptura alcista.\n\nResumen: VENDER JPM intradía con stops en 296-298, evitar compras de calls sin confirmación, y monitorear indicadores técnicos para ajustar posición.\n', NULL, '{"data_provider":"polygon","resolutions_json":["daily","60min","15min"],"indicators_json":{"daily":{"rsi14":false,"sma20":true,"ema20":true,"ema40":true,"ema100":true,"ema200":true},"60min":{"rsi14":false,"sma20":true,"ema20":true,"ema40":true,"ema100":true,"ema200":true},"15min":{"rsi14":false,"sma20":true,"ema20":false,"ema40":false,"ema100":false,"ema200":false}},"ai_provider":"openai","ai_model":"gpt-4.1-mini","amount":1000,"tp":50,"sl":5,"symbol":"JPM"}', NULL, 0, NULL, NULL, NULL),
 	(2, 4, '2025-09-06 09:16:36', '2025-09-06 09:16:36', 'JPM', 'daily', NULL, 'RESUMEN\n• Símbolo: JPM\n• Último precio: 294.49\n• Señales → BUY: 1 | SELL: 3\n• Recomendación: VENDER\n\nDETALLE POR RESOLUCIÓN\n- daily [tiingo]  P=294.38  RSI14=50.79  SMA20=295.06  EMA20=296.22  EMA40=292.14  EMA100=278.49  EMA200=260.76\n- 60min [alphavantage]  P=294.49  RSI14=70.01  SMA20=299.30  EMA20=297.72  EMA40=298.98  EMA100=299.03  EMA200=297.38\n- 15min [alphavantage]  P=294.49  RSI14=62.18  SMA20=294.78  EMA20=294.98  EMA40=296.14  EMA100=298.41  EMA200=299.31\n\nOPCIONES (prox expiración)\n• CALL ATM aprox  O:JPM250912C00295000  strike 295.00  bid —  ask —  IV —  Δ —\n• PUT  ATM aprox  O:JPM250912P00295000  strike 295.00  bid —  ask —  IV —  Δ —\n\nPLAN SUBYACENTE\n• TP 50%: 441.74  • SL 5%: 279.77  • Capital: $1000\n\nIA (openai: gpt-4.1-mini)\nAnálisis intradía para JPM:\n\n1. Contexto técnico:\n- En gráfico diario, el precio (294.38) está ligeramente por debajo de la SMA20 (295.06) y EMA20 (296.22), lo que indica una resistencia cercana. El RSI14 diario está en 50.79, zona neutral.\n- En 60 minutos, el precio (294.49) está por debajo de todas las medias móviles (SMA20 299.30, EMA20 297.72, EMA40 298.98, EMA100 299.03, EMA200 297.38), y el RSI14 está alto (70.01), indicando posible sobrecompra y resistencia fuerte.\n- En 15 minutos, el precio está justo alrededor de la SMA20 (294.78) y EMA20 (294.98), con RSI14 en 62.18, también mostrando presión bajista leve.\n\n2. Recomendación:\n- BUY=1, SELL=3, recomendación final: VENDER. Esto coincide con la presión bajista técnica en marcos menores y la resistencia en medias móviles.\n- El precio actual (294.49) está cerca de soportes menores (EMA40 diario 292.14) pero con riesgo de caída si no supera las medias mayores.\n\n3. Opciones:\n- No hay datos de bid/ask ni IV para calls con strikes cercanos (270 a 292.5) y expiración en 2025-09-12, lo que limita estrategias con opciones a largo plazo.\n- Dado que la recomendación es vender y el precio está cerca de resistencias, una estrategia conservadora podría ser vender calls fuera del dinero (por ejemplo, strike 295 o 300 si estuvieran disponibles) para capturar primas, pero sin datos no se puede confirmar.\n- Alternativamente, para protección intradía, comprar puts cercanas al precio actual podría ser útil, pero no hay datos disponibles.\n\n4. Riesgos:\n- El RSI en 60 min está en zona de sobrecompra, pero si el precio rompe al alza las medias móviles, la presión bajista podría invalidarse.\n- La falta de datos de opciones limita la capacidad de diseñar estrategias con greeks y volatilidad.\n- Eventos macro o noticias pueden impactar JPM y cambiar rápidamente la tendencia.\n\nConclusión:\n- La recomendación intradía es VENDER JPM, con atención a la resistencia en medias móviles y posible corrección a corto plazo.\n- Sin datos de opciones, se recomienda operar con precaución y usar stops ajustados para limitar pérdidas.\n- Vigilar rupturas al alza que invalidarían la señal bajista.\n', NULL, '{"data_provider":"polygon","resolutions_json":["daily","60min","15min"],"indicators_json":{"daily":{"rsi14":false,"sma20":true,"ema20":true,"ema40":true,"ema100":true,"ema200":true},"60min":{"rsi14":false,"sma20":true,"ema20":true,"ema40":true,"ema100":true,"ema200":true},"15min":{"rsi14":false,"sma20":true,"ema20":false,"ema40":false,"ema100":false,"ema200":false}},"ai_provider":"openai","ai_model":"gpt-4.1-mini","amount":1000,"tp":50,"sl":5,"symbol":"JPM"}', NULL, 0, NULL, NULL, NULL),
@@ -460,20 +1389,127 @@ REPLACE INTO `user_analysis` (`id`, `user_id`, `created_at`, `updated_at`, `symb
 	(24, 4, '2025-09-09 21:27:02', '2025-09-09 21:27:02', 'GOOGL', '60min', 'GOOGL 5min - COMPRA (RSI Oversold, Support) - 9/9/2025', '\n      \n        \n          Símbolo GOOGL\n          Precio: 239.63\n          Recomendación: COMPRAR\n          BUY 5\n          SELL 0\n          🧠 IA Comportamental\n          auto\n        \n\n        \n          Detalle por resolución\n          \n            \n              \n                \n                  Res\n                  Precio\n                  RSI14\n                  SMA20\n                  EMA20\n                  EMA40\n                  EMA100\n                  EMA200\n                \n              \n              \n      \n        60min\n        239.63\n        23.04\n        235.16\n        234.41\n        228.93\n        218.28\n        —\n      \n    \n      \n        15min\n        239.63\n        29.85\n        238.01\n        238.24\n        236.99\n        233.35\n        227.33\n      \n    \n      \n        5min\n        239.63\n        42.73\n        239.50\n        239.43\n        238.76\n        237.30\n        235.42\n      \n    \n            \n          \n        \n\n        \n          Opciones (próxima expiración)\n          \n          \n            Expiración\n            2025-09-12\n            ± Strikes\n            \n            Estrategia\n            \n              Simple CALL\n              Simple PUT\n              Vertical CALL (debit)\n              Vertical PUT (debit)\n            \n            Precio\n            \n              Mid\n              Bid\n              Ask\n            \n             Recordar globalmente\n            ATM: 240.00 · Px 239.63\n          \n          \n            ITM: Call strike < spot · Put strike > spot\n            OTM: sin valor intrínseco\n            ATM: strike ≈ spot\n          \n          \n            \n              \n                \n                  CALLS\n                  Strike\n                  PUTS\n                \n                \n                  Last\n                  Bid\n                  Ask\n                  IV\n                  Δ\n                  \n                  \n                  \n                  Δ\n                  IV\n                  Bid\n                  Ask\n                  Last\n                  \n                  \n                \n              \n              \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              227.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              230.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              232.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              235.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              237.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              240.00ATM\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              242.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              245.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              247.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              250.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              252.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n          \n          \n            \n              \n                Setup\n                simple put\n                · Precio(mid): 0.00\n                · TP: 0.00\n                · SL: 0.00\n              \n              Copiar setup\n            \n          \n        \n\n        \n          Plan del subyacente\n          TP 20% → 287.56 · SL 5% → 227.65 · Capital: $1000\n        \n\n        \n          \n            🧠 Análisis IA (auto)\n            ✨ Análisis personalizado con IA comportamental\n            De acuerdo, aquí tienes un análisis adaptado de GOOGL, teniendo en cuenta tu perfil comportamental (que asumo en base a la información limitada que tengo, pero que refinaré con tu feedback):\n\n**Análisis Personalizado de GOOGL (Intradía)**\n\n**Resumen:**\n\nBasándome en los datos técnicos y la recomendación general de "COMPRAR", junto con el contexto comportamental que estoy empezando a construir sobre ti, veo una oportunidad potencial en GOOGL.  Los RSI bajos en los marcos de tiempo de 60 y 15 minutos sugieren que el activo está *sobrevendido* y podría experimentar un rebote. Sin embargo, es crucial actuar con cautela y gestionar el riesgo, especialmente considerando que no dispongo de información sobre tu aversión al riesgo ni tu capital disponible.\n\n**Datos Clave y Análisis Técnico Detallado:**\n\n*   **Consenso de Compra:** La señal general de "COMPRAR" es alentadora, pero siempre hay que complementarla con un análisis propio y una gestión de riesgo adecuada.\n\n*   **RSI Bajos (60min y 15min):**  Los RSI de 23.04 (60min) y 29.85 (15min) indican condiciones de sobreventa. Esto podría significar que la presión vendedora se está agotando y un rebote es inminente. Sin embargo, los mercados pueden permanecer sobrevendidos por un tiempo prolongado, por lo que es importante no anticipar demasiado el movimiento.\n\n*   **Soporte y Resistencia Potenciales:**\n\n    *   **Soporte:** El precio está por encima de las EMAs de largo plazo (EMA40, EMA100, EMA200) en el gráfico de 15 minutos, lo que podría actuar como soporte dinámico. Específicamente, vigila el nivel de la EMA200 en 227.33.\n    *   **Resistencia:** La SMA20 (239.50) en el gráfico de 5 minutos está muy cerca del precio actual y podría actuar como resistencia inmediata. Romper este nivel podría indicar un impulso alcista más fuerte.\n\n*   **Opciones:**  Las opciones CALL con vencimiento en 2025-09-12 y strikes entre 215.00 y 237.50 te ofrecen la posibilidad de apalancar tu posición alcista con un riesgo limitado. Sin embargo, la falta de datos (Bid, Ask, IV, Delta) dificulta la elección de la opción más adecuada.\n\n**Recomendación Personalizada:**\n\nDado tu perfil (que asumo como moderadamente tolerante al riesgo, pero con un enfoque en operaciones bien investigadas), sugiero la siguiente estrategia:\n\n1.  **Entrada Conservadora:** Considera una entrada inicial pequeña alrededor del precio actual (239.63) para aprovechar el posible rebote.\n2.  **Confirmación:** Espera una ruptura confirmada por encima de la SMA20 en el gráfico de 5 minutos (aproximadamente 239.50) para agregar a tu posición. Un volumen creciente durante la ruptura sería una señal adicional de fortaleza.\n3.  **Opciones:** Dada la falta de información sobre los precios y las griegas, ten precaución con las opciones.  Si decides utilizarlas, considera opciones "In-the-Money" o "At-the-Money" (235-240) para reducir el riesgo, pero con vencimientos más cortos (semanas en lugar de meses) dada tu inclinación por el trading intradía. Investiga a fondo los precios y la liquidez antes de operar.\n4.  **Stop-Loss:**  Coloca un stop-loss ajustado por debajo de la EMA40 en el gráfico de 5 minutos (aproximadamente 238.76). Esto limitará tus pérdidas si el precio revierte su dirección.\n5.  **Objetivo de Beneficio:** Establece un objetivo de beneficio conservador, como la siguiente resistencia significativa (podría ser un nivel psicológico como 242 o 245).\n\n**Gestión de Riesgo Específica:**\n\n*   **Tamaño de la Posición:** NO arriesgues más del 1-2% de tu capital total en esta operación. Dado que estás explorando opciones, reduce aún más este porcentaje.\n*   **Apalancamiento:** Evita el apalancamiento excesivo, especialmente al operar con opciones. Recuerda que las opciones pueden perder valor rápidamente.\n*   **Monitoreo Constante:** Vigila de cerca la operación y ajusta tu stop-loss a medida que el precio se mueva a tu favor para asegurar ganancias.\n\n**Consideraciones Adicionales:**\n\n*   **Volatilidad del Mercado:** GOOGL puede ser volátil, especialmente en respuesta a noticias del mercado o informes de ganancias. Estate atento a las noticias que puedan afectar el precio.\n*   **Correlación:** Considera cómo GOOGL se correlaciona con el mercado en general (por ejemplo, el S&P 500 o el Nasdaq). Un mercado bajista podría arrastrar a GOOGL a la baja, incluso si los datos técnicos sugieren lo contrario.\n\n**Disclaimer:**\n\nEste análisis se basa en la información proporcionada y mi comprensión inicial de tu perfil. Es fundamental que realices tu propia investigación y consideres tus propios objetivos de inversión y tolerancia al riesgo antes de tomar cualquier decisión.  **Este no es un consejo financiero.**\n\n**Feedback Necesario:**\n\nPara mejorar la precisión de mi análisis y adaptarlo aún más a tus necesidades, por favor, proporcióname información sobre lo siguiente:\n\n*   **Tu Nivel de Experiencia:** ¿Eres un trader principiante, intermedio o avanzado?\n*   **Tolerancia al Riesgo:** ¿Eres conservador, moderado o agresivo en tus inversiones?\n*   **Tamaño de tu Capital:** ¿Cuál es el tamaño de tu cuenta de trading?\n*   **Activos preferidos:** ¿Cuáles son los activos que más te gusta negociar?\n*   **Horizonte temporal:** ¿Cuánto tiempo sueles mantener tus operaciones abiertas?\n*   **Estrategias Preferidas:** ¿Cuáles son tus estrategias de trading favoritas?\n*   **Historial de Trading:** ¿Tienes algún historial de operaciones en GOOGL o acciones similares?\n*   **Feedback sobre Análisis Previos:** ¿Qué aspectos de mis análisis anteriores te han resultado útiles y cuáles no?\n\nCon esta información, puedo refinar mis algoritmos y ofrecerte un análisis aún más personalizado y efectivo.\n          \n          \n        \n          \n            ⚙️ Configuración de IA Utilizada\n            \n              Proveedor: auto\n              Modelo: default\n              Nivel: expert\n              Comportamental: Sí\n              Adaptativo: Sí\n              Feedback: Sí\n            \n          \n      \n    ', NULL, '{"data_provider":"polygon","resolutions_json":["60min","15min","5min"],"indicators_json":{"60min":{"rsi14":true,"sma20":true,"ema20":true,"ema40":true,"ema100":true,"ema200":true},"15min":{"rsi14":true,"sma20":true,"ema20":true,"ema40":true,"ema100":true,"ema200":true},"5min":{"rsi14":true,"sma20":true,"ema20":false,"ema40":false,"ema100":false,"ema200":false}},"ai_provider":"openai","ai_model":"gpt-4o","amount":1000,"tp":20,"sl":5,"symbol":"GOOGL"}', 'SETUP GOOGL 2025-09-12 SIMPLE PUT\nPrecio(mid): 0.00\nTP: 20 | SL: 5\nLEGS: PUT 240.00ATM\n\n', 0, NULL, NULL, NULL),
 	(25, 4, '2025-09-09 21:27:02', '2025-09-09 21:27:02', 'GOOGL', '60min', 'GOOGL 5min - COMPRA (RSI Oversold, Support) - 9/9/2025', '\n      \n        \n          Símbolo GOOGL\n          Precio: 239.63\n          Recomendación: COMPRAR\n          BUY 5\n          SELL 0\n          🧠 IA Comportamental\n          auto\n        \n\n        \n          Detalle por resolución\n          \n            \n              \n                \n                  Res\n                  Precio\n                  RSI14\n                  SMA20\n                  EMA20\n                  EMA40\n                  EMA100\n                  EMA200\n                \n              \n              \n      \n        60min\n        239.63\n        23.04\n        235.16\n        234.41\n        228.93\n        218.28\n        —\n      \n    \n      \n        15min\n        239.63\n        29.85\n        238.01\n        238.24\n        236.99\n        233.35\n        227.33\n      \n    \n      \n        5min\n        239.63\n        42.73\n        239.50\n        239.43\n        238.76\n        237.30\n        235.42\n      \n    \n            \n          \n        \n\n        \n          Opciones (próxima expiración)\n          \n          \n            Expiración\n            2025-09-12\n            ± Strikes\n            \n            Estrategia\n            \n              Simple CALL\n              Simple PUT\n              Vertical CALL (debit)\n              Vertical PUT (debit)\n            \n            Precio\n            \n              Mid\n              Bid\n              Ask\n            \n             Recordar globalmente\n            ATM: 240.00 · Px 239.63\n          \n          \n            ITM: Call strike < spot · Put strike > spot\n            OTM: sin valor intrínseco\n            ATM: strike ≈ spot\n          \n          \n            \n              \n                \n                  CALLS\n                  Strike\n                  PUTS\n                \n                \n                  Last\n                  Bid\n                  Ask\n                  IV\n                  Δ\n                  \n                  \n                  \n                  Δ\n                  IV\n                  Bid\n                  Ask\n                  Last\n                  \n                  \n                \n              \n              \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              227.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              230.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              232.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              235.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              237.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              240.00ATM\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              242.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              245.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              247.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              250.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              252.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n          \n          \n            \n              \n                Setup\n                simple put\n                · Precio(mid): 0.00\n                · TP: 0.00\n                · SL: 0.00\n              \n              Copiar setup\n            \n          \n        \n\n        \n          Plan del subyacente\n          TP 20% → 287.56 · SL 5% → 227.65 · Capital: $1000\n        \n\n        \n          \n            🧠 Análisis IA (auto)\n            ✨ Análisis personalizado con IA comportamental\n            De acuerdo, aquí tienes un análisis adaptado de GOOGL, teniendo en cuenta tu perfil comportamental (que asumo en base a la información limitada que tengo, pero que refinaré con tu feedback):\n\n**Análisis Personalizado de GOOGL (Intradía)**\n\n**Resumen:**\n\nBasándome en los datos técnicos y la recomendación general de "COMPRAR", junto con el contexto comportamental que estoy empezando a construir sobre ti, veo una oportunidad potencial en GOOGL.  Los RSI bajos en los marcos de tiempo de 60 y 15 minutos sugieren que el activo está *sobrevendido* y podría experimentar un rebote. Sin embargo, es crucial actuar con cautela y gestionar el riesgo, especialmente considerando que no dispongo de información sobre tu aversión al riesgo ni tu capital disponible.\n\n**Datos Clave y Análisis Técnico Detallado:**\n\n*   **Consenso de Compra:** La señal general de "COMPRAR" es alentadora, pero siempre hay que complementarla con un análisis propio y una gestión de riesgo adecuada.\n\n*   **RSI Bajos (60min y 15min):**  Los RSI de 23.04 (60min) y 29.85 (15min) indican condiciones de sobreventa. Esto podría significar que la presión vendedora se está agotando y un rebote es inminente. Sin embargo, los mercados pueden permanecer sobrevendidos por un tiempo prolongado, por lo que es importante no anticipar demasiado el movimiento.\n\n*   **Soporte y Resistencia Potenciales:**\n\n    *   **Soporte:** El precio está por encima de las EMAs de largo plazo (EMA40, EMA100, EMA200) en el gráfico de 15 minutos, lo que podría actuar como soporte dinámico. Específicamente, vigila el nivel de la EMA200 en 227.33.\n    *   **Resistencia:** La SMA20 (239.50) en el gráfico de 5 minutos está muy cerca del precio actual y podría actuar como resistencia inmediata. Romper este nivel podría indicar un impulso alcista más fuerte.\n\n*   **Opciones:**  Las opciones CALL con vencimiento en 2025-09-12 y strikes entre 215.00 y 237.50 te ofrecen la posibilidad de apalancar tu posición alcista con un riesgo limitado. Sin embargo, la falta de datos (Bid, Ask, IV, Delta) dificulta la elección de la opción más adecuada.\n\n**Recomendación Personalizada:**\n\nDado tu perfil (que asumo como moderadamente tolerante al riesgo, pero con un enfoque en operaciones bien investigadas), sugiero la siguiente estrategia:\n\n1.  **Entrada Conservadora:** Considera una entrada inicial pequeña alrededor del precio actual (239.63) para aprovechar el posible rebote.\n2.  **Confirmación:** Espera una ruptura confirmada por encima de la SMA20 en el gráfico de 5 minutos (aproximadamente 239.50) para agregar a tu posición. Un volumen creciente durante la ruptura sería una señal adicional de fortaleza.\n3.  **Opciones:** Dada la falta de información sobre los precios y las griegas, ten precaución con las opciones.  Si decides utilizarlas, considera opciones "In-the-Money" o "At-the-Money" (235-240) para reducir el riesgo, pero con vencimientos más cortos (semanas en lugar de meses) dada tu inclinación por el trading intradía. Investiga a fondo los precios y la liquidez antes de operar.\n4.  **Stop-Loss:**  Coloca un stop-loss ajustado por debajo de la EMA40 en el gráfico de 5 minutos (aproximadamente 238.76). Esto limitará tus pérdidas si el precio revierte su dirección.\n5.  **Objetivo de Beneficio:** Establece un objetivo de beneficio conservador, como la siguiente resistencia significativa (podría ser un nivel psicológico como 242 o 245).\n\n**Gestión de Riesgo Específica:**\n\n*   **Tamaño de la Posición:** NO arriesgues más del 1-2% de tu capital total en esta operación. Dado que estás explorando opciones, reduce aún más este porcentaje.\n*   **Apalancamiento:** Evita el apalancamiento excesivo, especialmente al operar con opciones. Recuerda que las opciones pueden perder valor rápidamente.\n*   **Monitoreo Constante:** Vigila de cerca la operación y ajusta tu stop-loss a medida que el precio se mueva a tu favor para asegurar ganancias.\n\n**Consideraciones Adicionales:**\n\n*   **Volatilidad del Mercado:** GOOGL puede ser volátil, especialmente en respuesta a noticias del mercado o informes de ganancias. Estate atento a las noticias que puedan afectar el precio.\n*   **Correlación:** Considera cómo GOOGL se correlaciona con el mercado en general (por ejemplo, el S&P 500 o el Nasdaq). Un mercado bajista podría arrastrar a GOOGL a la baja, incluso si los datos técnicos sugieren lo contrario.\n\n**Disclaimer:**\n\nEste análisis se basa en la información proporcionada y mi comprensión inicial de tu perfil. Es fundamental que realices tu propia investigación y consideres tus propios objetivos de inversión y tolerancia al riesgo antes de tomar cualquier decisión.  **Este no es un consejo financiero.**\n\n**Feedback Necesario:**\n\nPara mejorar la precisión de mi análisis y adaptarlo aún más a tus necesidades, por favor, proporcióname información sobre lo siguiente:\n\n*   **Tu Nivel de Experiencia:** ¿Eres un trader principiante, intermedio o avanzado?\n*   **Tolerancia al Riesgo:** ¿Eres conservador, moderado o agresivo en tus inversiones?\n*   **Tamaño de tu Capital:** ¿Cuál es el tamaño de tu cuenta de trading?\n*   **Activos preferidos:** ¿Cuáles son los activos que más te gusta negociar?\n*   **Horizonte temporal:** ¿Cuánto tiempo sueles mantener tus operaciones abiertas?\n*   **Estrategias Preferidas:** ¿Cuáles son tus estrategias de trading favoritas?\n*   **Historial de Trading:** ¿Tienes algún historial de operaciones en GOOGL o acciones similares?\n*   **Feedback sobre Análisis Previos:** ¿Qué aspectos de mis análisis anteriores te han resultado útiles y cuáles no?\n\nCon esta información, puedo refinar mis algoritmos y ofrecerte un análisis aún más personalizado y efectivo.\n          \n          \n        \n          \n            ⚙️ Configuración de IA Utilizada\n            \n              Proveedor: auto\n              Modelo: default\n              Nivel: expert\n              Comportamental: Sí\n              Adaptativo: Sí\n              Feedback: Sí\n            \n          \n      \n    ', NULL, '{"data_provider":"polygon","resolutions_json":["60min","15min","5min"],"indicators_json":{"60min":{"rsi14":true,"sma20":true,"ema20":true,"ema40":true,"ema100":true,"ema200":true},"15min":{"rsi14":true,"sma20":true,"ema20":true,"ema40":true,"ema100":true,"ema200":true},"5min":{"rsi14":true,"sma20":true,"ema20":false,"ema40":false,"ema100":false,"ema200":false}},"ai_provider":"openai","ai_model":"gpt-4o","amount":1000,"tp":20,"sl":5,"symbol":"GOOGL"}', 'SETUP GOOGL 2025-09-12 SIMPLE PUT\nPrecio(mid): 0.00\nTP: 20 | SL: 5\nLEGS: PUT 240.00ATM\n\n', 0, NULL, NULL, NULL),
 	(26, 4, '2025-09-10 05:16:53', '2025-09-10 05:16:53', 'AAPL', '60min', 'AAPL 5min - COMPRA - 10/9/2025', '\n      \n        \n          Símbolo AAPL\n          Precio: 233.53\n          Recomendación: VENDER\n          BUY 0\n          SELL 3\n          🧠 IA Comportamental\n          openai\n        \n\n        \n          Detalle por resolución\n          \n            \n              \n                \n                  Res\n                  Precio\n                  RSI14\n                  SMA20\n                  EMA20\n                  EMA40\n                  EMA100\n                  EMA200\n                \n              \n              \n      \n        60min\n        233.53\n        67.76\n        236.12\n        235.66\n        236.66\n        236.12\n        234.34\n      \n    \n      \n        15min\n        233.53\n        60.30\n        233.64\n        233.88\n        234.65\n        236.12\n        236.85\n      \n    \n      \n        5min\n        233.53\n        51.98\n        233.61\n        233.55\n        233.66\n        234.42\n        235.46\n      \n    \n            \n          \n        \n\n        \n          Opciones (próxima expiración)\n          \n          \n            Expiración\n            2025-09-12\n            ± Strikes\n            \n            Estrategia\n            \n              Simple CALL\n              Simple PUT\n              Vertical CALL (debit)\n              Vertical PUT (debit)\n            \n            Precio\n            \n              Mid\n              Bid\n              Ask\n            \n             Recordar globalmente\n            ATM: 232.50 · Px 233.53\n          \n          \n            ITM: Call strike < spot · Put strike > spot\n            OTM: sin valor intrínseco\n            ATM: strike ≈ spot\n          \n          \n            \n              \n                \n                  CALLS\n                  Strike\n                  PUTS\n                \n                \n                  Last\n                  Bid\n                  Ask\n                  IV\n                  Δ\n                  \n                  \n                  \n                  Δ\n                  IV\n                  Bid\n                  Ask\n                  Last\n                  \n                  \n                \n              \n              \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              220.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              222.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              225.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              227.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              230.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              232.50ATM\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              235.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              237.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              240.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              242.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              245.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n          \n          \n            \n              \n                Setup\n                simple put\n                · Precio(mid): 0.00\n                · TP: 0.00\n                · SL: 0.00\n              \n              Copiar setup\n            \n          \n        \n\n        \n          Plan del subyacente\n          TP 20% → 280.24 · SL 5% → 221.85 · Capital: $1000\n        \n\n        \n          \n            🧠 Análisis IA (openai)\n            ✨ Análisis personalizado con IA comportamental\n            Análisis híbrido completado usando contexto enriquecido.\n\nPrompt original: Analiza el activo AAPL con los siguientes datos:\nBUY=0, SELL=3, Recomendación final=VENDER, Último...\nPrompt enriquecido: 2360 caracteres\nProveedor: openai\nModelo: gpt-4o\n          \n          \n        \n          \n            ⚙️ Configuración de IA Utilizada\n            \n              Proveedor: openai\n              Modelo: default\n              Nivel: expert\n              Comportamental: Sí\n              Adaptativo: Sí\n              Feedback: Sí\n            \n          \n      \n    ', NULL, '{"data_provider":"polygon","resolutions_json":["60min","15min","5min"],"indicators_json":{"60min":{"rsi14":true,"sma20":true,"ema20":true,"ema40":true,"ema100":true,"ema200":true},"15min":{"rsi14":true,"sma20":true,"ema20":true,"ema40":true,"ema100":true,"ema200":true},"5min":{"rsi14":true,"sma20":true,"ema20":false,"ema40":true,"ema100":false,"ema200":false}},"ai_provider":"openai","ai_model":"gpt-4o","amount":1000,"tp":20,"sl":5,"symbol":"AAPL"}', 'SETUP AAPL 2025-09-12 SIMPLE PUT\nPrecio(mid): 0.00\nTP: 20 | SL: 5\nLEGS: PUT 232.50ATM\n\n', 0, NULL, NULL, NULL),
-	(27, 4, '2025-09-10 05:16:53', '2025-09-10 05:16:53', 'AAPL', '60min', 'AAPL 5min - COMPRA - 10/9/2025', '\n      \n        \n          Símbolo AAPL\n          Precio: 233.53\n          Recomendación: VENDER\n          BUY 0\n          SELL 3\n          🧠 IA Comportamental\n          openai\n        \n\n        \n          Detalle por resolución\n          \n            \n              \n                \n                  Res\n                  Precio\n                  RSI14\n                  SMA20\n                  EMA20\n                  EMA40\n                  EMA100\n                  EMA200\n                \n              \n              \n      \n        60min\n        233.53\n        67.76\n        236.12\n        235.66\n        236.66\n        236.12\n        234.34\n      \n    \n      \n        15min\n        233.53\n        60.30\n        233.64\n        233.88\n        234.65\n        236.12\n        236.85\n      \n    \n      \n        5min\n        233.53\n        51.98\n        233.61\n        233.55\n        233.66\n        234.42\n        235.46\n      \n    \n            \n          \n        \n\n        \n          Opciones (próxima expiración)\n          \n          \n            Expiración\n            2025-09-12\n            ± Strikes\n            \n            Estrategia\n            \n              Simple CALL\n              Simple PUT\n              Vertical CALL (debit)\n              Vertical PUT (debit)\n            \n            Precio\n            \n              Mid\n              Bid\n              Ask\n            \n             Recordar globalmente\n            ATM: 232.50 · Px 233.53\n          \n          \n            ITM: Call strike < spot · Put strike > spot\n            OTM: sin valor intrínseco\n            ATM: strike ≈ spot\n          \n          \n            \n              \n                \n                  CALLS\n                  Strike\n                  PUTS\n                \n                \n                  Last\n                  Bid\n                  Ask\n                  IV\n                  Δ\n                  \n                  \n                  \n                  Δ\n                  IV\n                  Bid\n                  Ask\n                  Last\n                  \n                  \n                \n              \n              \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              220.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              222.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              225.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              227.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              230.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              232.50ATM\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              235.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              237.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              240.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              242.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              245.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n          \n          \n            \n              \n                Setup\n                simple put\n                · Precio(mid): 0.00\n                · TP: 0.00\n                · SL: 0.00\n              \n              Copiar setup\n            \n          \n        \n\n        \n          Plan del subyacente\n          TP 20% → 280.24 · SL 5% → 221.85 · Capital: $1000\n        \n\n        \n          \n            🧠 Análisis IA (openai)\n            ✨ Análisis personalizado con IA comportamental\n            Análisis híbrido completado usando contexto enriquecido.\n\nPrompt original: Analiza el activo AAPL con los siguientes datos:\nBUY=0, SELL=3, Recomendación final=VENDER, Último...\nPrompt enriquecido: 2360 caracteres\nProveedor: openai\nModelo: gpt-4o\n          \n          \n        \n          \n            ⚙️ Configuración de IA Utilizada\n            \n              Proveedor: openai\n              Modelo: default\n              Nivel: expert\n              Comportamental: Sí\n              Adaptativo: Sí\n              Feedback: Sí\n            \n          \n      \n    ', NULL, '{"data_provider":"polygon","resolutions_json":["60min","15min","5min"],"indicators_json":{"60min":{"rsi14":true,"sma20":true,"ema20":true,"ema40":true,"ema100":true,"ema200":true},"15min":{"rsi14":true,"sma20":true,"ema20":true,"ema40":true,"ema100":true,"ema200":true},"5min":{"rsi14":true,"sma20":true,"ema20":false,"ema40":true,"ema100":false,"ema200":false}},"ai_provider":"openai","ai_model":"gpt-4o","amount":1000,"tp":20,"sl":5,"symbol":"AAPL"}', 'SETUP AAPL 2025-09-12 SIMPLE PUT\nPrecio(mid): 0.00\nTP: 20 | SL: 5\nLEGS: PUT 232.50ATM\n\n', 0, NULL, NULL, NULL);
+	(27, 4, '2025-09-10 05:16:53', '2025-09-10 22:20:48', 'AAPL', '60min', 'AAPL 5min - COMPRA - 10/9/2025', '\n      \n        \n          Símbolo AAPL\n          Precio: 233.53\n          Recomendación: VENDER\n          BUY 0\n          SELL 3\n          🧠 IA Comportamental\n          openai\n        \n\n        \n          Detalle por resolución\n          \n            \n              \n                \n                  Res\n                  Precio\n                  RSI14\n                  SMA20\n                  EMA20\n                  EMA40\n                  EMA100\n                  EMA200\n                \n              \n              \n      \n        60min\n        233.53\n        67.76\n        236.12\n        235.66\n        236.66\n        236.12\n        234.34\n      \n    \n      \n        15min\n        233.53\n        60.30\n        233.64\n        233.88\n        234.65\n        236.12\n        236.85\n      \n    \n      \n        5min\n        233.53\n        51.98\n        233.61\n        233.55\n        233.66\n        234.42\n        235.46\n      \n    \n            \n          \n        \n\n        \n          Opciones (próxima expiración)\n          \n          \n            Expiración\n            2025-09-12\n            ± Strikes\n            \n            Estrategia\n            \n              Simple CALL\n              Simple PUT\n              Vertical CALL (debit)\n              Vertical PUT (debit)\n            \n            Precio\n            \n              Mid\n              Bid\n              Ask\n            \n             Recordar globalmente\n            ATM: 232.50 · Px 233.53\n          \n          \n            ITM: Call strike < spot · Put strike > spot\n            OTM: sin valor intrínseco\n            ATM: strike ≈ spot\n          \n          \n            \n              \n                \n                  CALLS\n                  Strike\n                  PUTS\n                \n                \n                  Last\n                  Bid\n                  Ask\n                  IV\n                  Δ\n                  \n                  \n                  \n                  Δ\n                  IV\n                  Bid\n                  Ask\n                  Last\n                  \n                  \n                \n              \n              \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              220.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              222.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              225.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              227.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              230.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              232.50ATM\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              235.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              237.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              240.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              242.50\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n              —\n              —\n              —\n              —\n              —\n              \n              \n              245.00\n              —\n              —\n              —\n              —\n              —\n              \n              \n            \n            \n          \n          \n            \n              \n                Setup\n                simple put\n                · Precio(mid): 0.00\n                · TP: 0.00\n                · SL: 0.00\n              \n              Copiar setup\n            \n          \n        \n\n        \n          Plan del subyacente\n          TP 20% → 280.24 · SL 5% → 221.85 · Capital: $1000\n        \n\n        \n          \n            🧠 Análisis IA (openai)\n            ✨ Análisis personalizado con IA comportamental\n            Análisis híbrido completado usando contexto enriquecido.\n\nPrompt original: Analiza el activo AAPL con los siguientes datos:\nBUY=0, SELL=3, Recomendación final=VENDER, Último...\nPrompt enriquecido: 2360 caracteres\nProveedor: openai\nModelo: gpt-4o\n          \n          \n        \n          \n            ⚙️ Configuración de IA Utilizada\n            \n              Proveedor: openai\n              Modelo: default\n              Nivel: expert\n              Comportamental: Sí\n              Adaptativo: Sí\n              Feedback: Sí\n            \n          \n      \n    ', NULL, '{"data_provider":"polygon","resolutions_json":["60min","15min","5min"],"indicators_json":{"60min":{"rsi14":true,"sma20":true,"ema20":true,"ema40":true,"ema100":true,"ema200":true},"15min":{"rsi14":true,"sma20":true,"ema20":true,"ema40":true,"ema100":true,"ema200":true},"5min":{"rsi14":true,"sma20":true,"ema20":false,"ema40":true,"ema100":false,"ema200":false}},"ai_provider":"openai","ai_model":"gpt-4o","amount":1000,"tp":20,"sl":5,"symbol":"AAPL"}', 'SETUP AAPL 2025-09-12 SIMPLE PUT\nPrecio(mid): 0.00\nTP: 20 | SL: 5\nLEGS: PUT 232.50ATM\n\n', 1, 'neg', 5.00, NULL);
+
+-- Volcando estructura para tabla u522228883_bolsa_app.user_analysis_attachment
+CREATE TABLE IF NOT EXISTS `user_analysis_attachment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `analysis_id` int(11) NOT NULL,
+  `url` varchar(255) NOT NULL,
+  `mime` varchar(100) DEFAULT NULL,
+  `size` int(11) DEFAULT NULL,
+  `caption` varchar(200) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user_analysis` (`user_id`,`analysis_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla u522228883_bolsa_app.user_analysis_attachment: ~0 rows (aproximadamente)
 
+-- Volcando estructura para tabla u522228883_bolsa_app.user_api_keys
+CREATE TABLE IF NOT EXISTS `user_api_keys` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `provider` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `api_key_enc` text NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `provider_id` bigint(20) DEFAULT NULL,
+  `project_id` varchar(128) DEFAULT NULL,
+  `key_ciphertext` varbinary(4096) DEFAULT NULL,
+  `key_fingerprint` char(64) DEFAULT NULL,
+  `last4` char(4) DEFAULT NULL,
+  `status` enum('active','disabled','rotating') NOT NULL DEFAULT 'active',
+  `expires_at` datetime DEFAULT NULL,
+  `label` varchar(100) DEFAULT NULL,
+  `scopes` longtext DEFAULT NULL CHECK (json_valid(`scopes`)),
+  `origin` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `last_used_at` datetime DEFAULT NULL,
+  `error_count` int(11) NOT NULL DEFAULT 0,
+  `disabled_reason` text DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_user_provider` (`user_id`,`provider`),
+  UNIQUE KEY `ux_user_provider` (`user_id`,`provider`),
+  UNIQUE KEY `uq_user_provider_label` (`user_id`,`provider`,`label`),
+  UNIQUE KEY `uq_user_api_keys` (`user_id`,`provider_id`,`origin`),
+  KEY `idx_user` (`user_id`),
+  KEY `idx_provider` (`provider`),
+  KEY `idx_user_api_keys_user` (`user_id`),
+  KEY `idx_user_api_keys_providerid` (`provider_id`),
+  KEY `idx_user_provider_id` (`user_id`,`provider_id`),
+  KEY `idx_user_only` (`user_id`),
+  CONSTRAINT `fk_keys_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_uak_provider` FOREIGN KEY (`provider_id`) REFERENCES `ai_providers` (`id`),
+  CONSTRAINT `fk_user_api_keys_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Volcando datos para la tabla u522228883_bolsa_app.user_api_keys: ~8 rows (aproximadamente)
-REPLACE INTO `user_api_keys` (`id`, `user_id`, `provider`, `api_key_enc`, `created_at`, `updated_at`) VALUES
-	(4, 4, 'gemini', 'pVaxtD77fkc8/3QWvoJ+UCjvUVaiXWMFjeY25SWKDCaJf+ug//zrZF+HxRJtZ7IyH9FqQfRbF0FJQ8Hdf0q3QJlGog==', '2025-09-03 06:04:50', '2025-09-09 09:52:57'),
-	(5, 4, 'tiingo', 'Vg/hgMovknnp9+i6T6m40Cxm67+Xfd4ZaZnBpUwr+hmUykwBD91NjkpQUydjh+CSSQXBT90HEPpGFtgDhxwtEDZcrag=', '2025-09-03 06:13:27', '2025-09-09 09:52:57'),
-	(6, 4, 'alphavantage', 'vPh2oTdNY8rlsKXzsqzMNJ6fEw203+KjLUTM7Z/5a1Jd+WPy8YZlpSiZsT8=', '2025-09-03 07:00:48', '2025-09-09 09:52:57'),
-	(10, 4, 'polygon', '70iE98y2tU6100K3mASmYKxUGZyic0GlQ1v+XHX85YAYxtUIoqYF/zKDJxfXDQ3ji9+qCDlkTb/hG5xq', '2025-09-03 19:40:43', '2025-09-09 09:52:57'),
-	(11, 4, 'finnhub', 'KLhGR1+JZp8X+GQbN4hnTWsq00Knyk7LJuPKyilNwNY90zwASPCBXlQh8ROJ8yPgCZP3AoUYyYjHnpJOspil/NDcCxo=', '2025-09-03 20:01:53', '2025-09-09 09:52:57'),
-	(17, 5, 'polygon', '/LP8nG/iR2TubStec+GLeffYYvbj0k26UCGA3VcEtllxzxahz2QdTfW0pf4knZQyNxitle4cSOVJ02Ow', '2025-09-08 21:30:16', '2025-09-09 05:04:02'),
-	(20, 4, 'openai', 'OXMcT6QFiOQbV1THtc+vz/XvgWtBvLEkywxa5iluMQn7q5IP+7ZpCm+InlLVOKpz+Rk74hVqMx2pHTbTgHbHL0LZoVT79vS22Hrb1bGdBRwLy1jUbGtwRjy+iBIPGrIRVfEx5MXgI4gSKNeJiR6OnyxjDspKnZzvlO3D5QoB8UBwEIHbtyOyjM+sepWXMZ4+Zme8uQe3ERQ7LZzDWVP5AwgVs9tymnQqhehQmhjgc8YKUpi/lnoOfAKVO2RuM+p9', '2025-09-09 05:09:43', '2025-09-09 09:51:18'),
-	(27, 4, 'xai', '94NI6nu/UIsE6GDUoyYRdMrZOltTcSgDty0dzXuA8L/nP5qUIQsMXi/6bH0=', '2025-09-09 09:45:21', '2025-09-09 09:45:21');
+REPLACE INTO `user_api_keys` (`id`, `user_id`, `provider`, `api_key_enc`, `created_at`, `updated_at`, `provider_id`, `project_id`, `key_ciphertext`, `key_fingerprint`, `last4`, `status`, `expires_at`, `label`, `scopes`, `origin`, `last_used_at`, `error_count`, `disabled_reason`) VALUES
+	(4, 4, 'gemini', '{"v":1,"kid":"k2025_09_16_cc26","s":"qfXHWVrb6fpK8HPM0IMsIg==","n":"uNMl7CkSi+rmbag2ykYCLWAx8Qjf4y3v","ct":"AOHzAB3zyhkgmOeW4LsxAHge27PQQcfrHqbj1nwghW5GkME5qjmStD1IgWmzwazaa/Pr4xuwjQ=="}', '2025-09-03 06:04:50', '2025-09-16 03:02:10', 3, NULL, _binary 0x7b2276223a312c226b6964223a226b323032355f30395f31365f63633236222c2273223a2271665848575672623666704b3848504d30494d7349673d3d222c226e223a22754e4d6c37436b53692b726d62616732796b59434c57417838516a6634793376222c226374223a22414f487a4142337a79686b676d4f6557344c73784148676532375051516366724871626a316e7767685735476b4d4535716a6d537444314967576d7a77617a61612f5072347875776a513d3d227d, '1853d84b5caaf5be397434cf89fa3fd3e45ef66e9f8a6709c6b1ed8aa8b274f2', '9QMY', 'active', NULL, NULL, NULL, 1, NULL, 0, NULL),
+	(5, 4, 'tiingo', '{"v":1,"kid":"k2025_09_16_cc26","s":"KAAHd6OtM29AriBMTFRJmQ==","n":"sVOoRrMmMCYXXHlRv34G7NHUV77RGn9n","ct":"Ig7wawn7e1VoPfs5CLIhIntbxwjVHovq+831iNBBWFtmJQ15H2JpMAOttJVDuvFMGEPeyatgcoU="}', '2025-09-03 06:13:27', '2025-09-16 03:03:11', NULL, NULL, _binary 0x7b2276223a312c226b6964223a226b323032355f30395f31365f63633236222c2273223a224b41414864364f744d3239417269424d5446524a6d513d3d222c226e223a2273564f6f52724d6d4d43595858486c5276333447374e485556373752476e396e222c226374223a224967377761776e376531566f50667335434c4968496e746278776a56486f76712b383331694e42425746746d4a51313548324a704d414f74744a56447576464d4745506579617467636f553d227d, 'c5ea2d06f482475e63489c53cddab327ea23482491c0c2db2750647c0c1aec6c', 'd362', 'active', NULL, NULL, NULL, 1, NULL, 0, NULL),
+	(6, 4, 'alphavantage', '{"v":1,"kid":"k2025_09_16_cc26","s":"q7c6lavUVrxfH5wBXdU50w==","n":"3uWU9DfMzX4+ibQHQEoiRuYE9efBMz9v","ct":"4hKjdHZn5ABT3lcLFe8R+1g7ThyVH77REkJiDQwZJA=="}', '2025-09-03 07:00:48', '2025-09-16 22:24:39', NULL, NULL, _binary 0x7b2276223a312c226b6964223a226b323032355f30395f31365f63633236222c2273223a22713763366c61765556727866483577425864553530773d3d222c226e223a22337557553944664d7a58342b6962514851456f6952755945396566424d7a3976222c226374223a2234684b6a64485a6e35414254336c634c466538522b3167375468795648373752456b4a694451775a4a413d3d227d, '98d6d6aab264aff9595dffc3654dd1fef2599777630483bfe41d21ca8d3611ab', '5!Z}', 'active', NULL, NULL, NULL, 1, NULL, 0, NULL),
+	(10, 4, 'polygon', '{"v":1,"kid":"k2025_09_16_cc26","s":"RgN0KKl2hjW21iA2QeE08A==","n":"g+nk401yJe1iE6Z9SGZeauK21c8ur1Du","ct":"zpJneB88XwY+sKSoFAu+3Kra3H06NpO5CtzwoCDHjXUqh+qWaW1rH0jNw7mG9Iie"}', '2025-09-03 19:40:43', '2025-09-16 22:09:53', NULL, NULL, _binary 0x7b2276223a312c226b6964223a226b323032355f30395f31365f63633236222c2273223a2252674e304b4b6c32686a5732316941325165453038413d3d222c226e223a22672b6e6b343031794a65316945365a3953475a6561754b323163387572314475222c226374223a227a704a6e654238385877592b734b536f4641752b334b7261334830364e704f3543747a776f4344486a585571682b71576157317248306a4e77376d4739496965227d, '80d29428b6c48f52c41bf102ec43620d381e21e3600c98116a3202ce09739c76', 'hyCZ', 'active', NULL, NULL, NULL, 1, NULL, 0, NULL),
+	(11, 4, 'finnhub', '{"v":1,"kid":"k2025_09_16_cc26","s":"yPuk03+MHzsSsjW0udwyRg==","n":"BfxflXiKIQY4kOszsfV4HmJm/iuiCKM8","ct":"f7TF5/fBSm/1uihhQHcyyS9Mi6YZ8FDeLMTupG8xNrFwrMt/KXybO2GXUX40nPPInFXA3YK5YgE="}', '2025-09-03 20:01:53', '2025-09-16 22:25:35', NULL, NULL, _binary 0x7b2276223a312c226b6964223a226b323032355f30395f31365f63633236222c2273223a227950756b30332b4d487a7353736a57307564777952673d3d222c226e223a22426678666c58694b495159346b4f737a73665634486d4a6d2f697569434b4d38222c226374223a2266375446352f6642536d2f3175696868514863797953394d6936595a384644654c4d5475704738784e724677724d742f4b5879624f324758555834306e5050496e46584133594b355967453d227d, '620aaa79fb356f391a2f917ce9fed57840227f11bd5a1ada48ea4646f69f4d9a', 'i7a0', 'active', NULL, NULL, NULL, 1, NULL, 0, NULL),
+	(17, 5, 'polygon', '/LP8nG/iR2TubStec+GLeffYYvbj0k26UCGA3VcEtllxzxahz2QdTfW0pf4knZQyNxitle4cSOVJ02Ow', '2025-09-08 21:30:16', '2025-09-09 05:04:02', NULL, NULL, NULL, NULL, NULL, 'active', NULL, NULL, NULL, 1, NULL, 0, NULL),
+	(20, 4, 'openai', '{"v":1,"kid":"k2025_09_16_cc26","s":"J0ybgyBbkU2OoD6Ew6fwHQ==","n":"GzMWy5WhxTTM0vq5wEDvcSNKgYK3sJVc","ct":"WxBT7f0TDHhBXYerQOWYMMHqikyZn4rjilPSmIY/3AXn6g43GIMNsf9MNCkc07m7X+ZkntMLt+gs7M57bUmykF+aLlCVqVvWidqvvQ7zP1ghamamYWlUzgjmjMD357XuKUbDzxZ1ceokjDcuQKzZ+KTXV2syuYkdKvFs4U35x+fscOpvRU9XjXG+woO9sWcOIanRdxHYrTc1sK5a0tOn1CgJJYe1powJMgi3EZ4bEc0D1E3u"}', '2025-09-09 05:09:43', '2025-09-16 02:29:35', 1, NULL, _binary 0x7b2276223a312c226b6964223a226b323032355f30395f31365f63633236222c2273223a224a307962677942626b55324f6f4436457736667748513d3d222c226e223a22477a4d57793557687854544d307671357745447663534e4b67594b33734a5663222c226374223a2257784254376630544448684258596572514f57594d4d4871696b795a6e34726a696c50536d49592f3341586e3667343347494d4e7366394d4e436b6330376d37582b5a6b6e744d4c742b6773374d353762556d796b462b614c6c435671567657696471767651377a50316768616d616d59576c557a676a6d6a4d4433353758754b5562447a785a3163656f6b6a446375514b7a5a2b4b54585632737975596b644b76467334553335782b6673634f7076525539586a58472b776f4f397357634f49616e526478485972546331734b356130744f6e3143674a4a596531706f774a4d676933455a34624563304431453375227d, '18aa42ab440df9777835cd633fb1a67d22214fe96bb1dd36a5ac56c24b3f4964', 'S-oA', 'active', NULL, NULL, NULL, 1, NULL, 0, NULL),
+	(27, 4, 'xai', '94NI6nu/UIsE6GDUoyYRdMrZOltTcSgDty0dzXuA8L/nP5qUIQsMXi/6bH0=', '2025-09-09 09:45:21', '2025-09-14 22:58:32', 4, NULL, NULL, NULL, NULL, 'active', NULL, NULL, NULL, 1, NULL, 0, NULL);
+
+-- Volcando estructura para tabla u522228883_bolsa_app.user_data_api_keys
+CREATE TABLE IF NOT EXISTS `user_data_api_keys` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `provider_id` bigint(20) NOT NULL,
+  `project_id` varchar(128) DEFAULT NULL,
+  `label` varchar(100) DEFAULT NULL,
+  `origin` enum('byok','managed') NOT NULL DEFAULT 'byok',
+  `api_key_enc` text NOT NULL,
+  `key_ciphertext` varbinary(4096) DEFAULT NULL,
+  `key_fingerprint` char(64) DEFAULT NULL,
+  `last4` char(4) DEFAULT NULL,
+  `scopes` longtext DEFAULT NULL CHECK (json_valid(`scopes`)),
+  `environment` enum('live','sandbox') NOT NULL DEFAULT 'live',
+  `status` enum('active','disabled','rotating') NOT NULL DEFAULT 'active',
+  `disabled_reason` text DEFAULT NULL,
+  `error_count` int(11) NOT NULL DEFAULT 0,
+  `last_used_at` datetime DEFAULT NULL,
+  `expires_at` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `FK_user_data_api_keys_users` (`user_id`),
+  KEY `FK_user_data_api_keys_data_providers` (`provider_id`),
+  CONSTRAINT `FK_user_data_api_keys_data_providers` FOREIGN KEY (`provider_id`) REFERENCES `data_providers` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `FK_user_data_api_keys_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla u522228883_bolsa_app.user_data_api_keys: ~6 rows (aproximadamente)
+REPLACE INTO `user_data_api_keys` (`id`, `user_id`, `provider_id`, `project_id`, `label`, `origin`, `api_key_enc`, `key_ciphertext`, `key_fingerprint`, `last4`, `scopes`, `environment`, `status`, `disabled_reason`, `error_count`, `last_used_at`, `expires_at`, `created_at`, `updated_at`) VALUES
+	(11, 4, 1, NULL, 'Clave 1', 'byok', '{"v":1,"kid":"k2025_09_16_cc26","s":"bZgMbYClKv4eJo3n/nLn9Q==","n":"UY5fPnTDIl+AA49SCAtCxuy09If4fOT3","ct":"taMhyUw1BuJRfZJv8Xng1DUA75J/oKA+dwztmOMsKTk="}', _binary 0x7b2276223a312c226b6964223a226b323032355f30395f31365f63633236222c2273223a22625a674d6259436c4b7634654a6f336e2f6e4c6e39513d3d222c226e223a2255593566506e5444496c2b4141343953434174437875793039496634664f5433222c226374223a2274614d687955773142754a52665a4a7638586e673144554137354a2f6f4b412b64777a746d4f4d734b546b3d227d, 'e4e5399e23a835e93c0b32d032ba8eb47f484ab0341c9639ca91f9a89a8567b2', 'EDC7', NULL, 'live', 'active', NULL, 0, '2025-09-22 06:40:36', NULL, '2025-09-17 21:14:57', '2025-09-22 06:40:36'),
+	(15, 4, 3, NULL, 'Clave 3', 'byok', '{"v":1,"kid":"k2025_09_16_cc26","s":"4CM35VVs4w3E3a5F+i/jbQ==","n":"Jv1RYjUjCx04vkO/XU3pOIk3wRgV6B97","ct":"5PW9p5m7xGkX+FmOPIZaaaPww/yLzy8njy9ECAsgfCl9YdmQUkOa3/We8GfclDkZ"}', _binary 0x7b2276223a312c226b6964223a226b323032355f30395f31365f63633236222c2273223a2234434d333556567334773345336135462b692f6a62513d3d222c226e223a224a763152596a556a43783034766b4f2f585533704f496b337752675636423937222c226374223a223550573970356d3778476b582b466d4f50495a6161615077772f794c7a79386e6a7939454341736766436c3959646d51556b4f61332f5765384766636c446b5a227d, '80d29428b6c48f52c41bf102ec43620d381e21e3600c98116a3202ce09739c76', 'hyCZ', NULL, 'live', 'active', NULL, 0, '2025-09-22 06:40:34', NULL, '2025-09-17 23:32:26', '2025-09-22 06:40:34'),
+	(16, 4, 2, NULL, 'Clave 2', 'byok', '{"v":1,"kid":"k2025_09_16_cc26","s":"TP2ojZP/nj9apTP+dfINZA==","n":"a5PyOvRT4tyU+2xfcggFROdRUnqObSv9","ct":"qVPKeIghLW+HlDF9yijrfZUsvv8i5W9kBYKjAP8CWwc2F3POkeNExmx5VgBlRfiwG1DyksviRgA="}', _binary 0x7b2276223a312c226b6964223a226b323032355f30395f31365f63633236222c2273223a225450326f6a5a502f6e6a39617054502b6466494e5a413d3d222c226e223a22613550794f765254347479552b32786663676746524f6452556e714f62537639222c226374223a227156504b654967684c572b486c44463979696a72665a5573767638693557396b42594b6a41503843577763324633504f6b654e45786d78355667426c52666977473144796b7376695267413d227d, '620aaa79fb356f391a2f917ce9fed57840227f11bd5a1ada48ea4646f69f4d9a', 'i7a0', NULL, 'live', 'active', NULL, 0, '2025-09-22 06:40:24', NULL, '2025-09-20 15:25:47', '2025-09-22 06:40:24'),
+	(17, 4, 10, NULL, 'Clave 10', 'byok', '{"v":1,"kid":"k2025_09_16_cc26","s":"UA83j6csEET3FNWP9nk+RA==","n":"ovWf6J2HqQQbCSZLUiOIUBjz/dpxRDQH","ct":"TPtmQk/nE+kpxXQLhoUwwxciEqEm0RkIbuOjs0W3N4wjGuKjDQ4oeqgVGdfbu0191K0prqsXkjc="}', _binary 0x7b2276223a312c226b6964223a226b323032355f30395f31365f63633236222c2273223a22554138336a36637345455433464e5750396e6b2b52413d3d222c226e223a226f765766364a32487151516243535a4c55694f4955426a7a2f64707852445148222c226374223a225450746d516b2f6e452b6b707858514c686f5577777863694571456d30526b4962754f6a733057334e34776a47754b6a4451346f657167564764666275303139314b3070727173586b6a633d227d, 'c5ea2d06f482475e63489c53cddab327ea23482491c0c2db2750647c0c1aec6c', 'd362', NULL, 'live', 'active', NULL, 0, '2025-09-22 06:40:14', NULL, '2025-09-20 15:26:15', '2025-09-22 06:40:14'),
+	(18, 4, 6, NULL, 'Test Key', 'byok', '{"v":1,"kid":"k2025_09_16_cc26","s":"+tFiZ+UeERJhf8xqFQvieA==","n":"1xvQYyYUXeeaTF+5on5GBoenUEb/A00S","ct":"r/WCu+DpBSJhCZ05tGcdlReA3ZQjrwSKC2Ua1UAt"}', _binary 0x7b2276223a312c226b6964223a226b323032355f30395f31365f63633236222c2273223a222b7446695a2b556545524a68663878714651766965413d3d222c226e223a2231787651597959555865656154462b356f6e3547426f656e5545622f41303053222c226374223a22722f5743752b447042534a68435a3035744763646c526541335a516a7277534b4332556131554174227d, '45af89b510a3279a817f851de5d3f95b73485d58ec2672a39e52d8aeeb014059', '2345', NULL, '', 'active', NULL, 0, '2025-09-22 06:40:02', NULL, '2025-09-21 18:51:44', '2025-09-24 05:45:51'),
+	(19, 4, 9, NULL, 'RapiAPI', 'byok', '{"v":1,"kid":"k2025_09_16_cc26","s":"7EV1GAHu4rqn9xmpR8fXqg==","n":"yqrp0EQF44jeJZzwyxc7H6St+43NelAy","ct":"unti02B+iAsthUfHnp7ScdhaRzjZ7Xt2QqVd2QYMszmy09KcyZvWgZxyjr/N5k1rXLuGnvnJtvEvghj8E8Ippo4N"}', _binary 0x7b2276223a312c226b6964223a226b323032355f30395f31365f63633236222c2273223a2237455631474148753472716e39786d705238665871673d3d222c226e223a22797172703045514634346a654a5a7a7779786337483653742b34334e656c4179222c226374223a22756e74693032422b69417374685566486e70375363646861527a6a5a37587432517156643251594d737a6d7930394b63795a7657675a78796a722f4e356b3172584c75476e766e4a7476457667686a3845384970706f344e227d, 'be5f4016de848ef7c4e0d38de4e749c8d978ce0c77474f3d2fe4761b05ca7e72', 'c284', NULL, 'live', 'active', NULL, 0, '2025-09-22 06:39:59', NULL, '2025-09-22 05:47:58', '2025-09-22 06:39:59');
+
+-- Volcando estructura para tabla u522228883_bolsa_app.user_feedback
+CREATE TABLE IF NOT EXISTS `user_feedback` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `type` varchar(16) NOT NULL,
+  `severity` varchar(16) NOT NULL,
+  `module` varchar(32) NOT NULL,
+  `title` varchar(200) DEFAULT NULL,
+  `description` longtext DEFAULT NULL,
+  `diagnostics_json` longtext DEFAULT NULL,
+  `status` varchar(16) NOT NULL DEFAULT 'nuevo',
+  PRIMARY KEY (`id`),
+  KEY `idx_user_created` (`user_id`,`created_at`),
+  KEY `idx_status` (`status`),
+  KEY `idx_module` (`module`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla u522228883_bolsa_app.user_feedback: ~8 rows (aproximadamente)
 REPLACE INTO `user_feedback` (`id`, `user_id`, `created_at`, `updated_at`, `type`, `severity`, `module`, `title`, `description`, `diagnostics_json`, `status`) VALUES
@@ -486,7 +1522,30 @@ REPLACE INTO `user_feedback` (`id`, `user_id`, `created_at`, `updated_at`, `type
 	(7, 4, '2025-09-08 06:49:21', '2025-09-08 06:49:21', 'ux', 'sugerencia', 'index', 'hhhhhhhhxxxxxx', 'jhjh', '"userAgent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:142.0) Gecko/20100101 Firefox/142.0 | timestamp: 2025-09-08T06:49:03.295Z | url: https://cerberogrowthsolutions.com/bolsa/index.html | screen: 2347x1320 | viewport: 2300x1172 | timezone: America/Chicago | language: es | cookies: true | localStorage: Disponible | sessionStorage: Disponible"', 'nuevo'),
 	(8, 4, '2025-09-08 06:49:21', '2025-09-08 06:49:21', 'ux', 'sugerencia', 'otro', 'hhhhhhhhxxxxxx', 'jhjh', NULL, 'nuevo');
 
+-- Volcando estructura para tabla u522228883_bolsa_app.user_feedback_attachment
+CREATE TABLE IF NOT EXISTS `user_feedback_attachment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `feedback_id` int(11) NOT NULL,
+  `url` varchar(255) NOT NULL,
+  `mime` varchar(100) DEFAULT NULL,
+  `size` int(11) DEFAULT NULL,
+  `caption` varchar(200) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user_feedback` (`user_id`,`feedback_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- Volcando datos para la tabla u522228883_bolsa_app.user_feedback_attachment: ~0 rows (aproximadamente)
+
+-- Volcando estructura para tabla u522228883_bolsa_app.user_keys
+CREATE TABLE IF NOT EXISTS `user_keys` (
+  `user_id` int(11) NOT NULL,
+  `provider` varchar(32) NOT NULL,
+  `api_key` text DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`user_id`,`provider`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla u522228883_bolsa_app.user_keys: ~6 rows (aproximadamente)
 REPLACE INTO `user_keys` (`user_id`, `provider`, `api_key`, `updated_at`) VALUES
@@ -497,6 +1556,73 @@ REPLACE INTO `user_keys` (`user_id`, `provider`, `api_key`, `updated_at`) VALUES
 	(3, 'tiingo', NULL, '2025-09-03 03:25:30'),
 	(3, 'xai', NULL, '2025-09-03 03:25:30');
 
+-- Volcando estructura para tabla u522228883_bolsa_app.user_news_api_keys
+CREATE TABLE IF NOT EXISTS `user_news_api_keys` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `provider_id` bigint(20) NOT NULL,
+  `project_id` varchar(128) DEFAULT NULL,
+  `label` varchar(100) DEFAULT NULL,
+  `origin` enum('byok','managed') NOT NULL DEFAULT 'byok',
+  `api_key_enc` text NOT NULL,
+  `key_ciphertext` varbinary(4096) DEFAULT NULL,
+  `key_fingerprint` char(64) DEFAULT NULL,
+  `last4` char(4) DEFAULT NULL,
+  `scopes` longtext DEFAULT NULL,
+  `environment` enum('live','sandbox') NOT NULL DEFAULT 'live',
+  `status` enum('active','disabled','rotating') NOT NULL DEFAULT 'active',
+  `disabled_reason` text DEFAULT NULL,
+  `error_count` int(11) NOT NULL DEFAULT 0,
+  `last_used_at` datetime DEFAULT NULL,
+  `expires_at` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `FK_user_news_api_keys_users` (`user_id`),
+  KEY `provider_id` (`provider_id`),
+  CONSTRAINT `FK_user_news_api_keys_news_providers` FOREIGN KEY (`provider_id`) REFERENCES `news_providers` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `FK_user_news_api_keys_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+-- Volcando datos para la tabla u522228883_bolsa_app.user_news_api_keys: ~3 rows (aproximadamente)
+REPLACE INTO `user_news_api_keys` (`id`, `user_id`, `provider_id`, `project_id`, `label`, `origin`, `api_key_enc`, `key_ciphertext`, `key_fingerprint`, `last4`, `scopes`, `environment`, `status`, `disabled_reason`, `error_count`, `last_used_at`, `expires_at`, `created_at`, `updated_at`) VALUES
+	(12, 4, 47, NULL, '33', 'byok', '{"v":1,"kid":"k2025_09_16_cc26","s":"gAMZW3BqpwLeA9dmSQ/BCw==","n":"x4sgghlsiUl74YY8PLQWRpz1p/vO6/uJ","ct":"fAxUbTSfaGSfqZhCWAlNqNStESniIJsT5VEjxcCl/Z74fM2z1TL/hB6Qjgo="}', _binary 0x7b2276223a312c226b6964223a226b323032355f30395f31365f63633236222c2273223a2267414d5a5733427170774c654139646d53512f4243773d3d222c226e223a227834736767686c7369556c3734595938504c515752707a31702f764f362f754a222c226374223a22664178556254536661475366715a684357416c4e714e537445536e69494a73543556456a7863436c2f5a3734664d327a31544c2f684236516a676f3d227d, '6990feb81967aace43cc84278af9fdfd45922758438bcd52280715bc47f41af8', '3333', NULL, 'live', 'active', NULL, 0, NULL, NULL, '2025-09-17 19:22:48', '2025-09-17 19:22:48'),
+	(21, 4, 75, NULL, 'Clave 75', 'byok', '{"v":1,"kid":"k2025_09_16_cc26","s":"kFXTN6dvFyqGxQY9esBcdQ==","n":"whCGpPZL226BwTSPTZ0O2nQjLe4+7dz7","ct":"0DAes7jXErriqr0UJ9WQcB//7ei2iwwozp1wirL4NtoSfyUazF51MW4wvmKnIax5jFhvXA=="}', _binary 0x7b2276223a312c226b6964223a226b323032355f30395f31365f63633236222c2273223a226b4658544e36647646797147785159396573426364513d3d222c226e223a227768434770505a4c3232364277545350545a304f326e516a4c65342b37647a37222c226374223a223044416573376a5845727269717230554a39575163422f2f376569326977776f7a70317769724c344e746f53667955617a4635314d573477766d4b6e496178356a46687658413d3d227d, '9a5d45819063ddf7553a4a46113b04d32ee705706bffbea322111603985b15f0', 'c7e3', NULL, 'sandbox', 'active', NULL, 0, '2025-09-22 06:40:59', NULL, '2025-09-20 16:27:34', '2025-09-22 06:40:59'),
+	(24, 4, 76, NULL, 'Clave 76', 'byok', '{"v":1,"kid":"k2025_09_16_cc26","s":"NbhkEPwqgyKe4WHLWZ6stA==","n":"Itd8H219xrH8nM3HOIy+XVZDwTqFsxVH","ct":"dzxdTks+AHTTtU58r7ti4dj1Z4hlHMjM1CA6Lhdi3Zo+KwG1R85KqWNaZvtXzQbRBVAPzpt8XqJ1QSRkDu5nX0Gr"}', _binary 0x7b2276223a312c226b6964223a226b323032355f30395f31365f63633236222c2273223a224e62686b4550777167794b653457484c575a367374413d3d222c226e223a224974643848323139787248386e4d33484f49792b58565a447754714673785648222c226374223a22647a7864546b732b41485454745535387237746934646a315a34686c484d6a4d314341364c686469335a6f2b4b7747315238354b71574e615a7674587a516252425641507a70743858714a315153526b4475356e58304772227d, 'be5f4016de848ef7c4e0d38de4e749c8d978ce0c77474f3d2fe4761b05ca7e72', 'c284', NULL, 'sandbox', 'active', NULL, 0, '2025-09-22 06:41:05', NULL, '2025-09-22 05:28:33', '2025-09-22 06:41:05');
+
+-- Volcando estructura para tabla u522228883_bolsa_app.user_provider_configs
+CREATE TABLE IF NOT EXISTS `user_provider_configs` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `provider_type` enum('ai','data','trade') NOT NULL,
+  `provider_id` bigint(20) unsigned NOT NULL,
+  `project_id` varchar(128) DEFAULT NULL,
+  `vector_store_id` varchar(128) DEFAULT NULL,
+  `default_model_id` bigint(20) DEFAULT NULL,
+  `environment` enum('live','sandbox','paper') DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_user_provider` (`user_id`,`provider_type`,`provider_id`),
+  KEY `idx_user` (`user_id`),
+  KEY `idx_provider` (`provider_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla u522228883_bolsa_app.user_provider_configs: ~0 rows (aproximadamente)
+
+-- Volcando estructura para tabla u522228883_bolsa_app.user_quotas
+CREATE TABLE IF NOT EXISTS `user_quotas` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `max_timeseries_per_day` int(11) NOT NULL DEFAULT 200,
+  `max_options_per_day` int(11) NOT NULL DEFAULT 200,
+  `max_ai_per_day` int(11) NOT NULL DEFAULT 100,
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_quotas_user` (`user_id`),
+  CONSTRAINT `fk_quotas_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- Volcando datos para la tabla u522228883_bolsa_app.user_quotas: ~4 rows (aproximadamente)
 REPLACE INTO `user_quotas` (`id`, `user_id`, `max_timeseries_per_day`, `max_options_per_day`, `max_ai_per_day`, `updated_at`) VALUES
 	(1, 1, 200, 200, 100, '2025-09-02 03:57:00'),
@@ -504,12 +1630,105 @@ REPLACE INTO `user_quotas` (`id`, `user_id`, `max_timeseries_per_day`, `max_opti
 	(5, 7, 200, 200, 100, '2025-09-08 06:33:56'),
 	(6, 8, 200, 200, 100, '2025-09-09 21:22:28');
 
+-- Volcando estructura para tabla u522228883_bolsa_app.user_secrets
+CREATE TABLE IF NOT EXISTS `user_secrets` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `provider` varchar(32) NOT NULL,
+  `key_name` varchar(64) NOT NULL,
+  `value_enc` text NOT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_user_provider_key` (`user_id`,`provider`,`key_name`),
+  KEY `idx_user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- Volcando datos para la tabla u522228883_bolsa_app.user_secrets: ~0 rows (aproximadamente)
 
+-- Volcando estructura para tabla u522228883_bolsa_app.user_settings
+CREATE TABLE IF NOT EXISTS `user_settings` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `data` longtext DEFAULT NULL CHECK (json_valid(`data`)),
+  `series_provider` varchar(32) NOT NULL DEFAULT 'auto',
+  `options_provider` varchar(32) NOT NULL DEFAULT 'auto',
+  `data_provider` varchar(32) DEFAULT NULL,
+  `resolutions_json` longtext NOT NULL,
+  `indicators_json` longtext NOT NULL,
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `ai_prompt_ext_conten_file` text DEFAULT NULL COMMENT 'Prompt personalizado para extracción de contenido de archivos',
+  `default_openai_vector_store_id` bigint(20) DEFAULT NULL,
+  `default_provider_id` bigint(20) DEFAULT NULL,
+  `default_model_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_settings_user` (`user_id`),
+  KEY `default_provider_id` (`default_provider_id`),
+  KEY `default_model_id` (`default_model_id`),
+  KEY `idx_user_settings_user` (`user_id`),
+  CONSTRAINT `fk_settings_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `user_settings_ibfk_1` FOREIGN KEY (`default_provider_id`) REFERENCES `ai_providers` (`id`),
+  CONSTRAINT `user_settings_ibfk_2` FOREIGN KEY (`default_model_id`) REFERENCES `ai_models` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Volcando datos para la tabla u522228883_bolsa_app.user_settings: ~2 rows (aproximadamente)
-REPLACE INTO `user_settings` (`id`, `user_id`, `data`, `series_provider`, `options_provider`, `data_provider`, `resolutions_json`, `indicators_json`, `ai_provider`, `ai_model`, `updated_at`) VALUES
-	(47, 4, '{"options_provider":"auto","series_provider":"auto","ai_provider":"openai","ai_model":"gpt-4o","options_expiry_rule":"nearest_friday","options_strike_count":20,"atm_price_source":"series_last","tz_offset":"","net":{"polygon":{"timeout_ms":8000,"retries":2},"finnhub":{"timeout_ms":8000,"retries":2},"tiingo":{"timeout_ms":8000,"retries":2},"alphavantage":{"timeout_ms":8000,"retries":2}},"amount":1000,"tp":20,"sl":5,"data_provider":"polygon"}', 'auto', 'auto', 'polygon', '["60min","15min","5min"]', '{"60min":{"rsi14":true,"sma20":true,"ema20":true,"ema40":true,"ema100":true,"ema200":true},"15min":{"rsi14":true,"sma20":true,"ema20":true,"ema40":true,"ema100":true,"ema200":true},"5min":{"rsi14":true,"sma20":true,"ema20":false,"ema40":true,"ema100":false,"ema200":false}}', 'openai', 'gpt-4o', '2025-09-10 20:03:59'),
-	(57, 7, '{"series_provider":"auto","options_provider":"auto","data_provider":"auto","ai_provider":"auto","ai_model":""}', 'auto', 'auto', 'auto', '["daily","weekly","1min"]', '{"daily":{"rsi14":true,"sma20":true,"ema20":false,"ema40":false,"ema100":false,"ema200":true},"weekly":{"rsi14":false,"sma20":false,"ema20":true,"ema40":true,"ema100":false,"ema200":true},"1min":{"rsi14":false,"sma20":false,"ema20":false,"ema40":false,"ema100":true,"ema200":false}}', 'auto', '', '2025-09-07 05:37:17');
+REPLACE INTO `user_settings` (`id`, `user_id`, `data`, `series_provider`, `options_provider`, `data_provider`, `resolutions_json`, `indicators_json`, `updated_at`, `ai_prompt_ext_conten_file`, `default_openai_vector_store_id`, `default_provider_id`, `default_model_id`) VALUES
+	(47, 4, '{"options_provider":"auto","series_provider":"polygon","ai_provider":"openai","ai_model":"gpt-4o-mini","options_expiry_rule":"nearest_friday","options_strike_count":20,"atm_price_source":"series_last","tz_offset":"","net":{"polygon":{"timeout_ms":8000,"retries":2},"finnhub":{"timeout_ms":8000,"retries":2},"tiingo":{"timeout_ms":8000,"retries":2},"alphavantage":{"timeout_ms":8000,"retries":2}},"amount":1000,"tp":20,"sl":5,"data_provider":"polygon"}', 'polygon', 'auto', 'polygon', '["60min","15min","5min"]', '{"60min":{"rsi14":true,"sma20":true,"ema20":true,"ema40":true,"ema100":true,"ema200":true},"15min":{"rsi14":true,"sma20":true,"ema20":true,"ema40":true,"ema100":true,"ema200":true},"5min":{"rsi14":true,"sma20":true,"ema20":false,"ema40":true,"ema100":false,"ema200":false}}', '2025-09-25 03:34:55', NULL, NULL, 1, 2),
+	(57, 7, '{"series_provider":"auto","options_provider":"auto","data_provider":"auto","ai_provider":"auto","ai_model":""}', 'auto', 'auto', 'auto', '["daily","weekly","1min"]', '{"daily":{"rsi14":true,"sma20":true,"ema20":false,"ema40":false,"ema100":false,"ema200":true},"weekly":{"rsi14":false,"sma20":false,"ema20":true,"ema40":true,"ema100":false,"ema200":true},"1min":{"rsi14":false,"sma20":false,"ema20":false,"ema40":false,"ema100":true,"ema200":false}}', '2025-09-10 23:56:29', NULL, NULL, NULL, NULL);
+
+-- Volcando estructura para tabla u522228883_bolsa_app.user_trade_api_keys
+CREATE TABLE IF NOT EXISTS `user_trade_api_keys` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `provider_id` bigint(20) NOT NULL,
+  `project_id` varchar(128) DEFAULT NULL,
+  `label` varchar(100) DEFAULT NULL,
+  `origin` enum('byok','managed') NOT NULL DEFAULT 'byok',
+  `api_key_enc` text NOT NULL,
+  `key_ciphertext` varbinary(4096) DEFAULT NULL,
+  `key_fingerprint` char(64) DEFAULT NULL,
+  `last4` char(4) DEFAULT NULL,
+  `scopes` longtext DEFAULT NULL CHECK (json_valid(`scopes`)),
+  `environment` enum('live','paper','sandbox') NOT NULL DEFAULT 'live',
+  `status` enum('active','disabled','rotating') NOT NULL DEFAULT 'active',
+  `disabled_reason` text DEFAULT NULL,
+  `error_count` int(11) NOT NULL DEFAULT 0,
+  `last_used_at` datetime DEFAULT NULL,
+  `expires_at` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `FK_user_trade_api_keys_users` (`user_id`),
+  KEY `FK_user_trade_api_keys_trade_providers` (`provider_id`),
+  CONSTRAINT `FK_user_trade_api_keys_trade_providers` FOREIGN KEY (`provider_id`) REFERENCES `trade_providers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_user_trade_api_keys_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla u522228883_bolsa_app.user_trade_api_keys: ~1 rows (aproximadamente)
+REPLACE INTO `user_trade_api_keys` (`id`, `user_id`, `provider_id`, `project_id`, `label`, `origin`, `api_key_enc`, `key_ciphertext`, `key_fingerprint`, `last4`, `scopes`, `environment`, `status`, `disabled_reason`, `error_count`, `last_used_at`, `expires_at`, `created_at`, `updated_at`) VALUES
+	(6, 4, 3, NULL, 'Clave 3', 'byok', '{"v":1,"kid":"k2025_09_16_cc26","s":"WqRzZqz2sQDquyd8pC/7Kw==","n":"mQCiL+Wqq1KLEtfSQGNznZWbXdnGyfUw","ct":"dfV0Ohkn3MjWSEPBPrYR/DH26h/JGdi1IA9BsPi2LM4Cd4u0pM/4HJ8hj9MxhWkd7EIjhxCzuSSLwLdTmh2CeA=="}', _binary 0x7b2276223a312c226b6964223a226b323032355f30395f31365f63633236222c2273223a225771527a5a717a32735144717579643870432f374b773d3d222c226e223a226d5143694c2b577171314b4c4574665351474e7a6e5a576258646e4779665577222c226374223a22646656304f686b6e334d6a5753455042507259522f44483236682f4a4764693149413942735069324c4d344364347530704d2f34484a38686a394d7868576b643745496a6878437a7553534c774c64546d68324365413d3d227d, '720665f2ed361580c65c6dd8af3a1e093db354371973a845c025286013e72fb9', 'saOz', NULL, 'sandbox', 'active', NULL, 0, '2025-09-24 06:29:32', NULL, '2025-09-24 05:46:12', '2025-09-24 06:29:32');
+
+-- Volcando estructura para tabla u522228883_bolsa_app.user_vector_stores
+CREATE TABLE IF NOT EXISTS `user_vector_stores` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) NOT NULL,
+  `provider` enum('openai','anthropic','gemini') NOT NULL,
+  `project_id` varchar(64) DEFAULT NULL,
+  `vector_store_id` varchar(128) NOT NULL,
+  `name` varchar(128) DEFAULT NULL,
+  `scope` enum('trial','private','shared') DEFAULT 'private',
+  `is_default` tinyint(1) DEFAULT 0,
+  `files_count` int(11) DEFAULT 0,
+  `bytes` bigint(20) DEFAULT 0,
+  `status` varchar(32) DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_provider_remote` (`provider`,`vector_store_id`),
+  KEY `idx_user_provider` (`user_id`,`provider`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla u522228883_bolsa_app.user_vector_stores: ~0 rows (aproximadamente)
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

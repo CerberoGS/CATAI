@@ -48,10 +48,15 @@
       <button onclick="debugExtraction()" class="bg-yellow-600 hover:bg-yellow-700 text-white p-3 rounded-lg ml-4">🔍 Diagnóstico de Extracción</button>
       
       <button onclick="testMinimal()" class="bg-orange-600 hover:bg-orange-700 text-white p-3 rounded-lg ml-4">🧪 Test Minimal</button>
+      <button onclick="testApiKeyDecryption()" class="bg-cyan-600 hover:bg-cyan-700 text-white p-3 rounded-lg ml-4">🔑 Test Descifrado API Key</button>
       
       <button onclick="testBasic()" class="bg-gray-600 hover:bg-gray-700 text-white p-3 rounded-lg ml-4">🔧 Test Básico</button>
       
       <button onclick="testDependencies()" class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg ml-4">🔗 Test Dependencias</button>
+      
+      <button onclick="testCryptoExternal()" class="bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-lg ml-4">🔐 Test Cifrado Externo</button>
+      
+      <button onclick="generateKey()" class="bg-red-600 hover:bg-red-700 text-white p-3 rounded-lg ml-4">🔑 Generar Clave KEK</button>
       
       <button onclick="testConfigOnly()" class="bg-purple-600 hover:bg-purple-700 text-white p-3 rounded-lg ml-4">⚙️ Test Config</button>
       <button onclick="testDbConnection()" class="bg-green-600 hover:bg-green-700 text-white p-3 rounded-lg">🔧 Probar Conexión DB</button>
@@ -384,6 +389,55 @@ Enfócate en información práctica y accionable para traders.`;
       }
     }
 
+    async function testApiKeyDecryption() {
+      const token = getToken();
+      if (!token) return alert('❌ Completa JWT Token');
+
+      try {
+        el('aiResult').textContent = '🔑 INICIANDO TEST DE DESCIFRADO DE API KEY...';
+        el('statusText').textContent = '🔑 Verificando descifrado con sistema externo...';
+        
+        const response = await fetch(`${API_BASE()}/test_api_key_decryption_safe.php`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({})
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const result = await response.json();
+        
+        let output = `🔑 RESULTADO TEST DE DESCIFRADO:\n\n`;
+        output += `👤 USUARIO: ${result.user_info.email} (ID: ${result.user_info.id})\n`;
+        output += `🤖 IA CONFIGURADA: ${result.ai_configuration.provider} (${result.ai_configuration.model})\n\n`;
+        
+        output += `🔑 API KEY PRINCIPAL:\n`;
+        output += `  • Disponible: ${result.api_key_test.api_key_available ? '✅ SÍ' : '❌ NO'}\n`;
+        output += `  • Longitud: ${result.api_key_test.api_key_length} caracteres\n`;
+        output += `  • Preview: ${result.api_key_test.api_key_preview || 'N/A'}\n`;
+        output += `  • Inicia con: ${result.api_key_test.api_key_starts_with || 'N/A'}\n\n`;
+        
+        output += `🔍 TODOS LOS PROVEEDORES:\n`;
+        for (const [provider, info] of Object.entries(result.all_providers_test)) {
+          output += `  • ${provider}: ${info.available ? '✅' : '❌'} (${info.length} chars) ${info.preview || ''}\n`;
+        }
+        
+        output += `\n📊 RESUMEN: ${result.message}`;
+        
+        el('aiResult').textContent = output;
+        el('statusText').textContent = '🔑 Test de descifrado completado';
+        
+      } catch (e) {
+        el('aiResult').textContent = `❌ ERROR EN TEST DE DESCIFRADO: ${e.message}`;
+        el('statusText').textContent = '❌ Error en test de descifrado';
+      }
+    }
+
     async function testBasic() {
       try {
         el('aiResult').textContent = '🔧 INICIANDO TEST BÁSICO...';
@@ -409,6 +463,114 @@ Enfócate en información práctica y accionable para traders.`;
       } catch (error) {
         el('aiResult').textContent = `❌ ERROR EN TEST BÁSICO:\n${error.message}`;
         el('statusText').textContent = '❌ Error en test básico';
+      }
+    }
+
+    async function generateKey() {
+      try {
+        el('aiResult').textContent = '🔑 GENERANDO CLAVE KEK VÁLIDA...';
+        el('statusText').textContent = '🔑 Generando clave de 32 bytes para el sistema de cifrado...';
+        
+        const response = await fetch(`${API_BASE()}/generate_key_safe.php`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${el('token').value}`
+          }
+        });
+        
+        const data = await response.json();
+        
+        if (data.ok) {
+          el('aiResult').textContent = `🔑 CLAVE KEK GENERADA EXITOSAMENTE:
+          
+🔑 INFORMACIÓN DE LA CLAVE:
+- KID: ${data.key_info.kid}
+- KEK Base64: ${data.key_info.kek_b64}
+- Longitud: ${data.key_info.kek_length} bytes ✅
+- Hex: ${data.key_info.kek_hex}
+- Válida: ${data.key_info.is_valid ? 'SÍ' : 'NO'}
+
+📋 KEYRING COMPLETO (COPIA Y PEGA EN EL ARCHIVO):
+${data.copy_ready.keyring_complete}
+
+📝 INSTRUCCIONES:
+1. Copia el JSON del keyring completo de arriba
+2. Pega en: /home/u522228883/.secrets/catai.keyring.json
+3. Verifica permisos: chmod 600 /home/u522228883/.secrets/catai.keyring.json
+4. Prueba nuevamente el cifrado
+
+🔧 DATOS PARA COPIAR:
+- Solo KID: ${data.copy_ready.kid_only}
+- Solo KEK: ${data.copy_ready.key_only}
+
+⏰ Timestamp: ${data.timestamp}`;
+          
+          el('statusText').textContent = '✅ Clave KEK generada exitosamente - Copia el JSON al archivo keyring';
+        } else {
+          el('aiResult').textContent = `❌ ERROR GENERANDO CLAVE: ${data.error || 'Error desconocido'}`;
+          el('statusText').textContent = '❌ Error generando clave KEK';
+        }
+      } catch (error) {
+        el('aiResult').textContent = `❌ ERROR GENERANDO CLAVE: ${error.message}`;
+        el('statusText').textContent = '❌ Error de conexión generando clave';
+      }
+    }
+
+    async function testCryptoExternal() {
+      try {
+        el('aiResult').textContent = '🔐 INICIANDO TEST DE CIFRADO EXTERNO...';
+        el('statusText').textContent = '🔐 Verificando acceso a keyring externo, funciones de cifrado, rotación de claves...';
+        
+        const response = await fetch(`${API_BASE()}/test_crypto_external_safe.php`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${el('token').value}`
+          }
+        });
+        
+        const data = await response.json();
+        
+        if (data.ok) {
+          el('aiResult').textContent = `🔐 TEST DE CIFRADO EXTERNO COMPLETADO:
+          
+✅ SISTEMA: ${data.system.sodium_available ? 'Sodium disponible' : '❌ Sodium NO disponible'}
+✅ HKDF: ${data.system.hash_hkdf_available ? 'Disponible' : '❌ NO disponible'}
+✅ KEYRING: ${data.status.keyring}
+✅ CIFRADO: ${data.status.crypto}
+✅ ROTACIÓN: ${data.status.rotation}
+
+📊 INFORMACIÓN DEL SISTEMA:
+- PHP: ${data.system.php_version}
+- Ruta Keyring: ${data.system.keyring_path}
+- Accesible: ${data.system.keyring_accessible ? 'SÍ' : 'NO'}
+
+🧪 RESULTADOS DE PRUEBA:
+- Texto de prueba: ${data.test_results.test_text}
+- Longitud cifrado: ${data.test_results.encrypted_length} caracteres
+- Descifrado exitoso: ${data.test_results.decryption_success ? 'SÍ' : 'NO'}
+
+📋 ESTRUCTURA KEYRING:
+${data.test_results.keyring_structure ? 
+  `- Versión: ${data.test_results.keyring_structure.version}
+- Active KID: ${data.test_results.keyring_structure.active_kid}
+- Status: ${data.test_results.keyring_structure.active_key_status}
+- Algoritmo: ${data.test_results.keyring_structure.active_key_alg}
+- Claves disponibles: ${data.test_results.keyring_structure.keys_count}
+- KID activo configurado: ${data.test_results.keyring_structure.has_active_kid ? 'SÍ' : 'NO'}` : 
+  'No disponible'}
+
+⏰ Timestamp: ${data.timestamp}`;
+          
+          el('statusText').textContent = '✅ Test de cifrado externo completado exitosamente';
+        } else {
+          el('aiResult').textContent = `❌ ERROR EN TEST DE CIFRADO EXTERNO: ${data.error || 'Error desconocido'}`;
+          el('statusText').textContent = '❌ Error en test de cifrado externo';
+        }
+      } catch (error) {
+        el('aiResult').textContent = `❌ ERROR EN TEST DE CIFRADO EXTERNO: ${error.message}`;
+        el('statusText').textContent = '❌ Error de conexión en test de cifrado externo';
       }
     }
 

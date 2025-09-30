@@ -3,7 +3,9 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/helpers.php';
+require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/crypto.php';
+require_once __DIR__ . '/Crypto_safe.php';
 
 json_header();
 
@@ -28,6 +30,47 @@ try {
   ];
 
   $saved = []; $deleted = []; $skipped = [];
+  
+  // Función para guardar clave con nuevo sistema de cifrado
+  function set_api_key_external_crypto($userId, $provider, $apiKey) {
+    try {
+      $pdo = db();
+      
+      // Cifrar con el nuevo sistema
+      $encryptedKey = catai_encrypt($apiKey);
+      $keyFingerprint = hash('sha256', $apiKey);
+      $last4 = substr($apiKey, -4);
+      
+      // Verificar si ya existe
+      $checkStmt = $pdo->prepare('SELECT id FROM user_api_keys WHERE user_id = ? AND provider = ?');
+      $checkStmt->execute([$userId, $provider]);
+      $existing = $checkStmt->fetch();
+      
+      if ($existing) {
+        // Actualizar existente
+        $updateStmt = $pdo->prepare('UPDATE user_api_keys 
+                                    SET api_key_enc = ?, 
+                                        key_ciphertext = ?, 
+                                        key_fingerprint = ?,
+                                        last4 = ?,
+                                        status = "active",
+                                        updated_at = NOW()
+                                    WHERE user_id = ? AND provider = ?');
+        $updateStmt->execute([$encryptedKey, $encryptedKey, $keyFingerprint, $last4, $userId, $provider]);
+      } else {
+        // Insertar nuevo
+        $insertStmt = $pdo->prepare('INSERT INTO user_api_keys 
+                                    (user_id, provider, api_key_enc, key_ciphertext, key_fingerprint, last4, status, created_at, updated_at)
+                                    VALUES (?, ?, ?, ?, ?, ?, "active", NOW(), NOW())');
+        $insertStmt->execute([$userId, $provider, $encryptedKey, $encryptedKey, $keyFingerprint, $last4]);
+      }
+      
+      return true;
+    } catch (Exception $e) {
+      error_log("Error setting API key for user $userId, provider $provider: " . $e->getMessage());
+      return false;
+    }
+  }
 
   // Compatibilidad con dos formatos de payload:
   // 1) Campos en la raíz: { openai:"sk-...", gemini:"...", polygon:"..." }
@@ -50,7 +93,7 @@ try {
       if (!isset($expect[$provSet])) continue;
       $val = trim((string)$val);
       if ($val === '') { delete_api_key_for($userId, $provSet); $deleted[] = $provSet; continue; }
-      set_api_key_for($userId, $provSet, $expect[$provSet], $val);
+      set_api_key_external_crypto($userId, $provSet, $val);
       $saved[] = $provSet;
     }
   }
@@ -62,7 +105,7 @@ try {
     $val = isset($in[$prov]) ? trim((string)$in[$prov]) : null;
     if ($val === null) { $skipped[] = $prov; continue; }
     if ($val === '') { delete_api_key_for($userId, $prov); $deleted[] = $prov; }
-    else { set_api_key_for($userId, $prov, $env, $val); $saved[] = $prov; }
+    else { set_api_key_external_crypto($userId, $prov, $val); $saved[] = $prov; }
   }
 
   json_out(['ok'=>true, 'storage'=>'db', 'saved'=>$saved, 'deleted'=>$deleted, 'skipped'=>$skipped], 200);

@@ -1,0 +1,1027 @@
+[15-Sep-2025 00:00:33 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:00:33 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:00:56 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:00:56 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:01:27 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:01:27 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:01:58 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:01:58 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:02:30 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:02:30 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:03:01 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:03:01 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:03:32 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:03:32 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:03:58 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:03:58 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:04:28 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:04:29 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:04:59 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:04:59 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:05:30 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:05:30 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:06:01 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:06:01 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:06:33 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:06:33 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:07:00 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:07:00 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:07:30 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:07:31 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:08:00 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:08:01 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:08:31 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:08:31 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:09:01 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:09:01 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:09:33 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:09:33 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:10:02 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:10:02 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:10:32 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:10:32 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:11:02 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:11:02 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:11:33 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:11:33 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:12:03 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:12:03 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:12:34 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:12:34 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:13:05 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:13:05 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:13:36 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:13:36 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:14:08 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:14:08 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:14:41 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:14:41 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:15:12 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:15:12 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:15:35 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:15:35 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:16:05 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:16:05 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:16:37 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:16:37 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:17:09 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:17:09 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:17:36 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:17:36 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:18:12 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:18:13 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:18:44 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:18:44 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:19:07 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:19:07 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:19:37 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:19:37 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:20:11 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:20:11 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:20:38 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:20:38 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:21:14 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:21:14 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:21:39 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:21:39 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:22:16 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:22:17 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:22:40 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:22:40 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:23:12 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:23:12 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:23:40 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:23:40 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:24:14 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:24:14 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:24:46 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:24:46 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:25:17 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:25:17 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:25:41 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:25:41 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:26:15 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:26:15 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:26:47 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:26:47 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:27:19 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:27:19 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:27:42 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:27:42 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:28:12 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:28:13 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:28:43 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:28:43 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:29:13 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:29:13 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:29:47 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:29:47 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:30:19 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:30:19 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:30:50 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:30:51 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:31:14 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:31:15 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:31:52 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:31:52 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:32:15 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:32:15 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:32:48 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:32:48 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:33:19 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:33:19 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:33:51 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:33:51 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:34:22 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:34:22 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:34:53 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:34:53 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:35:17 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:35:17 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:35:48 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:35:48 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:36:19 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:36:19 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:36:51 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:36:51 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:37:23 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:37:23 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:37:55 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:37:55 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:38:18 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:38:18 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:38:49 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:38:49 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:39:21 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:39:21 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:39:53 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:39:53 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:40:25 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:40:25 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:40:58 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:40:58 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:41:20 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:41:20 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:41:52 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:41:52 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:42:24 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:42:24 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:42:56 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:42:56 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:43:22 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:43:22 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:43:57 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:43:57 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:44:22 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:44:22 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:44:52 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:44:52 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:45:24 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:45:24 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:45:56 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:45:56 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:46:23 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:46:23 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:46:58 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:46:58 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:47:31 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:47:31 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:47:54 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:47:55 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:48:25 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:48:25 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:48:55 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:48:55 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:49:25 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:49:25 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:49:57 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:49:57 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:50:31 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:50:31 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:50:56 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:50:56 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:51:27 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:51:27 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:51:57 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:51:57 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:52:28 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:52:28 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:52:59 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:52:59 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:53:31 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:53:31 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:53:58 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:53:58 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:54:35 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:54:35 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:55:06 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:55:06 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:55:29 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:55:29 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:56:01 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:56:01 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:56:33 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:56:33 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:57:05 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:57:05 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:57:37 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:57:37 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:58:08 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:58:08 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:58:31 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:58:31 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:59:02 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:59:02 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 00:59:32 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 00:59:33 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:00:05 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:00:05 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:00:37 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:00:37 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:01:09 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:01:09 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:01:41 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:01:41 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:02:04 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:02:04 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:02:34 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:02:34 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:03:06 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:03:06 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:03:37 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:03:37 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:04:09 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:04:09 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:04:40 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:04:40 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:05:05 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:05:05 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:05:36 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:05:37 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:06:08 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:06:08 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:06:39 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:06:39 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:07:11 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:07:12 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:07:43 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:07:44 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:08:07 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:08:07 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:08:38 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:08:38 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:09:11 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:09:11 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:09:43 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:09:43 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:10:15 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:10:15 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:10:47 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:10:47 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:11:09 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:11:09 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:11:40 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:11:40 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:12:11 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:12:12 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:12:43 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:12:43 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:13:15 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:13:15 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:13:47 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:13:47 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:14:18 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:14:18 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:14:41 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:14:41 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:15:12 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:15:12 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:15:43 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:15:43 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:16:15 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:16:15 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:16:47 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:16:47 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:17:18 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:17:18 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:17:51 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:17:51 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:18:14 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:18:14 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:18:46 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:18:46 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:19:19 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:19:19 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:19:51 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:19:52 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:20:15 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:20:15 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:20:46 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:20:46 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:21:18 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:21:18 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:21:51 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:21:51 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:22:23 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:22:23 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:22:47 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:22:47 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:23:18 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:23:18 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:23:50 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:23:50 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:24:23 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:24:23 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:24:55 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:24:55 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:25:19 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:25:19 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:25:49 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:25:49 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:26:20 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:26:20 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:26:52 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:26:52 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:27:25 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:27:25 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:27:57 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:27:57 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:28:21 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:28:21 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:28:56 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:28:56 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:29:22 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:29:22 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:29:52 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:29:52 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:30:25 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:30:25 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:30:57 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:30:57 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:31:30 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:31:30 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:31:54 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:31:54 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:32:24 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:32:24 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:32:56 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:32:56 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:33:29 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:33:30 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:34:02 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:34:02 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:34:34 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:34:34 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:34:56 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:34:56 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:35:27 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:35:28 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:36:00 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:36:00 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:36:27 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:36:27 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:37:02 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:37:02 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:37:28 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:37:29 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:37:58 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:37:59 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:38:29 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:38:29 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:38:59 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:38:59 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:39:30 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:39:30 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:40:04 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:40:04 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:40:36 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:40:36 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:41:06 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:41:06 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:41:31 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:41:31 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:42:01 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:42:02 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:42:32 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:42:32 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:43:09 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:43:09 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:43:32 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:43:32 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:44:07 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:44:07 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:44:38 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:44:38 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:45:10 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:45:10 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:45:40 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:45:40 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:46:09 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:46:09 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:46:42 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:46:42 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:47:05 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:47:05 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:47:35 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:47:35 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:48:07 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:48:07 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:48:38 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:48:38 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:49:09 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:49:09 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:49:42 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:49:42 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:50:13 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:50:14 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:50:38 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:50:38 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:51:08 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:51:08 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:51:38 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:51:38 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:52:09 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:52:09 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:52:42 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:52:42 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:53:09 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:53:09 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:53:46 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:53:46 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:54:10 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:54:10 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:54:47 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:54:47 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:55:11 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:55:11 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:55:43 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:55:43 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:56:17 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:56:17 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:56:49 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:56:49 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:57:13 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:57:13 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:57:43 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:57:43 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:58:21 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:58:21 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:58:44 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:58:44 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:59:14 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:59:14 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 01:59:46 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 01:59:46 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:00:18 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:00:18 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:00:50 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:00:50 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:01:21 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:01:21 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:01:53 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:01:53 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:02:16 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:02:16 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:02:48 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:02:48 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:03:21 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:03:22 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:03:47 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:03:47 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:04:21 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:04:21 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:04:53 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:04:53 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:05:24 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:05:24 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:05:49 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:05:49 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:06:21 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:06:21 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:06:50 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:06:50 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:07:21 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:07:21 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:07:53 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:07:53 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:08:25 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:08:25 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:08:51 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:08:51 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:09:21 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:09:21 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:09:53 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:09:53 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:10:25 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:10:25 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:10:57 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:10:57 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:11:28 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:11:28 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:12:00 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:12:00 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:12:23 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:12:23 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:12:54 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:12:54 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:13:26 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:13:26 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:13:57 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:13:57 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:14:28 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:14:29 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:15:00 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:15:00 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:15:25 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:15:26 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:15:56 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:15:56 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:16:26 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:16:26 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:16:57 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:16:57 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:17:31 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:17:31 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:18:03 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:18:03 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:18:34 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:18:34 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:19:06 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:19:06 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:19:28 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:19:28 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:19:59 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:19:59 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:20:30 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:20:30 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:21:04 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:21:04 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:21:38 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:21:38 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:22:02 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:22:02 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:22:35 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:22:35 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:23:01 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:23:01 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:23:31 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:23:31 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:24:05 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:24:05 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:24:39 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:24:39 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:25:02 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:25:02 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:25:36 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:25:36 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:26:10 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:26:10 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:26:34 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:26:34 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:27:08 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:27:08 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:27:43 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:27:43 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:28:05 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:28:05 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:28:39 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:28:39 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:29:14 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:29:14 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:29:36 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:29:36 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:30:07 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:30:07 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:30:42 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:30:42 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:31:07 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:31:07 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:31:38 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:31:38 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:32:12 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:32:12 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:32:46 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:32:46 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:33:08 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:33:09 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:33:41 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:33:41 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:34:09 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:34:10 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:34:40 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:34:40 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:35:15 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:35:15 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:35:40 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:35:41 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:36:11 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:36:11 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:36:43 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:36:43 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:37:16 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:37:16 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:37:42 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:37:42 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:38:16 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:38:16 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:38:48 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:38:48 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:39:20 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:39:20 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:39:43 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:39:43 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:40:16 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:40:16 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:40:50 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:40:50 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:41:14 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:41:14 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:41:48 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:41:48 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:42:19 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:42:19 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:42:53 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:42:53 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:43:17 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:43:17 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:43:50 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:43:51 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:44:16 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:44:16 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:44:48 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:44:48 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:45:20 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:45:20 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:45:48 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:45:54 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:46:18 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:46:18 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:46:50 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:46:50 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:47:27 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:47:27 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:47:49 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:47:49 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:48:20 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:48:20 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:48:50 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:48:50 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:49:20 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:49:21 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:49:51 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:49:51 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:50:21 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:50:22 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:50:51 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:50:51 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:51:23 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:51:23 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:51:55 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:51:55 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:52:27 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:52:27 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:52:53 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:52:53 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:53:23 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:53:23 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:53:54 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:53:54 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:54:14 UTC] Error de conexión DB: SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost' (using password: NO)
+[15-Sep-2025 02:54:27 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:54:27 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:54:58 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:54:58 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:55:30 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:55:30 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:55:55 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:55:55 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:56:26 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:56:26 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:56:57 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:56:57 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:57:30 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:57:30 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:58:03 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:58:03 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:58:27 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:58:27 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:59:04 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:59:04 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:59:34 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:59:34 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 02:59:58 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 02:59:58 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 03:00:29 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 03:00:30 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 03:01:03 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 03:01:03 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 03:01:35 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 03:01:35 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 03:02:08 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 03:02:08 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 03:02:31 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 03:02:31 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 03:03:07 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 03:03:07 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 03:03:31 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 03:03:31 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 03:04:03 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 03:04:03 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 03:04:36 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 03:04:36 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 03:05:08 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 03:05:08 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 03:05:33 UTC] Error en ai_learning_metrics_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'successful_analyses' in 'SELECT'
+[15-Sep-2025 03:05:33 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[15-Sep-2025 23:07:02 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[16-Sep-2025 03:48:35 UTC] Error getting API key for user 4, provider xai: Blob de secreto inválido.
+[16-Sep-2025 06:47:22 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[16-Sep-2025 16:59:16 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[16-Sep-2025 17:13:06 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[16-Sep-2025 17:13:06 UTC] Error getting API key for user 4, provider xai: Blob de secreto inválido.
+[16-Sep-2025 17:13:06 UTC] Error getting API key for user 4, provider xai: Blob de secreto inválido.
+[16-Sep-2025 17:13:06 UTC] Error getting API key for user 4, provider xai: Blob de secreto inválido.
+[16-Sep-2025 17:13:07 UTC] Error getting API key for user 4, provider xai: Blob de secreto inválido.
+[16-Sep-2025 17:13:07 UTC] Error getting API key for user 4, provider xai: Blob de secreto inválido.
+[16-Sep-2025 17:13:07 UTC] Error getting API key for user 4, provider xai: Blob de secreto inválido.
+[16-Sep-2025 21:44:00 UTC] Error getting API key for user 4, provider xai: Blob de secreto inválido.
+[16-Sep-2025 21:55:12 UTC] Error en ai_behavioral_patterns_safe.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pattern_data' in 'SELECT'
+[16-Sep-2025 21:55:13 UTC] Error getting API key for user 4, provider xai: Blob de secreto inválido.
+[16-Sep-2025 21:55:13 UTC] Error getting API key for user 4, provider xai: Blob de secreto inválido.
+[16-Sep-2025 21:55:13 UTC] Error getting API key for user 4, provider xai: Blob de secreto inválido.
+[16-Sep-2025 21:55:13 UTC] Error getting API key for user 4, provider xai: Blob de secreto inválido.
+[16-Sep-2025 21:55:13 UTC] Error getting API key for user 4, provider xai: Blob de secreto inválido.
+[16-Sep-2025 21:55:13 UTC] Error getting API key for user 4, provider xai: Blob de secreto inválido.
+[16-Sep-2025 23:01:23 UTC] DEBUG test_data_provider_safe.php - Input recibido: {"provider_id":4}
+[16-Sep-2025 23:01:23 UTC] DEBUG test_data_provider_safe.php - User ID: 4
+[16-Sep-2025 23:01:23 UTC] DEBUG test_data_provider_safe.php - Provider ID: 4
+[16-Sep-2025 23:01:23 UTC] DEBUG test_data_provider_safe.php - Buscando clave para user_id: 4, provider_id: 4
+[16-Sep-2025 23:01:23 UTC] DEBUG test_data_provider_safe.php - Query ejecutada, filas encontradas: 1
+[16-Sep-2025 23:01:23 UTC] DEBUG test_data_provider_safe.php - Key data encontrada: {"found":true,"provider":"Alpha Vantage","slug":"alphavantage"}
+[16-Sep-2025 23:01:23 UTC] DEBUG test_data_provider_safe.php - Intentando descifrar clave...
+[16-Sep-2025 23:01:23 UTC] DEBUG test_data_provider_safe.php - Clave descifrada exitosamente, longitud: 16
+[16-Sep-2025 23:06:42 UTC] DEBUG test_data_provider_safe.php - Input recibido: {"provider_id":4}
+[16-Sep-2025 23:06:42 UTC] DEBUG test_data_provider_safe.php - User ID: 4
+[16-Sep-2025 23:06:42 UTC] DEBUG test_data_provider_safe.php - Provider ID: 4
+[16-Sep-2025 23:06:42 UTC] DEBUG test_data_provider_safe.php - Buscando clave para user_id: 4, provider_id: 4
+[16-Sep-2025 23:06:42 UTC] DEBUG test_data_provider_safe.php - Query ejecutada, filas encontradas: 1
+[16-Sep-2025 23:06:42 UTC] DEBUG test_data_provider_safe.php - Key data encontrada: {"found":true,"provider":"Alpha Vantage","slug":"alphavantage"}
+[16-Sep-2025 23:06:42 UTC] DEBUG test_data_provider_safe.php - Intentando descifrar clave...
+[16-Sep-2025 23:06:42 UTC] DEBUG test_data_provider_safe.php - Clave descifrada exitosamente, longitud: 16
+[16-Sep-2025 23:09:42 UTC] DEBUG test_data_provider_safe.php - Input recibido: {"provider_id":4}
+[16-Sep-2025 23:09:42 UTC] DEBUG test_data_provider_safe.php - User ID: 4
+[16-Sep-2025 23:09:42 UTC] DEBUG test_data_provider_safe.php - Provider ID: 4
+[16-Sep-2025 23:09:42 UTC] DEBUG test_data_provider_safe.php - Buscando clave para user_id: 4, provider_id: 4
+[16-Sep-2025 23:09:42 UTC] DEBUG test_data_provider_safe.php - Query ejecutada, filas encontradas: 1
+[16-Sep-2025 23:09:42 UTC] DEBUG test_data_provider_safe.php - Key data encontrada: {"found":true,"provider":"Alpha Vantage","slug":"alphavantage"}
+[16-Sep-2025 23:09:42 UTC] DEBUG test_data_provider_safe.php - Intentando descifrar clave...
+[16-Sep-2025 23:09:42 UTC] DEBUG test_data_provider_safe.php - Clave descifrada exitosamente, longitud: 16
+[16-Sep-2025 23:16:19 UTC] DEBUG test_data_provider_safe.php - Input recibido: {"provider_id":4}
+[16-Sep-2025 23:16:19 UTC] DEBUG test_data_provider_safe.php - User ID: 4
+[16-Sep-2025 23:16:19 UTC] DEBUG test_data_provider_safe.php - Provider ID: 4
+[16-Sep-2025 23:16:19 UTC] DEBUG test_data_provider_safe.php - Buscando clave para user_id: 4, provider_id: 4
+[16-Sep-2025 23:16:19 UTC] DEBUG test_data_provider_safe.php - Query ejecutada, filas encontradas: 1
+[16-Sep-2025 23:16:19 UTC] DEBUG test_data_provider_safe.php - Key data encontrada: {"found":true,"provider":"Alpha Vantage","slug":"alphavantage"}
+[16-Sep-2025 23:16:19 UTC] DEBUG test_data_provider_safe.php - Intentando descifrar clave...
+[16-Sep-2025 23:16:19 UTC] DEBUG test_data_provider_safe.php - Clave descifrada exitosamente, longitud: 16
+[16-Sep-2025 23:16:22 UTC] DEBUG test_data_provider_safe.php - Input recibido: {"provider_id":2}
+[16-Sep-2025 23:16:22 UTC] DEBUG test_data_provider_safe.php - User ID: 4
+[16-Sep-2025 23:16:22 UTC] DEBUG test_data_provider_safe.php - Provider ID: 2
+[16-Sep-2025 23:16:22 UTC] DEBUG test_data_provider_safe.php - Buscando clave para user_id: 4, provider_id: 2
+[16-Sep-2025 23:16:22 UTC] DEBUG test_data_provider_safe.php - Query ejecutada, filas encontradas: 1
+[16-Sep-2025 23:16:22 UTC] DEBUG test_data_provider_safe.php - Key data encontrada: {"found":true,"provider":"Finnhub","slug":"finnhub"}
+[16-Sep-2025 23:16:22 UTC] DEBUG test_data_provider_safe.php - Intentando descifrar clave...
+[16-Sep-2025 23:16:22 UTC] DEBUG test_data_provider_safe.php - Clave descifrada exitosamente, longitud: 40
+[16-Sep-2025 23:16:30 UTC] DEBUG test_data_provider_safe.php - Input recibido: {"provider_id":2}
+[16-Sep-2025 23:16:30 UTC] DEBUG test_data_provider_safe.php - User ID: 4
+[16-Sep-2025 23:16:30 UTC] DEBUG test_data_provider_safe.php - Provider ID: 2
+[16-Sep-2025 23:16:30 UTC] DEBUG test_data_provider_safe.php - Buscando clave para user_id: 4, provider_id: 2
+[16-Sep-2025 23:16:30 UTC] DEBUG test_data_provider_safe.php - Query ejecutada, filas encontradas: 1
+[16-Sep-2025 23:16:30 UTC] DEBUG test_data_provider_safe.php - Key data encontrada: {"found":true,"provider":"Finnhub","slug":"finnhub"}
+[16-Sep-2025 23:16:30 UTC] DEBUG test_data_provider_safe.php - Intentando descifrar clave...
+[16-Sep-2025 23:16:30 UTC] DEBUG test_data_provider_safe.php - Clave descifrada exitosamente, longitud: 40
+[16-Sep-2025 23:16:34 UTC] DEBUG test_data_provider_safe.php - Input recibido: {"provider_id":1}
+[16-Sep-2025 23:16:34 UTC] DEBUG test_data_provider_safe.php - User ID: 4
+[16-Sep-2025 23:16:34 UTC] DEBUG test_data_provider_safe.php - Provider ID: 1
+[16-Sep-2025 23:16:34 UTC] DEBUG test_data_provider_safe.php - Buscando clave para user_id: 4, provider_id: 1
+[16-Sep-2025 23:16:34 UTC] DEBUG test_data_provider_safe.php - Query ejecutada, filas encontradas: 1
+[16-Sep-2025 23:16:34 UTC] DEBUG test_data_provider_safe.php - Key data encontrada: {"found":true,"provider":"Polygon.io","slug":"polygon"}
+[16-Sep-2025 23:16:34 UTC] DEBUG test_data_provider_safe.php - Intentando descifrar clave...
+[16-Sep-2025 23:16:34 UTC] DEBUG test_data_provider_safe.php - Clave descifrada exitosamente, longitud: 32
+[16-Sep-2025 23:33:00 UTC] DEBUG test_data_provider_safe.php - Input recibido: {"provider_id":4}
+[16-Sep-2025 23:33:00 UTC] DEBUG test_data_provider_safe.php - User ID: 4
+[16-Sep-2025 23:33:00 UTC] DEBUG test_data_provider_safe.php - Provider ID: 4
+[16-Sep-2025 23:33:00 UTC] DEBUG test_data_provider_safe.php - Buscando clave para user_id: 4, provider_id: 4
+[16-Sep-2025 23:33:00 UTC] DEBUG test_data_provider_safe.php - Query ejecutada, filas encontradas: 1
+[16-Sep-2025 23:33:00 UTC] DEBUG test_data_provider_safe.php - Key data encontrada: {"found":true,"provider":"Alpha Vantage","slug":"alphavantage"}
+[16-Sep-2025 23:33:00 UTC] DEBUG test_data_provider_safe.php - Intentando descifrar clave...
+[16-Sep-2025 23:33:00 UTC] DEBUG test_data_provider_safe.php - Clave descifrada exitosamente, longitud: 16
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - Input recibido: {"provider_id":2}
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - User ID: 4
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - Provider ID: 2
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - Input recibido: {"provider_id":2}
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - User ID: 4
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - Provider ID: 2
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - Input recibido: {"provider_id":2}
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - User ID: 4
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - Provider ID: 2
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - Buscando clave para user_id: 4, provider_id: 2
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - Buscando clave para user_id: 4, provider_id: 2
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - Buscando clave para user_id: 4, provider_id: 2
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - Query ejecutada, filas encontradas: 1
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - Key data encontrada: {"found":true,"provider":"Finnhub","slug":"finnhub"}
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - Intentando descifrar clave...
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - Query ejecutada, filas encontradas: 1
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - Key data encontrada: {"found":true,"provider":"Finnhub","slug":"finnhub"}
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - Query ejecutada, filas encontradas: 1
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - Intentando descifrar clave...
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - Clave descifrada exitosamente, longitud: 40
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - Key data encontrada: {"found":true,"provider":"Finnhub","slug":"finnhub"}
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - Intentando descifrar clave...
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - Clave descifrada exitosamente, longitud: 40
+[16-Sep-2025 23:33:07 UTC] DEBUG test_data_provider_safe.php - Clave descifrada exitosamente, longitud: 40
+[16-Sep-2025 23:33:19 UTC] DEBUG test_data_provider_safe.php - Input recibido: {"provider_id":1}
+[16-Sep-2025 23:33:19 UTC] DEBUG test_data_provider_safe.php - User ID: 4
+[16-Sep-2025 23:33:19 UTC] DEBUG test_data_provider_safe.php - Provider ID: 1
+[16-Sep-2025 23:33:19 UTC] DEBUG test_data_provider_safe.php - Buscando clave para user_id: 4, provider_id: 1
+[16-Sep-2025 23:33:19 UTC] DEBUG test_data_provider_safe.php - Query ejecutada, filas encontradas: 1
+[16-Sep-2025 23:33:19 UTC] DEBUG test_data_provider_safe.php - Key data encontrada: {"found":true,"provider":"Polygon.io","slug":"polygon"}
+[16-Sep-2025 23:33:19 UTC] DEBUG test_data_provider_safe.php - Intentando descifrar clave...
+[16-Sep-2025 23:33:19 UTC] DEBUG test_data_provider_safe.php - Clave descifrada exitosamente, longitud: 32
+[16-Sep-2025 23:34:02 UTC] DEBUG test_data_provider_safe.php - Input recibido: {"provider_id":2}
+[16-Sep-2025 23:34:02 UTC] DEBUG test_data_provider_safe.php - User ID: 4
+[16-Sep-2025 23:34:02 UTC] DEBUG test_data_provider_safe.php - Provider ID: 2
+[16-Sep-2025 23:34:02 UTC] DEBUG test_data_provider_safe.php - Buscando clave para user_id: 4, provider_id: 2
+[16-Sep-2025 23:34:02 UTC] DEBUG test_data_provider_safe.php - Query ejecutada, filas encontradas: 1
+[16-Sep-2025 23:34:02 UTC] DEBUG test_data_provider_safe.php - Key data encontrada: {"found":true,"provider":"Finnhub","slug":"finnhub"}
+[16-Sep-2025 23:34:02 UTC] DEBUG test_data_provider_safe.php - Intentando descifrar clave...
+[16-Sep-2025 23:34:02 UTC] DEBUG test_data_provider_safe.php - Clave descifrada exitosamente, longitud: 40
+[16-Sep-2025 23:44:40 UTC] DEBUG test_data_provider_safe.php - Input recibido: {"provider_id":2}
+[16-Sep-2025 23:44:40 UTC] DEBUG test_data_provider_safe.php - User ID: 4
+[16-Sep-2025 23:44:40 UTC] DEBUG test_data_provider_safe.php - Provider ID: 2
+[16-Sep-2025 23:44:40 UTC] DEBUG test_data_provider_safe.php - Buscando clave para user_id: 4, provider_id: 2
+[16-Sep-2025 23:44:40 UTC] DEBUG test_data_provider_safe.php - Query ejecutada, filas encontradas: 1
+[16-Sep-2025 23:44:40 UTC] DEBUG test_data_provider_safe.php - Key data encontrada: {"found":true,"provider":"Finnhub","slug":"finnhub"}
+[16-Sep-2025 23:44:40 UTC] DEBUG test_data_provider_safe.php - Intentando descifrar clave...
+[16-Sep-2025 23:44:40 UTC] DEBUG test_data_provider_safe.php - Clave descifrada exitosamente, longitud: 40
+[16-Sep-2025 23:44:40 UTC] DEBUG test_data_provider_safe.php - Iniciando test para proveedor: finnhub
+[16-Sep-2025 23:44:40 UTC] DEBUG test_data_provider_safe.php - URL de test disponible: https://finnhub.io/api/v1/quote?symbol=AAPL&token=
+[16-Sep-2025 23:44:40 UTC] DEBUG test_data_provider_safe.php - testDataProvider genérico iniciado con slug: 'finnhub', baseUrl: 'https://finnhub.io/api', testUrl: 'https://finnhub.io/api/v1/quote?symbol=AAPL&token='
+[16-Sep-2025 23:44:40 UTC] DEBUG test_data_provider_safe.php - Usando URL de test específica: https://finnhub.io/api/v1/quote?symbol=AAPL&token=
+[16-Sep-2025 23:44:40 UTC] DEBUG test_data_provider_safe.php - testWithCustomUrl iniciado
+[16-Sep-2025 23:44:40 UTC] DEBUG test_data_provider_safe.php - URL final para test: https://finnhub.io/api/v1/quote?symbol=AAPL&token=
+[16-Sep-2025 23:44:40 UTC] DEBUG test_data_provider_safe.php - Test personalizado - HTTP Code: 401, Error: None
+[16-Sep-2025 23:44:40 UTC] DEBUG test_data_provider_safe.php - Test personalizado - Response: {"error":"Please use an API key."}
+[16-Sep-2025 23:44:40 UTC] DEBUG test_data_provider_safe.php - Resultado del test: {"success":false,"message":"HTTP 401: {\"error\":\"Please use an API key.\"}"}
+[16-Sep-2025 23:44:40 UTC] DEBUG test_data_provider_safe.php - Respuesta final: {"ok":false,"message":"HTTP 401: {\"error\":\"Please use an API key.\"}","provider":{"id":2,"slug":"finnhub","label":"Finnhub","environment":"live"},"test_details":{"error_count":1,"tested_at":"2025-09-16 23:44:40"}}
+[16-Sep-2025 23:44:42 UTC] DEBUG test_data_provider_safe.php - Input recibido: {"provider_id":4}
+[16-Sep-2025 23:44:42 UTC] DEBUG test_data_provider_safe.php - User ID: 4
+[16-Sep-2025 23:44:42 UTC] DEBUG test_data_provider_safe.php - Provider ID: 4
+[16-Sep-2025 23:44:42 UTC] DEBUG test_data_provider_safe.php - Buscando clave para user_id: 4, provider_id: 4
+[16-Sep-2025 23:44:42 UTC] DEBUG test_data_provider_safe.php - Query ejecutada, filas encontradas: 1
+[16-Sep-2025 23:44:42 UTC] DEBUG test_data_provider_safe.php - Key data encontrada: {"found":true,"provider":"Alpha Vantage","slug":"alphavantage"}
+[16-Sep-2025 23:44:42 UTC] DEBUG test_data_provider_safe.php - Intentando descifrar clave...
+[16-Sep-2025 23:44:42 UTC] DEBUG test_data_provider_safe.php - Clave descifrada exitosamente, longitud: 16
+[16-Sep-2025 23:44:42 UTC] DEBUG test_data_provider_safe.php - Iniciando test para proveedor: alphavantage
+[16-Sep-2025 23:44:42 UTC] DEBUG test_data_provider_safe.php - URL de test disponible: https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=ibm&apikey=
+[16-Sep-2025 23:44:42 UTC] DEBUG test_data_provider_safe.php - testDataProvider genérico iniciado con slug: 'alphavantage', baseUrl: 'https://www.alphavantage.co', testUrl: 'https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=ibm&apikey='
+[16-Sep-2025 23:44:42 UTC] DEBUG test_data_provider_safe.php - Usando URL de test específica: https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=ibm&apikey=
+[16-Sep-2025 23:44:42 UTC] DEBUG test_data_provider_safe.php - testWithCustomUrl iniciado
+[16-Sep-2025 23:44:42 UTC] DEBUG test_data_provider_safe.php - URL final para test: https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=ibm&apikey=
+[16-Sep-2025 23:44:42 UTC] DEBUG test_data_provider_safe.php - Test personalizado - HTTP Code: 200, Error: None
+[16-Sep-2025 23:44:42 UTC] DEBUG test_data_provider_safe.php - Test personalizado - Response: {
+    "Error Message": "the parameter apikey is invalid or missing. Please claim your free API key on (https://www.alphavantage.co/support/#api-key). It should take less than 20 seconds."
+}
+[16-Sep-2025 23:44:42 UTC] DEBUG test_data_provider_safe.php - Resultado del test: {"success":false,"message":"API Key inv\u00e1lida o no autorizada"}
+[16-Sep-2025 23:44:42 UTC] DEBUG test_data_provider_safe.php - Respuesta final: {"ok":false,"message":"API Key inv\u00e1lida o no autorizada","provider":{"id":4,"slug":"alphavantage","label":"Alpha Vantage","environment":"live"},"test_details":{"error_count":1,"tested_at":"2025-09-16 23:44:42"}}
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Input recibido: {"provider_id":1}
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - User ID: 4
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Provider ID: 1
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Buscando clave para user_id: 4, provider_id: 1
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Query ejecutada, filas encontradas: 1
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Key data encontrada: {"found":true,"provider":"Polygon.io","slug":"polygon"}
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Intentando descifrar clave...
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Clave descifrada exitosamente, longitud: 32
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Iniciando test para proveedor: polygon
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - URL de test disponible: https://api.polygon.io/v3/reference/tickers?limit=1&apiKey=
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - testDataProvider genérico iniciado con slug: 'polygon', baseUrl: 'https://api.polygon.io', testUrl: 'https://api.polygon.io/v3/reference/tickers?limit=1&apiKey='
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Usando URL de test específica: https://api.polygon.io/v3/reference/tickers?limit=1&apiKey=
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - testWithCustomUrl iniciado
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - URL final para test: https://api.polygon.io/v3/reference/tickers?limit=1&apiKey=
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Input recibido: {"provider_id":1}
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - User ID: 4
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Provider ID: 1
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Buscando clave para user_id: 4, provider_id: 1
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Query ejecutada, filas encontradas: 1
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Key data encontrada: {"found":true,"provider":"Polygon.io","slug":"polygon"}
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Intentando descifrar clave...
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Clave descifrada exitosamente, longitud: 32
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Iniciando test para proveedor: polygon
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - URL de test disponible: https://api.polygon.io/v3/reference/tickers?limit=1&apiKey=
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - testDataProvider genérico iniciado con slug: 'polygon', baseUrl: 'https://api.polygon.io', testUrl: 'https://api.polygon.io/v3/reference/tickers?limit=1&apiKey='
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Usando URL de test específica: https://api.polygon.io/v3/reference/tickers?limit=1&apiKey=
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - testWithCustomUrl iniciado
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - URL final para test: https://api.polygon.io/v3/reference/tickers?limit=1&apiKey=
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Test personalizado - HTTP Code: 401, Error: None
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Test personalizado - Response: {"status":"ERROR","request_id":"87d56b808dee343a613d2b61181cfa34","error":"API Key was not provided"}
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Resultado del test: {"success":false,"message":"HTTP 401: {\"status\":\"ERROR\",\"request_id\":\"87d56b808dee343a613d2b61181cfa34\",\"error\":\"API Key was not provided\"}"}
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Test personalizado - HTTP Code: 401, Error: None
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Test personalizado - Response: {"status":"ERROR","request_id":"d600e9780b597db04e3969fb7c01e09f","error":"API Key was not provided"}
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Resultado del test: {"success":false,"message":"HTTP 401: {\"status\":\"ERROR\",\"request_id\":\"d600e9780b597db04e3969fb7c01e09f\",\"error\":\"API Key was not provided\"}"}
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Respuesta final: {"ok":false,"message":"HTTP 401: {\"status\":\"ERROR\",\"request_id\":\"87d56b808dee343a613d2b61181cfa34\",\"error\":\"API Key was not provided\"}","provider":{"id":1,"slug":"polygon","label":"Polygon.io","environment":"live"},"test_details":{"error_count":1,"tested_at":"2025-09-16 23:44:49"}}
+[16-Sep-2025 23:44:49 UTC] DEBUG test_data_provider_safe.php - Respuesta final: {"ok":false,"message":"HTTP 401: {\"status\":\"ERROR\",\"request_id\":\"d600e9780b597db04e3969fb7c01e09f\",\"error\":\"API Key was not provided\"}","provider":{"id":1,"slug":"polygon","label":"Polygon.io","environment":"live"},"test_details":{"error_count":1,"tested_at":"2025-09-16 23:44:49"}}
+[16-Sep-2025 23:46:17 UTC] DEBUG test_data_provider_safe.php - Input recibido: {"provider_id":1}
+[16-Sep-2025 23:46:17 UTC] DEBUG test_data_provider_safe.php - User ID: 4
+[16-Sep-2025 23:46:17 UTC] DEBUG test_data_provider_safe.php - Provider ID: 1
+[16-Sep-2025 23:46:17 UTC] DEBUG test_data_provider_safe.php - Buscando clave para user_id: 4, provider_id: 1
+[16-Sep-2025 23:46:17 UTC] DEBUG test_data_provider_safe.php - Query ejecutada, filas encontradas: 1
+[16-Sep-2025 23:46:17 UTC] DEBUG test_data_provider_safe.php - Key data encontrada: {"found":true,"provider":"Polygon.io","slug":"polygon"}
+[16-Sep-2025 23:46:17 UTC] DEBUG test_data_provider_safe.php - Intentando descifrar clave...
+[16-Sep-2025 23:46:17 UTC] DEBUG test_data_provider_safe.php - Clave descifrada exitosamente, longitud: 32
+[16-Sep-2025 23:46:17 UTC] DEBUG test_data_provider_safe.php - Iniciando test para proveedor: polygon
+[16-Sep-2025 23:46:17 UTC] DEBUG test_data_provider_safe.php - URL de test disponible: https://api.polygon.io/v3/reference/tickers?limit=1&apiKey=
+[16-Sep-2025 23:46:17 UTC] DEBUG test_data_provider_safe.php - testDataProvider genérico iniciado con slug: 'polygon', baseUrl: 'https://api.polygon.io', testUrl: 'https://api.polygon.io/v3/reference/tickers?limit=1&apiKey='
+[16-Sep-2025 23:46:17 UTC] DEBUG test_data_provider_safe.php - Usando URL de test específica: https://api.polygon.io/v3/reference/tickers?limit=1&apiKey=
+[16-Sep-2025 23:46:17 UTC] DEBUG test_data_provider_safe.php - testWithCustomUrl iniciado
+[16-Sep-2025 23:46:17 UTC] DEBUG test_data_provider_safe.php - URL final para test: https://api.polygon.io/v3/reference/tickers?limit=1&apiKey=
+[16-Sep-2025 23:46:17 UTC] DEBUG test_data_provider_safe.php - Test personalizado - HTTP Code: 401, Error: None
+[16-Sep-2025 23:46:17 UTC] DEBUG test_data_provider_safe.php - Test personalizado - Response: {"status":"ERROR","request_id":"f93b05d069338cf7d994a4ee7526843c","error":"API Key was not provided"}
+[16-Sep-2025 23:46:17 UTC] DEBUG test_data_provider_safe.php - Resultado del test: {"success":false,"message":"HTTP 401: {\"status\":\"ERROR\",\"request_id\":\"f93b05d069338cf7d994a4ee7526843c\",\"error\":\"API Key was not provided\"}"}
+[16-Sep-2025 23:46:17 UTC] DEBUG test_data_provider_safe.php - Respuesta final: {"ok":false,"message":"HTTP 401: {\"status\":\"ERROR\",\"request_id\":\"f93b05d069338cf7d994a4ee7526843c\",\"error\":\"API Key was not provided\"}","provider":{"id":1,"slug":"polygon","label":"Polygon.io","environment":"live"},"test_details":{"error_count":3,"tested_at":"2025-09-16 23:46:17"}}
+[16-Sep-2025 23:56:23 UTC] DEBUG test_data_provider_safe.php - Input recibido: {"provider_id":4}
+[16-Sep-2025 23:56:23 UTC] DEBUG test_data_provider_safe.php - User ID: 4
+[16-Sep-2025 23:56:23 UTC] DEBUG test_data_provider_safe.php - Provider ID: 4
+[16-Sep-2025 23:56:23 UTC] DEBUG test_data_provider_safe.php - Buscando clave para user_id: 4, provider_id: 4
+[16-Sep-2025 23:56:23 UTC] DEBUG test_data_provider_safe.php - Query ejecutada, filas encontradas: 1
+[16-Sep-2025 23:56:23 UTC] DEBUG test_data_provider_safe.php - Key data encontrada: {"found":true,"provider":"Alpha Vantage","slug":"alphavantage"}
+[16-Sep-2025 23:56:23 UTC] DEBUG test_data_provider_safe.php - Intentando descifrar clave...
+[16-Sep-2025 23:56:23 UTC] DEBUG test_data_provider_safe.php - Clave descifrada exitosamente, longitud: 16
+[16-Sep-2025 23:56:23 UTC] DEBUG test_data_provider_safe.php - Iniciando test para proveedor: alphavantage
+[16-Sep-2025 23:56:23 UTC] DEBUG test_data_provider_safe.php - URL de test disponible: https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=ibm&apikey=
+[16-Sep-2025 23:56:23 UTC] DEBUG test_data_provider_safe.php - testDataProvider genérico iniciado con slug: 'alphavantage', baseUrl: 'https://www.alphavantage.co', testUrl: 'https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=ibm&apikey='
+[16-Sep-2025 23:56:23 UTC] DEBUG test_data_provider_safe.php - Usando URL de test específica: https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=ibm&apikey=
+[16-Sep-2025 23:56:23 UTC] DEBUG test_data_provider_safe.php - testWithCustomUrl iniciado
+[16-Sep-2025 23:56:23 UTC] DEBUG test_data_provider_safe.php - URL final para test: https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=ibm&apikey=
+[16-Sep-2025 23:56:23 UTC] DEBUG test_data_provider_safe.php - Test personalizado - HTTP Code: 200, Error: None
+[16-Sep-2025 23:56:23 UTC] DEBUG test_data_provider_safe.php - Test personalizado - Response: {
+    "Error Message": "the parameter apikey is invalid or missing. Please claim your free API key on (https://www.alphavantage.co/support/#api-key). It should take less than 20 seconds."
+}
+[16-Sep-2025 23:56:23 UTC] DEBUG test_data_provider_safe.php - Resultado del test: {"success":false,"message":"API Key inv\u00e1lida o no autorizada"}
+[16-Sep-2025 23:56:23 UTC] DEBUG test_data_provider_safe.php - Respuesta final: {"ok":false,"message":"API Key inv\u00e1lida o no autorizada","provider":{"id":4,"slug":"alphavantage","label":"Alpha Vantage","environment":"live"},"test_details":{"error_count":2,"tested_at":"2025-09-16 23:56:23"}}
+[16-Sep-2025 23:56:25 UTC] DEBUG test_data_provider_safe.php - Input recibido: {"provider_id":1}
+[16-Sep-2025 23:56:25 UTC] DEBUG test_data_provider_safe.php - User ID: 4
+[16-Sep-2025 23:56:25 UTC] DEBUG test_data_provider_safe.php - Provider ID: 1
+[16-Sep-2025 23:56:26 UTC] DEBUG test_data_provider_safe.php - Buscando clave para user_id: 4, provider_id: 1
+[16-Sep-2025 23:56:26 UTC] DEBUG test_data_provider_safe.php - Query ejecutada, filas encontradas: 1
+[16-Sep-2025 23:56:26 UTC] DEBUG test_data_provider_safe.php - Key data encontrada: {"found":true,"provider":"Polygon.io","slug":"polygon"}
+[16-Sep-2025 23:56:26 UTC] DEBUG test_data_provider_safe.php - Intentando descifrar clave...
+[16-Sep-2025 23:56:26 UTC] DEBUG test_data_provider_safe.php - Clave descifrada exitosamente, longitud: 32
+[16-Sep-2025 23:56:26 UTC] DEBUG test_data_provider_safe.php - Iniciando test para proveedor: polygon
+[16-Sep-2025 23:56:26 UTC] DEBUG test_data_provider_safe.php - URL de test disponible: https://api.polygon.io/v3/reference/tickers?limit=1&apiKey=
+[16-Sep-2025 23:56:26 UTC] DEBUG test_data_provider_safe.php - testDataProvider genérico iniciado con slug: 'polygon', baseUrl: 'https://api.polygon.io', testUrl: 'https://api.polygon.io/v3/reference/tickers?limit=1&apiKey='
+[16-Sep-2025 23:56:26 UTC] DEBUG test_data_provider_safe.php - Usando URL de test específica: https://api.polygon.io/v3/reference/tickers?limit=1&apiKey=
+[16-Sep-2025 23:56:26 UTC] DEBUG test_data_provider_safe.php - testWithCustomUrl iniciado
+[16-Sep-2025 23:56:26 UTC] DEBUG test_data_provider_safe.php - URL final para test: https://api.polygon.io/v3/reference/tickers?limit=1&apiKey=
+[16-Sep-2025 23:56:26 UTC] DEBUG test_data_provider_safe.php - Test personalizado - HTTP Code: 401, Error: None
+[16-Sep-2025 23:56:26 UTC] DEBUG test_data_provider_safe.php - Test personalizado - Response: {"status":"ERROR","request_id":"e2cecbd8d8aa7da2039c5a007860a4a1","error":"API Key was not provided"}
+[16-Sep-2025 23:56:26 UTC] DEBUG test_data_provider_safe.php - Resultado del test: {"success":false,"message":"HTTP 401: {\"status\":\"ERROR\",\"request_id\":\"e2cecbd8d8aa7da2039c5a007860a4a1\",\"error\":\"API Key was not provided\"}"}
+[16-Sep-2025 23:56:26 UTC] DEBUG test_data_provider_safe.php - Respuesta final: {"ok":false,"message":"HTTP 401: {\"status\":\"ERROR\",\"request_id\":\"e2cecbd8d8aa7da2039c5a007860a4a1\",\"error\":\"API Key was not provided\"}","provider":{"id":1,"slug":"polygon","label":"Polygon.io","environment":"live"},"test_details":{"error_count":4,"tested_at":"2025-09-16 23:56:26"}}
+[16-Sep-2025 23:56:29 UTC] DEBUG test_data_provider_safe.php - Input recibido: {"provider_id":1}
+[16-Sep-2025 23:56:29 UTC] DEBUG test_data_provider_safe.php - User ID: 4
+[16-Sep-2025 23:56:29 UTC] DEBUG test_data_provider_safe.php - Provider ID: 1
+[16-Sep-2025 23:56:29 UTC] DEBUG test_data_provider_safe.php - Buscando clave para user_id: 4, provider_id: 1
+[16-Sep-2025 23:56:29 UTC] DEBUG test_data_provider_safe.php - Query ejecutada, filas encontradas: 1
+[16-Sep-2025 23:56:29 UTC] DEBUG test_data_provider_safe.php - Key data encontrada: {"found":true,"provider":"Polygon.io","slug":"polygon"}
+[16-Sep-2025 23:56:29 UTC] DEBUG test_data_provider_safe.php - Intentando descifrar clave...
+[16-Sep-2025 23:56:29 UTC] DEBUG test_data_provider_safe.php - Clave descifrada exitosamente, longitud: 32
+[16-Sep-2025 23:56:29 UTC] DEBUG test_data_provider_safe.php - Iniciando test para proveedor: polygon
+[16-Sep-2025 23:56:29 UTC] DEBUG test_data_provider_safe.php - URL de test disponible: https://api.polygon.io/v3/reference/tickers?limit=1&apiKey=
+[16-Sep-2025 23:56:29 UTC] DEBUG test_data_provider_safe.php - testDataProvider genérico iniciado con slug: 'polygon', baseUrl: 'https://api.polygon.io', testUrl: 'https://api.polygon.io/v3/reference/tickers?limit=1&apiKey='
+[16-Sep-2025 23:56:29 UTC] DEBUG test_data_provider_safe.php - Usando URL de test específica: https://api.polygon.io/v3/reference/tickers?limit=1&apiKey=
+[16-Sep-2025 23:56:29 UTC] DEBUG test_data_provider_safe.php - testWithCustomUrl iniciado
+[16-Sep-2025 23:56:29 UTC] DEBUG test_data_provider_safe.php - URL final para test: https://api.polygon.io/v3/reference/tickers?limit=1&apiKey=
+[16-Sep-2025 23:56:29 UTC] DEBUG test_data_provider_safe.php - Test personalizado - HTTP Code: 401, Error: None
+[16-Sep-2025 23:56:29 UTC] DEBUG test_data_provider_safe.php - Test personalizado - Response: {"status":"ERROR","request_id":"eb445b14c2a95537ceea4387b5df709a","error":"API Key was not provided"}
+[16-Sep-2025 23:56:29 UTC] DEBUG test_data_provider_safe.php - Resultado del test: {"success":false,"message":"HTTP 401: {\"status\":\"ERROR\",\"request_id\":\"eb445b14c2a95537ceea4387b5df709a\",\"error\":\"API Key was not provided\"}"}
+[16-Sep-2025 23:56:29 UTC] DEBUG test_data_provider_safe.php - Respuesta final: {"ok":false,"message":"HTTP 401: {\"status\":\"ERROR\",\"request_id\":\"eb445b14c2a95537ceea4387b5df709a\",\"error\":\"API Key was not provided\"}","provider":{"id":1,"slug":"polygon","label":"Polygon.io","environment":"live"},"test_details":{"error_count":5,"tested_at":"2025-09-16 23:56:29"}}
+[16-Sep-2025 23:59:56 UTC] DEBUG test_data_provider_safe.php - Input recibido: {"provider_id":1}
+[16-Sep-2025 23:59:56 UTC] DEBUG test_data_provider_safe.php - User ID: 4
+[16-Sep-2025 23:59:56 UTC] DEBUG test_data_provider_safe.php - Provider ID: 1
+[16-Sep-2025 23:59:56 UTC] DEBUG test_data_provider_safe.php - Buscando clave para user_id: 4, provider_id: 1
+[16-Sep-2025 23:59:56 UTC] DEBUG test_data_provider_safe.php - Query ejecutada, filas encontradas: 1
+[16-Sep-2025 23:59:56 UTC] DEBUG test_data_provider_safe.php - Key data encontrada: {"found":true,"provider":"Polygon.io","slug":"polygon"}
+[16-Sep-2025 23:59:56 UTC] DEBUG test_data_provider_safe.php - Intentando descifrar clave...
+[16-Sep-2025 23:59:56 UTC] DEBUG test_data_provider_safe.php - Clave descifrada exitosamente, longitud: 32
+[16-Sep-2025 23:59:56 UTC] DEBUG test_data_provider_safe.php - Iniciando test para proveedor: polygon
+[16-Sep-2025 23:59:56 UTC] DEBUG test_data_provider_safe.php - URL de test disponible: https://api.polygon.io/v3/reference/tickers?limit=1&apiKey=
+[16-Sep-2025 23:59:56 UTC] DEBUG test_data_provider_safe.php - testDataProvider genérico iniciado con slug: 'polygon', baseUrl: 'https://api.polygon.io', testUrl: 'https://api.polygon.io/v3/reference/tickers?limit=1&apiKey='
+[16-Sep-2025 23:59:56 UTC] DEBUG test_data_provider_safe.php - Usando URL de test específica: https://api.polygon.io/v3/reference/tickers?limit=1&apiKey=
+[16-Sep-2025 23:59:56 UTC] DEBUG test_data_provider_safe.php - testWithCustomUrl iniciado
+[16-Sep-2025 23:59:56 UTC] DEBUG test_data_provider_safe.php - API Key recibida: 'bZK3P1MA...' (longitud: 32)
+[16-Sep-2025 23:59:56 UTC] DEBUG test_data_provider_safe.php - URL original: https://api.polygon.io/v3/reference/tickers?limit=1&apiKey=
+[16-Sep-2025 23:59:56 UTC] DEBUG test_data_provider_safe.php - URL después de placeholders: https://api.polygon.io/v3/reference/tickers?limit=1&apiKey=
+[16-Sep-2025 23:59:56 UTC] DEBUG test_data_provider_safe.php - URL final para test: https://api.polygon.io/v3/reference/tickers?limit=1&apiKey=
+[16-Sep-2025 23:59:57 UTC] DEBUG test_data_provider_safe.php - Test personalizado - HTTP Code: 401, Error: None
+[16-Sep-2025 23:59:57 UTC] DEBUG test_data_provider_safe.php - Test personalizado - Response: {"status":"ERROR","request_id":"8cd96b70b7f9a9ef8c6fd54082e72d0f","error":"API Key was not provided"}
+[16-Sep-2025 23:59:57 UTC] DEBUG test_data_provider_safe.php - Resultado del test: {"success":false,"message":"HTTP 401: {\"status\":\"ERROR\",\"request_id\":\"8cd96b70b7f9a9ef8c6fd54082e72d0f\",\"error\":\"API Key was not provided\"}"}
+[16-Sep-2025 23:59:57 UTC] DEBUG test_data_provider_safe.php - Respuesta final: {"ok":false,"message":"HTTP 401: {\"status\":\"ERROR\",\"request_id\":\"8cd96b70b7f9a9ef8c6fd54082e72d0f\",\"error\":\"API Key was not provided\"}","provider":{"id":1,"slug":"polygon","label":"Polygon.io","environment":"live"},"test_details":{"error_count":6,"tested_at":"2025-09-16 23:59:57"}}

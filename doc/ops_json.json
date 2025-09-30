@@ -1,0 +1,463 @@
+{
+  "provider_profile": {
+    "vs": "provider"
+  },
+  "multi": {
+    "vs.upload": {
+      "method": "POST",
+      "url_override": "https://api.openai.com/v1/files",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" }
+      ],
+      "body_type": "multipart",
+      "multipart": [
+        { "name": "file", "type": "file", "value": "{{FILE_PATH}}" },
+        { "name": "purpose", "type": "text", "value": "assistants" }
+      ],
+      "expected_status": 200,
+      "ok_json_path": "id",
+      "ok_json_expected": "exists"
+    },
+    "vs.attach": {
+      "method": "POST",
+      "url_override": "https://api.openai.com/v1/vector_stores/{{VS_ID}}/files",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" },
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "body": "{\"file_id\":\"{{FILE_ID}}\"}",
+      "required_fields": ["VS_ID", "FILE_ID"],
+      "expected_status": 200
+    },
+    "vs.attach_batch": {
+      "method": "POST",
+      "url_override": "https://api.openai.com/v1/vector_stores/{{VS_ID}}/file_batches",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" },
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "body": "{\"file_ids\":{{FILE_IDS_JSON}}}",
+      "required_fields": ["VS_ID", "FILE_IDS_JSON"],
+      "expected_status": 200
+    },
+    "vs.files": {
+      "method": "GET",
+      "url_override": "https://api.openai.com/v1/vector_stores/{{VS_ID}}/files?limit={{limit}}{{after_qs}}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" }
+      ],
+      "defaults": { "limit": 50, "after_qs": "" },
+      "required_fields": ["VS_ID"],
+      "expected_status": 200,
+      "ok_json_path": "data",
+      "ok_json_expected": "array"
+    },
+    "vs.delete_from_vs": {
+      "method": "DELETE",
+      "url_override": "https://api.openai.com/v1/vector_stores/{{VS_ID}}/files/{{FILE_ID}}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" }
+      ],
+      "required_fields": ["VS_ID", "FILE_ID"],
+      "expected_status": 200
+    },
+    "vs.delete": {
+      "method": "DELETE",
+      "url_override": "https://api.openai.com/v1/files/{{FILE_ID}}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" }
+      ],
+      "required_fields": ["FILE_ID"],
+      "expected_status": 200
+    },
+    "vs.list": {
+      "method": "GET",
+      "url_override": "https://api.openai.com/v1/files?limit={{limit}}&order={{order}}{{after_qs}}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" }
+      ],
+      "defaults": { "limit": 1000, "order": "desc", "after_qs": "" },
+      "expected_status": 200,
+      "ok_json_path": "data",
+      "ok_json_expected": "array"
+    },
+    "vs.get": {
+      "method": "GET",
+      "url_override": "https://api.openai.com/v1/files/{{FILE_ID}}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" }
+      ],
+      "required_fields": ["FILE_ID"],
+      "expected_status": 200
+    },
+    "vs.download": {
+      "method": "GET",
+      "url_override": "https://api.openai.com/v1/files/{{FILE_ID}}/content",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" }
+      ],
+      "required_fields": ["FILE_ID"],
+      "expected_status": 200
+    },
+
+    "assistant.create": {
+      "method": "POST",
+      "url_override": "https://api.openai.com/v1/assistants",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" }
+      ],
+      "body": "{\"model\":\"gpt-4o-mini\",\"name\":\"{{ASSISTANT_NAME}}\",\"description\":\"Extractor de conocimiento para el VS del usuario {{USER_ID}}\",\"instructions\":\"{{ASSISTANT_INSTRUCTIONS}}\",\"tools\":[{\"type\":\"file_search\"}],\"tool_resources\":{\"file_search\":{\"vector_store_ids\":[\"{{VS_ID}}\"]}},\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"ResumenEstructurado\",\"schema\":{\"type\":\"object\",\"properties\":{\"resumen\":{\"type\":\"string\"},\"puntos_clave\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"estrategias\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"gestion_riesgo\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"recomendaciones\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}},\"required\":[\"resumen\",\"puntos_clave\",\"estrategias\",\"gestion_riesgo\",\"recomendaciones\"],\"additionalProperties\":false}}}}",
+      "required_fields": ["VS_ID","USER_ID","ASSISTANT_NAME","ASSISTANT_INSTRUCTIONS"],
+      "expected_status": 200,
+      "ok_json_path": "id",
+      "ok_json_expected": "exists"
+    },
+
+    "assistant.update_vs": {
+      "method": "POST",
+      "url_override": "https://api.openai.com/v1/assistants/{{ASSISTANT_ID}}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" }
+      ],
+      "body": "{\"tool_resources\":{\"file_search\":{\"vector_store_ids\":[\"{{VS_ID}}\"]}}}",
+      "required_fields": ["ASSISTANT_ID", "VS_ID"],
+      "expected_status": 200
+    },
+
+    "assistant.update_name": {
+      "method": "POST",
+      "url_override": "https://api.openai.com/v1/assistants/{{ASSISTANT_ID}}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" }
+      ],
+      "body": "{\"name\":\"{{NEW_NAME}}\",\"description\":\"{{NEW_DESC}}\"}",
+      "required_fields": ["ASSISTANT_ID", "NEW_NAME"],
+      "expected_status": 200
+    },
+
+    "assistant.get": {
+      "method": "GET",
+      "url_override": "https://api.openai.com/v1/assistants/{{ASSISTANT_ID}}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" }
+      ],
+      "required_fields": ["ASSISTANT_ID"],
+      "expected_status": 200,
+      "ok_json_path": "id",
+      "ok_json_expected": "exists"
+    },
+
+    "thread.create": {
+      "method": "POST",
+      "url_override": "https://api.openai.com/v1/threads",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" }
+      ],
+      "body": "{\"messages\":[{\"role\":\"user\",\"content\":\"{{USER_PROMPT}}\"}],\"tool_resources\":{\"file_search\":{\"vector_store_ids\":[\"{{VS_ID}}\"]}}}",
+      "required_fields": ["USER_PROMPT", "VS_ID"],
+      "expected_status": 200,
+      "ok_json_path": "id",
+      "ok_json_expected": "exists"
+    },
+
+    "run.create": {
+      "method": "POST",
+      "url_override": "https://api.openai.com/v1/threads/{{THREAD_ID}}/runs",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" }
+      ],
+      "body": "{\"assistant_id\":\"{{ASSISTANT_ID}}\"}",
+      "required_fields": ["THREAD_ID", "ASSISTANT_ID"],
+      "expected_status": 200,
+      "ok_json_path": "id",
+      "ok_json_expected": "exists"
+    },
+
+    "run.create.with_instructions": {
+      "method": "POST",
+      "url_override": "https://api.openai.com/v1/threads/{{THREAD_ID}}/runs",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" }
+      ],
+      "body": "{\"assistant_id\":\"{{ASSISTANT_ID}}\",\"instructions\":\"{{USER_PROMPT}}\"}",
+      "required_fields": ["THREAD_ID","ASSISTANT_ID","USER_PROMPT"],
+      "expected_status": 200,
+      "ok_json_path": "id",
+      "ok_json_expected": "exists"
+    },
+
+    "run.get": {
+      "method": "GET",
+      "url_override": "https://api.openai.com/v1/threads/{{THREAD_ID}}/runs/{{RUN_ID}}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" }
+      ],
+      "required_fields": ["THREAD_ID", "RUN_ID"],
+      "expected_status": 200
+    },
+
+    "messages.list": {
+      "method": "GET",
+      "url_override": "https://api.openai.com/v1/threads/{{THREAD_ID}}/messages?limit={{limit}}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" }
+      ],
+      "defaults": { "limit": 50 },
+      "required_fields": ["THREAD_ID"],
+      "expected_status": 200,
+      "ok_json_path": "data",
+      "ok_json_expected": "array"
+    },
+
+    "chat": {
+      "method": "POST",
+      "url_override": "https://api.openai.com/v1/chat/completions",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "body": "{\"model\":\"gpt-4o-mini\",\"messages\":[{\"role\":\"user\",\"content\":\"{{PROMPT}}\"}]}",
+      "expected_status": 200,
+      "ok_json_path": "choices",
+      "ok_json_expected": "array"
+    },
+
+    "analyze": {
+      "pipeline": [
+        { "use": "vs.query", "save_as": "ctx" },
+        {
+          "use": "chat",
+          "override": {
+            "body": "{\"model\":\"gpt-4o-mini\",\"messages\":[{\"role\":\"system\",\"content\":\"Eres un analista. Objetivo: {{objective}}\"},{\"role\":\"user\",\"content\":\"Pregunta: {{q}}\\n\\nContexto:\\n{{ctx_text}}\"}]}"
+          }
+        }
+      ],
+      "defaults": { "CHAT_MODEL": "gpt-4o-mini" }
+    },
+
+    "vs.summary": {
+      "method": "POST",
+      "url_override": "https://api.openai.com/v1/chat/completions",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "body": "{\"model\":\"gpt-4o-mini\",\"messages\":[{\"role\":\"system\",\"content\":\"Resume el archivo adjunto en 5 bullets.\"},{\"role\":\"user\",\"content\":\"FILE_ID={{FILE_ID}}\"}]}",
+      "required_fields": ["FILE_ID"],
+      "expected_status": 200,
+      "ok_json_path": "choices",
+      "ok_json_expected": "array"
+    },
+
+    "vs.summarize_from_vs": {
+      "pipeline": [
+        {
+          "use": "thread.create",
+          "save_as": "thread",
+          "vars": {
+            "USER_PROMPT": "{{PROMPT}}",
+            "VS_ID": "{{VS_ID}}"
+          }
+        },
+        {
+          "use": "run.create",
+          "save_as": "run",
+          "vars": {
+            "THREAD_ID": "{{thread.id}}",
+            "ASSISTANT_ID": "{{ASSISTANT_ID}}"
+          }
+        },
+        {
+          "use": "messages.list",
+          "save_as": "msgs",
+          "vars": {
+            "THREAD_ID": "{{thread.id}}",
+            "limit": 50
+          }
+        }
+      ],
+      "defaults": {
+        "PROMPT": "Genera un resumen estructurado del contenido del Vector Store del usuario siguiendo el esquema configurado.",
+        "ASSISTANT_ID": "",
+        "VS_ID": ""
+      }
+    },
+
+    "thread.create.extract": {
+      "method": "POST",
+      "url_override": "https://api.openai.com/v1/threads",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" }
+      ],
+      "body": "{\"messages\":[{\"role\":\"user\",\"content\":\"{{EXTRACT_PROMPT}}\"}],\"tool_resources\":{\"file_search\":{\"vector_store_ids\":[\"{{VS_ID}}\"]}}}",
+      "required_fields": ["EXTRACT_PROMPT", "VS_ID"],
+      "expected_status": 200,
+      "ok_json_path": "id",
+      "ok_json_expected": "exists"
+    },
+
+    "extract.knowledge_from_vs": {
+      "pipeline": [
+        {
+          "use": "thread.create.extract",
+          "save_as": "thread",
+          "vars": {
+            "EXTRACT_PROMPT": "{{EXTRACT_PROMPT}}",
+            "VS_ID": "{{VS_ID}}"
+          }
+        },
+        {
+          "use": "run.create",
+          "save_as": "run",
+          "vars": {
+            "THREAD_ID": "{{thread.id}}",
+            "ASSISTANT_ID": "{{ASSISTANT_ID}}"
+          }
+        },
+        {
+          "use": "messages.list",
+          "save_as": "msgs",
+          "vars": {
+            "THREAD_ID": "{{thread.id}}",
+            "limit": 50
+          }
+        }
+      ],
+      "defaults": {
+        "ASSISTANT_ID": "",
+        "VS_ID": "",
+        "EXTRACT_PROMPT": "Extrae un JSON con los campos {\"title\": string, \"summary\": string, \"entities\": [{\"name\": string, \"type\": string}], \"tickers\": [string], \"dates\": [string]} usando SOLO evidencia del Vector Store. Devuelve SOLO el JSON."
+      }
+    },
+
+    "vs.store.create": {
+      "method": "POST",
+      "url_override": "https://api.openai.com/v1/vector_stores",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" }
+      ],
+      "body": "{\"name\":\"{{VS_NAME}}\"}",
+      "required_fields": ["VS_NAME"],
+      "expected_status": 200,
+      "ok_json_path": "id",
+      "ok_json_expected": "exists"
+    },
+    "vs.store.get": {
+      "method": "GET",
+      "url_override": "https://api.openai.com/v1/vector_stores/{{VS_ID}}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" }
+      ],
+      "required_fields": ["VS_ID"],
+      "expected_status": 200
+    },
+    "vs.store.list": {
+      "method": "GET",
+      "url_override": "https://api.openai.com/v1/vector_stores?limit={{limit}}{{after_qs}}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" }
+      ],
+      "defaults": { "limit": 50, "after_qs": "" },
+      "expected_status": 200,
+      "ok_json_path": "data",
+      "ok_json_expected": "array"
+    },
+    "vs.store.delete": {
+      "method": "DELETE",
+      "url_override": "https://api.openai.com/v1/vector_stores/{{VS_ID}}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" }
+      ],
+      "required_fields": ["VS_ID"],
+      "expected_status": 200
+    },
+    "vs.store.file.get": {
+      "method": "GET",
+      "url_override": "https://api.openai.com/v1/vector_stores/{{VS_ID}}/files/{{FILE_ID}}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" }
+      ],
+      "required_fields": ["VS_ID", "FILE_ID"],
+      "expected_status": 200
+    },
+    "messages.list.ordered": {
+      "method": "GET",
+      "url_override": "https://api.openai.com/v1/threads/{{THREAD_ID}}/messages?limit={{limit}}&order={{order}}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" }
+      ],
+      "defaults": { "limit": 50, "order": "desc" },
+      "required_fields": ["THREAD_ID"],
+      "expected_status": 200,
+      "ok_json_path": "data",
+      "ok_json_expected": "array"
+    },
+    "messages.list.by_run": {
+      "method": "GET",
+      "url_override": "https://api.openai.com/v1/threads/{{THREAD_ID}}/messages?limit={{limit}}&order={{order}}&run_id={{RUN_ID}}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" }
+      ],
+      "defaults": { "limit": 50, "order": "asc" },
+      "required_fields": ["THREAD_ID","RUN_ID"],
+      "expected_status": 200,
+      "ok_json_path": "data",
+      "ok_json_expected": "array"
+    },
+    "run.steps.list": {
+      "method": "GET",
+      "url_override": "https://api.openai.com/v1/threads/{{THREAD_ID}}/runs/{{RUN_ID}}/steps",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" }
+      ],
+      "required_fields": ["THREAD_ID","RUN_ID"],
+      "expected_status": 200,
+      "ok_json_path": "data",
+      "ok_json_expected": "array"
+    },
+    "run.create.loose": {
+      "method": "POST",
+      "url_override": "https://api.openai.com/v1/threads/{{THREAD_ID}}/runs",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{API_KEY}}" },
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "OpenAI-Beta", "value": "assistants=v2" }
+      ],
+      "body": "{\"assistant_id\":\"{{ASSISTANT_ID}}\",\"response_format\":{\"type\":\"json_object\"},\"metadata\":{\"purpose\":\"diagnostic_loose\"}}",
+      "required_fields": ["THREAD_ID","ASSISTANT_ID"],
+      "expected_status": 200,
+      "ok_json_path": "id",
+      "ok_json_expected": "exists"
+    }
+  }
+}

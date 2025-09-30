@@ -705,6 +705,157 @@ body:not(.dark-mode) :where(h1,h2,h3,h4,h5,h6,p,span,li,dt,dd,th,td,label,button
   color: var(--text-dark-primary) !important;
 }
 
+/* Estilos específicos para tablas y estado */
+.dark-mode table {
+  background-color: var(--bg-dark-secondary);
+  border-color: var(--border-dark);
+}
+
+.dark-mode th,
+.dark-mode td {
+  background-color: var(--bg-dark-secondary);
+  border-color: var(--border-dark);
+  color: var(--text-dark-primary) !important;
+}
+
+.dark-mode tbody tr:nth-child(even) {
+  background-color: var(--bg-dark);
+}
+
+.dark-mode tbody tr:hover {
+  background-color: var(--border-dark);
+}
+
+/* Estilos específicos para estado en tablas */
+.dark-mode .status-active,
+.dark-mode .status-activa {
+  color: #10b981 !important; /* Verde claro para activo */
+  font-weight: 600;
+}
+
+.dark-mode .status-inactive,
+.dark-mode .status-disabled {
+  color: #ef4444 !important; /* Rojo claro para inactivo */
+  font-weight: 600;
+}
+
+.dark-mode .status-pending {
+  color: #f59e0b !important; /* Amarillo/naranja para pendiente */
+  font-weight: 600;
+}
+
+/* Estilos para modo claro */
+.status-active,
+.status-activa {
+  color: #059669 !important; /* Verde oscuro para activo en modo claro */
+  font-weight: 600;
+}
+
+.status-inactive,
+.status-disabled {
+  color: #dc2626 !important; /* Rojo oscuro para inactivo en modo claro */
+  font-weight: 600;
+}
+
+.status-pending {
+  color: #d97706 !important; /* Naranja oscuro para pendiente en modo claro */
+  font-weight: 600;
+}
+
+/* Estilos para status-badge en tablas */
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+/* Status badge en modo claro */
+.status-badge.success {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.status-badge.warning {
+  background-color: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.status-badge.error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+/* Status badge en modo oscuro */
+.dark-mode .status-badge.success {
+  background-color: #064e3b;
+  color: #10b981;
+  border: 1px solid #065f46;
+}
+
+.dark-mode .status-badge.warning {
+  background-color: #78350f;
+  color: #f59e0b;
+  border: 1px solid #92400e;
+}
+
+.dark-mode .status-badge.error {
+  background-color: #7f1d1d;
+  color: #ef4444;
+  border: 1px solid #991b1b;
+}
+
+/* Estilos para environment-badge en tablas */
+.environment-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+/* Environment badge en modo claro */
+.environment-badge.live {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.environment-badge.paper {
+  background-color: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.environment-badge.sandbox {
+  background-color: #e0e7ff;
+  color: #3730a3;
+  border: 1px solid #c7d2fe;
+}
+
+/* Environment badge en modo oscuro */
+.dark-mode .environment-badge.live {
+  background-color: #064e3b;
+  color: #10b981;
+  border: 1px solid #065f46;
+}
+
+.dark-mode .environment-badge.paper {
+  background-color: #78350f;
+  color: #f59e0b;
+  border: 1px solid #92400e;
+}
+
+.dark-mode .environment-badge.sandbox {
+  background-color: #312e81;
+  color: #818cf8;
+  border: 1px solid #4338ca;
+}
+
 /* Fondos comunes convertidos a superficies en oscuro (no solo en modales) */
 .dark-mode :where(.bg-white) {
   background-color: var(--bg-dark-secondary) !important;

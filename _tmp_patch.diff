@@ -1,0 +1,70 @@
+﻿*** Begin Patch
+*** Update File: api/ai_extract_file_vs_correct.php
+@@
+-    clean_log("PASO 7.1: Buscando Vector Store oficial del usuario en 'ai_vector_stores'...");
+-    $stmt = $pdo->prepare("SELECT external_id, assistant_id FROM ai_vector_stores WHERE owner_user_id = ? AND provider_id = ? AND status = 'ready' ORDER BY created_at DESC LIMIT 1");
+-    $stmt->execute([$userId, $providerId]);
+-    $userVectorStore = $stmt->fetch(PDO::FETCH_ASSOC);
+-    
+-    $vectorStoreId = $userVectorStore['external_id'] ?? '';
+-    $assistantId = $userVectorStore['assistant_id'] ?? ''; // Usar el assistant del VS si existe
+-    
+-    if ($vectorStoreId) {
+-        clean_log("PASO 7.1 OK: Vector Store oficial del usuario encontrado: $vectorStoreId");
+-    } else {
+-        clean_log("PASO 7.1 INFO: El usuario no tiene un Vector Store oficial. Se creará uno.");
+-    }
+-
+-    if ($assistantId) {
+-        clean_log("PASO 7.2 OK: Assistant persistente del usuario encontrado: $assistantId");
+-    } else {
+-        clean_log("PASO 7.2 INFO: El usuario no tiene un Assistant persistente. Se creará uno.");
+-    }
+-        
++    clean_log("PASO 7.1: Buscando Vector Store oficial del usuario en 'ai_vector_stores'...");
++    $stmt = $pdo->prepare("SELECT id, external_id, assistant_id, status FROM ai_vector_stores WHERE owner_user_id = ? AND provider_id = ? ORDER BY created_at DESC LIMIT 1");
++    $stmt->execute([$userId, $providerId]);
++    $userVectorStore = $stmt->fetch(PDO::FETCH_ASSOC);
++
++    $vectorStoreRecordId = $userVectorStore['id'] ?? null;
++    $vectorStoreStatus = $userVectorStore['status'] ?? null;
++    $vectorStoreId = $userVectorStore['external_id'] ?? '';
++    $assistantId = $userVectorStore['assistant_id'] ?? '';
++
++    $vectorStoreLocalId = $fileDb['vector_store_local_id'] ?? null;
++    if (!$vectorStoreRecordId && $vectorStoreLocalId) {
++        clean_log("PASO 7.1 INFO: Intentando localizar Vector Store por vector_store_local_id={$vectorStoreLocalId}...");
++        $stmt = $pdo->prepare("SELECT id, external_id, assistant_id, status FROM ai_vector_stores WHERE id = ? LIMIT 1");
++        $stmt->execute([$vectorStoreLocalId]);
++        $fallbackVectorStore = $stmt->fetch(PDO::FETCH_ASSOC);
++        if ($fallbackVectorStore) {
++            $vectorStoreRecordId = $fallbackVectorStore['id'];
++            $vectorStoreStatus = $fallbackVectorStore['status'] ?? null;
++            $vectorStoreId = $fallbackVectorStore['external_id'] ?? '';
++            $assistantId = $fallbackVectorStore['assistant_id'] ?? '';
++        }
++    }
++
++    if ($vectorStoreStatus && $vectorStoreStatus !== 'ready') {
++        clean_log("PASO 7.1 INFO: Vector Store {$vectorStoreId} encontrado con estado '{$vectorStoreStatus}'. Se solicitará validación/recreación.");
++        $vectorStoreId = '';
++    }
++
++    $vectorStoreRecordIdLog = $vectorStoreRecordId ? " (registro #{$vectorStoreRecordId})" : '';
++
++    if ($vectorStoreId) {
++        clean_log("PASO 7.1 OK: Vector Store oficial del usuario encontrado: {$vectorStoreId}{$vectorStoreRecordIdLog}");
++    } else {
++        clean_log("PASO 7.1 INFO: El usuario no tiene un Vector Store listo. Se creará uno nuevo si es necesario.");
++    }
++
++    if ($assistantId && $vectorStoreId) {
++        clean_log("PASO 7.2 OK: Assistant persistente del usuario encontrado: $assistantId");
++    } elseif ($assistantId && !$vectorStoreId) {
++        clean_log("PASO 7.2 INFO: Se descarta el Assistant persistente ($assistantId) porque no hay Vector Store válido.");
++        $assistantId = '';
++    } else {
++        clean_log("PASO 7.2 INFO: El usuario no tiene un Assistant persistente. Se creará uno.");
++    }
++
+*** End Patch

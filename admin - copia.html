@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel de Administración - CATAI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="static/utf8-fix.js"></script>
+  <script src="static/js/config-portable.js"></script>
+  <script src="static/auth.js"></script>
+  <script src="static/js/header.js"></script>
+  <script src="static/js/hero.js"></script>
+  <link rel="stylesheet" href="static/css/styles.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .metric-card { transition: all 0.2s ease; }
+    .metric-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+    .status-indicator { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+    .status-ok { background-color: #10b981; }
+    .status-warning { background-color: #f59e0b; }
+    .status-error { background-color: #ef4444; }
+    .chart-container { height: 200px; }
+    pre { font-size: 0.75rem; }
+  </style>
+</head>
+<body class="bg-gray-50 dark-mode:bg-gray-900 min-h-screen">
+  <div id="app-header"></div>
+  <div id="app-hero" data-icon="⚙️" data-title="Panel de Administración" data-subtitle="Monitorea la salud del sistema, gestiona usuarios y revisa actividad."></div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Dashboard Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="metric-card bg-white dark-mode:bg-gray-800 rounded-lg shadow p-6">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-blue-100 dark-mode:bg-blue-900 rounded-lg flex items-center justify-center">
+              <svg class="w-5 h-5 text-blue-600 dark-mode:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-gray-600 dark-mode:text-gray-400">Usuarios Totales</p>
+            <p class="text-2xl font-semibold text-gray-900 dark-mode:text-gray-100" id="totalUsers">—</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="metric-card bg-white rounded-lg shadow p-6">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+              <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-gray-600">Análisis Hoy</p>
+            <p class="text-2xl font-semibold text-gray-900" id="analysesToday">—</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="metric-card bg-white rounded-lg shadow p-6">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+              <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-gray-600">Feedback Pendiente</p>
+            <p class="text-2xl font-semibold text-gray-900" id="pendingFeedback">—</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="metric-card bg-white rounded-lg shadow p-6">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+              <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-gray-600">Uso IA Hoy</p>
+            <p class="text-2xl font-semibold text-gray-900" id="aiUsageToday">—</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- System Health -->
+      <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h3 class="text-lg font-medium text-gray-900">Estado del Sistema</h3>
+        </div>
+        <div class="p-6">
+          <div id="health" class="space-y-4">
+            <div class="flex items-center">
+              <span class="status-indicator status-ok"></span>
+              <span class="text-sm font-medium">Cargando estado del sistema...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Database Status -->
+      <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h3 class="text-lg font-medium text-gray-900">Base de Datos</h3>
+        </div>
+        <div class="p-6">
+          <div id="db" class="space-y-4">
+            <div class="flex items-center">
+              <span class="status-indicator status-ok"></span>
+              <span class="text-sm font-medium">Verificando conexión...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h3 class="text-lg font-medium text-gray-900">Actividad Reciente</h3>
+        </div>
+        <div class="p-6">
+          <div id="recentActivity" class="space-y-3">
+            <div class="text-sm text-gray-500">Cargando actividad...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Management -->
+      <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h3 class="text-lg font-medium text-gray-900">Gestión de Usuarios</h3>
+        </div>
+        <div class="p-6">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-600">Usuarios activos</span>
+              <span class="text-sm font-medium" id="activeUsers">—</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-600">Usuarios registrados hoy</span>
+              <span class="text-sm font-medium" id="newUsersToday">—</span>
+            </div>
+            <div class="pt-4">
+              <button onclick="showUserManagement()" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                Gestionar Usuarios
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="mt-8 bg-white rounded-lg shadow">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <h3 class="text-lg font-medium text-gray-900">Acciones Rápidas</h3>
+      </div>
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <a href="feedback.html" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+            <div class="flex-shrink-0">
+              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+              </svg>
+            </div>
+            <div class="ml-3">
+              <p class="text-sm font-medium text-gray-900">Feedback</p>
+              <p class="text-xs text-gray-500">Gestionar reportes</p>
+            </div>
+          </a>
+
+          <button onclick="showSystemLogs()" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+            <div class="flex-shrink-0">
+              <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+            </div>
+            <div class="ml-3">
+              <p class="text-sm font-medium text-gray-900">Logs del Sistema</p>
+              <p class="text-xs text-gray-500">Ver registros</p>
+            </div>
+          </button>
+
+          <button onclick="showQuotaManagement()" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+            <div class="flex-shrink-0">
+              <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+              </svg>
+            </div>
+            <div class="ml-3">
+              <p class="text-sm font-medium text-gray-900">Gestión de Cuotas</p>
+              <p class="text-xs text-gray-500">Límites de uso</p>
+            </div>
+          </button>
+
+          <button onclick="exportSystemData()" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+            <div class="flex-shrink-0">
+              <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+            </div>
+            <div class="ml-3">
+              <p class="text-sm font-medium text-gray-900">Exportar Datos</p>
+              <p class="text-xs text-gray-500">Backup sistema</p>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Global state
+    let adminData = {};
+
+    // Utility functions
+    function formatDate(dateStr) {
+      try {
+        return new Date(dateStr).toLocaleString('es-ES');
+      } catch {
+        return dateStr;
+      }
+    }
+
+    function showStatus(status, message) {
+      const statusClass = status === 'ok' ? 'status-ok' : status === 'warning' ? 'status-warning' : 'status-error';
+      return `<div class="flex items-center"><span class="status-indicator ${statusClass}"></span><span class="text-sm font-medium">${message}</span></div>`;
+    }
+
+    function showModal(title, content) {
+      const modal = document.createElement('div');
+      modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+      modal.innerHTML = `
+        <div class="bg-white rounded-lg max-w-4xl max-h-[90vh] overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+            <h3 class="text-lg font-medium text-gray-900">${title}</h3>
+            <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-gray-600">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+            ${content}
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    // Load dashboard data
+    async function loadDashboardData() {
+      try {
+        // Load health status
+        const health = await Auth.fetchJson('health.php');
+        const healthEl = document.getElementById('health');
+        if (health.ok && health.data) {
+          const providers = health.data.providers || {};
+          const providerStatus = Object.entries(providers).map(([name, status]) => 
+            showStatus(status ? 'ok' : 'warning', `${name}: ${status ? 'Conectado' : 'Desconectado'}`)
+          ).join('');
+          
+          healthEl.innerHTML = `
+            <div class="space-y-2">
+              ${showStatus('ok', 'Sistema operativo')}
+              <div class="text-xs text-gray-500 mt-2">
+                <strong>Proveedores:</strong><br/>
+                ${providerStatus}
+              </div>
+            </div>
+          `;
+        } else {
+          healthEl.innerHTML = showStatus('error', 'Error al verificar estado del sistema');
+        }
+
+        // Load database status
+        const db = await Auth.fetchJson('db_check.php');
+        const dbEl = document.getElementById('db');
+        if (db.ok && db.data) {
+          dbEl.innerHTML = showStatus('ok', 'Base de datos conectada');
+        } else {
+          dbEl.innerHTML = showStatus('error', 'Error de conexión a base de datos');
+        }
+
+        // Load feedback count
+        const feedback = await Auth.fetchJson('feedback_list_safe.php?limit=1&offset=0');
+        if (feedback.ok && feedback.data) {
+          const total = feedback.data.total || 0;
+          document.getElementById('pendingFeedback').textContent = total;
+        }
+
+        // Load recent activity
+        await loadRecentActivity();
+
+        // Load user statistics
+        await loadUserStats();
+
+      } catch (error) {
+        console.error('Error loading dashboard data:', error);
+      }
+    }
+
+    async function loadRecentActivity() {
+      try {
+        const activity = await Auth.fetchJson('analysis_list_safe.php?limit=5&offset=0');
+        const activityEl = document.getElementById('recentActivity');
+        
+        if (activity.ok && activity.data && activity.data.items) {
+          const items = activity.data.items.map(item => `
+            <div class="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
+              <div>
+                <div class="text-sm font-medium text-gray-900">${item.symbol || 'N/A'}</div>
+                <div class="text-xs text-gray-500">${item.title || 'Sin título'}</div>
+              </div>
+              <div class="text-xs text-gray-500">${formatDate(item.created_at)}</div>
+            </div>
+          `).join('');
+          
+          activityEl.innerHTML = items || '<div class="text-sm text-gray-500">Sin actividad reciente</div>';
+        } else {
+          activityEl.innerHTML = '<div class="text-sm text-gray-500">Error al cargar actividad</div>';
+        }
+      } catch (error) {
+        document.getElementById('recentActivity').innerHTML = '<div class="text-sm text-gray-500">Error al cargar actividad</div>';
+      }
+    }
+
+    async function loadUserStats() {
+      try {
+        // This would need backend endpoints for user statistics
+        // For now, we'll simulate some data
+        document.getElementById('totalUsers').textContent = '—';
+        document.getElementById('analysesToday').textContent = '—';
+        document.getElementById('aiUsageToday').textContent = '—';
+        document.getElementById('activeUsers').textContent = '—';
+        document.getElementById('newUsersToday').textContent = '—';
+      } catch (error) {
+        console.error('Error loading user stats:', error);
+      }
+    }
+
+    // Modal functions
+    function showUserManagement() {
+      const content = `
+        <div class="space-y-4">
+          <p class="text-gray-600">Gestión de usuarios - Funcionalidad en desarrollo</p>
+          <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <p class="text-sm text-yellow-800">Esta funcionalidad requiere endpoints adicionales en el backend para:</p>
+            <ul class="text-sm text-yellow-800 mt-2 list-disc list-inside">
+              <li>Listar usuarios</li>
+              <li>Activar/desactivar usuarios</li>
+              <li>Modificar roles</li>
+              <li>Gestionar cuotas por usuario</li>
+            </ul>
+          </div>
+        </div>
+      `;
+      showModal('Gestión de Usuarios', content);
+    }
+
+    function showSystemLogs() {
+      const content = `
+        <div class="space-y-4">
+          <p class="text-gray-600">Logs del sistema - Funcionalidad en desarrollo</p>
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p class="text-sm text-blue-800">Esta funcionalidad requiere:</p>
+            <ul class="text-sm text-blue-800 mt-2 list-disc list-inside">
+              <li>Endpoint para leer logs de <code>api/logs/</code></li>
+              <li>Filtros por fecha y tipo de log</li>
+              <li>Paginación para logs grandes</li>
+            </ul>
+          </div>
+          <div class="bg-gray-100 rounded-lg p-4">
+            <h4 class="font-medium text-gray-900 mb-2">Logs disponibles:</h4>
+            <ul class="text-sm text-gray-600 space-y-1">
+              <li>• <code>api/logs/prefs.log</code> - Configuraciones de usuario</li>
+              <li>• <code>api/logs/db.log</code> - Errores de base de datos</li>
+              <li>• <code>api/logs/usage.log</code> - Uso de la aplicación</li>
+            </ul>
+          </div>
+        </div>
+      `;
+      showModal('Logs del Sistema', content);
+    }
+
+    function showQuotaManagement() {
+      const content = `
+        <div class="space-y-4">
+          <p class="text-gray-600">Gestión de cuotas - Funcionalidad en desarrollo</p>
+          <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+            <p class="text-sm text-purple-800">Esta funcionalidad requiere:</p>
+            <ul class="text-sm text-purple-800 mt-2 list-disc list-inside">
+              <li>Endpoint para modificar cuotas por usuario</li>
+              <li>Vista de uso actual vs límites</li>
+              <li>Historial de uso por usuario</li>
+            </ul>
+          </div>
+          <div class="bg-gray-100 rounded-lg p-4">
+            <h4 class="font-medium text-gray-900 mb-2">Tipos de cuotas:</h4>
+            <ul class="text-sm text-gray-600 space-y-1">
+              <li>• <strong>time_series</strong> - Consultas de datos financieros</li>
+              <li>• <strong>options</strong> - Consultas de opciones</li>
+              <li>• <strong>ai</strong> - Análisis con IA</li>
+            </ul>
+          </div>
+        </div>
+      `;
+      showModal('Gestión de Cuotas', content);
+    }
+
+    function exportSystemData() {
+      const content = `
+        <div class="space-y-4">
+          <p class="text-gray-600">Exportar datos del sistema - Funcionalidad en desarrollo</p>
+          <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+            <p class="text-sm text-orange-800">Esta funcionalidad requiere:</p>
+            <ul class="text-sm text-orange-800 mt-2 list-disc list-inside">
+              <li>Endpoint para generar backups</li>
+              <li>Exportación de datos de usuarios</li>
+              <li>Exportación de análisis y feedback</li>
+              <li>Compresión y descarga de archivos</li>
+            </ul>
+          </div>
+          <div class="bg-gray-100 rounded-lg p-4">
+            <h4 class="font-medium text-gray-900 mb-2">Datos exportables:</h4>
+            <ul class="text-sm text-gray-600 space-y-1">
+              <li>• Usuarios y configuraciones</li>
+              <li>• Análisis realizados</li>
+              <li>• Feedback y reportes</li>
+              <li>• Logs del sistema</li>
+            </ul>
+          </div>
+        </div>
+      `;
+      showModal('Exportar Datos del Sistema', content);
+    }
+
+    // Modo Oscuro - Funcionalidad
+    const themeToggle = document.getElementById('theme-toggle');
+    let isDarkMode = localStorage.getItem('darkMode') === 'true';
+
+    // Aplicar modo oscuro al cargar
+    if (isDarkMode) {
+      document.body.classList.add('dark-mode');
+      updateThemeButton();
+    }
+
+    // Toggle del modo oscuro
+    themeToggle.addEventListener('click', () => {
+      isDarkMode = !isDarkMode;
+      document.body.classList.toggle('dark-mode', isDarkMode);
+      localStorage.setItem('darkMode', isDarkMode);
+      updateThemeButton();
+    });
+
+    function updateThemeButton() {
+      if (isDarkMode) {
+        themeToggle.textContent = '☀️ Modo Claro';
+      } else {
+        themeToggle.textContent = '🌙 Modo Oscuro';
+      }
+    }
+
+    // Initialize dashboard
+    (async function(){
+      Auth.requireAuth();
+      Auth.requireAdmin();
+      
+      await loadDashboardData();
+      
+      // Auto-refresh every 30 seconds
+      setInterval(loadDashboardData, 30000);
+    })();
+  </script>
+</body>
+</html>
